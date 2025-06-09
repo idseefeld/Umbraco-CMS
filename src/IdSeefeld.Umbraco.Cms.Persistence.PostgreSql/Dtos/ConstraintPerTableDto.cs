@@ -1,0 +1,12 @@
+using NPoco;
+
+namespace IdSeefeld.Umbraco.Cms.Persistence.PostgreSql.Dtos;
+
+internal sealed class ConstraintPerTableDto
+{
+    [Column("TABLE_NAME")]
+    public string TableName { get; set; } = null!;
+
+    [Column("CONSTRAINT_NAME")]
+    public string ConstraintName { get; set; } = null!;
+}
