@@ -29,20 +29,18 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
     private readonly IOptions<GlobalSettings> _globalSettings;
     private readonly ILogger<PostgreSqlSyntaxProvider> _logger;
 
-    public PostgreSqlSyntaxProvider(IOptions<GlobalSettings> globalSettings)
-        : this(globalSettings, StaticApplicationLogging.CreateLogger<PostgreSqlSyntaxProvider>())
-    {
-    }
 
     public PostgreSqlSyntaxProvider(IOptions<GlobalSettings> globalSettings, ILogger<PostgreSqlSyntaxProvider> logger)
     {
         _globalSettings = globalSettings;
         _logger = logger;
+
+        GuidColumnDefinition = "UUID";
     }
 
     public override string ProviderName => Constants.ProviderName;
 
-    public override string DbProvider => "Npgsql";
+    public override string DbProvider => Constants.DbProvider;
 
     public override IsolationLevel DefaultIsolationLevel => IsolationLevel.ReadCommitted;
 
@@ -56,7 +54,14 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
 
     public override string StringLengthUnicodeColumnDefinitionFormat => base.StringLengthUnicodeColumnDefinitionFormat;
 
-    public override string StringColumnDefinition => base.StringColumnDefinition;
+    public override string StringColumnDefinition
+    {
+        get
+        {
+            // PostgreSQL does not have a specific string type, it uses TEXT for variable-length strings
+            return "TEXT";
+        }
+    }
 
     public override string CreateForeignKeyConstraint => base.CreateForeignKeyConstraint;
 
@@ -295,7 +300,7 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
     public override string GetQuotedName(string? name) => base.GetQuotedName(name);
     public override string GetQuotedValue(string value) => base.GetQuotedValue(value);
     public override string GetIndexType(IndexTypes indexTypes) => base.GetIndexType(indexTypes);
-    public override string GetSpecialDbType(SpecialDbType dbType) => base.GetSpecialDbType(dbType);
+    public override string GetSpecialDbType(SpecialDbType dbType) => "TEXT";
     public override string GetColumn(DatabaseType dbType, string tableName, string columnName, string columnAlias, string? referenceName = null, bool forInsert = false) => base.GetColumn(dbType, tableName, columnName, columnAlias, referenceName, forInsert);
     public override string GetFieldNameForUpdate<TDto>(Expression<Func<TDto, object?>> fieldSelector, string? tableAlias = null) => base.GetFieldNameForUpdate(fieldSelector, tableAlias);
     public override bool SupportsClustered() => base.SupportsClustered();
@@ -309,7 +314,53 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
     public override string Format(ColumnDefinition column) => base.Format(column);
     public override string Format(ColumnDefinition column, string tableName, out IEnumerable<string> sqls) => base.Format(column, tableName, out sqls);
     public override string FormatPrimaryKey(TableDefinition table) => base.FormatPrimaryKey(table);
-    public override void HandleCreateTable(IDatabase database, TableDefinition tableDefinition, bool skipKeysAndIndexes = false) => throw new NotImplementedException();
+    public override void HandleCreateTable(IDatabase database, TableDefinition tableDefinition, bool skipKeysAndIndexes = false)
+    {
+        // Format columns, primary key, and foreign keys
+        var columns = Format(tableDefinition.Columns);
+        var primaryKey = FormatPrimaryKey(tableDefinition);
+        List<string> foreignKeys = Format(tableDefinition.ForeignKeys);
+
+        var sb = new System.Text.StringBuilder();
+        sb.AppendLine($"CREATE TABLE {GetQuotedTableName(tableDefinition.Name)}");
+        sb.AppendLine("(");
+        sb.Append(columns);
+
+        // Add primary key if present and not skipping keys
+        if (!string.IsNullOrEmpty(primaryKey) && !skipKeysAndIndexes)
+        {
+            sb.AppendLine($", {primaryKey}");
+        }
+
+        // Add foreign keys if not skipping keys
+        if (!skipKeysAndIndexes)
+        {
+            foreach (var foreignKey in foreignKeys)
+            {
+                sb.AppendLine($", {foreignKey}");
+            }
+        }
+
+        sb.AppendLine(")");
+
+        var createSql = sb.ToString();
+
+        _logger.LogInformation("Create table:\n {Sql}", createSql);
+        database.Execute(new Sql(createSql));
+
+        if (skipKeysAndIndexes)
+        {
+            return;
+        }
+
+        // Create indexes
+        List<string> indexSql = Format(tableDefinition.Indexes);
+        foreach (var sql in indexSql)
+        {
+            _logger.LogInformation("Create Index:\n {Sql}", sql);
+            database.Execute(new Sql(sql));
+        }
+    }
     public override string GetSpecialDbType(SpecialDbType dbType, int customSize) => base.GetSpecialDbType(dbType, customSize);
     protected override string FormatCascade(string onWhat, Rule rule) => base.FormatCascade(onWhat, rule);
     protected override string FormatString(ColumnDefinition column) => base.FormatString(column);

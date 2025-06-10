@@ -35,7 +35,7 @@ namespace IdSeefeld.Umbraco.Cms.Persistence.PostgreSql.Services
                         command.ExecuteNonQuery();
                     }
                 }
-                _logger.LogInformation("Database '{Database}' created successfully.", databaseName);
+                _logger.LogInformation("PostgreSql Database '{Database}' created successfully.", databaseName);
             }
             catch (Npgsql.PostgresException ex) when (ex.SqlState == "42P04") // duplicate_database
             {

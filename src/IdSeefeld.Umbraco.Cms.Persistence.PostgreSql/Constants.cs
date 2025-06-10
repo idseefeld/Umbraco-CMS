@@ -11,6 +11,10 @@ namespace IdSeefeld.Umbraco.Cms.Persistence.PostgreSql
         public const string ProviderName = "Npgsql";
 
         /// <summary>
+        ///     PostgreSQL dbprovider name.
+        /// </summary>
+        public const string DbProvider = "Npgsql";
+        /// <summary>
         /// PostgreSQL name
         /// </summary>
         public const string Name = "PostgreSql";
@@ -22,7 +26,7 @@ namespace IdSeefeld.Umbraco.Cms.Persistence.PostgreSql
 
         /// <summary>
         /// Default database name for Umbraco.
-        /// </summary>
-        public const string UmbracoDefaultDatabaseName = "umbraco";
+        /// </summary>U
+        public const string UmbracoDefaultDatabaseName = "Umbraco";
     }
 }

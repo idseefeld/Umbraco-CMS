@@ -39,7 +39,7 @@ namespace IdSeefeld.Umbraco.Cms.Persistence.PostgreSql.Services
 
 
         /// <inheritdoc />
-        public string? ServerPlaceholder => "localhost:5432";
+        public string? ServerPlaceholder => "localhost:5433";
 
 
         /// <inheritdoc />

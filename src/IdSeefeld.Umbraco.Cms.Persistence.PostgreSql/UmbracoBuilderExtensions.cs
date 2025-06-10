@@ -22,7 +22,7 @@ namespace IdSeefeld.Umbraco.Cms.Persistence.PostgreSql
         {
             builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<ISqlSyntaxProvider, PostgreSqlSyntaxProvider>());
 
-            // builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IBulkSqlInsertProvider, PostgreSqlBulkSqlInsertProvider>());
+            builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IBulkSqlInsertProvider, PostgreSqlBulkSqlInsertProvider>());
 
             builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IDatabaseCreator, PostgreSqlDatabaseCreator>());
             builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IProviderSpecificMapperFactory, PostgreSqlSpecificMapperFactory>());
