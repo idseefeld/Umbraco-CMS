@@ -280,7 +280,7 @@ public sealed class AuditService : RepositoryService, IAuditService
     }
 
     /// <inheritdoc />
-    [Obsolete("Use AuditEntryService.WriteAsync() instead. Scheduled for removal in Umbraco 19.")]
+    [Obsolete("Will be moved to a new service in V17. Scheduled for removal in V18.")]
     public IAuditEntry Write(
         int performingUserId,
         string perfomingDetails,
