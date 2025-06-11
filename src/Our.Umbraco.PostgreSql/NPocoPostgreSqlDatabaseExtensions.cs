@@ -1,7 +1,7 @@
 using NPoco;
 using Umbraco.Extensions;
 
-namespace IdSeefeld.Umbraco.Cms.Persistence.PostgreSql;
+namespace Our.Umbraco.PostgreSql;
 
 public static class NPocoPostgreSqlDatabaseExtensions
 {

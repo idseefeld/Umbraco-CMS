@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Umbraco.Cms.Infrastructure.Persistence;
 
-namespace IdSeefeld.Umbraco.Cms.Persistence.PostgreSql.Services
+namespace Our.Umbraco.PostgreSql.Services
 {
-    public class PostgreSqlAddMiniProfilerInterceptor : IProviderSpecificInterceptor
+    public class PostgreSqlAddRetryPolicyInterceptor : IProviderSpecificInterceptor
     {
         public string ProviderName => Constants.ProviderName;
     }

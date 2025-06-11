@@ -1,4 +1,4 @@
-namespace IdSeefeld.Umbraco.Cms.Persistence.PostgreSql
+namespace Our.Umbraco.PostgreSql.EFCore
 {
     /// <summary>
     ///     Constants related to PostgreSQL.

@@ -1,7 +1,7 @@
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
 
-namespace IdSeefeld.Umbraco.Cms.Persistence.PostgreSql;
+namespace Our.Umbraco.PostgreSql;
 
 /// <summary>
 ///     Automatically adds SQL Server support to Umbraco when this project is referenced.

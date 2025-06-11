@@ -1,8 +1,9 @@
 using System.Runtime.Serialization;
+using Our.Umbraco.PostgreSql;
 using Umbraco.Cms.Core.Install.Models;
 using Umbraco.Cms.Infrastructure.Persistence;
 
-namespace IdSeefeld.Umbraco.Cms.Persistence.PostgreSql.Services
+namespace Our.Umbraco.PostgreSql.Services
 {
     [DataContract]
     public class PostgreSqlDatabaseProviderMetadata : IDatabaseProviderMetadata

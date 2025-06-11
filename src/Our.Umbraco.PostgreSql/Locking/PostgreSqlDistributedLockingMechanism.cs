@@ -1,4 +1,5 @@
 using System.Data;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Umbraco.Cms.Core.Configuration.Models;
@@ -9,7 +10,7 @@ using Umbraco.Cms.Infrastructure.Persistence;
 using Umbraco.Cms.Infrastructure.Scoping;
 using Umbraco.Extensions;
 
-namespace IdSeefeld.Umbraco.Cms.Persistence.PostgreSql.Services
+namespace Our.Umbraco.PostgreSql.Locking
 {
     /// <inheritdoc />
     public class PostgreSqlDistributedLockingMechanism : IDistributedLockingMechanism
@@ -57,27 +58,29 @@ namespace IdSeefeld.Umbraco.Cms.Persistence.PostgreSql.Services
                 throw new InvalidOperationException("Distributed locking is not enabled. Please check your connection strings and provider name.");
             }
             obtainLockTimeout ??= _globalSettings.DistributedLockingReadLockDefaultTimeout;
-            return new PostgreSqlDistributedLock(this, lockId, DistributedLockType.ReadLock, obtainLockTimeout.Value);
+            return new PostgreSqlDistributedLock(this, _scopeAccessor, lockId, DistributedLockType.ReadLock, obtainLockTimeout.Value);
         }
 
         /// <inheritdoc />
         public IDistributedLock WriteLock(int lockId, TimeSpan? obtainLockTimeout = null)
         {
             obtainLockTimeout ??= _globalSettings.DistributedLockingReadLockDefaultTimeout;
-            return new PostgreSqlDistributedLock(this, lockId, DistributedLockType.WriteLock, obtainLockTimeout.Value);
+            return new PostgreSqlDistributedLock(this, _scopeAccessor, lockId, DistributedLockType.WriteLock, obtainLockTimeout.Value);
         }
 
-        private class PostgreSqlDistributedLock : IDistributedLock
+        internal class PostgreSqlDistributedLock : IDistributedLock
         {
+            private readonly global::Umbraco.Cms.Infrastructure.Persistence.SqlSyntax.ISqlSyntaxProvider _syntax;
             private readonly PostgreSqlDistributedLockingMechanism _parent;
             private readonly TimeSpan _timeout;
             public PostgreSqlDistributedLock(
                 PostgreSqlDistributedLockingMechanism parent,
+                Lazy<IScopeAccessor> scopeAccessor,
                 int lockId,
                 DistributedLockType lockType,
                 TimeSpan timeout)
             {
-
+                _syntax = scopeAccessor.Value.AmbientScope?.SqlContext.SqlSyntax ?? throw new InvalidOperationException("No SQL syntax available.");
                 _parent = parent;
                 _timeout = timeout;
                 LockId = lockId;
@@ -151,7 +154,7 @@ namespace IdSeefeld.Umbraco.Cms.Persistence.PostgreSql.Services
                         "A transaction with minimum ReadCommitted isolation level is required.");
                 }
 
-                const string query = "SELECT value FROM \"umbracoLock\" WHERE id = @id FOR SHARE";
+                string query = $"SELECT value FROM {_syntax.GetQuotedTableName("umbracoLock")} WHERE id = @id FOR SHARE";
 
                 var lockTimeoutQuery = $"SET LOCAL lock_timeout = '{(int)_timeout.TotalMilliseconds}ms'";
 
@@ -186,16 +189,13 @@ namespace IdSeefeld.Umbraco.Cms.Persistence.PostgreSql.Services
                         "A transaction with minimum ReadCommitted isolation level is required.");
                 }
 
-                const string query =
-                    @"UPDATE ""umbracoLock"" SET value = (CASE WHEN (value=1) THEN -1 ELSE 1 END) WHERE id=@id RETURNING id";
+                // SET LOCAL kann nur in Transaktionsblöcken verwendet werden
+                db.Execute($"SET LOCAL lock_timeout = '{(int)_timeout.TotalMilliseconds}ms'");
 
-                //var lockTimeoutQuery = $"SET LOCK_TIMEOUT {_timeout.TotalMilliseconds}";
-                var lockTimeoutQuery = $"SET LOCAL lock_timeout = '{(int)_timeout.TotalMilliseconds}ms'";
+                var updateCmd = $"UPDATE {_syntax.GetQuotedTableName("umbracoLock")} SET value = (CASE WHEN (value=1) THEN -1 ELSE 1 END) WHERE id={LockId}";
+                var rowsAffected = db.Execute(updateCmd);
 
-                // execute the lock timeout query and the actual query in a single server roundtrip
-                var i = db.Execute($"{lockTimeoutQuery};{query}", new { id = LockId });
-
-                if (i == 0)
+                if (rowsAffected == 0)
                 {
                     // ensure we are actually locking!
                     throw new ArgumentException($"LockObject with id={LockId} does not exist.");
