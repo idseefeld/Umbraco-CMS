@@ -6,4 +6,4 @@
 #    "umbracoDbDSN_ProviderName": "Npgsql"
 #  }
 
-dotnet ef migrations add initialCreate -s ../Umbraco.Web.UI/ --context PostgreSqlDbContext
+dotnet ef migrations add initialCreatePostgreSQL -s ../Umbraco.Web.UI/ --context PostgreSqlDbContext
