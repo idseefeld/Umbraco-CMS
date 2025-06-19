@@ -243,15 +243,17 @@ internal sealed class DatabaseCacheRepository : RepositoryBase, IDatabaseCacheRe
     private void RebuildContentDbCache(IContentCacheDataSerializer serializer, int groupSize, IReadOnlyCollection<int>? contentTypeIds)
     {
         Guid contentObjectType = Constants.ObjectTypes.Document;
-
+        ISqlSyntaxProvider syntax = Database.SqlContext.SqlSyntax;
         // remove all - if anything fails the transaction will rollback
         if (contentTypeIds == null || contentTypeIds.Count == 0)
         {
             // must support SQL-CE
             Database.Execute(
-                @"DELETE FROM cmsContentNu
-WHERE cmsContentNu.nodeId IN (
-    SELECT id FROM umbracoNode WHERE umbracoNode.nodeObjectType=@objType
+@$"
+DELETE FROM {syntax.GetQuotedTableName("cmsContentNu")}
+WHERE {syntax.GetQuotedTableName("cmsContentNu")}.{syntax.GetQuotedColumnName("nodeId")}
+IN (SELECT {syntax.GetQuotedColumnName("id")} FROM {syntax.GetQuotedTableName("umbracoNode")}
+WHERE {syntax.GetQuotedTableName("umbracoNode")}.{syntax.GetQuotedColumnName("nodeObjectType")}=@objType
 )",
                 new { objType = contentObjectType });
         }
@@ -260,12 +262,13 @@ WHERE cmsContentNu.nodeId IN (
             // assume number of ctypes won't blow IN(...)
             // must support SQL-CE
             Database.Execute(
-                $@"DELETE FROM cmsContentNu
-WHERE cmsContentNu.nodeId IN (
-    SELECT id FROM umbracoNode
-    JOIN {Constants.DatabaseSchema.Tables.Content} ON {Constants.DatabaseSchema.Tables.Content}.nodeId=umbracoNode.id
-    WHERE umbracoNode.nodeObjectType=@objType
-    AND {Constants.DatabaseSchema.Tables.Content}.contentTypeId IN (@ctypes)
+$@"
+DELETE FROM {syntax.GetQuotedTableName("cmsContentNu")}
+WHERE {syntax.GetQuotedTableName("cmsContentNu")}.{syntax.GetQuotedColumnName("nodeId")} IN (
+SELECT {syntax.GetQuotedColumnName("id")} FROM {syntax.GetQuotedTableName("umbracoNode")}
+JOIN {syntax.GetQuotedTableName(Constants.DatabaseSchema.Tables.Content)} ON {syntax.GetQuotedTableName(Constants.DatabaseSchema.Tables.Content)}.{syntax.GetQuotedColumnName("nodeId")}={syntax.GetQuotedTableName("umbracoNode")}.{syntax.GetQuotedColumnName("id")}
+WHERE {syntax.GetQuotedTableName("umbracoNode")}.{syntax.GetQuotedColumnName("nodeObjectType")}=@objType
+AND {syntax.GetQuotedTableName(Constants.DatabaseSchema.Tables.Content)}.{syntax.GetQuotedColumnName("contentTypeId")} IN (@ctypes)
 )",
                 new { objType = contentObjectType, ctypes = contentTypeIds });
         }
@@ -311,15 +314,18 @@ WHERE cmsContentNu.nodeId IN (
         IReadOnlyCollection<int>? contentTypeIds)
     {
         Guid mediaObjectType = Constants.ObjectTypes.Media;
+        ISqlSyntaxProvider syntax = Database.SqlContext.SqlSyntax;
 
         // remove all - if anything fails the transaction will rollback
         if (contentTypeIds is null || contentTypeIds.Count == 0)
         {
             // must support SQL-CE
             Database.Execute(
-                @"DELETE FROM cmsContentNu
-WHERE cmsContentNu.nodeId IN (
-    SELECT id FROM umbracoNode WHERE umbracoNode.nodeObjectType=@objType
+                @$"
+DELETE FROM {syntax.GetQuotedTableName("cmsContentNu")}
+WHERE {syntax.GetQuotedTableName("cmsContentNu")}.{syntax.GetQuotedColumnName("nodeId")}
+IN (SELECT {syntax.GetQuotedColumnName("id")} FROM {syntax.GetQuotedTableName("umbracoNode")}
+WHERE {syntax.GetQuotedTableName("umbracoNode")}.{syntax.GetQuotedColumnName("nodeObjectType")}=@objType
 )",
                 new { objType = mediaObjectType });
         }
@@ -328,12 +334,13 @@ WHERE cmsContentNu.nodeId IN (
             // assume number of ctypes won't blow IN(...)
             // must support SQL-CE
             Database.Execute(
-                $@"DELETE FROM cmsContentNu
-WHERE cmsContentNu.nodeId IN (
-    SELECT id FROM umbracoNode
-    JOIN {Constants.DatabaseSchema.Tables.Content} ON {Constants.DatabaseSchema.Tables.Content}.nodeId=umbracoNode.id
-    WHERE umbracoNode.nodeObjectType=@objType
-    AND {Constants.DatabaseSchema.Tables.Content}.contentTypeId IN (@ctypes)
+$@"
+DELETE FROM {syntax.GetQuotedTableName("cmsContentNu")}
+WHERE {syntax.GetQuotedTableName("cmsContentNu")}.{syntax.GetQuotedColumnName("nodeId")} IN (
+SELECT {syntax.GetQuotedColumnName("id")} FROM {syntax.GetQuotedTableName("umbracoNode")}
+JOIN {syntax.GetQuotedTableName(Constants.DatabaseSchema.Tables.Content)} ON {syntax.GetQuotedTableName(Constants.DatabaseSchema.Tables.Content)}.{syntax.GetQuotedColumnName("nodeId")}={syntax.GetQuotedTableName("umbracoNode")}.{syntax.GetQuotedColumnName("id")}
+WHERE {syntax.GetQuotedTableName("umbracoNode")}.{syntax.GetQuotedColumnName("nodeObjectType")}=@objType
+AND {syntax.GetQuotedTableName(Constants.DatabaseSchema.Tables.Content)}.{syntax.GetQuotedColumnName("contentTypeId")} IN (@ctypes)
 )",
                 new { objType = mediaObjectType, ctypes = contentTypeIds });
         }
@@ -364,15 +371,18 @@ WHERE cmsContentNu.nodeId IN (
         IReadOnlyCollection<int>? contentTypeIds)
     {
         Guid memberObjectType = Constants.ObjectTypes.Member;
+        ISqlSyntaxProvider syntax = Database.SqlContext.SqlSyntax;
 
         // remove all - if anything fails the transaction will rollback
         if (contentTypeIds == null || contentTypeIds.Count == 0)
         {
             // must support SQL-CE
             Database.Execute(
-                @"DELETE FROM cmsContentNu
-WHERE cmsContentNu.nodeId IN (
-    SELECT id FROM umbracoNode WHERE umbracoNode.nodeObjectType=@objType
+                @$"
+DELETE FROM {syntax.GetQuotedTableName("cmsContentNu")}
+WHERE {syntax.GetQuotedTableName("cmsContentNu")}.{syntax.GetQuotedColumnName("nodeId")}
+IN (SELECT {syntax.GetQuotedColumnName("id")} FROM {syntax.GetQuotedTableName("umbracoNode")}
+WHERE {syntax.GetQuotedTableName("umbracoNode")}.{syntax.GetQuotedColumnName("nodeObjectType")}=@objType
 )",
                 new { objType = memberObjectType });
         }
@@ -381,12 +391,13 @@ WHERE cmsContentNu.nodeId IN (
             // assume number of ctypes won't blow IN(...)
             // must support SQL-CE
             Database.Execute(
-                $@"DELETE FROM cmsContentNu
-WHERE cmsContentNu.nodeId IN (
-    SELECT id FROM umbracoNode
-    JOIN {Constants.DatabaseSchema.Tables.Content} ON {Constants.DatabaseSchema.Tables.Content}.nodeId=umbracoNode.id
-    WHERE umbracoNode.nodeObjectType=@objType
-    AND {Constants.DatabaseSchema.Tables.Content}.contentTypeId IN (@ctypes)
+$@"
+DELETE FROM {syntax.GetQuotedTableName("cmsContentNu")}
+WHERE {syntax.GetQuotedTableName("cmsContentNu")}.{syntax.GetQuotedColumnName("nodeId")} IN (
+SELECT {syntax.GetQuotedColumnName("id")} FROM {syntax.GetQuotedTableName("umbracoNode")}
+JOIN {syntax.GetQuotedTableName(Constants.DatabaseSchema.Tables.Content)} ON {syntax.GetQuotedTableName(Constants.DatabaseSchema.Tables.Content)}.{syntax.GetQuotedColumnName("nodeId")}={syntax.GetQuotedTableName("umbracoNode")}.{syntax.GetQuotedColumnName("id")}
+WHERE {syntax.GetQuotedTableName("umbracoNode")}.{syntax.GetQuotedColumnName("nodeObjectType")}=@objType
+AND {syntax.GetQuotedTableName(Constants.DatabaseSchema.Tables.Content)}.{syntax.GetQuotedColumnName("contentTypeId")} IN (@ctypes)
 )",
                 new { objType = memberObjectType, ctypes = contentTypeIds });
         }

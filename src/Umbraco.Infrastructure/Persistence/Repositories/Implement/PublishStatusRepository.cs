@@ -29,13 +29,14 @@ public class PublishStatusRepository: IPublishStatusRepository
 
     private Sql<ISqlContext>  GetBaseQuery()
     {
+        SqlSyntax.ISqlSyntaxProvider syntax = Database.SqlContext.SqlSyntax;
         Sql<ISqlContext> sql = Database.SqlContext.Sql()
             .Select(
-                $"n.{NodeDto.KeyColumnName}",
-                $"l.{LanguageDto.IsoCodeColumnName}",
-                $"ct.{ContentTypeDto.VariationsColumnName}",
-                $"d.{DocumentDto.PublishedColumnName}",
-                $"COALESCE(dcv.{DocumentCultureVariationDto.PublishedColumnName}, 0) as {PublishStatusDto.DocumentVariantPublishStatusColumnName}")
+                $"n.{syntax.GetQuotedColumnName(NodeDto.KeyColumnName)}",
+                $"l.{syntax.GetQuotedColumnName(LanguageDto.IsoCodeColumnName)}",
+                $"ct.{syntax.GetQuotedColumnName(ContentTypeDto.VariationsColumnName)}",
+                $"d.{syntax.GetQuotedColumnName(DocumentDto.PublishedColumnName)}",
+                $"dcv.{syntax.GetQuotedColumnName(DocumentCultureVariationDto.PublishedColumnName)} as {syntax.GetQuotedColumnName(PublishStatusDto.DocumentVariantPublishStatusColumnName)}")// COALESCE is not necessary as the column is not nullable
             .From<DocumentDto>("d")
             .InnerJoin<ContentDto>("c").On<DocumentDto, ContentDto>((d, c) => d.NodeId == c.NodeId, "c", "d")
             .InnerJoin<ContentTypeDto>("ct").On<ContentDto, ContentTypeDto>((c, ct) => c.ContentTypeId == ct.NodeId, "c", "ct")

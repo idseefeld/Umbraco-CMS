@@ -1,3 +1,4 @@
+using Microsoft.CodeAnalysis.CSharp;
 using NPoco;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Persistence.Repositories;
@@ -29,13 +30,27 @@ internal class CacheInstructionRepository : ICacheInstructionRepository
     }
 
     /// <inheritdoc />
-    public int CountPendingInstructions(int lastId) =>
-        AmbientScope?.Database.ExecuteScalar<int>(
-            "SELECT SUM(instructionCount) FROM umbracoCacheInstruction WHERE id > @lastId", new { lastId }) ?? 0;
+    public int CountPendingInstructions(int lastId)
+    {
+        SqlSyntax.ISqlSyntaxProvider syntax = AmbientScope?.SqlContext.SqlSyntax ?? throw new InvalidOperationException("No SQL syntax available.");
+        Sql<ISqlContext>? sql = AmbientScope?.SqlContext.Sql()
+            .Select($"SUM({syntax.GetQuotedColumnName("instructionCount")})")
+            .From<CacheInstructionDto>()
+            .Where<CacheInstructionDto>(dto => dto.Id > lastId);
+
+        return AmbientScope?.Database.ExecuteScalar<int>(sql) ?? 0;
+    }
 
     /// <inheritdoc />
-    public int GetMaxId() =>
-        AmbientScope?.Database.ExecuteScalar<int>("SELECT MAX(id) FROM umbracoCacheInstruction") ?? 0;
+    public int GetMaxId()
+    {
+        SqlSyntax.ISqlSyntaxProvider syntax = AmbientScope?.SqlContext.SqlSyntax ?? throw new InvalidOperationException("No SQL syntax available.");
+        Sql<ISqlContext>? sql = AmbientScope?.SqlContext.Sql()
+            .Select($"MAX({syntax.GetQuotedColumnName("id")})")
+            .From<CacheInstructionDto>();
+
+        return AmbientScope?.Database.ExecuteScalar<int>(sql) ?? 0;
+    }
 
     /// <inheritdoc />
     public bool Exists(int id) => AmbientScope?.Database.Exists<CacheInstructionDto>(id) ?? false;
@@ -63,11 +78,16 @@ internal class CacheInstructionRepository : ICacheInstructionRepository
     public void DeleteInstructionsOlderThan(DateTime pruneDate)
     {
         // Using 2 queries is faster than convoluted joins.
-        var maxId = AmbientScope?.Database.ExecuteScalar<int>("SELECT MAX(id) FROM umbracoCacheInstruction;");
-        Sql deleteSql =
-            new Sql().Append(
-                @"DELETE FROM umbracoCacheInstruction WHERE utcStamp < @pruneDate AND id < @maxId",
-                new { pruneDate, maxId });
-        AmbientScope?.Database.Execute(deleteSql);
+        SqlSyntax.ISqlSyntaxProvider syntax = AmbientScope?.SqlContext.SqlSyntax ?? throw new InvalidOperationException("No SQL syntax available.");
+        Sql<ISqlContext>? sql = AmbientScope?.SqlContext.Sql()
+            .Select($"MAX({syntax.GetQuotedColumnName("id")})")
+            .From<CacheInstructionDto>();
+        var maxId = AmbientScope?.Database.ExecuteScalar<int>(sql);
+
+        Sql<ISqlContext>? deleteSql = AmbientScope?.SqlContext.Sql()
+            .Delete<CacheInstructionDto>()
+            .Where<CacheInstructionDto>(dto => dto.UtcStamp < pruneDate && dto.Id < maxId);
+
+        _ = AmbientScope?.Database.Execute(deleteSql);
     }
 }
