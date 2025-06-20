@@ -1,17 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <Title>Umbraco CMS - Persistence - PostgreSQL</Title>
+    <Description>Adds support for PostgreSQL to Umbraco CMS.</Description>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="Dtos\**" />
-    <EmbeddedResource Remove="Dtos\**" />
-    <None Remove="Dtos\**" />
-  </ItemGroup>
-
+  
   <ItemGroup>
     <Compile Remove="GlobalSuppressions.cs" />
   </ItemGroup>
