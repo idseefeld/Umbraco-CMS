@@ -5,19 +5,20 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Umbraco.Cms.Core.Configuration.Models;
 using Umbraco.Cms.Core.DependencyInjection;
+using Umbraco.Cms.Persistence.EFCore;
 using Umbraco.Cms.Persistence.EFCore.Migrations;
 
 namespace Our.Umbraco.PostgreSql.EFCore
 {
-    public class PostgreSqlDbContext : DbContext
+    public class PostgreSqlDbContext : UmbracoDbContext
     {
-        public PostgreSqlDbContext(DbContextOptions<PostgreSqlDbContext> options)
-        : base(ConfigureOptions(options))
+        public PostgreSqlDbContext(DbContextOptions<UmbracoDbContext> options)
+        : base(options)// base(ConfigureOptions(options))
         {
 
         }
 
-        private static DbContextOptions<PostgreSqlDbContext> ConfigureOptions(DbContextOptions<PostgreSqlDbContext> options)
+        private static DbContextOptions<UmbracoDbContext> ConfigureOptions(DbContextOptions<UmbracoDbContext> options)
         {
             IOptionsMonitor<ConnectionStrings> connectionStringsOptionsMonitor = StaticServiceProvider.Instance.GetRequiredService<IOptionsMonitor<ConnectionStrings>>();
 
@@ -42,17 +43,17 @@ namespace Our.Umbraco.PostgreSql.EFCore
                 throw new InvalidOperationException($"No migration provider found for provider name {connectionStrings.ProviderName}");
             }
 
-            var optionsBuilder = new DbContextOptionsBuilder<PostgreSqlDbContext>(options);
+            var optionsBuilder = new DbContextOptionsBuilder<UmbracoDbContext>(options);
             migrationProvider?.Setup(optionsBuilder, connectionStrings.ConnectionString);
             return optionsBuilder.Options;
         }
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-            foreach (IMutableEntityType entity in modelBuilder.Model.GetEntityTypes())
-            {
-                entity.SetTableName(global::Umbraco.Cms.Core.Constants.DatabaseSchema.TableNamePrefix + entity.GetTableName());
-            }
-        }
+        //protected override void OnModelCreating(ModelBuilder modelBuilder)
+        //{
+        //    base.OnModelCreating(modelBuilder);
+        //    foreach (IMutableEntityType entity in modelBuilder.Model.GetEntityTypes())
+        //    {
+        //        entity.SetTableName(global::Umbraco.Cms.Core.Constants.DatabaseSchema.TableNamePrefix + entity.GetTableName());
+        //    }
+        //}
     }
 }

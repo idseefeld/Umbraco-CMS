@@ -22,9 +22,9 @@ public class EFCorePostgreSqlComposer : UmbracoEFCoreComposer
         builder.Services.AddSingleton<IMigrationProvider, PostgreSqlMigrationProvider>();
         builder.Services.AddSingleton<IMigrationProviderSetup, PostgreSqlMigrationProviderSetup>();
 
-        builder.Services.AddSingleton<IDistributedLockingMechanism, PostgreSqlEFCoreDistributedLockingMechanism<PostgreSqlDbContext>>();
+        builder.Services.AddSingleton<IDistributedLockingMechanism, PostgreSqlEFCoreDistributedLockingMechanism<UmbracoDbContext>>();
 
-        builder.Services.AddUmbracoDbContext<PostgreSqlDbContext>((serviceProvider, options) =>
+        builder.Services.AddUmbracoDbContext<UmbracoDbContext>((serviceProvider, options) =>
         {
             // Register the entity sets needed by OpenIddict.
             options.UseOpenIddict();

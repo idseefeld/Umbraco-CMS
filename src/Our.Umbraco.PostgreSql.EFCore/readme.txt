@@ -1,4 +1,4 @@
-# open project "Our.Umbraco.PostgreSql.EFCore" (this) in terminal and execute the following command to create the initial migration for OpenIdDict V5
+# open terminal from Solution context menu and execute the following command to create the initial migration for OpenIdDict V5
 # Make sure you have the correct path to your Umbraco project in the -s parameter
 # Make sure you have the correct connection string in appsettings.json of your Umbraco project:
 # "ConnectionStrings": {
@@ -6,4 +6,9 @@
 #    "umbracoDbDSN_ProviderName": "Npgsql"
 #  }
 
-dotnet ef migrations add initialCreatePostgreSQL -s ../Umbraco.Web.UI/ --context PostgreSqlDbContext
+# Tip
+# The -- token directs dotnet ef to treat everything that follows as an argument
+# and not try to parse them as options.
+# Any extra arguments not used by dotnet ef are forwarded to the app.
+
+dotnet ef migrations add initialCreatePostgreSQL -s src/Umbraco.Web.UI -p src/Our.Umbraco.PostgreSql.EFCore -c UmbracoDbContext --verbose -- --provider Npgsql
