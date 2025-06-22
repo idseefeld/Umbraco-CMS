@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Npgsql.EntityFrameworkCore.PostgreSQL; // Ensure this namespace is included for UseNpgsql
 using Umbraco.Cms.Persistence.EFCore.Migrations;
 
 namespace Our.Umbraco.PostgreSql.EFCore

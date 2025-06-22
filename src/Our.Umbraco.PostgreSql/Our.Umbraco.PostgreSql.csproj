@@ -7,6 +7,7 @@
   
   <ItemGroup>
     <Compile Remove="GlobalSuppressions.cs" />
+    <Compile Remove="NPocoPostgreSqlDatabaseExtensions.cs" />
   </ItemGroup>
 
   <ItemGroup>

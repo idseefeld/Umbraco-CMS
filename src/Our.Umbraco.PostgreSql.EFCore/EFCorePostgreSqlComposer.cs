@@ -13,12 +13,10 @@ using Umbraco.Extensions;
 
 namespace Our.Umbraco.PostgreSql.EFCore;
 
-public class EFCorePostgreSqlComposer : UmbracoEFCoreComposer
+public class EFCorePostgreSqlComposer : IComposer
 {
     public new void Compose(IUmbracoBuilder builder)
     {
-        base.Compose(builder);
-
         builder.Services.AddSingleton<IMigrationProvider, PostgreSqlMigrationProvider>();
         builder.Services.AddSingleton<IMigrationProviderSetup, PostgreSqlMigrationProviderSetup>();
 
@@ -28,7 +26,6 @@ public class EFCorePostgreSqlComposer : UmbracoEFCoreComposer
         {
             // Register the entity sets needed by OpenIddict.
             options.UseOpenIddict();
-            options.UseUmbracoDatabaseProvider(serviceProvider);
         });
     }
 }

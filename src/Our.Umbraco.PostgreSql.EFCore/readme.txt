@@ -11,4 +11,6 @@
 # and not try to parse them as options.
 # Any extra arguments not used by dotnet ef are forwarded to the app.
 
-dotnet ef migrations add initialCreatePostgreSQL -s src/Umbraco.Web.UI -p src/Our.Umbraco.PostgreSql.EFCore -c UmbracoDbContext --verbose -- --provider Npgsql
+dotnet ef migrations add initialCreatePostgreSQL -s src/Umbraco.Web.UI -p src/Our.Umbraco.PostgreSql.EFCore -c UmbracoDbContext --no-build -- --provider Npgsql
+
+# --verbose
