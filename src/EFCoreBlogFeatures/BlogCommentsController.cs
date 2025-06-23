@@ -1,4 +1,4 @@
-using EFCoreBlogFeatures;
+using EFCoreBlogFeatures.Dto;
 using Microsoft.AspNetCore.Mvc;
 using Umbraco.Cms.Persistence.EFCore.Scoping;
 
@@ -8,15 +8,15 @@ namespace EFCoreBlogFeatures;
 [Route("/umbraco/api/blogcomments")]
 public class BlogCommentsController : Controller
 {
-    private readonly IEFCoreScopeProvider<BlogContext> _efCoreScopeProvider;
+    private readonly IEFCoreScopeProvider<BlogDbContext> _efCoreScopeProvider;
 
-    public BlogCommentsController(IEFCoreScopeProvider<BlogContext> efCoreScopeProvider)
+    public BlogCommentsController(IEFCoreScopeProvider<BlogDbContext> efCoreScopeProvider)
         => _efCoreScopeProvider = efCoreScopeProvider;
 
     [HttpGet("all")]
     public async Task<IActionResult> All()
     {
-        using IEfCoreScope<BlogContext> scope = _efCoreScopeProvider.CreateScope();
+        using IEfCoreScope<BlogDbContext> scope = _efCoreScopeProvider.CreateScope();
         IEnumerable<BlogComment> comments = await scope.ExecuteWithContextAsync(async db => db.BlogComments.ToArray());
         scope.Complete();
         return Ok(comments);
@@ -25,7 +25,7 @@ public class BlogCommentsController : Controller
     [HttpGet("getcomments")]
     public async Task<IActionResult> GetComments(Guid umbracoNodeKey)
     {
-        using IEfCoreScope<BlogContext> scope = _efCoreScopeProvider.CreateScope();
+        using IEfCoreScope<BlogDbContext> scope = _efCoreScopeProvider.CreateScope();
         IEnumerable<BlogComment> comments = await scope.ExecuteWithContextAsync(async db =>
         {
             return db.BlogComments.Where(x => x.BlogPostUmbracoKey == umbracoNodeKey).ToArray();
@@ -38,7 +38,7 @@ public class BlogCommentsController : Controller
     [HttpPost("insertcomment")]
     public async Task InsertComment(BlogComment comment)
     {
-        using IEfCoreScope<BlogContext> scope = _efCoreScopeProvider.CreateScope();
+        using IEfCoreScope<BlogDbContext> scope = _efCoreScopeProvider.CreateScope();
 
         await scope.ExecuteWithContextAsync<Task>(async db =>
         {
