@@ -7,10 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+    <Compile Remove="Composer.cs" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
     <ProjectReference Include="..\Umbraco.Cms.Persistence.EFCore\Umbraco.Cms.Persistence.EFCore.csproj" />
     <ProjectReference Include="..\Umbraco.Web.Common\Umbraco.Web.Common.csproj" />
   </ItemGroup>

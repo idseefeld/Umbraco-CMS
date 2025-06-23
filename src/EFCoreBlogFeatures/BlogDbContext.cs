@@ -1,10 +1,11 @@
+using EFCoreBlogFeatures.Dto;
 using Microsoft.EntityFrameworkCore;
 
 namespace EFCoreBlogFeatures
 {
-    public class BlogContext : DbContext
+    public class BlogDbContext : DbContext
     {
-        public BlogContext(DbContextOptions<BlogContext> options)
+        public BlogDbContext(DbContextOptions<BlogDbContext> options)
             : base(options)
         {
         }

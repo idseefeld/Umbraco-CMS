@@ -6,9 +6,9 @@ namespace EFCoreBlogFeatures;
 
 public class RunBlogCommentsMigration : INotificationAsyncHandler<UmbracoApplicationStartedNotification>
 {
-    private readonly BlogContext _blogContext;
+    private readonly BlogDbContext _blogContext;
 
-    public RunBlogCommentsMigration(BlogContext blogContext)
+    public RunBlogCommentsMigration(BlogDbContext blogContext)
     {
         _blogContext = blogContext;
     }
