@@ -27,7 +27,7 @@ namespace Umbraco.Cms.Core.Services;
 /// </summary>
 public class ContentService : RepositoryService, IContentService
 {
-    private readonly IAuditRepository _auditRepository;
+    private readonly IAuditService _auditService;
     private readonly IContentTypeRepository _contentTypeRepository;
     private readonly IDocumentBlueprintRepository _documentBlueprintRepository;
     private readonly IDocumentRepository _documentRepository;
@@ -52,7 +52,7 @@ public class ContentService : RepositoryService, IContentService
         IEventMessagesFactory eventMessagesFactory,
         IDocumentRepository documentRepository,
         IEntityRepository entityRepository,
-        IAuditRepository auditRepository,
+        IAuditService auditService,
         IContentTypeRepository contentTypeRepository,
         IDocumentBlueprintRepository documentBlueprintRepository,
         ILanguageRepository languageRepository,
@@ -68,7 +68,7 @@ public class ContentService : RepositoryService, IContentService
     {
         _documentRepository = documentRepository;
         _entityRepository = entityRepository;
-        _auditRepository = auditRepository;
+        _auditService = auditService;
         _contentTypeRepository = contentTypeRepository;
         _documentBlueprintRepository = documentBlueprintRepository;
         _languageRepository = languageRepository;
@@ -87,8 +87,7 @@ public class ContentService : RepositoryService, IContentService
         _logger = loggerFactory.CreateLogger<ContentService>();
     }
 
-    [Obsolete("Use non-obsolete constructor. Scheduled for removal in V17.")]
-
+    [Obsolete("Use the non-obsolete constructor instead. Scheduled removal in v19.")]
     public ContentService(
         ICoreScopeProvider provider,
         ILoggerFactory loggerFactory,
@@ -104,14 +103,16 @@ public class ContentService : RepositoryService, IContentService
         ICultureImpactFactory cultureImpactFactory,
         IUserIdKeyResolver userIdKeyResolver,
         PropertyEditorCollection propertyEditorCollection,
-        IIdKeyMap idKeyMap)
+        IIdKeyMap idKeyMap,
+        IOptionsMonitor<ContentSettings> optionsMonitor,
+        IRelationService relationService)
         : this(
             provider,
             loggerFactory,
             eventMessagesFactory,
             documentRepository,
             entityRepository,
-            auditRepository,
+            StaticServiceProvider.Instance.GetRequiredService<IAuditService>(),
             contentTypeRepository,
             documentBlueprintRepository,
             languageRepository,
@@ -121,11 +122,12 @@ public class ContentService : RepositoryService, IContentService
             userIdKeyResolver,
             propertyEditorCollection,
             idKeyMap,
-            StaticServiceProvider.Instance.GetRequiredService<IOptionsMonitor<ContentSettings>>(),
-            StaticServiceProvider.Instance.GetRequiredService<IRelationService>())
+            optionsMonitor,
+            relationService)
     {
     }
-    [Obsolete("Use non-obsolete constructor. Scheduled for removal in V17.")]
+
+    [Obsolete("Use the non-obsolete constructor instead. Scheduled removal in v19.")]
     public ContentService(
         ICoreScopeProvider provider,
         ILoggerFactory loggerFactory,
@@ -133,6 +135,7 @@ public class ContentService : RepositoryService, IContentService
         IDocumentRepository documentRepository,
         IEntityRepository entityRepository,
         IAuditRepository auditRepository,
+        IAuditService auditService,
         IContentTypeRepository contentTypeRepository,
         IDocumentBlueprintRepository documentBlueprintRepository,
         ILanguageRepository languageRepository,
@@ -140,14 +143,17 @@ public class ContentService : RepositoryService, IContentService
         IShortStringHelper shortStringHelper,
         ICultureImpactFactory cultureImpactFactory,
         IUserIdKeyResolver userIdKeyResolver,
-        PropertyEditorCollection propertyEditorCollection)
+        PropertyEditorCollection propertyEditorCollection,
+        IIdKeyMap idKeyMap,
+        IOptionsMonitor<ContentSettings> optionsMonitor,
+        IRelationService relationService)
         : this(
             provider,
             loggerFactory,
             eventMessagesFactory,
             documentRepository,
             entityRepository,
-            auditRepository,
+            auditService,
             contentTypeRepository,
             documentBlueprintRepository,
             languageRepository,
@@ -156,7 +162,9 @@ public class ContentService : RepositoryService, IContentService
             cultureImpactFactory,
             userIdKeyResolver,
             propertyEditorCollection,
-            StaticServiceProvider.Instance.GetRequiredService<IIdKeyMap>())
+            idKeyMap,
+            optionsMonitor,
+            relationService)
     {
     }
 
@@ -3084,7 +3092,20 @@ public class ContentService : RepositoryService, IContentService
     #region Private Methods
 
     private void Audit(AuditType type, int userId, int objectId, string? message = null, string? parameters = null) =>
-        _auditRepository.Save(new AuditItem(objectId, type, userId, UmbracoObjectTypes.Document.GetName(), message, parameters));
+        AuditAsync(type, userId, objectId, message, parameters).GetAwaiter().GetResult();
+
+    private async Task AuditAsync(AuditType type, int userId, int objectId, string? message = null, string? parameters = null)
+    {
+        Guid userKey = await _userIdKeyResolver.GetAsync(userId);
+
+        await _auditService.AddAsync(
+            type,
+            userKey,
+            objectId,
+            UmbracoObjectTypes.Document.GetName(),
+            message,
+            parameters);
+    }
 
     private string GetLanguageDetailsForAuditEntry(IEnumerable<string> affectedCultures)
         => GetLanguageDetailsForAuditEntry(_languageRepository.GetMany(), affectedCultures);
@@ -3611,6 +3632,9 @@ public class ContentService : RepositoryService, IContentService
     }
 
     public void SaveBlueprint(IContent content, int userId = Constants.Security.SuperUserId)
+        => SaveBlueprint(content, null, userId);
+
+    public void SaveBlueprint(IContent content, IContent? createdFromContent, int userId = Constants.Security.SuperUserId)
     {
         EventMessages evtMsgs = EventMessagesFactory.Get();
 
@@ -3631,7 +3655,7 @@ public class ContentService : RepositoryService, IContentService
 
             Audit(AuditType.Save, userId, content.Id, $"Saved content template: {content.Name}");
 
-            scope.Notifications.Publish(new ContentSavedBlueprintNotification(content, evtMsgs));
+            scope.Notifications.Publish(new ContentSavedBlueprintNotification(content, createdFromContent, evtMsgs));
             scope.Notifications.Publish(new ContentTreeChangeNotification(content, TreeChangeTypes.RefreshNode, evtMsgs));
 
             scope.Complete();
@@ -3654,12 +3678,12 @@ public class ContentService : RepositoryService, IContentService
 
     private static readonly string?[] ArrayOfOneNullString = { null };
 
-    public IContent CreateContentFromBlueprint(IContent blueprint, string name, int userId = Constants.Security.SuperUserId)
+    public IContent CreateBlueprintFromContent(
+        IContent blueprint,
+        string name,
+        int userId = Constants.Security.SuperUserId)
     {
-        if (blueprint == null)
-        {
-            throw new ArgumentNullException(nameof(blueprint));
-        }
+        ArgumentNullException.ThrowIfNull(blueprint);
 
         IContentType contentType = GetContentType(blueprint.ContentType.Alias);
         var content = new Content(name, -1, contentType);
@@ -3672,15 +3696,13 @@ public class ContentService : RepositoryService, IContentService
         if (blueprint.CultureInfos?.Count > 0)
         {
             cultures = blueprint.CultureInfos.Values.Select(x => x.Culture);
-            using (ICoreScope scope = ScopeProvider.CreateCoreScope())
+            using ICoreScope scope = ScopeProvider.CreateCoreScope();
+            if (blueprint.CultureInfos.TryGetValue(_languageRepository.GetDefaultIsoCode(), out ContentCultureInfos defaultCulture))
             {
-                if (blueprint.CultureInfos.TryGetValue(_languageRepository.GetDefaultIsoCode(), out ContentCultureInfos defaultCulture))
-                {
-                    defaultCulture.Name = name;
-                }
-
-                scope.Complete();
+                defaultCulture.Name = name;
             }
+
+            scope.Complete();
         }
 
         DateTime now = DateTime.Now;
@@ -3700,6 +3722,11 @@ public class ContentService : RepositoryService, IContentService
 
         return content;
     }
+
+    /// <inheritdoc />
+    [Obsolete("Use IContentBlueprintEditingService.GetScaffoldedAsync() instead. Scheduled for removal in V18.")]
+    public IContent CreateContentFromBlueprint(IContent blueprint, string name, int userId = Constants.Security.SuperUserId)
+        => CreateBlueprintFromContent(blueprint, name, userId);
 
     public IEnumerable<IContent> GetBlueprintsForContentTypes(params int[] contentTypeId)
     {

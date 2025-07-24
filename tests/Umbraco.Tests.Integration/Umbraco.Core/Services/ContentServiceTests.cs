@@ -96,7 +96,7 @@ internal sealed class ContentServiceTests : UmbracoIntegrationTestWithContent
         blueprint.SetValue("keywords", "blueprint 3");
         blueprint.SetValue("description", "blueprint 4");
 
-        ContentService.SaveBlueprint(blueprint);
+        ContentService.SaveBlueprint(blueprint, null);
 
         var found = ContentService.GetBlueprintsForContentTypes().ToArray();
         Assert.AreEqual(1, found.Length);
@@ -121,7 +121,7 @@ internal sealed class ContentServiceTests : UmbracoIntegrationTestWithContent
         blueprint.SetValue("keywords", "blueprint 3");
         blueprint.SetValue("description", "blueprint 4");
 
-        ContentService.SaveBlueprint(blueprint);
+        ContentService.SaveBlueprint(blueprint, null);
 
         ContentService.DeleteBlueprint(blueprint);
 
@@ -130,7 +130,7 @@ internal sealed class ContentServiceTests : UmbracoIntegrationTestWithContent
     }
 
     [Test]
-    public void Create_Content_From_Blueprint()
+    public void Create_Blueprint_From_Content()
     {
         using (var scope = ScopeProvider.CreateScope(autoComplete: true))
         {
@@ -140,22 +140,21 @@ internal sealed class ContentServiceTests : UmbracoIntegrationTestWithContent
             var contentType = ContentTypeBuilder.CreateTextPageContentType(defaultTemplateId: template.Id);
             ContentTypeService.Save(contentType);
 
-            var blueprint = ContentBuilder.CreateTextpageContent(contentType, "hello", Constants.System.Root);
-            blueprint.SetValue("title", "blueprint 1");
-            blueprint.SetValue("bodyText", "blueprint 2");
-            blueprint.SetValue("keywords", "blueprint 3");
-            blueprint.SetValue("description", "blueprint 4");
+            var originalPage = ContentBuilder.CreateTextpageContent(contentType, "hello", Constants.System.Root);
+            originalPage.SetValue("title", "blueprint 1");
+            originalPage.SetValue("bodyText", "blueprint 2");
+            originalPage.SetValue("keywords", "blueprint 3");
+            originalPage.SetValue("description", "blueprint 4");
+            ContentService.Save(originalPage);
 
-            ContentService.SaveBlueprint(blueprint);
+            var fromContent = ContentService.CreateBlueprintFromContent(originalPage, "hello world");
+            ContentService.SaveBlueprint(fromContent, originalPage);
 
-            var fromBlueprint = ContentService.CreateContentFromBlueprint(blueprint, "hello world");
-            ContentService.Save(fromBlueprint);
-
-            Assert.IsTrue(fromBlueprint.HasIdentity);
-            Assert.AreEqual("blueprint 1", fromBlueprint.Properties["title"].GetValue());
-            Assert.AreEqual("blueprint 2", fromBlueprint.Properties["bodyText"].GetValue());
-            Assert.AreEqual("blueprint 3", fromBlueprint.Properties["keywords"].GetValue());
-            Assert.AreEqual("blueprint 4", fromBlueprint.Properties["description"].GetValue());
+            Assert.IsTrue(fromContent.HasIdentity);
+            Assert.AreEqual("blueprint 1", fromContent.Properties["title"]?.GetValue());
+            Assert.AreEqual("blueprint 2", fromContent.Properties["bodyText"]?.GetValue());
+            Assert.AreEqual("blueprint 3", fromContent.Properties["keywords"]?.GetValue());
+            Assert.AreEqual("blueprint 4", fromContent.Properties["description"]?.GetValue());
         }
     }
 
@@ -177,7 +176,7 @@ internal sealed class ContentServiceTests : UmbracoIntegrationTestWithContent
         {
             var blueprint =
                 ContentBuilder.CreateTextpageContent(i % 2 == 0 ? ct1 : ct2, "hello" + i, Constants.System.Root);
-            ContentService.SaveBlueprint(blueprint);
+            ContentService.SaveBlueprint(blueprint, null);
         }
 
         var found = ContentService.GetBlueprintsForContentTypes().ToArray();
@@ -1018,7 +1017,7 @@ internal sealed class ContentServiceTests : UmbracoIntegrationTestWithContent
     }
 
     [Test]
-    public void Can_Publish_Content_Variation_And_Detect_Changed_Cultures()
+    public async Task Can_Publish_Content_Variation_And_Detect_Changed_Cultures()
     {
         CreateEnglishAndFrenchDocumentType(out var langUk, out var langFr, out var contentType);
 
@@ -1028,7 +1027,7 @@ internal sealed class ContentServiceTests : UmbracoIntegrationTestWithContent
         var published = ContentService.Publish(content, new[] { langFr.IsoCode });
 
         // audit log will only show that french was published
-        var lastLog = AuditService.GetLogs(content.Id).Last();
+        var lastLog = (await AuditService.GetItemsByEntityAsync(content.Id, 0, 1)).Items.First();
         Assert.AreEqual("Published languages: fr-FR", lastLog.Comment);
 
         // re-get
@@ -1038,7 +1037,7 @@ internal sealed class ContentServiceTests : UmbracoIntegrationTestWithContent
         published = ContentService.Publish(content, new[] { langUk.IsoCode });
 
         // audit log will only show that english was published
-        lastLog = AuditService.GetLogs(content.Id).Last();
+        lastLog = (await AuditService.GetItemsByEntityAsync(content.Id, 0, 1)).Items.First();
         Assert.AreEqual("Published languages: en-GB", lastLog.Comment);
     }
 
@@ -1075,7 +1074,7 @@ internal sealed class ContentServiceTests : UmbracoIntegrationTestWithContent
         var unpublished = ContentService.Unpublish(content, langFr.IsoCode);
 
         // audit log will only show that french was unpublished
-        var lastLog = AuditService.GetLogs(content.Id).Last();
+        var lastLog = (await AuditService.GetItemsByEntityAsync(content.Id, 0, 1)).Items.First();
         Assert.AreEqual("Unpublished languages: fr-FR", lastLog.Comment);
 
         // re-get
@@ -1084,7 +1083,7 @@ internal sealed class ContentServiceTests : UmbracoIntegrationTestWithContent
         unpublished = ContentService.Unpublish(content, langGb.IsoCode);
 
         // audit log will only show that english was published
-        var logs = AuditService.GetLogs(content.Id).ToList();
+        var logs = (await AuditService.GetItemsByEntityAsync(content.Id, 0, int.MaxValue, Direction.Ascending)).Items.ToList();
         Assert.AreEqual("Unpublished languages: en-GB", logs[^2].Comment);
         Assert.AreEqual("Unpublished (mandatory language unpublished)", logs[^1].Comment);
     }
