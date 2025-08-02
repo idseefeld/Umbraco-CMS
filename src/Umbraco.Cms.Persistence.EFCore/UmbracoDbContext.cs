@@ -1,4 +1,5 @@
 using System.Configuration;
+using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,34 +32,53 @@ namespace Umbraco.Cms.Persistence.EFCore;
 /// </remarks>
 public class UmbracoDbContext : DbContext
 {
+    public UmbracoDbContext()
+        : base(ConfigureOptions(new DbContextOptions<UmbracoDbContext>()))
+    {
+    }
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        base.OnConfiguring(optionsBuilder);
+    }
     /// <summary>
     /// Initializes a new instance of the <see cref="UmbracoDbContext"/> class.
     /// </summary>
     /// <param name="options"></param>
     public UmbracoDbContext(DbContextOptions<UmbracoDbContext> options)
         : base(ConfigureOptions(options))
-    {
-
-    }
+    { }
 
     private static DbContextOptions<UmbracoDbContext> ConfigureOptions(DbContextOptions<UmbracoDbContext> options)
     {
-        IOptionsMonitor<ConnectionStrings> connectionStringsOptionsMonitor = StaticServiceProvider.Instance.GetRequiredService<IOptionsMonitor<ConnectionStrings>>();
+#if DEBUG
+        // Debugger.Launch();
+#endif
 
-        ConnectionStrings connectionStrings = connectionStringsOptionsMonitor.CurrentValue;
-
-        if (string.IsNullOrWhiteSpace(connectionStrings.ConnectionString))
+        var extensions = options.Extensions.FirstOrDefault() as Microsoft.EntityFrameworkCore.Infrastructure.CoreOptionsExtension;
+        IServiceProvider? serviceProvider = extensions?.ApplicationServiceProvider;
+        serviceProvider ??= StaticServiceProvider.Instance;
+        if (serviceProvider == null)
         {
-            ILogger<UmbracoDbContext> logger = StaticServiceProvider.Instance.GetRequiredService<ILogger<UmbracoDbContext>>();
-            logger.LogCritical("No connection string was found, cannot setup Umbraco EF Core context");
+            // If the service provider is null, we cannot resolve the connection string or migration provider.
+            throw new InvalidOperationException("The service provider is not configured. Ensure that UmbracoDbContext is registered correctly.");
+        }
+
+        IOptionsMonitor<ConnectionStrings>? connectionStringsOptionsMonitor = serviceProvider?.GetRequiredService<IOptionsMonitor<ConnectionStrings>>();
+
+        ConnectionStrings? connectionStrings = connectionStringsOptionsMonitor?.CurrentValue;
+
+        if (string.IsNullOrWhiteSpace(connectionStrings?.ConnectionString))
+        {
+            ILogger<UmbracoDbContext>? logger = serviceProvider?.GetRequiredService<ILogger<UmbracoDbContext>>();
+            logger?.LogCritical("No connection string was found, cannot setup Umbraco EF Core context");
 
             // we're throwing an exception here to make it abundantly clear that one should never utilize (or have a
             // dependency on) the DbContext before the connection string has been initialized by the installer.
             throw new InvalidOperationException("No connection string was found, cannot setup Umbraco EF Core context");
         }
 
-        IEnumerable<IMigrationProviderSetup> migrationProviders = StaticServiceProvider.Instance.GetServices<IMigrationProviderSetup>();
-        IMigrationProviderSetup? migrationProvider = migrationProviders.FirstOrDefault(x => x.ProviderName.CompareProviderNames(connectionStrings.ProviderName));
+        IEnumerable<IMigrationProviderSetup>? migrationProviders = serviceProvider?.GetServices<IMigrationProviderSetup>();
+        IMigrationProviderSetup? migrationProvider = migrationProviders?.FirstOrDefault(x => x.ProviderName.CompareProviderNames(connectionStrings.ProviderName));
 
         if (migrationProvider == null && connectionStrings.ProviderName != null)
         {

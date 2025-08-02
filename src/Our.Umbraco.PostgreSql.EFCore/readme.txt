@@ -11,10 +11,14 @@
 # and not try to parse them as options.
 # Any extra arguments not used by dotnet ef are forwarded to the app.
 
-dotnet ef migrations add InitialCreate -s src/Umbraco.Web.UI -p src/Our.Umbraco.PostgreSql.EFCore -c UmbracoDbContext -- --provider Npgsql
+dotnet ef migrations add InitialCreate -s src/Umbraco.Web.UI -p src/Our.Umbraco.PostgreSql.EFCore -c UmbracoDbContext
+# -- --provider Npgsql
 
-dotnet ef migrations add AddOpenIddict -s src/Umbraco.Web.UI -p src/Our.Umbraco.PostgreSql.EFCore -c UmbracoDbContext -- --provider Npgsql
+dotnet ef migrations add AddOpenIddict -s src/Umbraco.Web.UI -p src/Our.Umbraco.PostgreSql.EFCore -c UmbracoDbContext
+# -- --provider Npgsql
 
-dotnet ef migrations add UpdateOpenIddictToV5 -s src/Umbraco.Web.UI -p src/Our.Umbraco.PostgreSql.EFCore -c UmbracoDbContext -- --provider Npgsql
+dotnet ef migrations add UpdateOpenIddictToV5 -s src/Umbraco.Web.UI -p src/Our.Umbraco.PostgreSql.EFCore -c UmbracoDbContext
+# -- --provider Npgsql
 
-# --verbose
+# remove
+dotnet ef migrations remove -s src/Umbraco.Web.UI -p src/Our.Umbraco.PostgreSql.EFCore -c UmbracoDbContext

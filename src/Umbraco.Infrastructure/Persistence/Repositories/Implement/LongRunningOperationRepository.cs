@@ -118,7 +118,7 @@ internal class LongRunningOperationRepository : RepositoryBase, ILongRunningOper
                 .Set(y => y.ExpirationDate, expirationTime.DateTime))
             .Where<LongRunningOperationDto>(x => x.Id == id);
 
-        await Database.ExecuteAsync(sql);
+        _ = await Database.ExecuteAsync(sql);
     }
 
     /// <inheritdoc/>

@@ -7,12 +7,13 @@ using Umbraco.Cms.Core.Configuration.Models;
 using Umbraco.Cms.Core.DistributedLocking;
 using Umbraco.Cms.Persistence.EFCore.Locking;
 using Umbraco.Cms.Persistence.EFCore.Scoping;
+using static Umbraco.Extensions.UmbracoEFCoreServiceCollectionExtensions;
 
 namespace Umbraco.Extensions;
 
 public static class UmbracoEFCoreServiceCollectionExtensions
 {
-    public delegate void DefaultEFCoreOptionsAction(DbContextOptionsBuilder options, string? providerName, string? connectionString);
+    public delegate void DefaultEFCoreOptionsAction(DbContextOptionsBuilder builder, string? providerName, string? connectionString);
 
     /// <summary>
     /// Adds a EFCore DbContext with all the services needed to integrate with Umbraco scopes.
@@ -21,12 +22,15 @@ public static class UmbracoEFCoreServiceCollectionExtensions
     /// <param name="services"></param>
     /// <param name="optionsAction"></param>
     /// <returns></returns>
-    public static IServiceCollection AddUmbracoDbContext<T>(this IServiceCollection services, Action<DbContextOptionsBuilder>? optionsAction = null)
-        where T : DbContext
+    public static IServiceCollection AddUmbracoDbContext<T>(
+        this IServiceCollection services,
+        Action<DbContextOptionsBuilder, string?, string?, IServiceProvider?>? optionsAction = null)
+            where T : DbContext
     {
-        return AddUmbracoDbContext<T>(services, (IServiceProvider _, DbContextOptionsBuilder options) =>
+        return AddUmbracoDbContext<T>(services, (IServiceProvider provider, DbContextOptionsBuilder builder, string? providerName, string? connectionString) =>
         {
-            optionsAction?.Invoke(options);
+            ConnectionStrings connectionStrings = GetConnectionStringAndProviderName(provider);
+            optionsAction?.Invoke(builder, connectionStrings.ConnectionString, connectionStrings.ProviderName, provider);
         });
     }
 
@@ -37,12 +41,14 @@ public static class UmbracoEFCoreServiceCollectionExtensions
     /// <param name="services"></param>
     /// <param name="optionsAction"></param>
     /// <returns></returns>
-    public static IServiceCollection AddUmbracoDbContext<T>(this IServiceCollection services, Action<IServiceProvider, DbContextOptionsBuilder>? optionsAction = null)
-        where T : DbContext
+    public static IServiceCollection AddUmbracoDbContext<T>(
+        this IServiceCollection services,
+        Action<IServiceProvider, DbContextOptionsBuilder, string?, string?>? optionsAction = null)
+            where T : DbContext
     {
-        optionsAction ??= (sp, options) => { };
+        optionsAction ??= (sp, builder, connectionString, providerName) => { };
 
-        services.AddPooledDbContextFactory<T>(optionsAction);
+        services.AddPooledDbContextFactory<T>((provider, builder) => SetupDbContext(optionsAction, provider, builder));
         services.AddTransient(services => services.GetRequiredService<IDbContextFactory<T>>().CreateDbContext());
 
         services.AddUnique<IAmbientEFCoreScopeStack<T>, AmbientEFCoreScopeStack<T>>();
@@ -50,7 +56,6 @@ public static class UmbracoEFCoreServiceCollectionExtensions
         services.AddUnique<IEFCoreScopeProvider<T>, EFCoreScopeProvider<T>>();
         services.AddSingleton<IDistributedLockingMechanism, SqliteEFCoreDistributedLockingMechanism<T>>();
         services.AddSingleton<IDistributedLockingMechanism, SqlServerEFCoreDistributedLockingMechanism<T>>();
-
         return services;
     }
 
@@ -112,5 +117,26 @@ public static class UmbracoEFCoreServiceCollectionExtensions
         }
 
         builder.UseDatabaseProvider(connectionStrings.ProviderName, connectionStrings.ConnectionString);
+    }
+
+    private static void SetupDbContext(Action<IServiceProvider, DbContextOptionsBuilder, string?, string?>? optionsAction, IServiceProvider provider, DbContextOptionsBuilder builder)
+    {
+        ConnectionStrings connectionStrings = GetConnectionStringAndProviderName(provider);
+
+        optionsAction?.Invoke(provider, builder, connectionStrings.ConnectionString, connectionStrings.ProviderName);
+    }
+
+    private static ConnectionStrings GetConnectionStringAndProviderName(IServiceProvider serviceProvider)
+    {
+        ConnectionStrings connectionStrings = serviceProvider.GetRequiredService<IOptionsMonitor<ConnectionStrings>>().CurrentValue;
+
+        // Replace data directory
+        string? dataDirectory = AppDomain.CurrentDomain.GetData(Constants.System.DataDirectoryName)?.ToString();
+        if (string.IsNullOrEmpty(dataDirectory) is false)
+        {
+            connectionStrings.ConnectionString = connectionStrings.ConnectionString?.Replace(Constants.System.DataDirectoryPlaceholder, dataDirectory);
+        }
+
+        return connectionStrings;
     }
 }

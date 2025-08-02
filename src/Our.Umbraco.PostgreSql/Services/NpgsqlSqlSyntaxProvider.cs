@@ -3,10 +3,12 @@ using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using NPoco;
 using Our.Umbraco.PostgreSql;
+using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Persistence;
 using Umbraco.Cms.Infrastructure.Persistence;
 using Umbraco.Cms.Infrastructure.Persistence.DatabaseAnnotations;
@@ -134,7 +136,7 @@ public class NpgsqlSqlSyntaxProvider<TSyntax> : SqlSyntaxProviderBase<TSyntax>
     {
         tableName = GetQuotedTableName(tableName);
         columnName = GetQuotedColumnName(columnName);
-        var column = tableName + "." + columnName;
+        var column = columnName; // tableName + "." + columnName;
         if (columnAlias == null)
             return column;
         referenceName = referenceName == null ? string.Empty : referenceName + "__";
@@ -236,8 +238,10 @@ public class NpgsqlSqlSyntaxProvider<TSyntax> : SqlSyntaxProviderBase<TSyntax>
     public override bool SupportsClustered() => false; // PostgreSQL does not support clustered indexes
     public override bool SupportsIdentityInsert() => false; // PostgreSQL does not support identity insert
 
-    public override string FormatDateTime(DateTime date, bool includeTime = true) =>
-        date.ToString(includeTime ? "yyyy-MM-dd HH:mm:ss" : "yyyy-MM-dd", CultureInfo.InvariantCulture);
+    public override string FormatDateTime(DateTime date, bool includeTime = true)
+    {
+        return date.ToString(includeTime ? "yyyy-MM-dd HH:mm:ss" : "yyyy-MM-dd", CultureInfo.InvariantCulture);
+    }
 
     public override string Format(TableDefinition table)
     {

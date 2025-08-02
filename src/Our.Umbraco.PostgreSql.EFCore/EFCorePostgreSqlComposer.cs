@@ -17,6 +17,17 @@ public class EFCorePostgreSqlComposer : IComposer
 {
     public new void Compose(IUmbracoBuilder builder)
     {
+        //var connectionString = builder.Config.GetUmbracoConnectionString();
+        //var providerName = builder.Config.GetConnectionStringProviderName("umbracoDbDSN");
+
+        //if (string.IsNullOrWhiteSpace(connectionString) || providerName != "Npgsql")
+        //{
+        //    throw new InvalidOperationException("The PostgreSQL EF Core provider requires a valid connection string with the provider name 'Npgsql'.");
+        //}
+
+        //builder.Services.AddDbContext<UmbracoDbContext>(options =>
+        //    options.UseNpgsql(connectionString));
+
         builder.Services.AddSingleton<IMigrationProvider, PostgreSqlMigrationProvider>();
         builder.Services.AddSingleton<IMigrationProviderSetup, PostgreSqlMigrationProviderSetup>();
 

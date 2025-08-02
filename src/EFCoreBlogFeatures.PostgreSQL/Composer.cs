@@ -24,9 +24,7 @@ public class Composer : IComposer
 
         _ = builder.Services.AddUmbracoDbContext<BlogDbContext>(options =>
         {
-            var assemblyName = GetType().Assembly.FullName;
-            Console.WriteLine($"Using PostgreSQL with assembly: {assemblyName}");
-            options.UseNpgsql(connectionString, b => b.MigrationsAssembly(assemblyName));// "EFCoreBlogFeatures.PostgreSQL"));
+            options.UseNpgsql(connectionString, b => b.MigrationsAssembly(GetType().Assembly.FullName;));
         });
 
         builder.AddNotificationAsyncHandler<UmbracoApplicationStartedNotification, RunBlogCommentsMigration>();

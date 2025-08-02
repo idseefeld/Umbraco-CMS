@@ -122,7 +122,7 @@ internal sealed class PostgreSqlEFCoreDistributedLockingMechanism<T> : IDistribu
             _parent._logger.LogDebug("Dropped {lockType} for id {id}", LockType, LockId);
 
         public override string ToString()
-            => $"SqlServerDistributedLock({LockId}, {LockType}";
+            => $"PostgreSQLDistributedLock({LockId}, {LockType}";
 
         private void ObtainReadLock()
         {
@@ -138,7 +138,7 @@ internal sealed class PostgreSqlEFCoreDistributedLockingMechanism<T> : IDistribu
                 if (dbContext.Database.CurrentTransaction is null)
                 {
                     throw new InvalidOperationException(
-                        "SqlServerDistributedLockingMechanism requires a transaction to function.");
+                        "PostgreSQLDistributedLockingMechanism requires a transaction to function.");
                 }
 
                 if (dbContext.Database.CurrentTransaction.GetDbTransaction().IsolationLevel <
@@ -178,7 +178,7 @@ internal sealed class PostgreSqlEFCoreDistributedLockingMechanism<T> : IDistribu
                 if (dbContext.Database.CurrentTransaction is null)
                 {
                     throw new InvalidOperationException(
-                        "SqlServerDistributedLockingMechanism requires a transaction to function.");
+                        "PostgreSQLDistributedLockingMechanism requires a transaction to function.");
                 }
 
                 if (dbContext.Database.CurrentTransaction.GetDbTransaction().IsolationLevel < IsolationLevel.ReadCommitted)
