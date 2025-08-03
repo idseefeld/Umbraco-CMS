@@ -136,9 +136,12 @@ public class NpgsqlSqlSyntaxProvider<TSyntax> : SqlSyntaxProviderBase<TSyntax>
     {
         tableName = GetQuotedTableName(tableName);
         columnName = GetQuotedColumnName(columnName);
-        var column = columnName; // tableName + "." + columnName;
+        var column = tableName + "." + columnName; // columnName;
         if (columnAlias == null)
+        {
             return column;
+        }
+
         referenceName = referenceName == null ? string.Empty : referenceName + "__";
         columnAlias = GetQuotedColumnName(referenceName + columnAlias);
         column += " AS " + columnAlias;
@@ -226,7 +229,15 @@ public class NpgsqlSqlSyntaxProvider<TSyntax> : SqlSyntaxProviderBase<TSyntax>
     }
 
     public override string GetFieldNameForUpdate<TDto>(Expression<Func<TDto, object?>> fieldSelector, string? tableAlias = null)
-        => this.GetFieldName(fieldSelector, tableAlias);
+    {
+        PropertyInfo field = ExpressionHelper.FindProperty(fieldSelector).Item1 as PropertyInfo
+            ?? throw new ArgumentNullException(nameof(fieldSelector), "Field selector must return a valid property.");
+
+        ColumnAttribute? attr = field?.FirstAttribute<ColumnAttribute>();
+        var fieldName = string.IsNullOrWhiteSpace(attr?.Name) ? field?.Name : attr.Name;
+
+        return GetQuotedColumnName(fieldName);
+    }
 
     public override Sql<ISqlContext> InsertForUpdateHint(Sql<ISqlContext> sql) => sql;
     public override Sql<ISqlContext> AppendForUpdateHint(Sql<ISqlContext> sql) => sql;
