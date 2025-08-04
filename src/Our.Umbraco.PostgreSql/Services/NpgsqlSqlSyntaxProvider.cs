@@ -31,8 +31,8 @@ namespace Our.Umbraco.PostgreSql.Services;
 public class NpgsqlSqlSyntaxProvider<TSyntax> : SqlSyntaxProviderBase<TSyntax>
     where TSyntax : ISqlSyntaxProvider
 {
+    /// <inheritdoc />
     public NpgsqlSqlSyntaxProvider()
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
     {
         ClauseOrder = new List<Func<ColumnDefinition, string>>
         {
@@ -70,46 +70,97 @@ public class NpgsqlSqlSyntaxProvider<TSyntax> : SqlSyntaxProviderBase<TSyntax>
         DateTimeOffsetColumnDefinition = "TIMESTAMP"; // "TIMESTAMPTZ";
         TimeColumnDefinition = "TIME";
     }
+
+    /// <inheritdoc />
     public override string ProviderName => Constants.ProviderName;
+
+    /// <inheritdoc />
     public override string DbProvider => Constants.ProviderName;
     public override IsolationLevel DefaultIsolationLevel => IsolationLevel.ReadCommitted;
 
+    /// <inheritdoc />
+
     public new string StringLengthNonUnicodeColumnDefinitionFormat { get; } = "VARCHAR({0})";
+
+    /// <inheritdoc />
     public new virtual string StringLengthUnicodeColumnDefinitionFormat { get; } = "VARCHAR({0})"; // PostgreSQL does not have NVARCHAR
+
+    /// <inheritdoc />
     public new string DecimalColumnDefinitionFormat { get; } = "NUMERIC({0},{1})";
+
+    /// <inheritdoc />
     public new string DefaultValueFormat { get; } = "DEFAULT {0}";
+
+    /// <inheritdoc />
     public new int DefaultStringLength { get; } = 255;
+
+    /// <inheritdoc />
     public new int DefaultDecimalPrecision { get; } = 20;
+
+    /// <inheritdoc />
     public new int DefaultDecimalScale { get; } = 9;
+
+    /// <inheritdoc />
     public new string StringColumnDefinition { get; } = "TEXT";
+
+    /// <inheritdoc />
     public new string StringLengthColumnDefinitionFormat { get; } = "TEXT";
 
     public string AutoIncrementLongDefinition { get; protected set; } = "AUTOINCREMENT";
     protected new IList<Func<ColumnDefinition, string>> ClauseOrder { get; }
+
+    /// <inheritdoc />
     public new Regex AliasRegex { get; }
+
+    /// <inheritdoc />
     public override string CreateForeignKeyConstraint => "ALTER TABLE {0} ADD CONSTRAINT {1} FOREIGN KEY ({2}) REFERENCES {3} ({4}){5}{6}";
 
+    /// <inheritdoc />
     public override string CreateDefaultConstraint => "ALTER TABLE {0} ALTER COLUMN {3} SET DEFAULT {2}";
 
+    /// <inheritdoc />
     public new string GetWildcardPlaceholder() => "%";
 
+    /// <inheritdoc />
     public override DatabaseType GetUpdatedDatabaseType(DatabaseType current, string? connectionString) => current;
 
+    /// <inheritdoc />
     public override string EscapeString(string val) => val.Replace("'", "''");
 
-    public override string GetStringColumnEqualComparison(string column, int paramIndex, TextColumnType columnType) =>
-        $"upper({column}) = upper(@{paramIndex})";
+    /// <inheritdoc />
+    public override string OrderByGuid(string tableName, string columnName) => $"UPPER({GetQuotedColumn(tableName, columnName)}::text)";
 
-    public override string GetStringColumnWildcardComparison(string column, int paramIndex, TextColumnType columnType) =>
-        $"upper({column}) LIKE upper(@{paramIndex})";
+    /// <inheritdoc />
+    private string GetQuotedColumn(string tableName, string columnName) => GetQuotedTableName(tableName) + "." + GetQuotedColumnName(columnName);
 
+    /// <inheritdoc />
+    public override string GetStringColumnEqualComparison(string column, int paramIndex, TextColumnType columnType)
+    {
+        return $"UPPER({column}::text) = UPPER(@{paramIndex})";
+    }
+
+    /// <inheritdoc />
+    public override string GetStringColumnWildcardComparison(string column, int paramIndex, TextColumnType columnType)
+    {
+        return $"UPPER({column}::text) LIKE UPPER(@{paramIndex})";
+    }
+
+    /// <inheritdoc />
     public override string GetConcat(params string[] args) => string.Join(" || ", args);
 
-    public override string GetQuotedTableName(string? tableName) => $"\"{tableName}\""; // tableName != null ? tableName.ToLower() : string.Empty; //
-    public override string GetQuotedColumnName(string? columnName) => $"\"{columnName}\"";// columnName != null ? columnName.ToLower() : string.Empty; // 
+    /// <inheritdoc />
+    public override string GetQuotedTableName(string? tableName) => $"\"{tableName}\""; // tableName != null ? tableName.ToLower() : string.Empty;
+
+    /// <inheritdoc />
+    public override string GetQuotedColumnName(string? columnName) => $"\"{columnName}\""; // columnName != null ? columnName.ToLower() : string.Empty;
+
+    /// <inheritdoc />
     public override string GetQuotedName(string? name) => $"\"{name}\"";// name != null ? name.ToLower() : string.Empty;//
+
+    /// <inheritdoc />
     public override string GetQuotedValue(string value) => $"'{value.Replace("'", "''")}'";
 
+    /// <inheritdoc />
     public override string GetIndexType(IndexTypes indexTypes)
     {
         switch (indexTypes)
@@ -122,6 +173,7 @@ public class NpgsqlSqlSyntaxProvider<TSyntax> : SqlSyntaxProviderBase<TSyntax>
         }
     }
 
+    /// <inheritdoc />
     public override string GetSpecialDbType(SpecialDbType dbType)
     {
         if (dbType == SpecialDbType.NCHAR)
@@ -132,7 +184,8 @@ public class NpgsqlSqlSyntaxProvider<TSyntax> : SqlSyntaxProviderBase<TSyntax>
         return "TEXT";
     }
 
-    public override string GetColumn(DatabaseType dbType, string tableName, string columnName, string columnAlias, string? referenceName = null, bool forInsert = false)
+    /// <inheritdoc />
+    public override string GetColumn(DatabaseType dbType, string tableName, string columnName, string? columnAlias, string? referenceName = null, bool forInsert = false)
     {
         tableName = GetQuotedTableName(tableName);
         columnName = GetQuotedColumnName(columnName);
@@ -148,12 +201,14 @@ public class NpgsqlSqlSyntaxProvider<TSyntax> : SqlSyntaxProviderBase<TSyntax>
         return column;
     }
 
+    /// <inheritdoc />
     public override IEnumerable<string> GetTablesInSchema(IDatabase db)
     {
         List<string> rVal = db.Fetch<string>("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'");
         return rVal;
     }
 
+    /// <inheritdoc />
     public override IEnumerable<ColumnInfo> GetColumnsInSchema(IDatabase db)
     {
         const string sql = @"
@@ -170,6 +225,7 @@ public class NpgsqlSqlSyntaxProvider<TSyntax> : SqlSyntaxProviderBase<TSyntax>
         return db.Fetch<ColumnInfo>(sql);
     }
 
+    /// <inheritdoc />
     public override IEnumerable<Tuple<string, string>> GetConstraintsPerTable(IDatabase db)
     {
         const string sql = @"
@@ -184,6 +240,7 @@ public class NpgsqlSqlSyntaxProvider<TSyntax> : SqlSyntaxProviderBase<TSyntax>
         return rVal;
     }
 
+    /// <inheritdoc />
     public override IEnumerable<Tuple<string, string, string>> GetConstraintsPerColumn(IDatabase db)
     {
         const string sql = @"
@@ -218,6 +275,7 @@ public class NpgsqlSqlSyntaxProvider<TSyntax> : SqlSyntaxProviderBase<TSyntax>
         return rVal;
     }
 
+    /// <inheritdoc />
     public override bool DoesPrimaryKeyExist(IDatabase db, string tableName, string primaryKeyName)
     {
         var result = db.ExecuteScalar<int>(
@@ -228,6 +286,7 @@ public class NpgsqlSqlSyntaxProvider<TSyntax> : SqlSyntaxProviderBase<TSyntax>
         return result > 0;
     }
 
+    /// <inheritdoc />
     public override string GetFieldNameForUpdate<TDto>(Expression<Func<TDto, object?>> fieldSelector, string? tableAlias = null)
     {
         PropertyInfo field = ExpressionHelper.FindProperty(fieldSelector).Item1 as PropertyInfo
@@ -239,29 +298,39 @@ public class NpgsqlSqlSyntaxProvider<TSyntax> : SqlSyntaxProviderBase<TSyntax>
         return GetQuotedColumnName(fieldName);
     }
 
+    /// <inheritdoc />
     public override Sql<ISqlContext> InsertForUpdateHint(Sql<ISqlContext> sql) => sql;
+
+    /// <inheritdoc />
     public override Sql<ISqlContext> AppendForUpdateHint(Sql<ISqlContext> sql) => sql;
 
+    /// <inheritdoc />
     public override IDictionary<Type, IScalarMapper>? ScalarMappers => null;
 
+    /// <inheritdoc />
     public override bool DoesTableExist(IDatabase db, string tableName) => GetTablesInSchema(db).Contains(tableName);
 
+    /// <inheritdoc />
     public override bool SupportsClustered() => false; // PostgreSQL does not support clustered indexes
     public override bool SupportsIdentityInsert() => false; // PostgreSQL does not support identity insert
 
+    /// <inheritdoc />
     public override string FormatDateTime(DateTime date, bool includeTime = true)
     {
         return date.ToString(includeTime ? "yyyy-MM-dd HH:mm:ss" : "yyyy-MM-dd", CultureInfo.InvariantCulture);
     }
 
+    /// <inheritdoc />
     public override string Format(TableDefinition table)
     {
         var statement = string.Format(CreateTable, GetQuotedTableName(table.Name), Format(table.Columns));
         return statement;
     }
 
+    /// <inheritdoc />
     public override List<string> Format(IEnumerable<IndexDefinition> indexes) => indexes.Select(Format).ToList();
 
+    /// <inheritdoc />
     public override string Format(IndexDefinition index)
     {
         var name = string.IsNullOrEmpty(index.Name)
@@ -281,9 +350,11 @@ public class NpgsqlSqlSyntaxProvider<TSyntax> : SqlSyntaxProviderBase<TSyntax>
             columns);
     }
 
+    /// <inheritdoc />
     public override List<string> Format(IEnumerable<ForeignKeyDefinition> foreignKeys) =>
         foreignKeys.Select(Format).ToList();
 
+    /// <inheritdoc />
     public override string Format(ForeignKeyDefinition foreignKey)
     {
         var constraintName = string.IsNullOrEmpty(foreignKey.Name)

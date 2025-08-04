@@ -22,3 +22,6 @@ dotnet ef migrations add UpdateOpenIddictToV5 -s src/Umbraco.Web.UI -p src/Our.U
 
 # remove
 dotnet ef migrations remove -s src/Umbraco.Web.UI -p src/Our.Umbraco.PostgreSql.EFCore -c UmbracoDbContext
+
+# test
+dotnet ef migrations add Test -s src/Umbraco.Web.UI -p src/Our.Umbraco.PostgreSql.EFCore -c UmbracoDbContext

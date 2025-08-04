@@ -29,10 +29,10 @@ internal sealed class LogViewerQueryRepository : EntityRepositoryBase<int, ILogV
 
     protected override IEnumerable<ILogViewerQuery> PerformGetAll(params int[]? ids)
     {
-        Sql<ISqlContext>? sql = GetBaseQuery(false).Where($"{Constants.DatabaseSchema.Tables.LogViewerQuery}.id > 0");
-        if (ids?.Any() ?? false)
+        Sql<ISqlContext>? sql = GetBaseQuery(false).Where<LogViewerQueryDto>(c => c.Id > 0);
+        if (ids?.Length > 0)
         {
-            sql.Where($"{Constants.DatabaseSchema.Tables.LogViewerQuery}.id in (@ids)", new { ids });
+            sql.WhereIn<LogViewerQueryDto>(c => c.Id, ids);//  $"{Constants.DatabaseSchema.Tables.LogViewerQuery}.id in (@ids)", new { ids });
         }
 
         return Database.Fetch<LogViewerQueryDto>(sql).Select(ConvertFromDto);

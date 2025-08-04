@@ -34,7 +34,7 @@ internal sealed class CacheInstructionRepository : ICacheInstructionRepository
     {
         SqlSyntax.ISqlSyntaxProvider syntax = AmbientScope?.SqlContext.SqlSyntax ?? throw new InvalidOperationException("No SQL syntax available.");
         Sql<ISqlContext>? sql = AmbientScope?.SqlContext.Sql()
-            .Select($"SUM({syntax.GetQuotedColumnName("instructionCount")})")
+            .SelectSum<CacheInstructionDto>(c => c.InstructionCount)
             .From<CacheInstructionDto>()
             .Where<CacheInstructionDto>(dto => dto.Id > lastId);
 
@@ -46,7 +46,7 @@ internal sealed class CacheInstructionRepository : ICacheInstructionRepository
     {
         SqlSyntax.ISqlSyntaxProvider syntax = AmbientScope?.SqlContext.SqlSyntax ?? throw new InvalidOperationException("No SQL syntax available.");
         Sql<ISqlContext>? sql = AmbientScope?.SqlContext.Sql()
-            .Select($"MAX({syntax.GetQuotedColumnName("id")})")
+            .SelectMax<CacheInstructionDto>(c => c.Id)
             .From<CacheInstructionDto>();
 
         return AmbientScope?.Database.ExecuteScalar<int>(sql) ?? 0;
@@ -80,9 +80,13 @@ internal sealed class CacheInstructionRepository : ICacheInstructionRepository
         // Using 2 queries is faster than convoluted joins.
         SqlSyntax.ISqlSyntaxProvider syntax = AmbientScope?.SqlContext.SqlSyntax ?? throw new InvalidOperationException("No SQL syntax available.");
         Sql<ISqlContext>? sql = AmbientScope?.SqlContext.Sql()
-            .Select<CacheInstructionDto>(c => $"MAX({syntax.GetQuotedColumnName(nameof(c.Id))})")
+            .SelectMax<CacheInstructionDto>(c => c.Id)
             .From<CacheInstructionDto>();
         var maxId = AmbientScope?.Database.ExecuteScalar<int>(sql);
+        if (maxId == null)
+        {
+            return; // No instructions to delete.
+        }
 
         Sql<ISqlContext>? deleteSql = AmbientScope?.SqlContext.Sql()
             .Delete<CacheInstructionDto>()
