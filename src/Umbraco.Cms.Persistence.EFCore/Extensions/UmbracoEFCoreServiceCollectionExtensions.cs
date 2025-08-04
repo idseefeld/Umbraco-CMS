@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Serilog;
@@ -7,26 +7,23 @@ using Umbraco.Cms.Core.Configuration.Models;
 using Umbraco.Cms.Core.DistributedLocking;
 using Umbraco.Cms.Persistence.EFCore.Locking;
 using Umbraco.Cms.Persistence.EFCore.Scoping;
-using static Umbraco.Extensions.UmbracoEFCoreServiceCollectionExtensions;
 
 namespace Umbraco.Extensions;
 
 public static class UmbracoEFCoreServiceCollectionExtensions
 {
-    public delegate void DefaultEFCoreOptionsAction(DbContextOptionsBuilder builder, string? providerName, string? connectionString);
+    public delegate void DefaultEFCoreOptionsAction(DbContextOptionsBuilder options, string? providerName, string? connectionString);
 
     /// <summary>
     /// Adds a EFCore DbContext with all the services needed to integrate with Umbraco scopes.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="services"></param>
-    /// <param name="optionsAction"></param>
-    /// <returns></returns>
+    [Obsolete("Please use the method overload that takes all parameters for the optionsAction. Scheduled for removal in Umbraco 18.")]
     public static IServiceCollection AddUmbracoDbContext<T>(
         this IServiceCollection services,
         Action<DbContextOptionsBuilder>? optionsAction = null)
         where T : DbContext
         => AddUmbracoDbContext<T>(services, (sp, optionsBuilder, connectionString, providerName) => optionsAction?.Invoke(optionsBuilder));
+
 
     /// <summary>
     /// Adds a EFCore DbContext with all the services needed to integrate with Umbraco scopes.
@@ -34,30 +31,37 @@ public static class UmbracoEFCoreServiceCollectionExtensions
     public static IServiceCollection AddUmbracoDbContext<T>(
         this IServiceCollection services,
         Action<DbContextOptionsBuilder, string?, string?, IServiceProvider?>? optionsAction = null)
-            where T : DbContext
+        where T : DbContext
     {
-        return AddUmbracoDbContext<T>(services, (IServiceProvider provider, DbContextOptionsBuilder builder, string? providerName, string? connectionString) =>
+        return AddUmbracoDbContext<T>(services, (IServiceProvider provider, DbContextOptionsBuilder optionsBuilder, string? providerName, string? connectionString) =>
         {
             ConnectionStrings connectionStrings = GetConnectionStringAndProviderName(provider);
-            optionsAction?.Invoke(builder, connectionStrings.ConnectionString, connectionStrings.ProviderName, provider);
+            optionsAction?.Invoke(optionsBuilder, connectionStrings.ConnectionString, connectionStrings.ProviderName, provider);
         });
     }
 
     /// <summary>
     /// Adds a EFCore DbContext with all the services needed to integrate with Umbraco scopes.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="services"></param>
-    /// <param name="optionsAction"></param>
-    /// <returns></returns>
+    [Obsolete("Please use the method overload that takes all parameters for the optionsAction. Scheduled for removal in Umbraco 18.")]
+    public static IServiceCollection AddUmbracoDbContext<T>(
+        this IServiceCollection services,
+        Action<IServiceProvider, DbContextOptionsBuilder>? optionsAction = null)
+        where T : DbContext
+        => AddUmbracoDbContext<T>(services, (sp, optionsBuilder, connectionString, providerName) => optionsAction?.Invoke(sp, optionsBuilder));
+
+    /// <summary>
+    /// Adds a EFCore DbContext with all the services needed to integrate with Umbraco scopes.
+    /// </summary>
     public static IServiceCollection AddUmbracoDbContext<T>(
         this IServiceCollection services,
         Action<IServiceProvider, DbContextOptionsBuilder, string?, string?>? optionsAction = null)
-            where T : DbContext
+        where T : DbContext
     {
-        optionsAction ??= (sp, builder, connectionString, providerName) => { };
+        optionsAction ??= (sp, optionsBuilder, connectionString, providerName) => { };
 
-        services.AddPooledDbContextFactory<T>((provider, builder) => SetupDbContext(optionsAction, provider, builder));
+
+        services.AddPooledDbContextFactory<T>((provider, optionsBuilder) => SetupDbContext(optionsAction, provider, optionsBuilder));
         services.AddTransient(services => services.GetRequiredService<IDbContextFactory<T>>().CreateDbContext());
 
         services.AddUnique<IAmbientEFCoreScopeStack<T>, AmbientEFCoreScopeStack<T>>();
@@ -65,6 +69,7 @@ public static class UmbracoEFCoreServiceCollectionExtensions
         services.AddUnique<IEFCoreScopeProvider<T>, EFCoreScopeProvider<T>>();
         services.AddSingleton<IDistributedLockingMechanism, SqliteEFCoreDistributedLockingMechanism<T>>();
         services.AddSingleton<IDistributedLockingMechanism, SqlServerEFCoreDistributedLockingMechanism<T>>();
+
         return services;
     }
 
@@ -88,9 +93,6 @@ public static class UmbracoEFCoreServiceCollectionExtensions
             case Constants.ProviderNames.SQLLite:
             case "Microsoft.Data.SQLite":
                 builder.UseSqlite(connectionString);
-                break;
-            case "Npgsql":
-                builder.UseNpgsql(connectionString);
                 break;
             default:
                 throw new InvalidDataException($"The provider {providerName} is not supported. Manually add the add the UseXXX statement to the options. I.E UseNpgsql()");
