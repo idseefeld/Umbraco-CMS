@@ -1,52 +1,95 @@
+using NPoco;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Persistence.Repositories;
+using Umbraco.Cms.Infrastructure.Persistence.Dtos;
 using Umbraco.Cms.Infrastructure.Scoping;
+using Umbraco.Extensions;
 
 namespace Umbraco.Cms.Infrastructure.Persistence.Repositories.Implement;
 
-public class IdKeyMapRepository : IIdKeyMapRepository
+/// <summary>
+///     Repository for mapping between integer IDs and GUID keys for Umbraco objects.
+///     Provides methods to retrieve an ID for a given key and object type, and vice versa.
+/// </summary>
+public class IdKeyMapRepository(IScopeAccessor scopeAccessor) : IIdKeyMapRepository
 {
-    private readonly IScopeAccessor _scopeAccessor;
+    private readonly ISqlContext? _sqlContext = scopeAccessor.AmbientScope?.SqlContext;
 
-    public IdKeyMapRepository(IScopeAccessor scopeAccessor) => _scopeAccessor = scopeAccessor;
+    private readonly SqlSyntax.ISqlSyntaxProvider? _sqlSyntax = scopeAccessor.AmbientScope?.SqlContext.SqlSyntax;
 
+    private Sql<ISqlContext> EnsureSqlContext() => _sqlContext?.Sql() ?? throw new InvalidOperationException("No SQL context available.");
+
+    private SqlSyntax.ISqlSyntaxProvider EnsureSqlSyntax()
+        => _sqlSyntax ?? throw new InvalidOperationException("No SQL syntax provider available.");
+
+    /// <summary>
+    /// Retrieves the identifier (ID) associated with the specified key and object type.
+    /// </summary>
+    /// <remarks>If <paramref name="umbracoObjectType"/> is <see cref="UmbracoObjectTypes.Unknown"/>, the
+    /// query will only match the key without considering the object type. For other object types, the query will match
+    /// both the key and the specified object type or reserved object type.</remarks>
+    /// <param name="key">The unique identifier (GUID) of the object to look up.</param>
+    /// <param name="umbracoObjectType">The type of the Umbraco object to query. Use <see cref="UmbracoObjectTypes.Unknown"/> to exclude the object type
+    /// from the query.</param>
+    /// <returns>The identifier (ID) of the object if found; otherwise, <see langword="null"/>.</returns>
     public int? GetIdForKey(Guid key, UmbracoObjectTypes umbracoObjectType)
     {
+        Sql<ISqlContext>? sql;
+
         // if it's unknown don't include the nodeObjectType in the query
         if (umbracoObjectType == UmbracoObjectTypes.Unknown)
         {
-            return _scopeAccessor.AmbientScope?.Database.ExecuteScalar<int?>(
-                "SELECT id FROM umbracoNode WHERE uniqueId=@id", new { id = key });
+            sql = EnsureSqlContext()
+                .Select(EnsureSqlSyntax().GetQuotedColumnName(NodeDto.IdColumnName))
+                .From<NodeDto>()
+                .Where<NodeDto>(n => n.UniqueId == key);
+            return scopeAccessor.AmbientScope?.Database.ExecuteScalar<int?>(sql);
         }
 
-        return _scopeAccessor.AmbientScope?.Database.ExecuteScalar<int?>(
-            "SELECT id FROM umbracoNode WHERE uniqueId=@id AND (nodeObjectType=@type OR nodeObjectType=@reservation)",
-            new
-            {
-                id = key,
-                type = GetNodeObjectTypeGuid(umbracoObjectType),
-                reservation = Constants.ObjectTypes.IdReservation,
-            });
+        sql = EnsureSqlContext()
+                .Select(EnsureSqlSyntax().GetQuotedColumnName(NodeDto.IdColumnName))
+                .From<NodeDto>()
+                .Where<NodeDto>(n =>
+                    n.UniqueId == key
+                    && (
+                        n.NodeObjectType == GetNodeObjectTypeGuid(umbracoObjectType)
+                        || n.NodeObjectType == Constants.ObjectTypes.IdReservation));
+        return scopeAccessor.AmbientScope?.Database.ExecuteScalar<int?>(sql);
     }
 
+    /// <summary>
+    /// Retrieves the unique identifier (GUID) associated with a specified node ID and object type.
+    /// </summary>
+    /// <remarks>If <paramref name="umbracoObjectType"/> is <see cref="UmbracoObjectTypes.Unknown"/>, the
+    /// query will not filter by object type.</remarks>
+    /// <param name="id">The ID of the node to retrieve the unique identifier for.</param>
+    /// <param name="umbracoObjectType">The type of the Umbraco object to filter the query. Use <see cref="UmbracoObjectTypes.Unknown"/> to ignore the
+    /// object type filter.</param>
+    /// <returns>The unique identifier (GUID) of the node if found; otherwise, <see langword="null"/>.</returns>
     public Guid? GetIdForKey(int id, UmbracoObjectTypes umbracoObjectType)
     {
+        Sql<ISqlContext>? sql;
+
         // if it's unknown don't include the nodeObjectType in the query
         if (umbracoObjectType == UmbracoObjectTypes.Unknown)
         {
-            return _scopeAccessor.AmbientScope?.Database.ExecuteScalar<Guid?>(
-                "SELECT uniqueId FROM umbracoNode WHERE id=@id", new { id });
+            sql = EnsureSqlContext()
+                .Select(EnsureSqlSyntax().GetQuotedColumnName(NodeDto.IdColumnName))
+                .From<NodeDto>()
+                .Where<NodeDto>(n => n.NodeId == id);
+            return scopeAccessor.AmbientScope?.Database.ExecuteScalar<Guid?>(sql);
         }
 
-        return _scopeAccessor.AmbientScope?.Database.ExecuteScalar<Guid?>(
-            "SELECT uniqueId FROM umbracoNode WHERE id=@id AND (nodeObjectType=@type OR nodeObjectType=@reservation)",
-            new
-            {
-                id,
-                type = GetNodeObjectTypeGuid(umbracoObjectType),
-                reservation = Constants.ObjectTypes.IdReservation,
-            });
+        sql = EnsureSqlContext()
+                .Select(EnsureSqlSyntax().GetQuotedColumnName(NodeDto.IdColumnName))
+                .From<NodeDto>()
+                .Where<NodeDto>(n =>
+                    n.NodeId == id
+                    && (
+                        n.NodeObjectType == GetNodeObjectTypeGuid(umbracoObjectType)
+                        || n.NodeObjectType == Constants.ObjectTypes.IdReservation));
+        return scopeAccessor.AmbientScope?.Database.ExecuteScalar<Guid?>(sql);
     }
 
     private Guid GetNodeObjectTypeGuid(UmbracoObjectTypes umbracoObjectType)

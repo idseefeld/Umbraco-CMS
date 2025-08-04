@@ -80,7 +80,7 @@ internal sealed class CacheInstructionRepository : ICacheInstructionRepository
         // Using 2 queries is faster than convoluted joins.
         SqlSyntax.ISqlSyntaxProvider syntax = AmbientScope?.SqlContext.SqlSyntax ?? throw new InvalidOperationException("No SQL syntax available.");
         Sql<ISqlContext>? sql = AmbientScope?.SqlContext.Sql()
-            .Select($"MAX({syntax.GetQuotedColumnName("id")})")
+            .Select<CacheInstructionDto>(c => $"MAX({syntax.GetQuotedColumnName(nameof(c.Id))})")
             .From<CacheInstructionDto>();
         var maxId = AmbientScope?.Database.ExecuteScalar<int>(sql);
 

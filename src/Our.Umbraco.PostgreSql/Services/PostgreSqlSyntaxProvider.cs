@@ -17,7 +17,11 @@ public class PostgreSqlSyntaxProvider : NpgsqlSqlSyntaxProvider<PostgreSqlSyntax
     private readonly ILogger<PostgreSqlSyntaxProvider> _logger;
     private readonly IDictionary<Type, IScalarMapper> _scalarMappers;
 
-
+    /// <summary>
+    /// Initializes a new instance of the <see cref="PostgreSqlSyntaxProvider"/> class.
+    /// </summary>
+    /// <param name="globalSettings">Inject Globalsettings from configuration.</param>
+    /// <param name="logger">Inject Logger.</param>
     public PostgreSqlSyntaxProvider(IOptions<GlobalSettings> globalSettings, ILogger<PostgreSqlSyntaxProvider> logger)
     {
         _globalSettings = globalSettings;
@@ -32,12 +36,10 @@ public class PostgreSqlSyntaxProvider : NpgsqlSqlSyntaxProvider<PostgreSqlSyntax
         };
     }
 
-    public override DatabaseType GetUpdatedDatabaseType(DatabaseType current, string? connectionString)
-    {
-        // For PostgreSQL, just return PostgreSQL type
-        return DatabaseType.PostgreSQL;
-    }
+    /// <inheritdoc/>
+    public override DatabaseType GetUpdatedDatabaseType(DatabaseType current, string? connectionString) => DatabaseType.PostgreSQL;
 
+    /// <inheritdoc/>
     public override void HandleCreateTable(IDatabase database, TableDefinition tableDefinition, bool skipKeysAndIndexes = false)
     {
         // Format columns, primary key, and foreign keys

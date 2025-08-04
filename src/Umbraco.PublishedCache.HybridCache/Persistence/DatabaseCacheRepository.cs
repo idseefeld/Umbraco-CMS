@@ -160,11 +160,11 @@ internal sealed class DatabaseCacheRepository : RepositoryBase, IDatabaseCacheRe
                 ? SqlMediaSourcesSelect()
                 : throw new ArgumentOutOfRangeException(nameof(objectType), objectType, null);
 
-            sql.InnerJoin<NodeDto>("n")
-            .On<NodeDto, ContentDto>((n, c) => n.NodeId == c.ContentTypeId, "n", "umbracoContent")
-            .Append(SqlObjectTypeNotTrashed(SqlContext, objectType))
-            .WhereIn<NodeDto>(x => x.UniqueId, keys,"n")
-            .Append(SqlOrderByLevelIdSortOrder(SqlContext));
+        sql.InnerJoin<NodeDto>("n")
+        .On<NodeDto, ContentDto>((n, c) => n.NodeId == c.ContentTypeId, "n", "umbracoContent")
+        .Append(SqlObjectTypeNotTrashed(SqlContext, objectType))
+        .WhereIn<NodeDto>(x => x.UniqueId, keys, "n")
+        .Append(SqlOrderByLevelIdSortOrder(SqlContext));
 
         return GetContentNodeDtos(sql);
     }
@@ -225,10 +225,11 @@ internal sealed class DatabaseCacheRepository : RepositoryBase, IDatabaseCacheRe
         // use a custom SQL to update row version on each update
         // db.InsertOrUpdate(dto);
         ContentNuDto dto = GetDtoFromCacheNode(content, !preview, serializer);
+        ISqlSyntaxProvider syntax = Database.SqlContext.SqlSyntax;
 
         await Database.InsertOrUpdateAsync(
             dto,
-            "SET data=@data, dataRaw=@dataRaw, rv=rv+1 WHERE nodeId=@id AND published=@published",
+            $"SET {syntax.GetQuotedColumnName("data")}=@data, {syntax.GetQuotedColumnName("dataRaw")}=@dataRaw, rv=rv+1 WHERE {syntax.GetQuotedColumnName("nodeId")}=@id AND {syntax.GetQuotedColumnName("published")}=@published",
             new
             {
                 dataRaw = dto.RawData ?? Array.Empty<byte>(),
@@ -437,7 +438,10 @@ AND {syntax.GetQuotedTableName(Constants.DatabaseSchema.Tables.Content)}.{syntax
 
         var dto = new ContentNuDto
         {
-            NodeId = cacheNode.Id, Published = published, Data = serialized.StringData, RawData = serialized.ByteData,
+            NodeId = cacheNode.Id,
+            Published = published,
+            Data = serialized.StringData,
+            RawData = serialized.ByteData,
         };
 
         return dto;
@@ -518,7 +522,10 @@ AND {syntax.GetQuotedTableName(Constants.DatabaseSchema.Tables.Content)}.{syntax
 
         var dto = new ContentNuDto
         {
-            NodeId = content.Id, Published = published, Data = serialized.StringData, RawData = serialized.ByteData,
+            NodeId = content.Id,
+            Published = published,
+            Data = serialized.StringData,
+            RawData = serialized.ByteData,
         };
 
         return dto;
