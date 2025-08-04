@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Serilog;
@@ -22,6 +22,15 @@ public static class UmbracoEFCoreServiceCollectionExtensions
     /// <param name="services"></param>
     /// <param name="optionsAction"></param>
     /// <returns></returns>
+    public static IServiceCollection AddUmbracoDbContext<T>(
+        this IServiceCollection services,
+        Action<DbContextOptionsBuilder>? optionsAction = null)
+        where T : DbContext
+        => AddUmbracoDbContext<T>(services, (sp, optionsBuilder, connectionString, providerName) => optionsAction?.Invoke(optionsBuilder));
+
+    /// <summary>
+    /// Adds a EFCore DbContext with all the services needed to integrate with Umbraco scopes.
+    /// </summary>
     public static IServiceCollection AddUmbracoDbContext<T>(
         this IServiceCollection services,
         Action<DbContextOptionsBuilder, string?, string?, IServiceProvider?>? optionsAction = null)
