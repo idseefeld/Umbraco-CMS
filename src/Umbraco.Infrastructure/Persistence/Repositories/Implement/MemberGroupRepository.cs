@@ -169,10 +169,10 @@ internal sealed class MemberGroupRepository : EntityRepositoryBase<int, IMemberG
     {
         Sql<ISqlContext> sql = Sql();
 
-        var inClause = $" IN (SELECT {SqlSyntax.GetQuotedTableName("umbracoUserGroup")}.{SqlSyntax.GetQuotedColumnName("Key")} FROM {SqlSyntax.GetQuotedTableName("umbracoUserGroup")} WHERE {SqlSyntax.GetQuotedColumnName("Id")} = @id)";
+        var inClause = $" IN (SELECT {SqlSyntax.GetQuotedTableName("umbracoUserGroup")}.{SqlSyntax.GetQuotedColumnName("key")} FROM {SqlSyntax.GetQuotedTableName("umbracoUserGroup")} WHERE id = @id)";
         var list = new[]
         {
-            $"DELETE FROM {SqlSyntax.GetQuotedTableName("umbracoUser2NodeNotify")} WHERE nodeId = @id",
+            $"DELETE FROM {SqlSyntax.GetQuotedTableName("umbracoUser2NodeNotify")} WHERE {SqlSyntax.GetQuotedColumnName("nodeId")} = @id",
             $"DELETE FROM {SqlSyntax.GetQuotedTableName("umbracoUserGroup2Permission")} WHERE {SqlSyntax.GetQuotedColumnName("userGroupKey")}{inClause}",
             $"DELETE FROM {SqlSyntax.GetQuotedTableName("umbracoUserGroup2GranularPermission")} WHERE {SqlSyntax.GetQuotedColumnName("userGroupKey")}{inClause}",
             $"DELETE FROM {SqlSyntax.GetQuotedTableName("umbracoRelation")} WHERE {SqlSyntax.GetQuotedColumnName("parentId")} = @id",

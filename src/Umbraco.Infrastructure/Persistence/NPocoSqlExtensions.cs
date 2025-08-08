@@ -81,7 +81,31 @@ namespace Umbraco.Extensions
         public static Sql<ISqlContext> WhereIn<TDto>(this Sql<ISqlContext> sql, Expression<Func<TDto, object?>> field, IEnumerable? values)
         {
             var fieldName = sql.SqlContext.SqlSyntax.GetFieldName(field);
-            sql.Where(fieldName + " IN (@values)", new { values });
+            sql.Where($"{fieldName} IN (@values)", new { values });
+            return sql;
+        }
+
+        /// <summary>
+        /// Appends a OR IN clause to the Sql statement.
+        /// </summary>
+        /// <typeparam name="TDto">The type of the first Dto.</typeparam>
+        /// <typeparam name="TDto2">The type of the second Dto.</typeparam>
+        /// <param name="sql">The Sql statement.</param>
+        /// <param name="field">An expression specifying the first field.</param>
+        /// <param name="values">First values.</param>
+        /// <param name="field2">An expression specifying the second field.</param>
+        /// <param name="values2">Second values.</param>
+        /// <returns>The Sql statement.</returns>
+        public static Sql<ISqlContext> WhereInOr<TDto, TDto2>(
+            this Sql<ISqlContext> sql,
+            Expression<Func<TDto, object?>> field,
+            Expression<Func<TDto2, object?>> field2,
+            IEnumerable? values,
+            IEnumerable? values2)
+        {
+            var fieldName = sql.SqlContext.SqlSyntax.GetFieldName(field);
+            var fieldName2 = sql.SqlContext.SqlSyntax.GetFieldName(field2);
+            sql.Where($"{fieldName} IN (@values) OR {fieldName2} IN (@values2)", new { values }, new { values2 });
             return sql;
         }
 
