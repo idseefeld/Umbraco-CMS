@@ -1504,13 +1504,19 @@ AND umbracoNode.id <> @id",
 
     public string GetUniqueAlias(string alias)
     {
-        // alias is unique across ALL content types!
-        var aliasColumn = SqlSyntax.GetQuotedColumnName("alias");
-        List<string>? aliases = Database.Fetch<string>(
-            @"SELECT cmsContentType." + aliasColumn + @" FROM cmsContentType
-INNER JOIN umbracoNode ON cmsContentType.nodeId = umbracoNode.id
-WHERE cmsContentType." + aliasColumn + @" LIKE @pattern",
-            new { pattern = alias + "%", objectType = NodeObjectTypeId });
+        // List<string>? aliases = Database.Fetch<string>(
+        // @"SELECT cmsContentType." + aliasColumn + @" FROM cmsContentType
+        // INNER JOIN umbracoNode ON cmsContentType.nodeId = umbracoNode.id
+        // WHERE cmsContentType." + aliasColumn + @" LIKE @pattern",
+        // new { pattern = alias + "%", objectType = NodeObjectTypeId });
+        Sql<ISqlContext> sql = Sql()
+            .Select<ContentTypeDto>(c => c.Alias)
+            .From<ContentTypeDto>()
+            .InnerJoin<NodeDto>().On<ContentTypeDto, NodeDto>((ct, n) => ct.NodeId == n.NodeId)
+            .WhereLike<ContentTypeDto>(c => c.Alias, alias)
+            .Where<NodeDto>(x => x.NodeObjectType == NodeObjectTypeId);
+        List<string> aliases = Database.Fetch<string>(sql);
+
         var i = 1;
         string test;
         while (aliases.Contains(test = alias + i))
@@ -1530,11 +1536,22 @@ WHERE cmsContentType." + aliasColumn + @" LIKE @pattern",
 
     public bool HasContainerInPath(params int[] ids)
     {
-        var sql = new Sql(
-            $@"SELECT COUNT(*) FROM cmsContentType
-INNER JOIN {Constants.DatabaseSchema.Tables.Content} ON cmsContentType.nodeId={Constants.DatabaseSchema.Tables.Content}.contentTypeId
-WHERE {Constants.DatabaseSchema.Tables.Content}.nodeId IN (@ids) AND cmsContentType.listView IS NULL", new { ids });
+        Sql<ISqlContext> sql = Sql()
+            .Select<int>("COUNT(*)")
+            .From<ContentTypeDto>()
+            .InnerJoin<ContentDto>()
+            .On<ContentTypeDto, ContentDto>((ct, c) => ct.NodeId == c.ContentTypeId)
+            .WhereIn<ContentDto>(x => x.NodeId, ids)
+            .Where<ContentTypeDto>(x => x.ListView == null);
         return Database.ExecuteScalar<int>(sql) > 0;
+
+        // var sql2 = new Sql(
+        //    $@"SELECT COUNT(*) FROM cmsContentType
+        //    INNER JOIN {Constants.DatabaseSchema.Tables.Content}
+        //    ON cmsContentType.nodeId={Constants.DatabaseSchema.Tables.Content}.contentTypeId
+        //    WHERE {Constants.DatabaseSchema.Tables.Content}.nodeId
+        //    IN (@ids)
+        //    AND cmsContentType.listView IS NULL", new { ids });
     }
 
     /// <summary>
@@ -1543,7 +1560,7 @@ WHERE {Constants.DatabaseSchema.Tables.Content}.nodeId IN (@ids) AND cmsContentT
     public bool HasContentNodes(int id)
     {
         var sql = new Sql(
-            $"SELECT CASE WHEN EXISTS (SELECT * FROM {Constants.DatabaseSchema.Tables.Content} WHERE contentTypeId = @id) THEN 1 ELSE 0 END",
+            $"SELECT CASE WHEN EXISTS (SELECT * FROM {SqlSyntax.GetQuotedTableName(ContentDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("contentTypeId")} = @id) THEN 1 ELSE 0 END",
             new { id });
         return Database.ExecuteScalar<int>(sql) == 1;
     }
@@ -1553,22 +1570,21 @@ WHERE {Constants.DatabaseSchema.Tables.Content}.nodeId IN (@ids) AND cmsContentT
         // in theory, services should have ensured that content items of the given content type
         // have been deleted and therefore PropertyData has been cleared, so PropertyData
         // is included here just to be 100% sure since it has a FK on cmsPropertyType.
+        var inClause = $"IN (SELECT {SqlSyntax.GetQuotedTableName("umbracoUserGroup")}.{SqlSyntax.GetQuotedColumnName("Key")} FROM {SqlSyntax.GetQuotedTableName("umbracoUserGroup")} WHERE {SqlSyntax.GetQuotedColumnName("Id")} = @id)";
         var list = new List<string>
         {
-            "DELETE FROM umbracoUser2NodeNotify WHERE nodeId = @id",
-            "DELETE FROM umbracoUserGroup2Permission WHERE userGroupKey IN (SELECT [umbracoUserGroup].[Key] FROM umbracoUserGroup WHERE Id = @id)",
-            "DELETE FROM umbracoUserGroup2GranularPermission WHERE userGroupKey IN (SELECT [umbracoUserGroup].[Key] FROM umbracoUserGroup WHERE Id = @id)",
-            "DELETE FROM cmsTagRelationship WHERE nodeId = @id",
-            "DELETE FROM cmsContentTypeAllowedContentType WHERE Id = @id",
-            "DELETE FROM cmsContentTypeAllowedContentType WHERE AllowedId = @id",
-            "DELETE FROM cmsContentType2ContentType WHERE parentContentTypeId = @id",
-            "DELETE FROM cmsContentType2ContentType WHERE childContentTypeId = @id",
-            "DELETE FROM " + Constants.DatabaseSchema.Tables.PropertyData +
-            " WHERE propertyTypeId IN (SELECT id FROM cmsPropertyType WHERE contentTypeId = @id)",
-            "DELETE FROM " + Constants.DatabaseSchema.Tables.PropertyType +
-            " WHERE contentTypeId = @id",
-            "DELETE FROM " + Constants.DatabaseSchema.Tables.PropertyTypeGroup +
-            " WHERE contenttypeNodeId = @id",
+            $"DELETE FROM {SqlSyntax.GetQuotedTableName("umbracoUser2NodeNotify")} WHERE {SqlSyntax.GetQuotedColumnName("nodeId")} = @id",
+            $"DELETE FROM {SqlSyntax.GetQuotedTableName("umbracoUserGroup2Permission")} WHERE {SqlSyntax.GetQuotedColumnName("userGroupKey")} {inClause}",
+            $"DELETE FROM {SqlSyntax.GetQuotedTableName("umbracoUserGroup2GranularPermission")} WHERE {SqlSyntax.GetQuotedColumnName("userGroupKey")} {inClause}",
+            $"DELETE FROM {SqlSyntax.GetQuotedTableName("cmsTagRelationship")} WHERE {SqlSyntax.GetQuotedColumnName("nodeId")} = @id",
+            $"DELETE FROM {SqlSyntax.GetQuotedTableName("cmsContentTypeAllowedContentType")} WHERE {SqlSyntax.GetQuotedColumnName("Id")} = @id",
+            $"DELETE FROM {SqlSyntax.GetQuotedTableName("cmsContentTypeAllowedContentType")} WHERE {SqlSyntax.GetQuotedColumnName("AllowedId")} = @id",
+            $"DELETE FROM {SqlSyntax.GetQuotedTableName("cmsContentType2ContentType")} WHERE {SqlSyntax.GetQuotedColumnName("parentContentTypeId")} = @id",
+            $"DELETE FROM {SqlSyntax.GetQuotedTableName("cmsContentType2ContentType")} WHERE {SqlSyntax.GetQuotedColumnName("childContentTypeId")} = @id",
+            $"DELETE FROM {SqlSyntax.GetQuotedTableName(PropertyDataDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("propertyTypeId")}" +
+                $" IN (SELECT id FROM {SqlSyntax.GetQuotedTableName("cmsPropertyType")} WHERE {SqlSyntax.GetQuotedColumnName("contentTypeId")} = @id)",
+            $"DELETE FROM {SqlSyntax.GetQuotedTableName(PropertyTypeDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("contentTypeId")} = @id",
+            $"DELETE FROM {SqlSyntax.GetQuotedTableName(PropertyTypeGroupDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("contenttypeNodeId")} = @id",
         };
         return list;
     }

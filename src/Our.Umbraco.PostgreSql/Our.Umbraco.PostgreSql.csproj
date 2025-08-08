@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Title>Umbraco CMS - Persistence - PostgreSQL</Title>
+    <Description>Adds support for PostgreSQL to Umbraco CMS.</Description>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <Compile Remove="GlobalSuppressions.cs" />
+    <Compile Remove="NPocoPostgreSqlDatabaseExtensions.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Npgsql" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+    <PackageReference Include="Npgsql.NodaTime" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Umbraco.Infrastructure\Umbraco.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

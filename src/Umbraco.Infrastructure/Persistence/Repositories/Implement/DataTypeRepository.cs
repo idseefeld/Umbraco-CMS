@@ -46,7 +46,7 @@ internal sealed class DataTypeRepository : EntityRepositoryBase<int, IDataType>,
 
     protected Guid NodeObjectTypeId => Constants.ObjectTypes.DataType;
 
-    public IDataType? Get(Guid key) => GetMany().FirstOrDefault(x=>x.Key == key);
+    public IDataType? Get(Guid key) => GetMany().FirstOrDefault(x => x.Key == key);
 
     public IEnumerable<MoveEventInfo<IDataType>> Move(IDataType toMove, EntityContainer? container)
     {
@@ -254,11 +254,12 @@ internal sealed class DataTypeRepository : EntityRepositoryBase<int, IDataType>,
 
         if (ids?.Any() ?? false)
         {
-            dataTypeSql.Where("umbracoNode.id in (@ids)", new { ids });
+            // dataTypeSql.Where("umbracoNode.id in (@ids)", new { ids });
+            _ = dataTypeSql.WhereIn<NodeDto>(w => w.NodeId, ids);
         }
         else
         {
-            dataTypeSql.Where<NodeDto>(x => x.NodeObjectType == NodeObjectTypeId);
+            _ = dataTypeSql.Where<NodeDto>(x => x.NodeObjectType == NodeObjectTypeId);
         }
 
         List<DataTypeDto>? dtos = Database.Fetch<DataTypeDto>(dataTypeSql);

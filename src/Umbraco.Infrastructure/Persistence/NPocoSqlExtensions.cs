@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Data.Common;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
@@ -27,6 +28,12 @@ namespace Umbraco.Extensions
         {
             (string s, object[] a) = sql.SqlContext.VisitDto(predicate, alias);
             return sql.Where(s, a);
+        }
+
+        public static Sql<ISqlContext> WhereParam<TDto>(this Sql<ISqlContext> sql, Expression<Func<TDto, object?>> field, string param)
+        {
+            string s = $"{sql.GetColumns(columnExpressions: [field], withAlias: false).FirstOrDefault()} = {param}";
+            return sql.Where(s, []);
         }
 
         /// <summary>
@@ -116,7 +123,7 @@ namespace Umbraco.Extensions
         public static Sql<ISqlContext> WhereLike<TDto>(this Sql<ISqlContext> sql, Expression<Func<TDto, object?>> fieldSelector, Sql<ISqlContext>? valuesSql)
         {
             var fieldName = sql.SqlContext.SqlSyntax.GetFieldName(fieldSelector);
-            sql.Where(fieldName + " LIKE (" + valuesSql?.SQL + ")", valuesSql?.Arguments);
+            _ = sql.Where($"{fieldName} LIKE ({valuesSql?.SQL})", valuesSql?.Arguments);
             return sql;
         }
 
@@ -128,13 +135,13 @@ namespace Umbraco.Extensions
         public static Sql<ISqlContext>.SqlJoinClause<ISqlContext> InnerJoinNested(this Sql<ISqlContext> sql, Sql<ISqlContext> nestedQuery, string alias)
         {
             return new Sql<ISqlContext>.SqlJoinClause<ISqlContext>(sql.Append("INNER JOIN (").Append(nestedQuery)
-                .Append($") [{alias}]"));
+                .Append($") {sql.SqlContext.SqlSyntax.GetQuotedName(alias)}"));
         }
 
         public static Sql<ISqlContext> WhereLike<TDto>(this Sql<ISqlContext> sql, Expression<Func<TDto, object?>> fieldSelector, string likeValue)
         {
             var fieldName = sql.SqlContext.SqlSyntax.GetFieldName(fieldSelector);
-            sql.Where(fieldName + " LIKE ('" + likeValue + "')");
+            _ = sql.Where($"{fieldName} LIKE ('{likeValue}')");
             return sql;
         }
 
@@ -149,7 +156,7 @@ namespace Umbraco.Extensions
         public static Sql<ISqlContext> WhereNotIn<TDto>(this Sql<ISqlContext> sql, Expression<Func<TDto, object?>> field, IEnumerable values)
         {
             var fieldName = sql.SqlContext.SqlSyntax.GetFieldName(field);
-            sql.Where(fieldName + " NOT IN (@values)", new { values });
+            _ = sql.Where(fieldName + " NOT IN (@values)", new { values });
             return sql;
         }
 
@@ -162,9 +169,7 @@ namespace Umbraco.Extensions
         /// <param name="values">A subquery returning the value.</param>
         /// <returns>The Sql statement.</returns>
         public static Sql<ISqlContext> WhereNotIn<TDto>(this Sql<ISqlContext> sql, Expression<Func<TDto, object?>> field, Sql<ISqlContext> values)
-        {
-            return sql.WhereIn(field, values, true);
-        }
+            => sql.WhereIn(field, values, true);
 
         /// <summary>
         /// Appends multiple OR WHERE IN clauses to the Sql statement.
@@ -679,6 +684,45 @@ namespace Umbraco.Extensions
         }
 
         /// <summary>
+        /// Adds a SQL SELECT statement to retrieve the maximum value of the specified field from the table associated
+        /// with the specified DTO type.
+        /// </summary>
+        /// <typeparam name="TDto">The type of the Data Transfer Object (DTO) that represents the table from which the maximum value will be
+        /// selected.</typeparam>
+        /// <param name="sql">The SQL query builder to which the SELECT statement will be appended. Cannot be <see langword="null"/>.</param>
+        /// <param name="field">An expression specifying the field for which the maximum value will be calculated. Cannot be <see
+        /// langword="null"/>.</param>
+        /// <returns>A modified SQL query builder that includes the SELECT statement for the maximum value of the specified
+        /// field.</returns>
+        public static Sql<ISqlContext> SelectMax<TDto>(this Sql<ISqlContext> sql, Expression<Func<TDto, object?>> field)
+        {
+            ArgumentNullException.ThrowIfNull(sql);
+            ArgumentNullException.ThrowIfNull(field);
+
+            return sql.Select($"MAX ({sql.SqlContext.SqlSyntax.GetFieldName(field)})");
+        }
+
+        /// <summary>
+        /// Adds a SQL SELECT statement to retrieve the sum of the values of the specified field from the table associated
+        /// with the specified DTO type.
+        /// </summary>
+        /// </summary>
+        /// <typeparam name="TDto">The type of the Data Transfer Object (DTO) that represents the table from which the maximum value will be
+        /// selected.</typeparam>
+        /// <param name="sql">The SQL query builder to which the SELECT statement will be appended. Cannot be <see langword="null"/>.</param>
+        /// <param name="field">An expression specifying the field for which the maximum value will be calculated. Cannot be <see
+        /// langword="null"/>.</param>
+        /// <returns>A modified SQL query builder that includes the SELECT statement for the maximum value of the specified
+        /// field.</returns>
+        public static Sql<ISqlContext> SelectSum<TDto>(this Sql<ISqlContext> sql, Expression<Func<TDto, object?>> field)
+        {
+            ArgumentNullException.ThrowIfNull(sql);
+            ArgumentNullException.ThrowIfNull(field);
+
+            return sql.Select($"SUM ({sql.SqlContext.SqlSyntax.GetFieldName(field)})");
+        }
+
+        /// <summary>
         /// Creates a SELECT COUNT(*) Sql statement.
         /// </summary>
         /// <param name="sql">The origin sql.</param>
@@ -738,7 +782,7 @@ namespace Umbraco.Extensions
             var text = "COUNT (" + string.Join(", ", columns) + ")";
             if (alias != null)
             {
-                text += " AS " + sql.SqlContext.SqlSyntax.GetQuotedColumnName(alias);
+                text += " AS " + sqlSyntax.GetQuotedColumnName(alias);
             }
 
             return sql.Select(text);
