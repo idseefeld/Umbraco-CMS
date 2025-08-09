@@ -89,7 +89,7 @@ internal sealed class ServerRegistrationRepository : EntityRepositoryBase<int, I
 
     protected override IEnumerable<string> GetDeleteClauses()
     {
-        var list = new List<string> { "DELETE FROM umbracoServer WHERE id = @id" };
+        var list = new List<string> { $"DELETE FROM {SqlSyntax.GetQuotedTableName("umbracoServer")} WHERE id = @id" };
         return list;
     }
 

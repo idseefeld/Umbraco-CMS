@@ -125,9 +125,6 @@ public class NpgsqlSqlSyntaxProvider<TSyntax> : SqlSyntaxProviderBase<TSyntax>
     public override DatabaseType GetUpdatedDatabaseType(DatabaseType current, string? connectionString) => current;
 
     /// <inheritdoc />
-    public override string EscapeString(string val) => val.Replace("'", "''");
-
-    /// <inheritdoc />
     public override string OrderByGuid(string tableName, string columnName) => $"UPPER({GetQuotedColumn(tableName, columnName)}::text)";
 
     /// <inheritdoc />
@@ -635,18 +632,10 @@ public class NpgsqlSqlSyntaxProvider<TSyntax> : SqlSyntaxProviderBase<TSyntax>
 
     public override Sql<ISqlContext> SelectTop(Sql<ISqlContext> sql, int top)
     {
-        // If the SQL already contains a LIMIT, do not append another one.
-        // This is a simple check; for more complex SQL, consider a more robust parser.
-        var sqlText = sql.SQL?.TrimEnd() ?? string.Empty;
-        if (sqlText.EndsWith(")", StringComparison.OrdinalIgnoreCase) ||
-            sqlText.IndexOf(" limit ", StringComparison.OrdinalIgnoreCase) >= 0)
-        {
-            // Already has a LIMIT or is a subquery, return as is.
-            return sql;
-        }
-
-        // Append LIMIT clause for PostgreSQL
-        return new Sql<ISqlContext>(sql.SqlContext, $"{sqlText} LIMIT {top}", sql.Arguments?.ToArray() ?? Array.Empty<object>());
+        // PostgreSQL uses LIMIT at the  end of the select sql as opposed to TOP
+        // SELECT TOP 5 * FROM My_Table
+        // SELECT * FROM My_Table LIMIT 5;
+        return sql.Append($"LIMIT {top}");
     }
 
     #region implementation for abstract methods from SqlSyntaxProviderBase
@@ -656,10 +645,10 @@ public class NpgsqlSqlSyntaxProvider<TSyntax> : SqlSyntaxProviderBase<TSyntax>
         // This query returns: TableName, IndexName, ColumnName, IsUnique (excluding primary keys)
         const string sql = @"
             SELECT
-                t.relname AS TableName,
-                i.relname AS IndexName,
-                a.attname AS ColumnName,
-                ix.indisunique AS IsUnique
+                t.relname AS tablename,
+                i.relname AS indexname,
+                a.attname AS columnname,
+                ix.indisunique AS isunique
             FROM
                 pg_class t
                 INNER JOIN pg_index ix ON t.oid = ix.indrelid

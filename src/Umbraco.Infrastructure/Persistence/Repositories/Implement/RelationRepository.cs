@@ -335,7 +335,7 @@ internal sealed class RelationRepository : EntityRepositoryBase<int, IRelation>,
         Sql<ISqlContext> sql = GetBaseQuery(false);
         sql.Where(GetBaseWhereClause(), new { id });
 
-        RelationDto? dto = Database.Fetch<RelationDto>(SqlSyntax.SelectTop(sql, 1)).FirstOrDefault();
+        RelationDto? dto = Database.Fetch<RelationDto>(sql.SelectTop(1)).FirstOrDefault();
         if (dto == null)
         {
             return null;
@@ -416,11 +416,13 @@ internal sealed class RelationRepository : EntityRepositoryBase<int, IRelation>,
         return sql;
     }
 
-    protected override string GetBaseWhereClause() => $"{Constants.DatabaseSchema.Tables.Relation}.id = @id";
+    protected override string GetBaseWhereClause() => $"{SqlSyntax.GetQuotedTableName(Constants.DatabaseSchema.Tables.Relation)}.id = @id";
 
     protected override IEnumerable<string> GetDeleteClauses()
     {
-        var list = new List<string> { "DELETE FROM umbracoRelation WHERE id = @id" };
+        var list = new List<string> {
+            $"DELETE FROM {SqlSyntax.GetQuotedTableName(Constants.DatabaseSchema.Tables.Relation)} WHERE id = @id"
+        };
         return list;
     }
 

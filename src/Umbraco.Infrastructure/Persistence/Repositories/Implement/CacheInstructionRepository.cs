@@ -23,7 +23,7 @@ internal sealed class CacheInstructionRepository : ICacheInstructionRepository
     /// <inheritdoc />
     public int CountAll()
     {
-        Sql<ISqlContext>? sql = AmbientScope?.SqlContext.Sql().Select("COUNT(*)")
+        Sql<ISqlContext>? sql = AmbientScope?.SqlContext.Sql().SelectCount()
             .From<CacheInstructionDto>();
 
         return AmbientScope?.Database.ExecuteScalar<int>(sql) ?? 0;
@@ -32,7 +32,6 @@ internal sealed class CacheInstructionRepository : ICacheInstructionRepository
     /// <inheritdoc />
     public int CountPendingInstructions(int lastId)
     {
-        SqlSyntax.ISqlSyntaxProvider syntax = AmbientScope?.SqlContext.SqlSyntax ?? throw new InvalidOperationException("No SQL syntax available.");
         Sql<ISqlContext>? sql = AmbientScope?.SqlContext.Sql()
             .SelectSum<CacheInstructionDto>(c => c.InstructionCount)
             .From<CacheInstructionDto>()
@@ -44,7 +43,6 @@ internal sealed class CacheInstructionRepository : ICacheInstructionRepository
     /// <inheritdoc />
     public int GetMaxId()
     {
-        SqlSyntax.ISqlSyntaxProvider syntax = AmbientScope?.SqlContext.SqlSyntax ?? throw new InvalidOperationException("No SQL syntax available.");
         Sql<ISqlContext>? sql = AmbientScope?.SqlContext.Sql()
             .SelectMax<CacheInstructionDto>(c => c.Id)
             .From<CacheInstructionDto>();
@@ -78,7 +76,6 @@ internal sealed class CacheInstructionRepository : ICacheInstructionRepository
     public void DeleteInstructionsOlderThan(DateTime pruneDate)
     {
         // Using 2 queries is faster than convoluted joins.
-        SqlSyntax.ISqlSyntaxProvider syntax = AmbientScope?.SqlContext.SqlSyntax ?? throw new InvalidOperationException("No SQL syntax available.");
         Sql<ISqlContext>? sql = AmbientScope?.SqlContext.Sql()
             .SelectMax<CacheInstructionDto>(c => c.Id)
             .From<CacheInstructionDto>();

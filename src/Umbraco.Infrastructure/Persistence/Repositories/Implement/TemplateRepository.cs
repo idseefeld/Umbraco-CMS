@@ -307,7 +307,7 @@ internal sealed class TemplateRepository : EntityRepositoryBase<int, ITemplate>,
 
         if (ids?.Any() ?? false)
         {
-            sql.Where("umbracoNode.id in (@ids)", new { ids });
+            sql.Where($"{QuoteTab("umbracoNode")}.id in (@ids)", new { ids });
         }
         else
         {
@@ -372,18 +372,20 @@ internal sealed class TemplateRepository : EntityRepositoryBase<int, ITemplate>,
         return sql;
     }
 
-    protected override string GetBaseWhereClause() => $"{Constants.DatabaseSchema.Tables.Node}.id = @id";
+    protected override string GetBaseWhereClause() => $"{QuoteTab(Constants.DatabaseSchema.Tables.Node)}.id = @id";
 
     protected override IEnumerable<string> GetDeleteClauses()
     {
+        var nodeId = QuoteCol("nodeId");
+        var umbracoNode = QuoteTab(NodeDto.TableName);
         var list = new List<string>
         {
-            "DELETE FROM " + Constants.DatabaseSchema.Tables.User2NodeNotify + " WHERE nodeId = @id",
-            "UPDATE " + Constants.DatabaseSchema.Tables.DocumentVersion +
-            " SET templateId = NULL WHERE templateId = @id",
-            "DELETE FROM " + Constants.DatabaseSchema.Tables.DocumentType + " WHERE templateNodeId = @id",
-            "DELETE FROM " + Constants.DatabaseSchema.Tables.Template + " WHERE nodeId = @id",
-            "DELETE FROM " + Constants.DatabaseSchema.Tables.Node + " WHERE id = @id"
+            $"DELETE FROM {QuoteTab(Constants.DatabaseSchema.Tables.User2NodeNotify)} WHERE {nodeId} = @id",
+            $@"UPDATE {QuoteTab(Constants.DatabaseSchema.Tables.DocumentVersion)}
+                SET {QuoteCol("templateId")} = NULL WHERE {QuoteCol("templateId")} = @id",
+            $"DELETE FROM {QuoteTab(Constants.DatabaseSchema.Tables.DocumentType)} WHERE {QuoteCol("templateNodeId")} = @id",
+            $"DELETE FROM {QuoteTab(Constants.DatabaseSchema.Tables.Template)} WHERE {nodeId} = @id",
+            $"DELETE FROM {umbracoNode} WHERE id = @id",
         };
         return list;
     }
@@ -473,7 +475,7 @@ internal sealed class TemplateRepository : EntityRepositoryBase<int, ITemplate>,
         }
 
         //Get TemplateDto from db to get the Primary key of the entity
-        TemplateDto templateDto = Database.SingleOrDefault<TemplateDto>("WHERE nodeId = @Id", new { entity.Id });
+        TemplateDto templateDto = Database.SingleOrDefault<TemplateDto>($"WHERE {QuoteCol("nodeId")} = @Id", new { entity.Id });
 
         //Save updated entity to db
         template.UpdateDate = DateTime.Now;
@@ -641,4 +643,7 @@ internal sealed class TemplateRepository : EntityRepositoryBase<int, ITemplate>,
     }
 
     #endregion
+
+    private string QuoteTab(string tableName) => SqlSyntax.GetQuotedTableName(tableName);
+    private string QuoteCol(string columnName) => SqlSyntax.GetQuotedColumnName(columnName);
 }

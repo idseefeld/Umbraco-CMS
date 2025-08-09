@@ -399,13 +399,6 @@ internal sealed class DatabaseCacheRepository : RepositoryBase, IDatabaseCacheRe
                             .From<NodeDto>()
                             .Where<NodeDto>(n => n.NodeObjectType == objectType));
                 _ = Database.Execute(sql);
-
-                //Database.Execute(
-                //@"DELETE FROM cmsContentNu
-                // WHERE cmsContentNu.nodeId IN (
-                // SELECT id FROM umbracoNode WHERE umbracoNode.nodeObjectType=@objType
-                // )",
-                //new { objType = objectType });
             }
             else
             {
@@ -424,16 +417,6 @@ internal sealed class DatabaseCacheRepository : RepositoryBase, IDatabaseCacheRe
                             n.NodeObjectType == objectType
                             && contentTypeIds.Contains(c.ContentTypeId)));
                 _ = Database.Execute(sql);
-
-                //Database.Execute(
-                //$@"DELETE FROM cmsContentNu
-                // WHERE cmsContentNu.nodeId IN (
-                // SELECT id FROM umbracoNode
-                // JOIN {Constants.DatabaseSchema.Tables.Content} ON {Constants.DatabaseSchema.Tables.Content}.nodeId=umbracoNode.id
-                // WHERE umbracoNode.nodeObjectType=@objType
-                // AND {Constants.DatabaseSchema.Tables.Content}.contentTypeId IN (@ctypes)
-                // )",
-                //new { objType = objectType, ctypes = contentTypeIds });
             }
         }
         catch (Exception ex)

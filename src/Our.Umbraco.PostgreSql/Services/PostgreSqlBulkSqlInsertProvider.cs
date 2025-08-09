@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NPoco;
 using Our.Umbraco.PostgreSql;
 using Umbraco.Cms.Infrastructure.Persistence;
 
@@ -12,6 +13,63 @@ namespace Our.Umbraco.PostgreSql.Services
     {
         public string ProviderName => Constants.ProviderName;
 
+
+        public int BulkInsertRecords<T>(IUmbracoDatabase database, IEnumerable<T> records)
+        {
+            T[] recordsA = [.. records];
+            if (recordsA.Length == 0)
+            {
+                return 0;
+            }
+
+            PocoData? pocoData = database.PocoDataFactory.ForType(typeof(T))
+                ?? throw new InvalidOperationException("Could not find PocoData for " + typeof(T));
+
+            return BulkInsertRecordsSqlite(database, pocoData, recordsA);
+        }
+
+        /// <summary>
+        ///     Bulk-insert records using SqlServer BulkCopy method.
+        /// </summary>
+        /// <typeparam name="T">The type of the records.</typeparam>
+        /// <param name="database">The database.</param>
+        /// <param name="records">The records.</param>
+        /// <returns>The number of records that were inserted.</returns>
+        private static int BulkInsertRecordsSqlite<T>(IUmbracoDatabase database, PocoData pocoData, IEnumerable<T> records)
+        {
+            var count = 0;
+            var inTrans = database.InTransaction;
+
+            if (!inTrans)
+            {
+                database.BeginTransaction();
+            }
+
+            string tableName = database.SqlContext.SqlSyntax.GetQuotedTableName(pocoData.TableInfo.TableName);
+            string primaryKeyName = database.SqlContext.SqlSyntax.GetQuotedColumnName(pocoData.TableInfo.PrimaryKey ?? "id");
+            foreach (T record in records)
+            {
+                try
+                {
+                    _ = database.Insert(tableName, primaryKeyName, record);
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+
+                count++;
+            }
+
+            if (!inTrans)
+            {
+                database.CompleteTransaction();
+            }
+
+            return count;
+        }
+
+        /*
         public int BulkInsertRecords<T>(IUmbracoDatabase database, IEnumerable<T> records)
         {
             if (database == null) throw new ArgumentNullException(nameof(database));
@@ -58,5 +116,6 @@ namespace Our.Umbraco.PostgreSql.Services
 
             return database.Execute(sql, args);
         }
+        */
     }
 }

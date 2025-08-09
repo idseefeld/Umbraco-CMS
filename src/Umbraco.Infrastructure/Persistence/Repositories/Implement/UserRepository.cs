@@ -216,21 +216,21 @@ internal sealed class UserRepository : EntityRepositoryBase<Guid, IUser>, IUserR
         // These keys in this query map to the `Umbraco.Core.Models.Membership.UserState` enum
         var keyAlias = SqlSyntax.GetQuotedName("Key");
         var valueAlias = SqlSyntax.GetQuotedName("Value");
-        var userTableName = SqlSyntax.GetQuotedTableName("userName");
+        var userTableName = QuoteTab("userName");
         var sql = @$"SELECT -1 AS {keyAlias}, COUNT(id) AS {valueAlias} FROM {userTableName}
 UNION
 SELECT 0 AS {keyAlias}, COUNT(id) AS {valueAlias} FROM {userTableName}
-    WHERE {SqlSyntax.GetQuotedColumnName("userDisabled")} = 0 AND {SqlSyntax.GetQuotedColumnName("userNoConsole")} = 0 AND {SqlSyntax.GetQuotedColumnName("lastLoginDate")} IS NOT NULL
+    WHERE {QuoteCol("userDisabled")} = 0 AND {QuoteCol("userNoConsole")} = 0 AND {QuoteCol("lastLoginDate")} IS NOT NULL
 UNION
-SELECT 1 AS {keyAlias}, COUNT(id) AS {valueAlias} FROM {userTableName} WHERE {SqlSyntax.GetQuotedColumnName("userDisabled")} = 1
+SELECT 1 AS {keyAlias}, COUNT(id) AS {valueAlias} FROM {userTableName} WHERE {QuoteCol("userDisabled")} = 1
 UNION
-SELECT 2 AS {keyAlias}, COUNT(id) AS {valueAlias} FROM {userTableName} WHERE {SqlSyntax.GetQuotedColumnName("userNoConsole")} = 1
+SELECT 2 AS {keyAlias}, COUNT(id) AS {valueAlias} FROM {userTableName} WHERE {QuoteCol("userNoConsole")} = 1
 UNION
 SELECT 3 AS {keyAlias}, COUNT(id) AS {valueAlias} FROM {userTableName}
-    WHERE {SqlSyntax.GetQuotedColumnName("lastLoginDate")} IS NULL AND {SqlSyntax.GetQuotedColumnName("userDisabled")} = 1 AND {SqlSyntax.GetQuotedColumnName("invitedDate")} IS NOT NULL
+    WHERE {QuoteCol("lastLoginDate")} IS NULL AND {QuoteCol("userDisabled")} = 1 AND {QuoteCol("invitedDate")} IS NOT NULL
 UNION
 SELECT 4 AS {keyAlias}, COUNT(id) AS {valueAlias} FROM {userTableName}
-    WHERE {SqlSyntax.GetQuotedColumnName("userDisabled")} = 0 AND {SqlSyntax.GetQuotedColumnName("userNoConsole")} = 0 AND {SqlSyntax.GetQuotedColumnName("lastLoginDate")} IS NULL";
+    WHERE {QuoteCol("userDisabled")} = 0 AND {QuoteCol("userNoConsole")} = 0 AND {QuoteCol("lastLoginDate")} IS NULL";
 
         Dictionary<int, int>? result = Database.Dictionary<int, int>(sql);
 
@@ -658,22 +658,22 @@ SELECT 4 AS {keyAlias}, COUNT(id) AS {valueAlias} FROM {userTableName}
             .Select(columns)
             .From<UserDto>();
 
-    protected override string GetBaseWhereClause() => $"{Constants.DatabaseSchema.Tables.User}.id = @id";
+    protected override string GetBaseWhereClause() => $"{QuoteTab(UserDto.TableName)}.id = @id";
 
     protected override IEnumerable<string> GetDeleteClauses()
     {
-        var userColName = SqlSyntax.GetQuotedColumnName("userId");
+        var userColName = QuoteCol("userId");
         var list = new List<string>
         {
-            $"DELETE FROM {SqlSyntax.GetQuotedTableName(UserLoginDto.TableName)} WHERE {userColName} = @id",
-            $"DELETE FROM {SqlSyntax.GetQuotedTableName(User2UserGroupDto.TableName)} WHERE {userColName} = @id",
-            $"DELETE FROM {SqlSyntax.GetQuotedTableName(User2NodeNotifyDto.TableName)} WHERE {userColName} = @id",
-            $"DELETE FROM {SqlSyntax.GetQuotedTableName(User2ClientIdDto.TableName)} WHERE {userColName} = @id",
-            $"DELETE FROM {SqlSyntax.GetQuotedTableName(Constants.DatabaseSchema.Tables.UserStartNode)} WHERE {userColName} = @id",
-            @$"DELETE FROM {SqlSyntax.GetQuotedTableName(ExternalLoginTokenDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("externalLoginId")} =
-                (SELECT id FROM {SqlSyntax.GetQuotedTableName(ExternalLoginTokenDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("externalLoginId")} = @key)",
-            $"DELETE FROM {SqlSyntax.GetQuotedTableName(ExternalLoginDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("userOrMemberKey")} = @key",
-            $"DELETE FROM {SqlSyntax.GetQuotedTableName(Constants.DatabaseSchema.Tables.User)} WHERE id = @id",
+            $"DELETE FROM {QuoteTab(UserLoginDto.TableName)} WHERE {userColName} = @id",
+            $"DELETE FROM {QuoteTab(User2UserGroupDto.TableName)} WHERE {userColName} = @id",
+            $"DELETE FROM {QuoteTab(User2NodeNotifyDto.TableName)} WHERE {userColName} = @id",
+            $"DELETE FROM {QuoteTab(User2ClientIdDto.TableName)} WHERE {userColName} = @id",
+            $"DELETE FROM {QuoteTab(Constants.DatabaseSchema.Tables.UserStartNode)} WHERE {userColName} = @id",
+            @$"DELETE FROM {QuoteTab(ExternalLoginTokenDto.TableName)} WHERE {QuoteCol("externalLoginId")} =
+                (SELECT id FROM {QuoteTab(ExternalLoginTokenDto.TableName)} WHERE {QuoteCol("externalLoginId")} = @key)",
+            $"DELETE FROM {QuoteTab(ExternalLoginDto.TableName)} WHERE {QuoteCol("userOrMemberKey")} = @key",
+            $"DELETE FROM {QuoteTab(Constants.DatabaseSchema.Tables.User)} WHERE id = @id",
         };
         return list;
     }
@@ -1185,10 +1185,10 @@ SELECT 4 AS {keyAlias}, COUNT(id) AS {valueAlias} FROM {userTableName}
         var userIdQuoted = SqlSyntax.GetQuotedColumn("umbracoUser", "id");
         // this is used to get the correct query for the in or not in clause
         return @$"AND ({userIdQuoted} {inOrNotIn} (SELECT DISTINCT {userIdQuoted}
-                    FROM {SqlSyntax.GetQuotedTableName("umbracoUser")}
-                    INNER JOIN {SqlSyntax.GetQuotedTableName("umbracoUser2UserGroup")}
+                    FROM {QuoteTab("umbracoUser")}
+                    INNER JOIN {QuoteTab("umbracoUser2UserGroup")}
                     ON {SqlSyntax.GetQuotedColumn("umbracoUser2UserGroup", "userId")} = {userIdQuoted}
-                    INNER JOIN {SqlSyntax.GetQuotedTableName("umbracoUserGroup")}
+                    INNER JOIN {QuoteTab("umbracoUserGroup")}
                     ON {SqlSyntax.GetQuotedColumn("umbracoUserGroup", "id")} = {SqlSyntax.GetQuotedColumn("umbracoUser2UserGroup", "userGroupId")}
                     WHERE {SqlSyntax.GetQuotedColumn("umbracoUserGroup", "userGroupAlias")} IN (@userGroups)))";
     }
@@ -1312,8 +1312,12 @@ SELECT 4 AS {keyAlias}, COUNT(id) AS {valueAlias} FROM {userTableName}
         // Delete the OpenIddict tokens for the users associated with the removed providers.
         // The following is safe from SQL injection as we are dealing with GUIDs, not strings.
         var userKeysForInClause = string.Join("','", userKeysAssociatedWithRemovedProviders.Select(x => x.ToString()));
-        Database.Execute($"DELETE FROM {SqlSyntax.GetQuotedTableName("umbracoOpenIddictTokens")} WHERE Subject IN ('{userKeysForInClause}')");
+        Database.Execute($"DELETE FROM {QuoteTab("umbracoOpenIddictTokens")} WHERE {QuoteCol("Subject")} IN ('{userKeysForInClause}')");
     }
 
     #endregion
+
+    private string QuoteTab(string tableName) => SqlSyntax.GetQuotedTableName(tableName);
+
+    private string QuoteCol(string columnName) => SqlSyntax.GetQuotedColumnName(columnName);
 }

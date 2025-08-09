@@ -241,7 +241,7 @@ internal sealed class LanguageRepository : EntityRepositoryBase<int, ILanguage>,
         return sql;
     }
 
-    protected override string GetBaseWhereClause() => $"{Constants.DatabaseSchema.Tables.Language}.id = @id";
+    protected override string GetBaseWhereClause() => $"{SqlSyntax.GetQuotedTableName(Constants.DatabaseSchema.Tables.Language)}.id = @id";
 
     protected override IEnumerable<string> GetDeleteClauses()
     {

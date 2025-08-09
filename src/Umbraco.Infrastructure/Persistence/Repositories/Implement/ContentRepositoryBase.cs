@@ -530,9 +530,9 @@ namespace Umbraco.Cms.Infrastructure.Persistence.Repositories.Implement
 
             // needs to be an outer join since there's no guarantee that any of the nodes have values for this property
             Sql<ISqlContext> innerSql = Sql().Select($@"CASE
-                            WHEN intValue IS NOT NULL THEN {sortedInt}
-                            WHEN decimalValue IS NOT NULL THEN {sortedDecimal}
-                            WHEN dateValue IS NOT NULL THEN {sortedDate}
+                            WHEN {SqlSyntax.GetQuotedColumnName("intValue")} IS NOT NULL THEN {sortedInt}
+                            WHEN {SqlSyntax.GetQuotedColumnName("decimalValue")} IS NOT NULL THEN {sortedDecimal}
+                            WHEN {SqlSyntax.GetQuotedColumnName("dateValue")} IS NOT NULL THEN {sortedDate}
                             ELSE {sortedString}
                         END AS {SqlSyntax.GetQuotedName("customPropVal")},
                         cver.{SqlSyntax.GetQuotedColumnName("nodeId")} AS {SqlSyntax.GetQuotedName("customPropNodeId")}")
@@ -551,7 +551,7 @@ namespace Umbraco.Cms.Infrastructure.Persistence.Repositories.Implement
 
             // create the outer join complete sql fragment
             var outerJoinTempTable = $@"LEFT OUTER JOIN ({innerSqlString}) AS {SqlSyntax.GetQuotedName("customPropData")}
-                ON {SqlSyntax.GetQuotedName("customPropData")}.{SqlSyntax.GetQuotedColumnName("customPropNodeId")} = {SqlSyntax.GetQuotedTableName(Constants.DatabaseSchema.Tables.Node)}.id "; // trailing space is important!
+                ON {SqlSyntax.GetQuotedName("customPropData")}.{SqlSyntax.GetQuotedColumnName("customPropNodeId")} = {SqlSyntax.GetQuotedTableName(NodeDto.TableName)}.id "; // trailing space is important!
 
             // insert this just above the first WHERE
             var newSql = InsertBefore(sql.SQL, "WHERE", outerJoinTempTable);

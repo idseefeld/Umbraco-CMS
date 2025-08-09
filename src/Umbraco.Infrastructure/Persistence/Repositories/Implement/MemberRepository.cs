@@ -504,10 +504,9 @@ public class MemberRepository : ContentRepositoryBase<int, IMember, MemberReposi
     protected override IMember? PerformGet(int id)
     {
         Sql<ISqlContext> sql = GetBaseQuery(QueryType.Single)
-            .Where<NodeDto>(x => x.NodeId == id)
-            .SelectTop(1);
+            .Where<NodeDto>(x => x.NodeId == id);
 
-        MemberDto? dto = Database.Fetch<MemberDto>(sql).FirstOrDefault();
+        MemberDto? dto = Database.Fetch<MemberDto>(sql.SelectTop(1)).FirstOrDefault();
         return dto == null
             ? null
             : MapDtoToContent(dto);
