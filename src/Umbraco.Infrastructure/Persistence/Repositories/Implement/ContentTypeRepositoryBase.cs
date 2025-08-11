@@ -476,7 +476,7 @@ internal abstract class ContentTypeRepositoryBase<TEntity> : EntityRepositoryBas
             IEnumerable<int> propertyTypeToDeleteIds = dbPropertyTypeIds.Except(entityPropertyTypes);
             foreach (var propertyTypeId in propertyTypeToDeleteIds)
             {
-                DeletePropertyType(entity.Id, propertyTypeId);
+                DeletePropertyType(entity, propertyTypeId);
             }
         }
 
@@ -692,7 +692,7 @@ internal abstract class ContentTypeRepositoryBase<TEntity> : EntityRepositoryBas
         {
             foreach (var id in orphanPropertyTypeIds)
             {
-                DeletePropertyType(entity.Id, id);
+                DeletePropertyType(entity, id);
             }
         }
 
@@ -1455,7 +1455,7 @@ internal abstract class ContentTypeRepositoryBase<TEntity> : EntityRepositoryBas
         }
     }
 
-    private void DeletePropertyType(int contentTypeId, int propertyTypeId)
+    private void DeletePropertyType(IContentTypeComposition contentType, int propertyTypeId)
     {
         // first clear dependencies
         Sql<ISqlContext> sql = Sql()
@@ -1467,10 +1467,32 @@ internal abstract class ContentTypeRepositoryBase<TEntity> : EntityRepositoryBas
             .Where<PropertyDataDto>(x => x.PropertyTypeId == propertyTypeId);
         _ = Database.Execute(sql);
 
-        // then delete the property type
+        //MERGE: check merge additions
+        // Clear the property value permissions, which aren't a hard dependency with a foreign key, but we want to ensure
+        // that any for removed property types are cleared.
+        var uniqueIdAsString = string.Format(SqlContext.SqlSyntax.ConvertUniqueIdentifierToString, "uniqueId");
+        Sql<ISqlContext> sqlInner = Sql()
+            .Select<PropertyTypeDto>(x => x.UniqueId)
+            .From<PropertyTypeDto>()
+            .Where<PropertyTypeDto>(x => x.Id == propertyTypeId);
+        var permissionSearchString = SqlContext.SqlSyntax.GetConcat(sqlInner.SQL, "'|%'");
+
+        // var permissionSearchString = SqlContext.SqlSyntax.GetConcat(
+        // $"(SELECT {uniqueIdAsString} FROM {PropertyTypeDto.TableName} WHERE id = @PropertyTypeId)",
+        //    "'|%'");
+        sql = Sql().Delete<UserGroup2GranularPermissionDto>()
+            .Where<UserGroup2GranularPermissionDto>(x => x.UniqueId == contentType.Key)
+            .WhereLike<UserGroup2GranularPermissionDto>(x => x.Permission, permissionSearchString);
+        _ = Database.Execute(sql);
+
+        // Database.Delete<UserGroup2GranularPermissionDto>(
+        //    "WHERE uniqueId = @ContentTypeKey AND permission LIKE " + permissionSearchString,
+        //    new { ContentTypeKey = contentType.Key, PropertyTypeId = propertyTypeId });
+
+        // Finally delete the property type.
         sql = Sql()
             .Delete<PropertyTypeDto>()
-            .Where<PropertyTypeDto>(x => x.ContentTypeId == contentTypeId && x.Id == propertyTypeId);
+            .Where<PropertyTypeDto>(x => x.ContentTypeId == contentType.Id && x.Id == propertyTypeId);
         _ = Database.Execute(sql);
     }
 
@@ -1610,6 +1632,17 @@ internal abstract class ContentTypeRepositoryBase<TEntity> : EntityRepositoryBas
         var inClause = $"IN (SELECT {SqlSyntax.GetQuotedTableName("umbracoUserGroup")}.{SqlSyntax.GetQuotedColumnName("key")} FROM {SqlSyntax.GetQuotedTableName("umbracoUserGroup")} WHERE {SqlSyntax.GetQuotedColumnName("Id")} = @id)";
         var list = new List<string>
         {
+            //MERGE: check merge changes
+            //"DELETE FROM " + Constants.DatabaseSchema.Tables.User2NodeNotify + " WHERE nodeId = @id",
+            //"DELETE FROM " + Constants.DatabaseSchema.Tables.UserGroup2GranularPermission + " WHERE uniqueId IN (SELECT uniqueId FROM umbracoNode WHERE id = @id)",
+            //"DELETE FROM " + Constants.DatabaseSchema.Tables.TagRelationship + " WHERE nodeId = @id",
+            //"DELETE FROM " + Constants.DatabaseSchema.Tables.ContentChildType + " WHERE Id = @id",
+            //"DELETE FROM " + Constants.DatabaseSchema.Tables.ContentChildType + " WHERE AllowedId = @id",
+            //"DELETE FROM " + Constants.DatabaseSchema.Tables.ContentTypeTree + " WHERE parentContentTypeId = @id",
+            //"DELETE FROM " + Constants.DatabaseSchema.Tables.ContentTypeTree + " WHERE childContentTypeId = @id",
+            //"DELETE FROM " + Constants.DatabaseSchema.Tables.PropertyData + " WHERE propertyTypeId IN (SELECT id FROM cmsPropertyType WHERE contentTypeId = @id)",
+            //"DELETE FROM " + Constants.DatabaseSchema.Tables.PropertyType + " WHERE contentTypeId = @id",
+            //"DELETE FROM " + Constants.DatabaseSchema.Tables.PropertyTypeGroup + " WHERE contenttypeNodeId = @id",
             $"DELETE FROM {SqlSyntax.GetQuotedTableName("umbracoUser2NodeNotify")} WHERE {SqlSyntax.GetQuotedColumnName("nodeId")} = @id",
             $"DELETE FROM {SqlSyntax.GetQuotedTableName("umbracoUserGroup2Permission")} WHERE {SqlSyntax.GetQuotedColumnName("userGroupKey")} {inClause}",
             $"DELETE FROM {SqlSyntax.GetQuotedTableName("umbracoUserGroup2GranularPermission")} WHERE {SqlSyntax.GetQuotedColumnName("userGroupKey")} {inClause}",
