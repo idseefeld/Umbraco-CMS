@@ -476,7 +476,7 @@ internal abstract class ContentTypeRepositoryBase<TEntity> : EntityRepositoryBas
             IEnumerable<int> propertyTypeToDeleteIds = dbPropertyTypeIds.Except(entityPropertyTypes);
             foreach (var propertyTypeId in propertyTypeToDeleteIds)
             {
-                DeletePropertyType(entity.Id, propertyTypeId);
+                DeletePropertyType(entity, propertyTypeId);
             }
         }
 
@@ -692,7 +692,7 @@ internal abstract class ContentTypeRepositoryBase<TEntity> : EntityRepositoryBas
         {
             foreach (var id in orphanPropertyTypeIds)
             {
-                DeletePropertyType(entity.Id, id);
+                DeletePropertyType(entity, id);
             }
         }
 
@@ -1455,7 +1455,7 @@ internal abstract class ContentTypeRepositoryBase<TEntity> : EntityRepositoryBas
         }
     }
 
-    private void DeletePropertyType(int contentTypeId, int propertyTypeId)
+    private void DeletePropertyType(IContentTypeComposition contentType, int propertyTypeId)
     {
         // first clear dependencies
         Sql<ISqlContext> sql = Sql()
@@ -1467,10 +1467,20 @@ internal abstract class ContentTypeRepositoryBase<TEntity> : EntityRepositoryBas
             .Where<PropertyDataDto>(x => x.PropertyTypeId == propertyTypeId);
         _ = Database.Execute(sql);
 
-        // then delete the property type
+        // Clear the property value permissions, which aren't a hard dependency with a foreign key, but we want to ensure
+        // that any for removed property types are cleared.
+        var uniqueIdAsString = string.Format(SqlContext.SqlSyntax.ConvertUniqueIdentifierToString, "uniqueId");
+        var permissionSearchString = SqlContext.SqlSyntax.GetConcat(
+         $"(SELECT {SqlSyntax.GetQuotedColumnName(uniqueIdAsString)} FROM {SqlSyntax.GetQuotedTableName(PropertyTypeDto.TableName)} WHERE id = @PropertyTypeId)",
+           "'|%'");
+        _ = Database.Delete<UserGroup2GranularPermissionDto>(
+           $"WHERE {SqlSyntax.GetQuotedColumnName(uniqueIdAsString)} = @ContentTypeKey AND permission LIKE " + permissionSearchString,
+           new { ContentTypeKey = contentType.Key, PropertyTypeId = propertyTypeId });
+
+        // Finally delete the property type.
         sql = Sql()
             .Delete<PropertyTypeDto>()
-            .Where<PropertyTypeDto>(x => x.ContentTypeId == contentTypeId && x.Id == propertyTypeId);
+            .Where<PropertyTypeDto>(x => x.ContentTypeId == contentType.Id && x.Id == propertyTypeId);
         _ = Database.Execute(sql);
     }
 
@@ -1607,19 +1617,18 @@ internal abstract class ContentTypeRepositoryBase<TEntity> : EntityRepositoryBas
         // in theory, services should have ensured that content items of the given content type
         // have been deleted and therefore PropertyData has been cleared, so PropertyData
         // is included here just to be 100% sure since it has a FK on cmsPropertyType.
-        var inClause = $"IN (SELECT {SqlSyntax.GetQuotedTableName("umbracoUserGroup")}.{SqlSyntax.GetQuotedColumnName("key")} FROM {SqlSyntax.GetQuotedTableName("umbracoUserGroup")} WHERE {SqlSyntax.GetQuotedColumnName("Id")} = @id)";
         var list = new List<string>
         {
-            $"DELETE FROM {SqlSyntax.GetQuotedTableName("umbracoUser2NodeNotify")} WHERE {SqlSyntax.GetQuotedColumnName("nodeId")} = @id",
-            $"DELETE FROM {SqlSyntax.GetQuotedTableName("umbracoUserGroup2Permission")} WHERE {SqlSyntax.GetQuotedColumnName("userGroupKey")} {inClause}",
-            $"DELETE FROM {SqlSyntax.GetQuotedTableName("umbracoUserGroup2GranularPermission")} WHERE {SqlSyntax.GetQuotedColumnName("userGroupKey")} {inClause}",
-            $"DELETE FROM {SqlSyntax.GetQuotedTableName("cmsTagRelationship")} WHERE {SqlSyntax.GetQuotedColumnName("nodeId")} = @id",
-            $"DELETE FROM {SqlSyntax.GetQuotedTableName("cmsContentTypeAllowedContentType")} WHERE {SqlSyntax.GetQuotedColumnName("Id")} = @id",
-            $"DELETE FROM {SqlSyntax.GetQuotedTableName("cmsContentTypeAllowedContentType")} WHERE {SqlSyntax.GetQuotedColumnName("AllowedId")} = @id",
-            $"DELETE FROM {SqlSyntax.GetQuotedTableName("cmsContentType2ContentType")} WHERE {SqlSyntax.GetQuotedColumnName("parentContentTypeId")} = @id",
-            $"DELETE FROM {SqlSyntax.GetQuotedTableName("cmsContentType2ContentType")} WHERE {SqlSyntax.GetQuotedColumnName("childContentTypeId")} = @id",
-            $"DELETE FROM {SqlSyntax.GetQuotedTableName(PropertyDataDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("propertyTypeId")}" +
-                $" IN (SELECT id FROM {SqlSyntax.GetQuotedTableName("cmsPropertyType")} WHERE {SqlSyntax.GetQuotedColumnName("contentTypeId")} = @id)",
+            $"DELETE FROM {SqlSyntax.GetQuotedTableName(User2NodeNotifyDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("nodeId")} = @id",
+            $@"DELETE FROM {SqlSyntax.GetQuotedTableName(UserGroup2GranularPermissionDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("uniqueId")} IN
+                (SELECT {SqlSyntax.GetQuotedColumnName("uniqueId")} FROM {SqlSyntax.GetQuotedTableName(NodeDto.TableName)} WHERE id = @id)",
+            $"DELETE FROM {SqlSyntax.GetQuotedTableName(TagRelationshipDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("nodeId")} = @id",
+            $"DELETE FROM {SqlSyntax.GetQuotedTableName(ContentTypeAllowedContentTypeDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("Id")} = @id",
+            $"DELETE FROM {SqlSyntax.GetQuotedTableName(ContentTypeAllowedContentTypeDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("AllowedId")} = @id",
+            $"DELETE FROM {SqlSyntax.GetQuotedTableName(ContentType2ContentTypeDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("parentContentTypeId")} = @id",
+            $"DELETE FROM {SqlSyntax.GetQuotedTableName(ContentType2ContentTypeDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("childContentTypeId")} = @id",
+            $@"DELETE FROM {SqlSyntax.GetQuotedTableName(PropertyDataDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("propertyTypeId")} IN
+                (SELECT id FROM {SqlSyntax.GetQuotedTableName(PropertyTypeDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("contentTypeId")} = @id)",
             $"DELETE FROM {SqlSyntax.GetQuotedTableName(PropertyTypeDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("contentTypeId")} = @id",
             $"DELETE FROM {SqlSyntax.GetQuotedTableName(PropertyTypeGroupDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("contenttypeNodeId")} = @id",
         };
