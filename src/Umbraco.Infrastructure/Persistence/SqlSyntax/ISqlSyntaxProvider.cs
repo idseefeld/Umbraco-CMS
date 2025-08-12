@@ -138,7 +138,7 @@ public interface ISqlSyntaxProvider
 
     string FormatTableRename(string? oldName, string? newName);
 
-    string ColumnWithAlias(string tableNameOrAlias, string columnName, string columnAlias);
+    string ColumnWithAlias(string tableNameOrAlias, string columnName, string columnAlias = "");
 
     void HandleCreateTable(IDatabase database, TableDefinition tableDefinition, bool skipKeysAndIndexes = false);
 

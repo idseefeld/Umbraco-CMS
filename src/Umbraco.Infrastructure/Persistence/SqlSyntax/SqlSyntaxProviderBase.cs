@@ -417,7 +417,7 @@ public abstract class SqlSyntaxProviderBase<TSyntax> : ISqlSyntaxProvider
     public virtual string FormatTableRename(string? oldName, string? newName) =>
         string.Format(RenameTable, GetQuotedTableName(oldName), GetQuotedTableName(newName));
 
-    public virtual string ColumnWithAlias(string tableNameOrAlias, string columnName, string columnAlias)
+    public virtual string ColumnWithAlias(string tableNameOrAlias, string columnName, string columnAlias = "")
     {
         var quotedColumnName = GetQuotedColumnName(columnName);
         var tablePrefix = GetTableNameOrAlias(tableNameOrAlias);

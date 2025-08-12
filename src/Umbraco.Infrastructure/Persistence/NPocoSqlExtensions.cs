@@ -153,7 +153,7 @@ namespace Umbraco.Extensions
 
         public static Sql<ISqlContext> Union(this Sql<ISqlContext> sql, Sql<ISqlContext> sql2)
         {
-            return sql.Append( " UNION ").Append(sql2);
+            return sql.Append(" UNION ").Append(sql2);
         }
 
         public static Sql<ISqlContext>.SqlJoinClause<ISqlContext> InnerJoinNested(this Sql<ISqlContext> sql, Sql<ISqlContext> nestedQuery, string alias)
@@ -287,8 +287,8 @@ namespace Umbraco.Extensions
         /// <returns>The Sql statement.</returns>
         public static Sql<ISqlContext> WhereNull<TDto>(this Sql<ISqlContext> sql, Expression<Func<TDto, object?>> field, string? tableAlias = null, bool not = false)
         {
-            var column = sql.GetColumns(columnExpressions: new[] { field }, tableAlias: tableAlias, withAlias: false).First();
-            return sql.Where("(" + column + " IS " + (not ? "NOT " : string.Empty) + "NULL)");
+            var column = sql.GetColumns(columnExpressions: [field], tableAlias: tableAlias, withAlias: false).First();
+            return sql.Where($"({column} IS {(not ? "NOT " : string.Empty)}NULL)");
         }
 
         #endregion
@@ -304,7 +304,7 @@ namespace Umbraco.Extensions
         /// <returns>The Sql statement.</returns>
         public static Sql<ISqlContext> From<TDto>(this Sql<ISqlContext> sql, string? alias = null)
         {
-            Type type = typeof (TDto);
+            Type type = typeof(TDto);
             var tableName = type.GetTableName();
 
             var from = sql.SqlContext.SqlSyntax.GetQuotedTableName(tableName);
@@ -1204,7 +1204,7 @@ namespace Umbraco.Extensions
 
             private SqlRef<TDto> Select<TRefDto>(PropertyInfo? propertyInfo, string? tableAlias, Func<SqlRef<TRefDto>, SqlRef<TRefDto>>? nested = null)
             {
-                var referenceName = propertyInfo?.Name ?? typeof (TDto).Name;
+                var referenceName = propertyInfo?.Name ?? typeof(TDto).Name;
                 if (Prefix != null)
                 {
                     referenceName = Prefix + PocoData.Separator + referenceName;
@@ -1429,7 +1429,7 @@ namespace Umbraco.Extensions
 
         private static string[] GetColumns<TDto>(this Sql<ISqlContext> sql, string? tableAlias = null, string? referenceName = null, Expression<Func<TDto, object?>>[]? columnExpressions = null, bool withAlias = true, bool forInsert = false)
         {
-            PocoData? pd = sql.SqlContext.PocoDataFactory.ForType(typeof (TDto));
+            PocoData? pd = sql.SqlContext.PocoDataFactory.ForType(typeof(TDto));
             var tableName = tableAlias ?? pd.TableInfo.TableName;
             var queryColumns = pd.QueryColumns.ToList();
 
