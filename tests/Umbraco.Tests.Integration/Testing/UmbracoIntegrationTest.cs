@@ -91,21 +91,8 @@ public abstract class UmbracoIntegrationTest : UmbracoIntegrationTestBase
     [TearDown]
     public void TearDownAsync()
     {
-        AwaitCleanupViewFiles();
-
         _host.StopAsync();
-        Services.DisposeIfDisposable();
-    }
-
-    protected void AwaitCleanupViewFiles()
-    {
-        // This method is used to ensure that the view files are cleaned up after each test
-        // It will retry until the cleanup is successful
-        while (!CleanupViewFiles())
-        {
-            // Wait a bit before retrying
-            Thread.Sleep(100);
-        }
+        (Services as IDisposable)?.Dispose();
     }
 
     private bool CleanupViewFiles()
