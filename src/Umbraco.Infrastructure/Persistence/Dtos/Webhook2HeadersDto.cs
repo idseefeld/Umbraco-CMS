@@ -9,13 +9,13 @@ namespace Umbraco.Cms.Infrastructure.Persistence.Dtos;
 public class Webhook2HeadersDto
 {
     [Column("webhookId")]
-    [PrimaryKeyColumn(AutoIncrement = false, Name = "PK_headers2WebhookDto", OnColumns = "webhookId, key")]
+    [PrimaryKeyColumn(AutoIncrement = false, Name = "PK_heaeders2WebhookDto", OnColumns = "webhookId, key")]
     [ForeignKey(typeof(WebhookDto), OnDelete = Rule.Cascade)]
     public int WebhookId { get; set; }
 
-    [Column("key")]
+    [Column("Key")]
     public string Key { get; set; } = string.Empty;
 
-    [Column("value")]
+    [Column("Value")]
     public string Value { get; set; } = string.Empty;
 }

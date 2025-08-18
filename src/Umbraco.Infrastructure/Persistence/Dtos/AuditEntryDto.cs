@@ -22,10 +22,6 @@ internal sealed class AuditEntryDto
     [Column("performingUserId")]
     public int PerformingUserId { get; set; }
 
-    [Column("performingUserKey")]
-    [NullSetting(NullSetting = NullSettings.Null)]
-    public Guid? PerformingUserKey { get; set; }
-
     [Column("performingDetails")]
     [NullSetting(NullSetting = NullSettings.Null)]
     [Length(Constants.Audit.DetailsLength)]
@@ -42,10 +38,6 @@ internal sealed class AuditEntryDto
 
     [Column("affectedUserId")]
     public int AffectedUserId { get; set; }
-
-    [Column("affectedUserKey")]
-    [NullSetting(NullSetting = NullSettings.Null)]
-    public Guid? AffectedUserKey { get; set; }
 
     [Column("affectedDetails")]
     [NullSetting(NullSetting = NullSettings.Null)]
