@@ -1454,7 +1454,6 @@ internal abstract class ContentTypeRepositoryBase<TEntity> : EntityRepositoryBas
             }
         }
     }
-
     private void DeletePropertyType(IContentTypeComposition contentType, int propertyTypeId)
     {
         // first clear dependencies
@@ -1470,20 +1469,15 @@ internal abstract class ContentTypeRepositoryBase<TEntity> : EntityRepositoryBas
 
         // Clear the property value permissions, which aren't a hard dependency with a foreign key, but we want to ensure
         // that any for removed property types are cleared.
-        Sql<ISqlContext> permissionSql = Sql()
-            .Select<PropertyTypeDto>(c => c.UniqueId)
-            .From<PropertyTypeDto>()
-            .Where<PropertyTypeDto>(c => c.Id == propertyTypeId);
-        Guid[] guids = [.. Database.Fetch<Guid>(permissionSql)];
-        IEnumerable<string> permissions = guids.Select(s =>
-            s.ToString().TrimStart('{').TrimEnd('}'));
+        var uniqueIdAsString = string.Format(SqlContext.SqlSyntax.ConvertUniqueIdentifierToString, "uniqueId");
+        var permissionSearchString = SqlContext.SqlSyntax.GetConcat(
+            "(SELECT " + SqlSyntax.GetQuotedColumnName(uniqueIdAsString) + " FROM " + SqlSyntax.GetQuotedTableName(Constants.DatabaseSchema.Tables.PropertyType) + " WHERE id = @PropertyTypeId)",
+            "'|%'");
 
-        Sql<ISqlContext> delSql = Sql()
-            .Delete<UserGroup2GranularPermissionDto>()
-            .Where<UserGroup2GranularPermissionDto>(c => c.UniqueId == contentType.Key)
-            .WhereLowerIn<UserGroup2GranularPermissionDto>(c => c.Permission, permissions);
+        Database.Delete<UserGroup2GranularPermissionDto>(
+            $"WHERE {SqlSyntax.GetQuotedColumnName("uniqueId")} = @ContentTypeKey AND {SqlSyntax.GetQuotedColumnName("permission")} LIKE " + permissionSearchString,
+            new { ContentTypeKey = contentType.Key, PropertyTypeId = propertyTypeId });
 
-        _ = Database.Execute(delSql);
 
         // Finally delete the property type.
         sql = Sql()
