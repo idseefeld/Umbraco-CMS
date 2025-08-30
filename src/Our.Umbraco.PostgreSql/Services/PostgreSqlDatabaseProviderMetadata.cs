@@ -1,4 +1,5 @@
 using System.Runtime.Serialization;
+using Npgsql;
 using Our.Umbraco.PostgreSql;
 using Umbraco.Cms.Core.Install.Models;
 using Umbraco.Cms.Infrastructure.Persistence;
@@ -60,13 +61,28 @@ namespace Our.Umbraco.PostgreSql.Services
         {
             var server = !string.IsNullOrEmpty(databaseModel.Server) ? databaseModel.Server : ServerPlaceholder ?? "localhost:5432";
             var serverParts = server.Split([':'], 2);
-            var sslMode = databaseModel.TrustServerCertificate ? "SSL Mode=Allow;" : "SSL Mode=VerifyCA;"; // ToDo: SSL Mode should be configurable in appsettings. Read details: https://www.npgsql.org/doc/security.html?tabs=tabid-1
+            var hostName = serverParts[0];
+            var port = serverParts.Length > 1 ? serverParts[1] : "5433";
 
-            string connectionString = !string.IsNullOrEmpty(databaseModel.ConnectionString)
-                ? databaseModel.ConnectionString
-                : $"Host={serverParts[0]};Port={serverParts[1]};Database={databaseModel.DatabaseName};Username={databaseModel.Login};Password={databaseModel.Password};{sslMode}";
+            var csb = new NpgsqlConnectionStringBuilder
+            {
+                Host = hostName ?? "localhost",
+                Port = int.Parse(port),
+                SslMode = databaseModel.TrustServerCertificate ? SslMode.Allow : SslMode.VerifyCA,
+                Database = databaseModel.DatabaseName ?? Constants.UmbracoDefaultDatabaseName,
+            };
 
-            return connectionString;
+            if (databaseModel.IntegratedAuth)
+            {
+                // PostgreSQL does not support integrated authentication in the same way as SQL Server or Windows Authentication. Not the client decides how to authenticate, bute the server via pg_hba.conf see. https://github.com/npgsql/npgsql/issues/4789
+            }
+            else
+            {
+                csb.Username = databaseModel.Login ?? string.Empty;
+                csb.Password = databaseModel.Password ?? string.Empty;
+            }
+
+            return csb.ConnectionString;
         }
     }
 }
