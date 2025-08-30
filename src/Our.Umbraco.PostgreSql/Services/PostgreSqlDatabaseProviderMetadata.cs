@@ -47,7 +47,7 @@ namespace Our.Umbraco.PostgreSql.Services
         public bool RequiresCredentials => true;
 
         /// <inheritdoc/>
-        public bool SupportsIntegratedAuthentication => false;
+        public bool SupportsIntegratedAuthentication => true;
 
         /// <inheritdoc/>
         public bool RequiresConnectionTest => true;
