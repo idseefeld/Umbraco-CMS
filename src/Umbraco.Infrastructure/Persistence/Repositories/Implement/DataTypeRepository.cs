@@ -29,6 +29,7 @@ internal sealed class DataTypeRepository : EntityRepositoryBase<int, IDataType>,
     private readonly ILogger<IDataType> _dataTypeLogger;
     private readonly PropertyEditorCollection _editors;
     private readonly IConfigurationEditorJsonSerializer _serializer;
+    private readonly IDataValueEditorFactory _dataValueEditorFactory;
 
     public DataTypeRepository(
         IScopeAccessor scopeAccessor,
@@ -36,11 +37,21 @@ internal sealed class DataTypeRepository : EntityRepositoryBase<int, IDataType>,
         PropertyEditorCollection editors,
         ILogger<DataTypeRepository> logger,
         ILoggerFactory loggerFactory,
-        IConfigurationEditorJsonSerializer serializer)
-        : base(scopeAccessor, cache, logger)
+        IConfigurationEditorJsonSerializer serializer,
+        IRepositoryCacheVersionService repositoryCacheVersionService,
+        ICacheSyncService cacheSyncService,
+        IDataValueEditorFactory dataValueEditorFactory)
+        : base(
+            scopeAccessor,
+            cache,
+            logger,
+            repositoryCacheVersionService,
+            cacheSyncService
+            )
     {
         _editors = editors;
         _serializer = serializer;
+        _dataValueEditorFactory = dataValueEditorFactory;
         _dataTypeLogger = loggerFactory.CreateLogger<IDataType>();
     }
 
@@ -254,16 +265,20 @@ internal sealed class DataTypeRepository : EntityRepositoryBase<int, IDataType>,
 
         if (ids?.Any() ?? false)
         {
-            // dataTypeSql.Where("umbracoNode.id in (@ids)", new { ids });
-            _ = dataTypeSql.WhereIn<NodeDto>(w => w.NodeId, ids);
+            dataTypeSql.WhereIn<NodeDto>(w => w.NodeId, ids);
         }
         else
         {
-            _ = dataTypeSql.Where<NodeDto>(x => x.NodeObjectType == NodeObjectTypeId);
+            dataTypeSql.Where<NodeDto>(x => x.NodeObjectType == NodeObjectTypeId);
         }
 
         List<DataTypeDto>? dtos = Database.Fetch<DataTypeDto>(dataTypeSql);
-        return dtos.Select(x => DataTypeFactory.BuildEntity(x, _editors, _dataTypeLogger, _serializer)).ToArray();
+        return dtos.Select(x => DataTypeFactory.BuildEntity(
+            x,
+            _editors,
+            _dataTypeLogger,
+            _serializer,
+            _dataValueEditorFactory)).ToArray();
     }
 
     protected override IEnumerable<IDataType> PerformGetByQuery(IQuery<IDataType> query)
@@ -274,7 +289,12 @@ internal sealed class DataTypeRepository : EntityRepositoryBase<int, IDataType>,
 
         List<DataTypeDto>? dtos = Database.Fetch<DataTypeDto>(sql);
 
-        return dtos.Select(x => DataTypeFactory.BuildEntity(x, _editors, _dataTypeLogger, _serializer)).ToArray();
+        return dtos.Select(x => DataTypeFactory.BuildEntity(
+            x,
+            _editors,
+            _dataTypeLogger,
+            _serializer,
+            _dataValueEditorFactory)).ToArray();
     }
 
     #endregion
@@ -297,7 +317,7 @@ internal sealed class DataTypeRepository : EntityRepositoryBase<int, IDataType>,
         return sql;
     }
 
-    protected override string GetBaseWhereClause() => $"{SqlSyntax.GetQuotedTableName("umbracoNode")}.id = @id";
+    protected override string GetBaseWhereClause() => $"{QuoteTableName("umbracoNode")}.id = @id";
 
     protected override IEnumerable<string> GetDeleteClauses() => Array.Empty<string>();
 
@@ -331,9 +351,9 @@ internal sealed class DataTypeRepository : EntityRepositoryBase<int, IDataType>,
         Sql<ISqlContext> sql = Sql()
             .SelectAll()
             .From<NodeDto>()
-            .Where<NodeDto>(x => x.NodeId == entity.ParentId && x.NodeObjectType == NodeObjectTypeId);
-        NodeDto? parent = Database.Fetch<NodeDto>(sql.SelectTop(1)).FirstOrDefault();
-        var level = (parent?.Level ?? 0) + 1;
+            .Where<NodeDto>(x => x.NodeId == entity.ParentId);
+        NodeDto parent = Database.First<NodeDto>(sql);
+        var level = parent.Level + 1;
         sql = Sql()
             .SelectCount()
             .From<NodeDto>()
@@ -342,7 +362,7 @@ internal sealed class DataTypeRepository : EntityRepositoryBase<int, IDataType>,
 
         // Create the (base) node data - umbracoNode
         NodeDto nodeDto = dto.NodeDto;
-        nodeDto.Path = parent?.Path ?? "-1";
+        nodeDto.Path = parent.Path;
         nodeDto.Level = short.Parse(level.ToString(CultureInfo.InvariantCulture));
         nodeDto.SortOrder = sortOrder;
         var o = Database.IsNew(nodeDto) ? Convert.ToInt32(Database.Insert(nodeDto)) : Database.Update(nodeDto);
@@ -389,7 +409,7 @@ internal sealed class DataTypeRepository : EntityRepositoryBase<int, IDataType>,
                 .SelectAll()
                 .From<NodeDto>()
                 .Where<NodeDto>(x => x.NodeId == entity.ParentId);
-            NodeDto? parent = Database.Fetch<NodeDto>(sql.SelectTop(1)).FirstOrDefault();
+            NodeDto? parent = Database.FirstOrDefault<NodeDto>(sql);
             entity.Path = string.Concat(parent?.Path ?? "-1", ",", entity.Id);
             entity.Level = (parent?.Level ?? 0) + 1;
 
@@ -417,15 +437,15 @@ internal sealed class DataTypeRepository : EntityRepositoryBase<int, IDataType>,
 
         // Remove Notifications
         sql = Sql().Delete<User2NodeNotifyDto>(x => x.NodeId == entity.Id);
-        _ = Database.Execute(sql);
+        Database.Execute(sql);
 
         // Remove Permissions
         sql = Sql().Delete<UserGroup2GranularPermissionDto>(x => x.UniqueId == entity.Key);
-        _ = Database.Execute(sql);
+        Database.Execute(sql);
 
         // Remove associated tags
         sql = Sql().Delete<TagRelationshipDto>(x => x.NodeId == entity.Id);
-        _ = Database.Execute(sql);
+        Database.Execute(sql);
 
         // PropertyTypes containing the DataType being deleted
         sql = Sql()
@@ -438,19 +458,19 @@ internal sealed class DataTypeRepository : EntityRepositoryBase<int, IDataType>,
         foreach (PropertyTypeDto? dto in propertyTypeDtos)
         {
             sql = Sql().Delete<PropertyDataDto>(x => x.PropertyTypeId == dto.Id);
-            _ = Database.Execute(sql);
+            Database.Execute(sql);
 
             sql = Sql().Delete<PropertyTypeDto>(x => x.Id == dto.Id);
-            _ = Database.Execute(sql);
+            Database.Execute(sql);
         }
 
         // Delete Content specific data
         sql = Sql().Delete<DataTypeDto>(x => x.NodeId == entity.Id);
-        _ = Database.Execute(sql);
+        Database.Execute(sql);
 
         // Delete (base) node data
         sql = Sql().Delete<NodeDto>(x => x.UniqueId == entity.Key);
-        _ = Database.Execute(sql);
+        Database.Execute(sql);
 
         entity.DeleteDate = DateTime.UtcNow;
     }

@@ -28,7 +28,6 @@ internal sealed class TemplateRepository : EntityRepositoryBase<int, ITemplate>,
     private readonly IFileSystem? _viewsFileSystem;
     private readonly IViewHelper _viewHelper;
     private readonly IOptionsMonitor<RuntimeSettings> _runtimeSettings;
-
     public TemplateRepository(
         IScopeAccessor scopeAccessor,
         AppCaches cache,
@@ -36,8 +35,15 @@ internal sealed class TemplateRepository : EntityRepositoryBase<int, ITemplate>,
         FileSystems fileSystems,
         IShortStringHelper shortStringHelper,
         IViewHelper viewHelper,
-        IOptionsMonitor<RuntimeSettings> runtimeSettings)
-        : base(scopeAccessor, cache, logger)
+        IOptionsMonitor<RuntimeSettings> runtimeSettings,
+        IRepositoryCacheVersionService repositoryCacheVersionService,
+        ICacheSyncService cacheSyncService)
+        : base(
+            scopeAccessor,
+            cache,
+            logger,
+            repositoryCacheVersionService,
+            cacheSyncService)
     {
         _shortStringHelper = shortStringHelper;
         _viewsFileSystem = fileSystems.MvcViewsFileSystem;
@@ -85,8 +91,13 @@ internal sealed class TemplateRepository : EntityRepositoryBase<int, ITemplate>,
     }
 
     protected override IRepositoryCachePolicy<ITemplate, int> CreateCachePolicy() =>
-        new FullDataSetRepositoryCachePolicy<ITemplate, int>(GlobalIsolatedCache, ScopeAccessor,
-            GetEntityId, /*expires:*/ false);
+        new FullDataSetRepositoryCachePolicy<ITemplate, int>(
+            GlobalIsolatedCache,
+            ScopeAccessor,
+            RepositoryCacheVersionService,
+            CacheSyncService,
+            GetEntityId,
+            /*expires:*/ false);
 
     private IEnumerable<IUmbracoEntity> GetAxisDefinitions(params TemplateDto[] templates)
     {
@@ -98,6 +109,13 @@ internal sealed class TemplateRepository : EntityRepositoryBase<int, ITemplate>,
             .From<TemplateDto>()
             .InnerJoin<NodeDto>()
             .On<TemplateDto, NodeDto>(left => left.NodeId, right => right.NodeId)
+
+            // lookup axis's
+            .WhereInOr<NodeDto, NodeDto>(
+                n => n.NodeId,
+                n2 => n2.ParentId,
+                templates.Select(x => x.NodeDto.ParentId),
+                templates.Select(x => x.NodeId))
 
             // lookup axis's
             .WhereInOr<NodeDto, NodeDto>(
@@ -307,7 +325,7 @@ internal sealed class TemplateRepository : EntityRepositoryBase<int, ITemplate>,
 
         if (ids?.Any() ?? false)
         {
-            sql.Where($"{QuoteTab("umbracoNode")}.id in (@ids)", new { ids });
+            sql.Where($"{QuoteTableName("umbracoNode")}.id in (@ids)", new { ids });
         }
         else
         {
@@ -372,19 +390,19 @@ internal sealed class TemplateRepository : EntityRepositoryBase<int, ITemplate>,
         return sql;
     }
 
-    protected override string GetBaseWhereClause() => $"{QuoteTab(Constants.DatabaseSchema.Tables.Node)}.id = @id";
+    protected override string GetBaseWhereClause() => $"{QuoteTableName(Constants.DatabaseSchema.Tables.Node)}.id = @id";
 
     protected override IEnumerable<string> GetDeleteClauses()
     {
-        var nodeId = QuoteCol("nodeId");
-        var umbracoNode = QuoteTab(NodeDto.TableName);
+        var nodeId = QuoteColumnName("nodeId");
+        var umbracoNode = QuoteTableName(NodeDto.TableName);
         var list = new List<string>
         {
-            $"DELETE FROM {QuoteTab(Constants.DatabaseSchema.Tables.User2NodeNotify)} WHERE {nodeId} = @id",
-            $@"UPDATE {QuoteTab(Constants.DatabaseSchema.Tables.DocumentVersion)}
-                SET {QuoteCol("templateId")} = NULL WHERE {QuoteCol("templateId")} = @id",
-            $"DELETE FROM {QuoteTab(Constants.DatabaseSchema.Tables.DocumentType)} WHERE {QuoteCol("templateNodeId")} = @id",
-            $"DELETE FROM {QuoteTab(Constants.DatabaseSchema.Tables.Template)} WHERE {nodeId} = @id",
+            $"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.User2NodeNotify)} WHERE {nodeId} = @id",
+            $@"UPDATE {QuoteTableName(Constants.DatabaseSchema.Tables.DocumentVersion)}
+                SET {QuoteColumnName("templateId")} = NULL WHERE {QuoteColumnName("templateId")} = @id",
+            $"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.DocumentType)} WHERE {QuoteColumnName("templateNodeId")} = @id",
+            $"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.Template)} WHERE {nodeId} = @id",
             $"DELETE FROM {umbracoNode} WHERE id = @id",
         };
         return list;
@@ -475,7 +493,7 @@ internal sealed class TemplateRepository : EntityRepositoryBase<int, ITemplate>,
         }
 
         //Get TemplateDto from db to get the Primary key of the entity
-        TemplateDto templateDto = Database.SingleOrDefault<TemplateDto>($"WHERE {QuoteCol("nodeId")} = @Id", new { entity.Id });
+        TemplateDto templateDto = Database.Single<TemplateDto>($"WHERE {QuoteColumnName("nodeId")} = @Id", new { entity.Id });
 
         //Save updated entity to db
         template.UpdateDate = DateTime.UtcNow;

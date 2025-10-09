@@ -21,6 +21,9 @@ namespace Umbraco.Cms.Infrastructure.Persistence.Repositories.Implement;
 /// </summary>
 internal sealed class ContentTypeRepository : ContentTypeRepositoryBase<IContentType>, IContentTypeRepository
 {
+    private readonly IRepositoryCacheVersionService _repositoryCacheVersionService;
+    private readonly ICacheSyncService _cacheSyncService;
+
     public ContentTypeRepository(
         IScopeAccessor scopeAccessor,
         AppCaches cache,
@@ -28,9 +31,22 @@ internal sealed class ContentTypeRepository : ContentTypeRepositoryBase<IContent
         IContentTypeCommonRepository commonRepository,
         ILanguageRepository languageRepository,
         IShortStringHelper shortStringHelper,
-        IIdKeyMap idKeyMap)
-        : base(scopeAccessor, cache, logger, commonRepository, languageRepository, shortStringHelper, idKeyMap)
+        IRepositoryCacheVersionService repositoryCacheVersionService,
+        IIdKeyMap idKeyMap,
+        ICacheSyncService cacheSyncService)
+        : base(
+            scopeAccessor,
+            cache,
+            logger,
+            commonRepository,
+            languageRepository,
+            shortStringHelper,
+            repositoryCacheVersionService,
+            idKeyMap,
+            cacheSyncService)
     {
+        _repositoryCacheVersionService = repositoryCacheVersionService;
+        _cacheSyncService = cacheSyncService;
     }
 
     protected override bool SupportsPublishing => ContentType.SupportsPublishingConst;
@@ -53,12 +69,12 @@ internal sealed class ContentTypeRepository : ContentTypeRepositoryBase<IContent
         Sql<ISqlContext> sql = Sql()
             .SelectDistinct<PropertyTypeDto>(c => c.Alias)
             .From<PropertyTypeDto>()
-            .InnerJoin<PropertyTypeGroupDto>()
-            .On<PropertyTypeDto, PropertyTypeGroupDto>(left => left.PropertyTypeGroupId, right => right.Id)
-            .InnerJoin<DataTypeDto>()
-            .On<PropertyTypeDto, DataTypeDto>(left => left.DataTypeId, right => right.NodeId)
-            .InnerJoin<ContentTypeDto>()
-            .On<ContentTypeDto, PropertyTypeDto>(left => left.NodeId, right => right.ContentTypeId)
+            //.InnerJoin<PropertyTypeGroupDto>()
+            //.On<PropertyTypeDto, PropertyTypeGroupDto>(left => left.PropertyTypeGroupId, right => right.Id)
+            //.InnerJoin<DataTypeDto>()
+            //.On<PropertyTypeDto, DataTypeDto>(left => left.DataTypeId, right => right.NodeId)
+            //.InnerJoin<ContentTypeDto>()
+            //.On<ContentTypeDto, PropertyTypeDto>(left => left.NodeId, right => right.ContentTypeId)
             .OrderBy<PropertyTypeDto>(c => c.Alias);
         return Database.Fetch<string>(sql);
     }
@@ -105,7 +121,7 @@ internal sealed class ContentTypeRepository : ContentTypeRepositoryBase<IContent
     }
 
     protected override IRepositoryCachePolicy<IContentType, int> CreateCachePolicy() =>
-        new FullDataSetRepositoryCachePolicy<IContentType, int>(GlobalIsolatedCache, ScopeAccessor, GetEntityId, /*expires:*/ true);
+        new FullDataSetRepositoryCachePolicy<IContentType, int>(GlobalIsolatedCache, ScopeAccessor, _repositoryCacheVersionService, _cacheSyncService, GetEntityId, /*expires:*/ true);
 
     // every GetExists method goes cachePolicy.GetSomething which in turns goes PerformGetAll,
     // since this is a FullDataSet policy - and everything is cached
@@ -190,15 +206,15 @@ internal sealed class ContentTypeRepository : ContentTypeRepositoryBase<IContent
         return sql;
     }
 
-    protected override string GetBaseWhereClause() => $"{SqlSyntax.GetQuotedTableName(NodeDto.TableName)}.id = @id";
+    protected override string GetBaseWhereClause() => $"{QuoteTableName(NodeDto.TableName)}.id = @id";
 
     protected override IEnumerable<string> GetDeleteClauses()
     {
         var l = (List<string>)base.GetDeleteClauses(); // we know it's a list
-        l.Add($"DELETE FROM {SqlSyntax.GetQuotedTableName(ContentVersionCleanupPolicyDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("contentTypeId")} = @id");
-        l.Add($"DELETE FROM {SqlSyntax.GetQuotedTableName(Constants.DatabaseSchema.Tables.DocumentType)} WHERE {SqlSyntax.GetQuotedColumnName("contentTypeNodeId")} = @id");
-        l.Add($"DELETE FROM {SqlSyntax.GetQuotedTableName(ContentTypeDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("nodeId")} = @id");
-        l.Add($"DELETE FROM {SqlSyntax.GetQuotedTableName(NodeDto.TableName)} WHERE id = @id");
+        l.Add($"DELETE FROM {QuoteTableName(ContentVersionCleanupPolicyDto.TableName)} WHERE {QuoteColumnName("contentTypeId")} = @id");
+        l.Add($"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.DocumentType)} WHERE {QuoteColumnName("contentTypeNodeId")} = @id");
+        l.Add($"DELETE FROM {QuoteTableName(ContentTypeDto.TableName)} WHERE {QuoteColumnName("nodeId")} = @id");
+        l.Add($"DELETE FROM {QuoteTableName(NodeDto.TableName)} WHERE id = @id");
         return l;
     }
 
@@ -268,7 +284,7 @@ internal sealed class ContentTypeRepository : ContentTypeRepositoryBase<IContent
         Sql<ISqlContext> sql = Sql()
             .Delete<ContentTypeTemplateDto>()
             .Where<ContentTypeTemplateDto>(x => x.ContentTypeNodeId == entity.Id);
-        _ = Database.Execute(sql);
+        Database.Execute(sql);
 
         // we could do it all in foreach if we assume that the default template is an allowed template??
         var defaultTemplateId = entity.DefaultTemplateId;
@@ -308,7 +324,7 @@ internal sealed class ContentTypeRepository : ContentTypeRepositoryBase<IContent
                 .SelectAll()
                 .From<NodeDto>()
                 .Where<NodeDto>(x => x.NodeId == entity.ParentId);
-            NodeDto? parent = Database.Fetch<NodeDto>(sql.SelectTop(1)).First();
+            NodeDto parent = Database.First<NodeDto>(sql);
             entity.Path = string.Concat(parent.Path, ",", entity.Id);
             entity.Level = parent.Level + 1;
             sql = Sql()

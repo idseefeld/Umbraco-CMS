@@ -15,8 +15,17 @@ namespace Umbraco.Cms.Infrastructure.Persistence.Repositories.Implement;
 
 internal sealed class AuditRepository : EntityRepositoryBase<int, IAuditItem>, IAuditRepository
 {
-    public AuditRepository(IScopeAccessor scopeAccessor, ILogger<AuditRepository> logger)
-        : base(scopeAccessor, AppCaches.NoCache, logger)
+    public AuditRepository(
+        IScopeAccessor scopeAccessor,
+        ILogger<AuditRepository> logger,
+        IRepositoryCacheVersionService repositoryCacheVersionService,
+        ICacheSyncService cacheSyncService)
+        : base(
+            scopeAccessor,
+            AppCaches.NoCache,
+            logger,
+            repositoryCacheVersionService,
+            cacheSyncService)
     {
     }
 
@@ -37,7 +46,7 @@ internal sealed class AuditRepository : EntityRepositoryBase<int, IAuditItem>, I
     {
         DateTime oldestPermittedLogEntry = DateTime.UtcNow.Subtract(new TimeSpan(0, maximumAgeOfLogsInMinutes, 0));
 
-        // var sqlString = $"Delete from {SqlSyntax.GetQuotedTableName(LogDto.TableName)} where datestamp < @oldestPermittedLogEntry and {SqlSyntax.GetQuotedColumnName("logHeader")} in ('open','system')"; // "delete from umbracoLog where datestamp < @oldestPermittedLogEntry and logHeader in ('open','system')"
+        // var sqlString = $"Delete from {QuoteTableName(LogDto.TableName)} where datestamp < @oldestPermittedLogEntry and {QuoteColumnName("logHeader")} in ('open','system')"; // "delete from umbracoLog where datestamp < @oldestPermittedLogEntry and logHeader in ('open','system')"
         // Database.Execute(sqlString, new { oldestPermittedLogEntry });
 
         var headers = new[] { "open", "system" };
@@ -45,7 +54,7 @@ internal sealed class AuditRepository : EntityRepositoryBase<int, IAuditItem>, I
             .Delete<LogDto>()
             .Where<LogDto>(c => c.Datestamp < oldestPermittedLogEntry)
             .WhereIn<LogDto>(c => c.Header, headers);
-        _ = Database.Execute(sql);
+        Database.Execute(sql);
     }
 
     /// <summary>
@@ -163,7 +172,7 @@ internal sealed class AuditRepository : EntityRepositoryBase<int, IAuditItem>, I
     }
 
     protected override string GetBaseWhereClause() =>
-        $"{SqlSyntax.GetQuotedTableName(LogDto.TableName)}.{SqlSyntax.GetQuotedColumnName("id")} = @id";
+        $"{QuoteTableName(LogDto.TableName)}.{QuoteColumnName("id")} = @id";
 
     protected override IEnumerable<string> GetDeleteClauses() => throw new NotImplementedException();
 }

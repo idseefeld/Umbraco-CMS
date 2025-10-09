@@ -16,11 +16,21 @@ namespace Umbraco.Cms.Infrastructure.Persistence.Repositories.Implement;
 
 internal sealed class ExternalLoginRepository : EntityRepositoryBase<int, IIdentityUserLogin>, IExternalLoginWithKeyRepository
 {
-    public ExternalLoginRepository(IScopeAccessor scopeAccessor, AppCaches cache,
-        ILogger<ExternalLoginRepository> logger)
-        : base(scopeAccessor, cache, logger)
+    public ExternalLoginRepository(
+        IScopeAccessor scopeAccessor,
+        AppCaches cache,
+        ILogger<ExternalLoginRepository> logger,
+        IRepositoryCacheVersionService repositoryCacheVersionService,
+        ICacheSyncService cacheSyncService)
+        : base(
+            scopeAccessor,
+            cache,
+            logger,
+            repositoryCacheVersionService,
+            cacheSyncService)
     {
     }
+
     /// <summary>
     ///     Query for user tokens
     /// </summary>
@@ -58,7 +68,7 @@ internal sealed class ExternalLoginRepository : EntityRepositoryBase<int, IIdent
         Sql<ISqlContext> sql = SqlContext.Sql()
             .Delete<ExternalLoginDto>()
             .Where<ExternalLoginDto>(x => x.UserOrMemberKey == userOrMemberKey);
-        _ = Database.Execute(sql);
+        Database.Execute(sql);
     }
 
     /// <inheritdoc />
@@ -210,7 +220,7 @@ internal sealed class ExternalLoginRepository : EntityRepositoryBase<int, IIdent
         Sql<ISqlContext> sql = GetBaseQuery(false);
         sql.Where(GetBaseWhereClause(), new { id });
 
-        ExternalLoginDto? dto = Database.Fetch<ExternalLoginDto>(sql.SelectTop(1)).FirstOrDefault();
+        ExternalLoginDto? dto = Database.FirstOrDefault<ExternalLoginDto>(sql);
         if (dto == null)
         {
             return null;
@@ -295,7 +305,7 @@ internal sealed class ExternalLoginRepository : EntityRepositoryBase<int, IIdent
         return sql;
     }
 
-    private string QuotedTableName => SqlSyntax.GetQuotedTableName(ExternalLoginDto.TableName);
+    private string QuotedTableName => QuoteTableName(ExternalLoginDto.TableName);
 
     protected override string GetBaseWhereClause() => $"{QuotedTableName}.id = @id";
 

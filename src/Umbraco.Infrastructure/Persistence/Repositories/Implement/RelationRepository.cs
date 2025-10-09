@@ -1,3 +1,4 @@
+
 using Microsoft.Extensions.Logging;
 using NPoco;
 using Umbraco.Cms.Core;
@@ -25,8 +26,19 @@ internal sealed class RelationRepository : EntityRepositoryBase<int, IRelation>,
     private readonly IEntityRepositoryExtended _entityRepository;
     private readonly IRelationTypeRepository _relationTypeRepository;
 
-    public RelationRepository(IScopeAccessor scopeAccessor, ILogger<RelationRepository> logger, IRelationTypeRepository relationTypeRepository, IEntityRepositoryExtended entityRepository)
-        : base(scopeAccessor, AppCaches.NoCache, logger)
+    public RelationRepository(
+        IScopeAccessor scopeAccessor,
+        ILogger<RelationRepository> logger,
+        IRelationTypeRepository relationTypeRepository,
+        IEntityRepositoryExtended entityRepository,
+        IRepositoryCacheVersionService repositoryCacheVersionService,
+        ICacheSyncService cacheSyncService)
+        : base(
+            scopeAccessor,
+            AppCaches.NoCache,
+            logger,
+            repositoryCacheVersionService,
+            cacheSyncService)
     {
         _relationTypeRepository = relationTypeRepository;
         _entityRepository = entityRepository;
@@ -172,9 +184,9 @@ internal sealed class RelationRepository : EntityRepositoryBase<int, IRelation>,
     public void DeleteByParent(int parentId, params string[] relationTypeAliases)
     {
         // HACK: SQLite - hard to replace this without provider specific repositories/another ORM.
-        if (!Database.DatabaseType.IsSqlServer()) // Database.DatabaseType.IsSqlite())
+        if (Database.DatabaseType.IsSqlServer() is false)
         {
-            Sql<ISqlContext>? query = Sql().Append($"DELETE FROM {SqlSyntax.GetQuotedTableName("umbracoRelation")}");
+            Sql<ISqlContext>? query = Sql().Append($"DELETE FROM {QuoteTableName("umbracoRelation")}");
 
             Sql<ISqlContext> subQuery = Sql().Select<RelationDto>(x => x.Id)
                 .From<RelationDto>()
@@ -335,7 +347,7 @@ internal sealed class RelationRepository : EntityRepositoryBase<int, IRelation>,
         Sql<ISqlContext> sql = GetBaseQuery(false);
         sql.Where(GetBaseWhereClause(), new { id });
 
-        RelationDto? dto = Database.Fetch<RelationDto>(sql.SelectTop(1)).FirstOrDefault();
+        RelationDto? dto = Database.FirstOrDefault<RelationDto>(sql);
         if (dto == null)
         {
             return null;
@@ -416,12 +428,12 @@ internal sealed class RelationRepository : EntityRepositoryBase<int, IRelation>,
         return sql;
     }
 
-    protected override string GetBaseWhereClause() => $"{SqlSyntax.GetQuotedTableName(Constants.DatabaseSchema.Tables.Relation)}.id = @id";
+    protected override string GetBaseWhereClause() => $"{QuoteTableName(Constants.DatabaseSchema.Tables.Relation)}.id = @id";
 
     protected override IEnumerable<string> GetDeleteClauses()
     {
         var list = new List<string> {
-            $"DELETE FROM {SqlSyntax.GetQuotedTableName(Constants.DatabaseSchema.Tables.Relation)} WHERE id = @id"
+            $"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.Relation)} WHERE id = @id"
         };
         return list;
     }
