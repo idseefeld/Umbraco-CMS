@@ -38,8 +38,15 @@ internal abstract class ContentTypeRepositoryBase<TEntity> : EntityRepositoryBas
         IContentTypeCommonRepository commonRepository,
         ILanguageRepository languageRepository,
         IShortStringHelper shortStringHelper,
-        IIdKeyMap idKeyMap)
-        : base(scopeAccessor, cache, logger)
+        IRepositoryCacheVersionService repositoryCacheVersionService,
+        IIdKeyMap idKeyMap,
+        ICacheSyncService cacheSyncService)
+        : base(
+            scopeAccessor,
+            cache,
+            logger,
+            repositoryCacheVersionService,
+            cacheSyncService)
     {
         _shortStringHelper = shortStringHelper;
         CommonRepository = commonRepository;
@@ -986,7 +993,7 @@ internal abstract class ContentTypeRepositoryBase<TEntity> : EntityRepositoryBas
                 .From<ContentVersionDto>()
                 .InnerJoin<ContentDto>().On<ContentDto, ContentVersionDto>(x => x.NodeId, x => x.NodeId)
                 .Where<ContentDto>(x => x.ContentTypeId == contentType.Id);
-            Sql<ISqlContext>? sqlInsertContentVersion = Sql($"INSERT INTO {SqlSyntax.GetQuotedTableName(ContentVersionCultureVariationDto.TableName)} ({cols})")
+            Sql<ISqlContext>? sqlInsertContentVersion = Sql($"INSERT INTO {QuoteTableName(ContentVersionCultureVariationDto.TableName)} ({cols})")
                 .Append(sqlSelect2);
 
             Database.Execute(sqlInsertContentVersion);
@@ -1001,7 +1008,7 @@ internal abstract class ContentTypeRepositoryBase<TEntity> : EntityRepositoryBas
                 .InnerJoin<NodeDto>().On<NodeDto, DocumentDto>(x => x.NodeId, x => x.NodeId)
                 .InnerJoin<ContentDto>().On<ContentDto, NodeDto>(x => x.NodeId, x => x.NodeId)
                 .Where<ContentDto>(x => x.ContentTypeId == contentType.Id);
-            Sql<ISqlContext> sqlInsertDocumentCulture = Sql($"INSERT INTO {SqlSyntax.GetQuotedTableName(DocumentCultureVariationDto.TableName)} ({cols})").Append(sqlSelectDocument);
+            Sql<ISqlContext> sqlInsertDocumentCulture = Sql($"INSERT INTO {QuoteTableName(DocumentCultureVariationDto.TableName)} ({cols})").Append(sqlSelectDocument);
 
             Database.Execute(sqlInsertDocumentCulture);
         }
@@ -1087,7 +1094,7 @@ internal abstract class ContentTypeRepositoryBase<TEntity> : EntityRepositoryBas
             .Where<TagDto>(x => x.LanguageId.SqlNullableEquals(sourceLanguageId, -1));
 
         var cols = Sql().ColumnsForInsert<TagDto>(x => x.Text, x => x.Group, x => x.LanguageId);
-        Sql<ISqlContext>? sqlInsertTags = Sql($"INSERT INTO {SqlSyntax.GetQuotedTableName(TagDto.TableName)} ({cols})").Append(sqlSelectTagsToInsert1);
+        Sql<ISqlContext>? sqlInsertTags = Sql($"INSERT INTO {QuoteTableName(TagDto.TableName)} ({cols})").Append(sqlSelectTagsToInsert1);
 
         Database.Execute(sqlInsertTags);
 
@@ -1122,7 +1129,7 @@ internal abstract class ContentTypeRepositoryBase<TEntity> : EntityRepositoryBas
         var relationColumnsToInsert =
             Sql().ColumnsForInsert<TagRelationshipDto>(x => x.NodeId, x => x.PropertyTypeId, x => x.TagId);
         Sql<ISqlContext>? sqlInsertRelations =
-            Sql($"INSERT INTO {SqlSyntax.GetQuotedTableName(TagRelationshipDto.TableName)} ({relationColumnsToInsert})")
+            Sql($"INSERT INTO {QuoteTableName(TagRelationshipDto.TableName)} ({relationColumnsToInsert})")
                 .Append(sqlSelectRelationsToInsert);
 
         Database.Execute(sqlInsertRelations);
@@ -1241,7 +1248,7 @@ internal abstract class ContentTypeRepositoryBase<TEntity> : EntityRepositoryBas
                 .WhereIn<ContentDto>(x => x.ContentTypeId, contentTypeIds);
         }
 
-        Sql<ISqlContext>? sqlInsert = Sql($"INSERT INTO {SqlSyntax.GetQuotedTableName(PropertyDataDto.TableName)} ({cols})").Append(sqlSelectData);
+        Sql<ISqlContext>? sqlInsert = Sql($"INSERT INTO {QuoteTableName(PropertyDataDto.TableName)} ({cols})").Append(sqlSelectData);
 
         Database.Execute(sqlInsert);
 
@@ -1579,9 +1586,15 @@ internal abstract class ContentTypeRepositoryBase<TEntity> : EntityRepositoryBas
             .Select<ContentTypeDto>(c => c.Alias)
             .From<ContentTypeDto>()
             .InnerJoin<NodeDto>().On<ContentTypeDto, NodeDto>((ct, n) => ct.NodeId == n.NodeId)
-            .WhereLike<ContentTypeDto>(c => c.Alias, alias)
-            .Where<NodeDto>(x => x.NodeObjectType == NodeObjectTypeId);
+            .WhereLike<ContentTypeDto>(c => c.Alias, $"{alias}{SqlSyntax.GetWildcardPlaceholder()}");
+        //sql = Sql()
+        //    .Select<ContentTypeDto>(c => c.Alias)
+        //    .From<ContentTypeDto>()
+        //    .InnerJoin<NodeDto>().On<ContentTypeDto, NodeDto>((ct, n) => ct.NodeId == n.NodeId)
+        //    .WhereLike<ContentTypeDto>(c => c.Alias, alias)
+        //    .Where<NodeDto>(x => x.NodeObjectType == NodeObjectTypeId);
         List<string> aliases = Database.Fetch<string>(sql);
+
 
         var i = 1;
         string test;
@@ -1618,7 +1631,7 @@ internal abstract class ContentTypeRepositoryBase<TEntity> : EntityRepositoryBas
     public bool HasContentNodes(int id)
     {
         var sql = new Sql(
-            $"SELECT CASE WHEN EXISTS (SELECT * FROM {SqlSyntax.GetQuotedTableName(ContentDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("contentTypeId")} = @id) THEN 1 ELSE 0 END",
+            $"SELECT CASE WHEN EXISTS (SELECT * FROM {QuoteTableName(ContentDto.TableName)} WHERE {QuoteColumnName("contentTypeId")} = @id) THEN 1 ELSE 0 END",
             new { id });
         return Database.ExecuteScalar<int>(sql) == 1;
     }
@@ -1630,18 +1643,18 @@ internal abstract class ContentTypeRepositoryBase<TEntity> : EntityRepositoryBas
         // is included here just to be 100% sure since it has a FK on cmsPropertyType.
         var list = new List<string>
         {
-            $"DELETE FROM {SqlSyntax.GetQuotedTableName(User2NodeNotifyDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("nodeId")} = @id",
-            $@"DELETE FROM {SqlSyntax.GetQuotedTableName(UserGroup2GranularPermissionDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("uniqueId")} IN
-                (SELECT {SqlSyntax.GetQuotedColumnName("uniqueId")} FROM {SqlSyntax.GetQuotedTableName(NodeDto.TableName)} WHERE id = @id)",
-            $"DELETE FROM {SqlSyntax.GetQuotedTableName(TagRelationshipDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("nodeId")} = @id",
-            $"DELETE FROM {SqlSyntax.GetQuotedTableName(ContentTypeAllowedContentTypeDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("Id")} = @id",
-            $"DELETE FROM {SqlSyntax.GetQuotedTableName(ContentTypeAllowedContentTypeDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("AllowedId")} = @id",
-            $"DELETE FROM {SqlSyntax.GetQuotedTableName(ContentType2ContentTypeDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("parentContentTypeId")} = @id",
-            $"DELETE FROM {SqlSyntax.GetQuotedTableName(ContentType2ContentTypeDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("childContentTypeId")} = @id",
-            $@"DELETE FROM {SqlSyntax.GetQuotedTableName(PropertyDataDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("propertyTypeId")} IN
-                (SELECT id FROM {SqlSyntax.GetQuotedTableName(PropertyTypeDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("contentTypeId")} = @id)",
-            $"DELETE FROM {SqlSyntax.GetQuotedTableName(PropertyTypeDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("contentTypeId")} = @id",
-            $"DELETE FROM {SqlSyntax.GetQuotedTableName(PropertyTypeGroupDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("contenttypeNodeId")} = @id",
+            $"DELETE FROM {QuoteTableName(User2NodeNotifyDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("nodeId")} = @id",
+            $@"DELETE FROM {QuoteTableName(UserGroup2GranularPermissionDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("uniqueId")} IN
+                (SELECT {SqlSyntax.GetQuotedColumnName("uniqueId")} FROM {QuoteTableName(NodeDto.TableName)} WHERE id = @id)",
+            $"DELETE FROM {QuoteTableName(TagRelationshipDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("nodeId")} = @id",
+            $"DELETE FROM {QuoteTableName(ContentTypeAllowedContentTypeDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("Id")} = @id",
+            $"DELETE FROM {QuoteTableName(ContentTypeAllowedContentTypeDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("AllowedId")} = @id",
+            $"DELETE FROM {QuoteTableName(ContentType2ContentTypeDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("parentContentTypeId")} = @id",
+            $"DELETE FROM {QuoteTableName(ContentType2ContentTypeDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("childContentTypeId")} = @id",
+            $@"DELETE FROM {QuoteTableName(PropertyDataDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("propertyTypeId")} IN
+                (SELECT id FROM {QuoteTableName(PropertyTypeDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("contentTypeId")} = @id)",
+            $"DELETE FROM {QuoteTableName(PropertyTypeDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("contentTypeId")} = @id",
+            $"DELETE FROM {QuoteTableName(PropertyTypeGroupDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("contenttypeNodeId")} = @id",
         };
         return list;
     }

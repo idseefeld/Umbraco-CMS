@@ -107,9 +107,9 @@ export class UmbPropertyContext<ValueType = any> extends UmbContextBase {
 	constructor(host: UmbControllerHost) {
 		super(host, UMB_PROPERTY_CONTEXT);
 
-		this.consumeContext(UMB_PROPERTY_DATASET_CONTEXT, (variantContext) => {
-			this.#datasetContext = variantContext;
-			this.setVariantId(variantContext?.getVariantId?.());
+		this.consumeContext(UMB_PROPERTY_DATASET_CONTEXT, (context) => {
+			this.#datasetContext = context;
+			this.setVariantId(context?.getVariantId?.());
 			this._generateVariantDifferenceString();
 			this._observeProperty();
 		});
@@ -179,13 +179,27 @@ export class UmbPropertyContext<ValueType = any> extends UmbContextBase {
 
 		let shareMessage;
 		if (contextVariantId && propertyVariantId) {
-			if (contextVariantId.segment !== propertyVariantId.segment) {
-				// TODO: Translate this, ideally the actual culture is mentioned in the message:
-				shareMessage = 'Shared across culture';
+			// If on a Segment viewing a segment-shared property:
+			// TODO: Do not use the content variant id, but know wether the property is configured to vary by segment.
+			// Because we can view a default segment, then we do not know if the property is shared or not. [NL]
+			if (contextVariantId.segment !== null && propertyVariantId.segment === null) {
+				// If the property does not have culture, then we know this also will be shared across cultures.
+				if (propertyVariantId.culture === null) {
+					shareMessage = 'content_sharedAcrossCultures';
+				} else {
+					// If not, then we know it will be only be shared across segments.
+					shareMessage = 'content_sharedAcrossSegments';
+				}
 			}
-			if (contextVariantId.culture !== propertyVariantId.culture) {
-				// TODO: Translate this:
-				shareMessage = 'Shared';
+			// TODO: Do not use the content variant id, but know wether the property is configured to vary by culture. (this is first a problem when we introduce the invariant-variant)
+			if (contextVariantId.culture !== null && propertyVariantId.culture === null) {
+				// If the property does have segment, then we know this will be shared across cultures and not across segments.
+				if (propertyVariantId.segment !== null) {
+					shareMessage = 'content_sharedAcrossCultures';
+				} else {
+					// if not then we know it's shared across everything.
+					shareMessage = 'content_shared';
+				}
 			}
 		}
 		this.#variantDifference.setValue(shareMessage);

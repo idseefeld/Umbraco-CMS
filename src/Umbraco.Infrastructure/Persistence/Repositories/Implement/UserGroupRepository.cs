@@ -1,8 +1,10 @@
 using System.Collections;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NPoco;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Cache;
+using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.Entities;
 using Umbraco.Cms.Core.Models.Membership;
@@ -35,13 +37,51 @@ public class UserGroupRepository : EntityRepositoryBase<int, IUserGroup>, IUserG
         ILogger<UserGroupRepository> logger,
         ILoggerFactory loggerFactory,
         IShortStringHelper shortStringHelper,
-        IEnumerable<IPermissionMapper> permissionMappers)
-        : base(scopeAccessor, appCaches, logger)
+        IEnumerable<IPermissionMapper> permissionMappers,
+        IRepositoryCacheVersionService repositoryCacheVersionService,
+        ICacheSyncService cacheSyncService)
+        : base(
+            scopeAccessor,
+            appCaches,
+            logger,
+            repositoryCacheVersionService,
+            cacheSyncService)
     {
         _shortStringHelper = shortStringHelper;
-        _userGroupWithUsersRepository = new UserGroupWithUsersRepository(this, scopeAccessor, appCaches, loggerFactory.CreateLogger<UserGroupWithUsersRepository>());
-        _permissionRepository = new PermissionRepository<IContent>(scopeAccessor, appCaches, loggerFactory.CreateLogger<PermissionRepository<IContent>>());
+        _userGroupWithUsersRepository = new UserGroupWithUsersRepository(
+            this,
+            scopeAccessor,
+            appCaches,
+            loggerFactory.CreateLogger<UserGroupWithUsersRepository>(),
+            repositoryCacheVersionService,
+            cacheSyncService);
+        _permissionRepository = new PermissionRepository<IContent>(
+            scopeAccessor,
+            appCaches,
+            loggerFactory.CreateLogger<PermissionRepository<IContent>>(),
+            repositoryCacheVersionService,
+            cacheSyncService);
         _permissionMappers = permissionMappers.ToDictionary(x => x.Context);
+    }
+
+    [Obsolete("Please use the constructor with all parameters. Scheduled for removal in Umbraco 18.")]
+    public UserGroupRepository(
+        IScopeAccessor scopeAccessor,
+        AppCaches appCaches,
+        ILogger<UserGroupRepository> logger,
+        ILoggerFactory loggerFactory,
+        IShortStringHelper shortStringHelper,
+        IEnumerable<IPermissionMapper> permissionMappers)
+        : this(
+            scopeAccessor,
+            appCaches,
+            logger,
+            loggerFactory,
+            shortStringHelper,
+            permissionMappers,
+            StaticServiceProvider.Instance.GetRequiredService<IRepositoryCacheVersionService>(),
+            StaticServiceProvider.Instance.GetRequiredService<ICacheSyncService>())
+    {
     }
 
     public IUserGroup? Get(string alias)
@@ -198,8 +238,19 @@ public class UserGroupRepository : EntityRepositoryBase<int, IUserGroup>, IUserG
     {
         private readonly UserGroupRepository _userGroupRepo;
 
-        public UserGroupWithUsersRepository(UserGroupRepository userGroupRepo, IScopeAccessor scopeAccessor, AppCaches cache, ILogger<UserGroupWithUsersRepository> logger)
-            : base(scopeAccessor, cache, logger) =>
+        public UserGroupWithUsersRepository(
+            UserGroupRepository userGroupRepo,
+            IScopeAccessor scopeAccessor,
+            AppCaches cache,
+            ILogger<UserGroupWithUsersRepository> logger,
+            IRepositoryCacheVersionService repositoryCacheVersionService,
+            ICacheSyncService cacheSyncService)
+            : base(
+                scopeAccessor,
+                cache,
+                logger,
+                repositoryCacheVersionService,
+                cacheSyncService) =>
             _userGroupRepo = userGroupRepo;
 
         protected override void PersistNewItem(UserGroupWithUsers entity)
@@ -435,20 +486,20 @@ public class UserGroupRepository : EntityRepositoryBase<int, IUserGroup>, IUserG
                 x => x.DefaultPermissions)
             .AndBy<UserGroup2AppDto>(x => x.AppAlias, x => x.UserGroupId);
 
-    protected override string GetBaseWhereClause() => $"{QuoteTab(UserGroupDto.TableName)}.id = @id";
+    protected override string GetBaseWhereClause() => $"{QuoteTableName(UserGroupDto.TableName)}.id = @id";
     protected override IEnumerable<string> GetDeleteClauses()
     {
-        var userGroupId = QuoteCol("userGroupId");
-        var userGroupKey = QuoteCol("userGroupKey");
-        var key = QuoteCol("Key");
-        var umbracoUserGroup = QuoteTab(UserGroupDto.TableName);
+        var userGroupId = QuoteColumnName("userGroupId");
+        var userGroupKey = QuoteColumnName("userGroupKey");
+        var key = QuoteColumnName("Key");
+        var umbracoUserGroup = QuoteTableName(UserGroupDto.TableName);
         var list = new List<string>
         {
-            $"DELETE FROM {QuoteTab("umbracoUser2UserGroup")} WHERE {userGroupId} = @id",
-            $"DELETE FROM {QuoteTab("umbracoUserGroup2App")} WHERE {userGroupId} = @id",
-            $@"DELETE FROM {QuoteTab("umbracoUserGroup2Permission")} WHERE {userGroupKey} IN
+            $"DELETE FROM {QuoteTableName("umbracoUser2UserGroup")} WHERE {userGroupId} = @id",
+            $"DELETE FROM {QuoteTableName("umbracoUserGroup2App")} WHERE {userGroupId} = @id",
+            $@"DELETE FROM {QuoteTableName("umbracoUserGroup2Permission")} WHERE {userGroupKey} IN
                 (SELECT {umbracoUserGroup}.{key} FROM {umbracoUserGroup} WHERE id = @id)",
-            $@"DELETE FROM {QuoteTab("umbracoUserGroup2GranularPermission")} WHERE {userGroupKey} IN
+            $@"DELETE FROM {QuoteTableName("umbracoUserGroup2GranularPermission")} WHERE {userGroupKey} IN
                 (SELECT {umbracoUserGroup}.{key} FROM {umbracoUserGroup} WHERE id = @id)",
             $"DELETE FROM {umbracoUserGroup} WHERE id = @id",
         };
@@ -626,8 +677,4 @@ public class UserGroupRepository : EntityRepositoryBase<int, IUserGroup>, IUserG
         return userGroupGranularPermissions.GroupBy(x => x.UserGroupKey).ToDictionary(x => x.Key, x => x.ToList());
     }
     #endregion
-
-    private string QuoteTab(string tableName) => SqlSyntax.GetQuotedTableName(tableName);
-
-    private string QuoteCol(string columnName) => SqlSyntax.GetQuotedColumnName(columnName);
 }

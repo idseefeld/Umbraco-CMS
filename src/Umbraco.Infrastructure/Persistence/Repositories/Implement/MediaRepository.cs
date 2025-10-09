@@ -1,8 +1,10 @@
 using System.Text.RegularExpressions;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NPoco;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Cache;
+using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Core.Events;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Notifications;
@@ -12,6 +14,7 @@ using Umbraco.Cms.Core.Persistence.Repositories;
 using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Serialization;
 using Umbraco.Cms.Core.Services;
+using Umbraco.Cms.Core.Services.Navigation;
 using Umbraco.Cms.Infrastructure.Persistence.Dtos;
 using Umbraco.Cms.Infrastructure.Persistence.Factories;
 using Umbraco.Cms.Infrastructure.Persistence.Querying;
@@ -48,9 +51,22 @@ public class MediaRepository : ContentRepositoryBase<int, IMedia, MediaRepositor
         DataValueReferenceFactoryCollection dataValueReferenceFactories,
         IDataTypeService dataTypeService,
         IJsonSerializer serializer,
-        IEventAggregator eventAggregator)
-        : base(scopeAccessor, cache, logger, languageRepository, relationRepository, relationTypeRepository,
-            propertyEditorCollection, dataValueReferenceFactories, dataTypeService, eventAggregator)
+        IEventAggregator eventAggregator,
+        IRepositoryCacheVersionService repositoryCacheVersionService,
+        ICacheSyncService cacheSyncService)
+        : base(
+            scopeAccessor,
+            cache,
+            logger,
+            languageRepository,
+            relationRepository,
+            relationTypeRepository,
+            propertyEditorCollection,
+            dataValueReferenceFactories,
+            dataTypeService,
+            eventAggregator,
+            repositoryCacheVersionService,
+            cacheSyncService)
     {
         _cache = cache;
         _mediaTypeRepository = mediaTypeRepository ?? throw new ArgumentNullException(nameof(mediaTypeRepository));
@@ -61,7 +77,47 @@ public class MediaRepository : ContentRepositoryBase<int, IMedia, MediaRepositor
             this,
             scopeAccessor,
             cache,
-            loggerFactory.CreateLogger<MediaByGuidReadRepository>());
+            loggerFactory.CreateLogger<MediaByGuidReadRepository>(),
+            repositoryCacheVersionService,
+            cacheSyncService);
+    }
+
+    [Obsolete("Please use the constructor with all parameters. Scheduled for removal in Umbraco 18.")]
+    public MediaRepository(
+        IScopeAccessor scopeAccessor,
+        AppCaches cache,
+        ILogger<MediaRepository> logger,
+        ILoggerFactory loggerFactory,
+        IMediaTypeRepository mediaTypeRepository,
+        ITagRepository tagRepository,
+        ILanguageRepository languageRepository,
+        IRelationRepository relationRepository,
+        IRelationTypeRepository relationTypeRepository,
+        PropertyEditorCollection propertyEditorCollection,
+        MediaUrlGeneratorCollection mediaUrlGenerators,
+        DataValueReferenceFactoryCollection dataValueReferenceFactories,
+        IDataTypeService dataTypeService,
+        IJsonSerializer serializer,
+        IEventAggregator eventAggregator)
+        : this(scopeAccessor,
+            cache,
+            logger,
+            loggerFactory,
+            mediaTypeRepository,
+            tagRepository,
+            languageRepository,
+            relationRepository,
+            relationTypeRepository,
+            propertyEditorCollection,
+            mediaUrlGenerators,
+            dataValueReferenceFactories,
+            dataTypeService,
+            serializer,
+            eventAggregator,
+            StaticServiceProvider.Instance.GetRequiredService<IRepositoryCacheVersionService>(),
+            StaticServiceProvider.Instance.GetRequiredService<ICacheSyncService>()
+            )
+    {
     }
 
     protected override MediaRepository This => this;
@@ -175,7 +231,7 @@ public class MediaRepository : ContentRepositoryBase<int, IMedia, MediaRepositor
         Sql<ISqlContext> sql = GetBaseQuery(QueryType.Single)
             .Where<NodeDto>(x => x.NodeId == id);
 
-        ContentDto? dto = Database.Fetch<ContentDto>(sql.SelectTop(1)).FirstOrDefault();
+        ContentDto? dto = Database.FirstOrDefault<ContentDto>(sql);
         return dto == null
             ? null
             : MapDtoToContent(dto);
@@ -259,31 +315,31 @@ public class MediaRepository : ContentRepositoryBase<int, IMedia, MediaRepositor
         GetBaseQuery(isCount ? QueryType.Count : QueryType.Single);
 
     // ah maybe not, that what's used for eg Exists in base repo
-    protected override string GetBaseWhereClause() => $"{QuoteTab(NodeDto.TableName)}.id = @id";
+    protected override string GetBaseWhereClause() => $"{QuoteTableName(NodeDto.TableName)}.id = @id";
 
     protected override IEnumerable<string> GetDeleteClauses()
     {
-        var nodeId = QuoteCol("nodeId");
-        var uniqueId = QuoteCol("uniqueId");
-        var umbracoNode = QuoteTab(NodeDto.TableName);
+        var nodeId = QuoteColumnName("nodeId");
+        var uniqueId = QuoteColumnName("uniqueId");
+        var umbracoNode = QuoteTableName(NodeDto.TableName);
         var list = new List<string>
         {
-            $"DELETE FROM {QuoteTab(Constants.DatabaseSchema.Tables.User2NodeNotify)} WHERE {nodeId} = @id",
-            $@"DELETE FROM {QuoteTab(Constants.DatabaseSchema.Tables.UserGroup2GranularPermission)} WHERE {uniqueId} IN
+            $"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.User2NodeNotify)} WHERE {nodeId} = @id",
+            $@"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.UserGroup2GranularPermission)} WHERE {uniqueId} IN
                 (SELECT {uniqueId} FROM {umbracoNode} WHERE id = @id)",
-            $"DELETE FROM {QuoteTab(Constants.DatabaseSchema.Tables.UserStartNode)} WHERE {QuoteCol("startNode")} = @id",
-            $@"UPDATE {QuoteTab(Constants.DatabaseSchema.Tables.UserGroup)}
-                SET {QuoteCol("startContentId")} = NULL WHERE {QuoteCol("startContentId")} = @id",
-            $"DELETE FROM {QuoteTab(Constants.DatabaseSchema.Tables.Relation)} WHERE {QuoteCol("parentId")} = @id",
-            $"DELETE FROM {QuoteTab(Constants.DatabaseSchema.Tables.Relation)} WHERE {QuoteCol("childId")} = @id",
-            $"DELETE FROM {QuoteTab(Constants.DatabaseSchema.Tables.TagRelationship)} WHERE {nodeId} = @id",
-            $"DELETE FROM {QuoteTab(Constants.DatabaseSchema.Tables.Document)} WHERE {nodeId} = @id",
-            $@"DELETE FROM {QuoteTab(Constants.DatabaseSchema.Tables.MediaVersion)} WHERE id IN
-                (SELECT id FROM {QuoteTab(Constants.DatabaseSchema.Tables.ContentVersion)} WHERE {nodeId} = @id)",
-            $@"DELETE FROM {QuoteTab(Constants.DatabaseSchema.Tables.PropertyData)} WHERE versionId IN
-                (SELECT id FROM {QuoteTab(Constants.DatabaseSchema.Tables.ContentVersion)} WHERE {nodeId} = @id)",
-            $"DELETE FROM {QuoteTab(Constants.DatabaseSchema.Tables.ContentVersion)} WHERE {nodeId} = @id",
-            $"DELETE FROM {QuoteTab(Constants.DatabaseSchema.Tables.Content)} WHERE {nodeId} = @id",
+            $"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.UserStartNode)} WHERE {QuoteColumnName("startNode")} = @id",
+            $@"UPDATE {QuoteTableName(Constants.DatabaseSchema.Tables.UserGroup)}
+                SET {QuoteColumnName("startContentId")} = NULL WHERE {QuoteColumnName("startContentId")} = @id",
+            $"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.Relation)} WHERE {QuoteColumnName("parentId")} = @id",
+            $"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.Relation)} WHERE {QuoteColumnName("childId")} = @id",
+            $"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.TagRelationship)} WHERE {nodeId} = @id",
+            $"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.Document)} WHERE {nodeId} = @id",
+            $@"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.MediaVersion)} WHERE id IN
+                (SELECT id FROM {QuoteTableName(Constants.DatabaseSchema.Tables.ContentVersion)} WHERE {nodeId} = @id)",
+            $@"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.PropertyData)} WHERE versionId IN
+                (SELECT id FROM {QuoteTableName(Constants.DatabaseSchema.Tables.ContentVersion)} WHERE {nodeId} = @id)",
+            $"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.ContentVersion)} WHERE {nodeId} = @id",
+            $"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.Content)} WHERE {nodeId} = @id",
             $"DELETE FROM {umbracoNode} WHERE id = @id",
         };
         return list;
@@ -329,7 +385,7 @@ public class MediaRepository : ContentRepositoryBase<int, IMedia, MediaRepositor
         Sql<ISqlContext> sql = GetBaseQuery(QueryType.Single, joinMediaVersion: true)
             .Where<MediaVersionDto>(x => x.Path == umbracoFileValue);
 
-        ContentDto? dto = Database.Fetch<ContentDto>(sql.SelectTop(1)).FirstOrDefault();
+        ContentDto? dto = Database.FirstOrDefault<ContentDto>(sql);
         return dto == null
             ? null
             : MapDtoToContent(dto);
@@ -337,10 +393,8 @@ public class MediaRepository : ContentRepositoryBase<int, IMedia, MediaRepositor
 
     /// <summary>
     /// Nothing to do here, media has only one version which must not be deleted.
-    /// Base calls is abstarct so this must be implemented.
+    /// Base method is abstract so this must be implemented.
     /// </summary>
-    /// <param name="id">not used</param>
-    /// <param name="versionId">not used</param>
     protected override void PerformDeleteVersion(int id, int versionId)
     {
         // Nothing to do here, media has only one version which must not be deleted.
@@ -423,8 +477,6 @@ public class MediaRepository : ContentRepositoryBase<int, IMedia, MediaRepositor
         // set tags
         SetEntityTags(entity, _tagRepository, _serializer);
 
-        PersistRelations(entity);
-
         OnUowRefreshedEntity(new MediaRefreshNotification(entity, new EventMessages()));
 
         entity.ResetDirtyProperties();
@@ -484,8 +536,6 @@ public class MediaRepository : ContentRepositoryBase<int, IMedia, MediaRepositor
             ReplacePropertyValues(entity, entity.VersionId, 0, out _, out _);
 
             SetEntityTags(entity, _tagRepository, _serializer);
-
-            PersistRelations(entity);
         }
 
         OnUowRefreshedEntity(new MediaRefreshNotification(entity, new EventMessages()));
@@ -535,8 +585,19 @@ public class MediaRepository : ContentRepositoryBase<int, IMedia, MediaRepositor
     {
         private readonly MediaRepository _outerRepo;
 
-        public MediaByGuidReadRepository(MediaRepository outerRepo, IScopeAccessor scopeAccessor, AppCaches cache, ILogger<MediaByGuidReadRepository> logger)
-            : base(scopeAccessor, cache, logger) =>
+        public MediaByGuidReadRepository(
+            MediaRepository outerRepo,
+            IScopeAccessor scopeAccessor,
+            AppCaches cache,
+            ILogger<MediaByGuidReadRepository> logger,
+            IRepositoryCacheVersionService repositoryCacheVersionService,
+            ICacheSyncService cacheSyncService)
+            : base(
+                scopeAccessor,
+                cache,
+                logger,
+                repositoryCacheVersionService,
+                cacheSyncService) =>
             _outerRepo = outerRepo;
 
         protected override IMedia? PerformGet(Guid id)
@@ -544,7 +605,7 @@ public class MediaRepository : ContentRepositoryBase<int, IMedia, MediaRepositor
             Sql<ISqlContext> sql = _outerRepo.GetBaseQuery(QueryType.Single)
                 .Where<NodeDto>(x => x.UniqueId == id);
 
-            ContentDto? dto = Database.Fetch<ContentDto>(sql.SelectTop(1)).FirstOrDefault();
+            ContentDto? dto = Database.FirstOrDefault<ContentDto>(sql);
 
             if (dto == null)
             {

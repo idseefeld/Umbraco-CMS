@@ -16,9 +16,19 @@ namespace Umbraco.Cms.Infrastructure.Persistence.Repositories.Implement;
 /// </summary>
 internal class EntityContainerRepository : EntityRepositoryBase<int, EntityContainer>, IEntityContainerRepository
 {
-    public EntityContainerRepository(IScopeAccessor scopeAccessor, AppCaches cache,
-        ILogger<EntityContainerRepository> logger, Guid containerObjectType)
-        : base(scopeAccessor, cache, logger)
+    public EntityContainerRepository(
+        IScopeAccessor scopeAccessor,
+        AppCaches cache,
+        ILogger<EntityContainerRepository> logger,
+        Guid containerObjectType,
+        IRepositoryCacheVersionService repositoryCacheVersionService,
+        ICacheSyncService cacheSyncService)
+        : base(
+            scopeAccessor,
+            cache,
+            logger,
+            repositoryCacheVersionService,
+            cacheSyncService)
     {
         Guid[] allowedContainers =
         {
@@ -59,7 +69,7 @@ internal class EntityContainerRepository : EntityRepositoryBase<int, EntityConta
         Sql<ISqlContext> sql = GetBaseQuery(false)
             .Where(GetBaseWhereClause(), new { id, NodeObjectType = NodeObjectTypeId });
 
-        NodeDto? nodeDto = Database.Fetch<NodeDto>(sql.SelectTop(1)).FirstOrDefault();
+        NodeDto? nodeDto = Database.FirstOrDefault<NodeDto>(sql);
         return nodeDto == null ? null : CreateEntity(nodeDto);
     }
 
@@ -126,13 +136,13 @@ internal class EntityContainerRepository : EntityRepositoryBase<int, EntityConta
         return entity;
     }
 
-    protected override string GetBaseWhereClause() => $"id = @id and {SqlSyntax.GetQuotedColumnName("nodeObjectType")} = @NodeObjectType";
+    protected override string GetBaseWhereClause() => $"id = @id and {QuoteColumnName("nodeObjectType")} = @NodeObjectType";
 
     protected override IEnumerable<string> GetDeleteClauses() => throw new NotImplementedException();
 
     public bool HasDuplicateName(Guid parentKey, string name)
     {
-        NodeDto nodeDto = Database.FirstOrDefault<NodeDto>(Sql().SelectAll()
+        NodeDto? nodeDto = Database.FirstOrDefault<NodeDto>(Sql().SelectAll()
             .From<NodeDto>()
             .InnerJoin<NodeDto>("parent")
             .On<NodeDto, NodeDto>(
@@ -145,7 +155,7 @@ internal class EntityContainerRepository : EntityRepositoryBase<int, EntityConta
 
     public bool HasDuplicateName(int parentId, string name)
     {
-        NodeDto nodeDto = Database.FirstOrDefault<NodeDto>(Sql().SelectAll()
+        NodeDto? nodeDto = Database.FirstOrDefault<NodeDto>(Sql().SelectAll()
             .From<NodeDto>()
             .Where<NodeDto>(dto => dto.Text == name && dto.NodeObjectType == NodeObjectTypeId && dto.ParentId == parentId));
 
@@ -161,7 +171,7 @@ internal class EntityContainerRepository : EntityRepositoryBase<int, EntityConta
 
         EnsureContainerType(entity);
 
-        NodeDto nodeDto = Database.FirstOrDefault<NodeDto>(Sql().SelectAll()
+        NodeDto? nodeDto = Database.FirstOrDefault<NodeDto>(Sql().SelectAll()
             .From<NodeDto>()
             .Where<NodeDto>(dto => dto.NodeId == entity.Id && dto.NodeObjectType == entity.ContainerObjectType));
 
@@ -174,14 +184,6 @@ internal class EntityContainerRepository : EntityRepositoryBase<int, EntityConta
         List<NodeDto> childDtos = Database.Fetch<NodeDto>(Sql().SelectAll()
             .From<NodeDto>()
             .Where<NodeDto>(c => c.ParentId == entity.Id && (c.NodeObjectType == entity.ContainedObjectType || c.NodeObjectType == entity.ContainerObjectType)));
-
-        // "parentID=@parentID AND (nodeObjectType=@containedObjectType OR nodeObjectType=@containerObjectType)",
-        // new
-        // {
-        //    parentID = entity.Id,
-        //    containedObjectType = entity.ContainedObjectType,
-        //    containerObjectType = entity.ContainerObjectType,
-        // }));
 
         foreach (NodeDto childDto in childDtos)
         {
@@ -218,7 +220,7 @@ internal class EntityContainerRepository : EntityRepositoryBase<int, EntityConta
         entity.Name = entity.Name.Trim();
 
         // guard against duplicates
-        NodeDto nodeDto = Database.FirstOrDefault<NodeDto>(Sql().SelectAll()
+        NodeDto? nodeDto = Database.FirstOrDefault<NodeDto>(Sql().SelectAll()
             .From<NodeDto>()
             .Where<NodeDto>(dto =>
                 dto.ParentId == entity.ParentId && dto.Text == entity.Name &&
@@ -301,7 +303,7 @@ internal class EntityContainerRepository : EntityRepositoryBase<int, EntityConta
             ?? throw new InvalidOperationException("Could not find container with id " + entity.Id);
 
         // guard against duplicates
-        NodeDto dupNodeDto = Database.FirstOrDefault<NodeDto>(Sql().SelectAll()
+        NodeDto? dupNodeDto = Database.FirstOrDefault<NodeDto>(Sql().SelectAll()
             .From<NodeDto>()
             .Where<NodeDto>(dto =>
                 dto.ParentId == entity.ParentId && dto.Text == entity.Name &&

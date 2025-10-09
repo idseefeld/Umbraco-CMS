@@ -27,11 +27,17 @@ internal sealed class AuditEntryRepository : EntityRepositoryBase<int, IAuditEnt
     ///     Initializes a new instance of the <see cref="AuditEntryRepository" /> class.
     /// </summary>
     public AuditEntryRepository(
-        IRuntimeState runtimeState,
-        IScopeAccessor scopeAccessor,
+        IRuntimeState runtimeState,IScopeAccessor scopeAccessor,
         AppCaches cache,
-        ILogger<AuditEntryRepository> logger)
-        : base(scopeAccessor, cache, logger)
+        ILogger<AuditEntryRepository> logger,
+        IRepositoryCacheVersionService repositoryCacheVersionService,
+        ICacheSyncService cacheSyncService)
+        : base(
+            scopeAccessor,
+            cache,
+            logger,
+            repositoryCacheVersionService,
+            cacheSyncService)
     {
         _runtimeState = runtimeState;
     }
@@ -57,7 +63,7 @@ internal sealed class AuditEntryRepository : EntityRepositoryBase<int, IAuditEnt
             .From<AuditEntryDto>()
             .Where<AuditEntryDto>(x => x.Id == id);
 
-        AuditEntryDto dto = Database.FirstOrDefault<AuditEntryDto>(sql);
+        AuditEntryDto? dto = Database.FirstOrDefault<AuditEntryDto>(sql);
         return dto == null ? null : AuditEntryFactory.BuildEntity(dto);
     }
 
@@ -107,7 +113,7 @@ internal sealed class AuditEntryRepository : EntityRepositoryBase<int, IAuditEnt
     }
 
     /// <inheritdoc />
-    protected override string GetBaseWhereClause() => $"{SqlSyntax.GetQuotedTableName(AuditEntryDto.TableName)}.id = @id";
+    protected override string GetBaseWhereClause() => $"{QuoteTableName(AuditEntryDto.TableName)}.id = @id";
 
     /// <inheritdoc />
     protected override IEnumerable<string> GetDeleteClauses() =>
@@ -160,7 +166,7 @@ internal sealed class AuditEntryRepository : EntityRepositoryBase<int, IAuditEnt
                 }
             }
 
-            Sql<ISqlContext> sqlInsert = Sql($"INSERT INTO {SqlSyntax.GetQuotedTableName(AuditEntryDto.TableName)} ({cols})")
+            Sql<ISqlContext> sqlInsert = Sql($"INSERT INTO {QuoteTableName(AuditEntryDto.TableName)} ({cols})")
                 .Append("VALUES (")
                 .Append(sqlValues)
                 .Append(")");

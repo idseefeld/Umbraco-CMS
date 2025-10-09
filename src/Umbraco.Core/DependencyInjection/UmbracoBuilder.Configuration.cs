@@ -47,7 +47,6 @@ public static partial class UmbracoBuilderExtensions
         builder.Services.AddSingleton<IValidateOptions<RequestHandlerSettings>, RequestHandlerSettingsValidator>();
         builder.Services.AddSingleton<IValidateOptions<UnattendedSettings>, UnattendedSettingsValidator>();
         builder.Services.AddSingleton<IValidateOptions<SecuritySettings>, SecuritySettingsValidator>();
-        builder.Services.AddSingleton<IValidateOptions<SystemDateMigrationSettings>, SystemDateMigrationSettingsValidator>();
 
         // Register configuration sections.
         builder
@@ -88,7 +87,8 @@ public static partial class UmbracoBuilderExtensions
             .AddUmbracoOptions<DataTypesSettings>()
             .AddUmbracoOptions<WebhookSettings>()
             .AddUmbracoOptions<CacheSettings>()
-            .AddUmbracoOptions<SystemDateMigrationSettings>();
+            .AddUmbracoOptions<SystemDateMigrationSettings>()
+            .AddUmbracoOptions<DistributedJobSettings>();
 
         // Configure connection string and ensure it's updated when the configuration changes
         builder.Services.AddSingleton<IConfigureOptions<ConnectionStrings>, ConfigureConnectionStrings>();

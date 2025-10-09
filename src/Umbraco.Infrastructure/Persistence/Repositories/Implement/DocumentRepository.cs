@@ -1,8 +1,10 @@
 using System.Globalization;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NPoco;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Cache;
+using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Core.Events;
 using Umbraco.Cms.Core.Extensions;
 using Umbraco.Cms.Core.Models;
@@ -34,31 +36,64 @@ public class DocumentRepository : ContentRepositoryBase<int, IContent, DocumentR
     private readonly ILoggerFactory _loggerFactory;
     private readonly IScopeAccessor _scopeAccessor;
     private readonly IJsonSerializer _serializer;
+    private readonly IRepositoryCacheVersionService _repositoryCacheVersionService;
+    private readonly ICacheSyncService _cacheSyncService;
     private readonly ITagRepository _tagRepository;
     private readonly ITemplateRepository _templateRepository;
     private PermissionRepository<IContent>? _permissionRepository;
 
-    /// <summary>
-    ///     Constructor
-    /// </summary>
-    /// <param name="scopeAccessor"></param>
-    /// <param name="appCaches"></param>
-    /// <param name="logger"></param>
-    /// <param name="loggerFactory"></param>
-    /// <param name="contentTypeRepository"></param>
-    /// <param name="templateRepository"></param>
-    /// <param name="tagRepository"></param>
-    /// <param name="languageRepository"></param>
-    /// <param name="relationRepository"></param>
-    /// <param name="relationTypeRepository"></param>
-    /// <param name="dataValueReferenceFactories"></param>
-    /// <param name="dataTypeService"></param>
-    /// <param name="serializer"></param>
-    /// <param name="eventAggregator"></param>
-    /// <param name="propertyEditors">
-    ///     Lazy property value collection - must be lazy because we have a circular dependency since some property editors
-    ///     require services, yet these services require property editors
-    /// </param>
+    public DocumentRepository(
+        IScopeAccessor scopeAccessor,
+        AppCaches appCaches,
+        ILogger<DocumentRepository> logger,
+        ILoggerFactory loggerFactory,
+        IContentTypeRepository contentTypeRepository,
+        ITemplateRepository templateRepository,
+        ITagRepository tagRepository,
+        ILanguageRepository languageRepository,
+        IRelationRepository relationRepository,
+        IRelationTypeRepository relationTypeRepository,
+        PropertyEditorCollection propertyEditors,
+        DataValueReferenceFactoryCollection dataValueReferenceFactories,
+        IDataTypeService dataTypeService,
+        IJsonSerializer serializer,
+        IEventAggregator eventAggregator,
+        IRepositoryCacheVersionService repositoryCacheVersionService,
+        ICacheSyncService cacheSyncService)
+        : base(
+            scopeAccessor,
+            appCaches,
+            logger,
+            languageRepository,
+            relationRepository,
+            relationTypeRepository,
+            propertyEditors,
+            dataValueReferenceFactories,
+            dataTypeService,
+            eventAggregator,
+            repositoryCacheVersionService,
+            cacheSyncService)
+    {
+        _contentTypeRepository =
+            contentTypeRepository ?? throw new ArgumentNullException(nameof(contentTypeRepository));
+        _templateRepository = templateRepository ?? throw new ArgumentNullException(nameof(templateRepository));
+        _tagRepository = tagRepository ?? throw new ArgumentNullException(nameof(tagRepository));
+        _serializer = serializer;
+        _repositoryCacheVersionService = repositoryCacheVersionService;
+        _cacheSyncService = cacheSyncService;
+        _appCaches = appCaches;
+        _loggerFactory = loggerFactory;
+        _scopeAccessor = scopeAccessor;
+        _contentByGuidReadRepository = new ContentByGuidReadRepository(
+            this,
+            scopeAccessor,
+            appCaches,
+            loggerFactory.CreateLogger<ContentByGuidReadRepository>(),
+            repositoryCacheVersionService,
+            cacheSyncService);
+    }
+
+    [Obsolete("Please use the constructor with all parameters. Scheduled for removal in Umbraco 18.")]
     public DocumentRepository(
         IScopeAccessor scopeAccessor,
         AppCaches appCaches,
@@ -75,19 +110,25 @@ public class DocumentRepository : ContentRepositoryBase<int, IContent, DocumentR
         IDataTypeService dataTypeService,
         IJsonSerializer serializer,
         IEventAggregator eventAggregator)
-        : base(scopeAccessor, appCaches, logger, languageRepository, relationRepository, relationTypeRepository,
-            propertyEditors, dataValueReferenceFactories, dataTypeService, eventAggregator)
+        : this(
+            scopeAccessor,
+            appCaches,
+            logger,
+            loggerFactory,
+            contentTypeRepository,
+            templateRepository,
+            tagRepository,
+            languageRepository,
+            relationRepository,
+            relationTypeRepository,
+            propertyEditors,
+            dataValueReferenceFactories,
+            dataTypeService,
+            serializer,
+            eventAggregator,
+            StaticServiceProvider.Instance.GetRequiredService<IRepositoryCacheVersionService>(),
+            StaticServiceProvider.Instance.GetRequiredService<ICacheSyncService>())
     {
-        _contentTypeRepository =
-            contentTypeRepository ?? throw new ArgumentNullException(nameof(contentTypeRepository));
-        _templateRepository = templateRepository ?? throw new ArgumentNullException(nameof(templateRepository));
-        _tagRepository = tagRepository ?? throw new ArgumentNullException(nameof(tagRepository));
-        _serializer = serializer;
-        _appCaches = appCaches;
-        _loggerFactory = loggerFactory;
-        _scopeAccessor = scopeAccessor;
-        _contentByGuidReadRepository = new ContentByGuidReadRepository(this, scopeAccessor, appCaches,
-            loggerFactory.CreateLogger<ContentByGuidReadRepository>());
     }
 
     protected override DocumentRepository This => this;
@@ -102,7 +143,9 @@ public class DocumentRepository : ContentRepositoryBase<int, IContent, DocumentR
                                                                        new PermissionRepository<IContent>(
                                                                            _scopeAccessor,
                                                                            _appCaches,
-                                                                           _loggerFactory.CreateLogger<PermissionRepository<IContent>>());
+                                                                           _loggerFactory.CreateLogger<PermissionRepository<IContent>>(),
+                                                                           _repositoryCacheVersionService,
+                                                                           _cacheSyncService);
 
     /// <inheritdoc />
     public ContentScheduleCollection GetContentSchedule(int contentId)
@@ -597,7 +640,7 @@ public class DocumentRepository : ContentRepositoryBase<int, IContent, DocumentR
         Sql<ISqlContext> sql = GetBaseQuery(QueryType.Single)
             .Where<NodeDto>(x => x.NodeId == id);
 
-        DocumentDto? dto = Database.Fetch<DocumentDto>(sql.SelectTop(1)).FirstOrDefault();
+        DocumentDto? dto = Database.FirstOrDefault<DocumentDto>(sql);
         return dto == null
             ? null
             : MapDtoToContent(dto);
@@ -723,46 +766,46 @@ public class DocumentRepository : ContentRepositoryBase<int, IContent, DocumentR
         GetBaseQuery(isCount ? QueryType.Count : QueryType.Single);
 
     // ah maybe not, that what's used for eg Exists in base repo
-    protected override string GetBaseWhereClause() => $"{QuoteTab(NodeDto.TableName)}.id = @id";
+    protected override string GetBaseWhereClause() => $"{QuoteTableName(NodeDto.TableName)}.id = @id";
 
     protected override IEnumerable<string> GetDeleteClauses()
     {
-        var nodeId = QuoteCol("nodeId");
-        var uniqueId = QuoteCol("uniqueId");
-        var umbracoNode = QuoteTab(NodeDto.TableName);
+        var nodeId = QuoteColumnName("nodeId");
+        var uniqueId = QuoteColumnName("uniqueId");
+        var umbracoNode = QuoteTableName(NodeDto.TableName);
         var list = new List<string>
     {
-      $"DELETE FROM {QuoteTab(Constants.DatabaseSchema.Tables.ContentSchedule)} WHERE {nodeId} = @id",
-      $@"DELETE FROM {QuoteTab(Constants.DatabaseSchema.Tables.RedirectUrl)} WHERE {QuoteCol("contentKey")} IN
+      $"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.ContentSchedule)} WHERE {nodeId} = @id",
+      $@"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.RedirectUrl)} WHERE {QuoteCol("contentKey")} IN
         (SELECT {uniqueId} FROM {umbracoNode} WHERE id = @id)",
-      $"DELETE FROM {QuoteTab(Constants.DatabaseSchema.Tables.User2NodeNotify )} WHERE {nodeId} = @id",
-      $@"DELETE FROM {QuoteTab(Constants.DatabaseSchema.Tables.UserGroup2GranularPermission)} WHERE {uniqueId} IN
+      $"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.User2NodeNotify )} WHERE {nodeId} = @id",
+      $@"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.UserGroup2GranularPermission)} WHERE {uniqueId} IN
         (SELECT {uniqueId} FROM {umbracoNode} WHERE id = @id)",
-      $"DELETE FROM {QuoteTab(Constants.DatabaseSchema.Tables.UserStartNode)} WHERE {QuoteCol("startNode")} = @id",
-      $@"UPDATE {QuoteTab(Constants.DatabaseSchema.Tables.UserGroup)}
+      $"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.UserStartNode)} WHERE {QuoteCol("startNode")} = @id",
+      $@"UPDATE {QuoteTableName(Constants.DatabaseSchema.Tables.UserGroup)}
         SET {QuoteCol("startContentId")} = NULL
         WHERE {QuoteCol("startContentId")} = @id",
-      $"DELETE FROM {QuoteTab(Constants.DatabaseSchema.Tables.Relation)} WHERE {QuoteCol("parentId")} = @id",
-      $"DELETE FROM {QuoteTab(Constants.DatabaseSchema.Tables.Relation)} WHERE {QuoteCol("childId")} = @id",
-      $"DELETE FROM {QuoteTab(Constants.DatabaseSchema.Tables.TagRelationship)} WHERE {nodeId} = @id",
-      $"DELETE FROM {QuoteTab(Constants.DatabaseSchema.Tables.Domain)} WHERE {QuoteCol("domainRootStructureID")} = @id",
-      $"DELETE FROM {QuoteTab(Constants.DatabaseSchema.Tables.Document)} WHERE {nodeId} = @id",
-      $"DELETE FROM {QuoteTab(Constants.DatabaseSchema.Tables.DocumentCultureVariation)} WHERE {nodeId} = @id",
-      $@"DELETE FROM {QuoteTab(Constants.DatabaseSchema.Tables.DocumentVersion)} WHERE id IN
-        (SELECT id FROM {QuoteTab(Constants.DatabaseSchema.Tables.ContentVersion )} WHERE {nodeId} = @id)",
-      $@"DELETE FROM {QuoteTab(Constants.DatabaseSchema.Tables.PropertyData)} WHERE {QuoteCol("versionId")} IN
-        (SELECT id FROM {QuoteTab(Constants.DatabaseSchema.Tables.ContentVersion)} WHERE {nodeId} = @id)",
-      $@"DELETE FROM {QuoteTab(Constants.DatabaseSchema.Tables.ContentVersionCultureVariation)} WHERE {QuoteCol("versionId")} IN
-        (SELECT id FROM {QuoteTab(Constants.DatabaseSchema.Tables.ContentVersion)} WHERE {nodeId} = @id)",
-      $"DELETE FROM {QuoteTab(Constants.DatabaseSchema.Tables.ContentVersion)} WHERE {nodeId} = @id",
-      $"DELETE FROM {QuoteTab(Constants.DatabaseSchema.Tables.Content)} WHERE {nodeId} = @id",
-      $@"DELETE FROM {QuoteTab(Constants.DatabaseSchema.Tables.AccessRule)} WHERE {QuoteCol("accessId")} IN
-        (SELECT id FROM {QuoteTab(Constants.DatabaseSchema.Tables.Access)}
+      $"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.Relation)} WHERE {QuoteCol("parentId")} = @id",
+      $"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.Relation)} WHERE {QuoteCol("childId")} = @id",
+      $"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.TagRelationship)} WHERE {nodeId} = @id",
+      $"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.Domain)} WHERE {QuoteCol("domainRootStructureID")} = @id",
+      $"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.Document)} WHERE {nodeId} = @id",
+      $"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.DocumentCultureVariation)} WHERE {nodeId} = @id",
+      $@"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.DocumentVersion)} WHERE id IN
+        (SELECT id FROM {QuoteTableName(Constants.DatabaseSchema.Tables.ContentVersion )} WHERE {nodeId} = @id)",
+      $@"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.PropertyData)} WHERE {QuoteCol("versionId")} IN
+        (SELECT id FROM {QuoteTableName(Constants.DatabaseSchema.Tables.ContentVersion)} WHERE {nodeId} = @id)",
+      $@"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.ContentVersionCultureVariation)} WHERE {QuoteCol("versionId")} IN
+        (SELECT id FROM {QuoteTableName(Constants.DatabaseSchema.Tables.ContentVersion)} WHERE {nodeId} = @id)",
+      $"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.ContentVersion)} WHERE {nodeId} = @id",
+      $"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.Content)} WHERE {nodeId} = @id",
+      $@"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.AccessRule)} WHERE {QuoteCol("accessId")} IN
+        (SELECT id FROM {QuoteTableName(Constants.DatabaseSchema.Tables.Access)}
           WHERE {nodeId} = @id OR {QuoteCol("loginNodeId")} = @id OR {QuoteCol("noAccessNodeId")} = @id)",
-      $"DELETE FROM {QuoteTab(Constants.DatabaseSchema.Tables.Access)} WHERE {nodeId} = @id",
-      $"DELETE FROM {QuoteTab(Constants.DatabaseSchema.Tables.Access)} WHERE {QuoteCol("loginNodeId")} = @id",
-      $"DELETE FROM {QuoteTab(Constants.DatabaseSchema.Tables.Access)} WHERE {QuoteCol("noAccessNodeId")} = @id",
-      $@"DELETE FROM {QuoteTab(Constants.DatabaseSchema.Tables.DocumentUrl)} WHERE {uniqueId} IN
+      $"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.Access)} WHERE {nodeId} = @id",
+      $"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.Access)} WHERE {QuoteCol("loginNodeId")} = @id",
+      $"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.Access)} WHERE {QuoteCol("noAccessNodeId")} = @id",
+      $@"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.DocumentUrl)} WHERE {uniqueId} IN
         (SELECT {uniqueId} FROM {umbracoNode} WHERE id = @id)",
       $"DELETE FROM {umbracoNode} WHERE id = @id",
         };
@@ -883,16 +926,16 @@ public class DocumentRepository : ContentRepositoryBase<int, IContent, DocumentR
     protected override void PerformDeleteVersion(int id, int versionId)
     {
         Sql<ISqlContext> sql = Sql().Delete<PropertyDataDto>(x => x.VersionId == versionId);
-        _ = Database.Execute(sql);
+        Database.Execute(sql);
 
         sql = Sql().Delete<ContentVersionCultureVariationDto>(x => x.VersionId == versionId);
-        _ = Database.Execute(sql);
+        Database.Execute(sql);
 
         sql = Sql().Delete<DocumentVersionDto>(x => x.Id == versionId);
-        _ = Database.Execute(sql);
+        Database.Execute(sql);
 
         sql = Sql().Delete<ContentVersionDto>(x => x.Id == versionId);
-        _ = Database.Execute(sql);
+        Database.Execute(sql);
     }
 
     #endregion
@@ -1080,8 +1123,6 @@ public class DocumentRepository : ContentRepositoryBase<int, IContent, DocumentR
 
             ClearEntityTags(entity, _tagRepository);
         }
-
-        PersistRelations(entity);
 
         entity.ResetDirtyProperties();
 
@@ -1332,8 +1373,6 @@ public class DocumentRepository : ContentRepositoryBase<int, IContent, DocumentR
                 ClearEntityTags(entity, _tagRepository);
             }
 
-            PersistRelations(entity);
-
             // TODO: note re. tags: explicitly unpublished entities have cleared tags, but masked or trashed entities *still* have tags in the db - so what?
         }
 
@@ -1564,9 +1603,19 @@ public class DocumentRepository : ContentRepositoryBase<int, IContent, DocumentR
     {
         private readonly DocumentRepository _outerRepo;
 
-        public ContentByGuidReadRepository(DocumentRepository outerRepo, IScopeAccessor scopeAccessor, AppCaches cache,
-            ILogger<ContentByGuidReadRepository> logger)
-            : base(scopeAccessor, cache, logger) =>
+        public ContentByGuidReadRepository(
+            DocumentRepository outerRepo,
+            IScopeAccessor scopeAccessor,
+            AppCaches cache,
+            ILogger<ContentByGuidReadRepository> logger,
+            IRepositoryCacheVersionService repositoryCacheVersionService,
+            ICacheSyncService cacheSyncService)
+            : base(
+                scopeAccessor,
+                cache,
+                logger,
+                repositoryCacheVersionService,
+                cacheSyncService) =>
             _outerRepo = outerRepo;
 
         protected override IContent? PerformGet(Guid id)
@@ -1574,7 +1623,7 @@ public class DocumentRepository : ContentRepositoryBase<int, IContent, DocumentR
             Sql<ISqlContext> sql = _outerRepo.GetBaseQuery(QueryType.Single)
                 .Where<NodeDto>(x => x.UniqueId == id);
 
-            DocumentDto? dto = Database.Fetch<DocumentDto>(sql.SelectTop(1)).FirstOrDefault();
+            DocumentDto? dto = Database.FirstOrDefault<DocumentDto>(sql);
 
             if (dto == null)
             {
@@ -1679,24 +1728,30 @@ public class DocumentRepository : ContentRepositoryBase<int, IContent, DocumentR
     }
 
     /// <inheritdoc />
-    public IEnumerable<Guid> GetScheduledContentKeys(Guid[] keys)
+    public IDictionary<int, IEnumerable<ContentSchedule>> GetContentSchedulesByIds(int[] documentIds)
     {
-        var action = ContentScheduleAction.Release.ToString();
-        DateTime now = DateTime.UtcNow;
+        Sql<ISqlContext> sql = Sql()
+            .Select<ContentScheduleDto>()
+            .From<ContentScheduleDto>()
+            .WhereIn<ContentScheduleDto>(contentScheduleDto => contentScheduleDto.NodeId, documentIds);
 
-        Sql<ISqlContext> sql = SqlContext.Sql();
-        sql
-            .Select<NodeDto>(x => x.UniqueId)
-            .From<DocumentDto>()
-            .InnerJoin<ContentDto>().On<DocumentDto, ContentDto>(left => left.NodeId, right => right.NodeId)
-            .InnerJoin<NodeDto>().On<ContentDto, NodeDto>(left => left.NodeId, right => right.NodeId)
-            .WhereIn<NodeDto>(x => x.UniqueId, keys)
-            .WhereIn<NodeDto>(x => x.NodeId, Sql()
-                .Select<ContentScheduleDto>(x => x.NodeId)
-                .From<ContentScheduleDto>()
-                .Where<ContentScheduleDto>(x => x.Action == action && x.Date >= now));
+        List<ContentScheduleDto>? contentScheduleDtos = Database.Fetch<ContentScheduleDto>(sql);
 
-        return Database.Fetch<Guid>(sql);
+        IDictionary<int, IEnumerable<ContentSchedule>> dictionary = contentScheduleDtos
+            .GroupBy(contentSchedule => contentSchedule.NodeId)
+            .ToDictionary(
+                group => group.Key,
+                group => group.Select(scheduleDto => new ContentSchedule(
+                    scheduleDto.Id,
+                    LanguageRepository.GetIsoCodeById(scheduleDto.LanguageId) ?? Constants.System.InvariantCulture,
+                    scheduleDto.Date,
+                    scheduleDto.Action == ContentScheduleAction.Release.ToString()
+                        ? ContentScheduleAction.Release
+                        : ContentScheduleAction.Expire))
+                    .ToList().AsEnumerable()); // We have to materialize it here,
+                                               // to avoid this being used after the scope is disposed.
+
+        return dictionary;
     }
 
     /// <inheritdoc />
@@ -1858,7 +1913,7 @@ public class DocumentRepository : ContentRepositoryBase<int, IContent, DocumentR
 
     #endregion
 
-    private string QuoteTab(string tableName) => SqlSyntax.GetQuotedTableName(tableName);
+    private string QuoteTableName(string tableName) => SqlSyntax.GetQuotedTableName(tableName);
 
     private string QuoteCol(string columnName) => SqlSyntax.GetQuotedColumnName(columnName);
 }

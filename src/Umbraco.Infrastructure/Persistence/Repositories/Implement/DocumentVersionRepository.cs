@@ -25,17 +25,17 @@ internal sealed class DocumentVersionRepository : IDocumentVersionRepository
     ///     Never includes current published version.<br />
     ///     Never includes versions marked as "preventCleanup".<br />
     /// </remarks>
-    public IReadOnlyCollection<ContentVersionMeta>? GetDocumentVersionsEligibleForCleanup()
+    public IReadOnlyCollection<ContentVersionMeta> GetDocumentVersionsEligibleForCleanup()
     {
         IScope? ambientScope = _scopeAccessor.AmbientScope;
         if (ambientScope is null)
         {
-            return null;
+            return [];
         }
 
         ISqlSyntaxProvider syntax = ambientScope.SqlContext.SqlSyntax;
         Sql<ISqlContext> query = ambientScope.SqlContext.Sql()
-            .Select(GetQuotedSelectCoumns(syntax))
+            .Select(GetQuotedSelectColumns(syntax))
             .From<DocumentDto>()
             .InnerJoin<ContentDto>()
             .On<DocumentDto, ContentDto>(left => left.NodeId, right => right.NodeId)
@@ -49,12 +49,12 @@ internal sealed class DocumentVersionRepository : IDocumentVersionRepository
             .Where<ContentVersionDto>(x => !x.PreventCleanup) // Never delete "pinned" versions
             .Where<DocumentVersionDto>(x => !x.Published); // Never delete published version
 
-        List<ContentVersionMeta>? results = _scopeAccessor.AmbientScope?.Database.Fetch<ContentVersionMeta>(query);
+        List<ContentVersionMeta> results = ambientScope.Database.Fetch<ContentVersionMeta>(query);
         EnsureUtcDates(results);
         return results;
     }
 
-    private string GetQuotedSelectCoumns(ISqlSyntaxProvider syntax) =>
+    private string GetQuotedSelectColumns(ISqlSyntaxProvider syntax) =>
         $@"
 {syntax.ColumnWithAlias(ContentVersionDto.TableName,"id", "versionId")},
 {syntax.ColumnWithAlias(DocumentDto.TableName, "nodeId", "contentId")},
@@ -86,29 +86,34 @@ internal sealed class DocumentVersionRepository : IDocumentVersionRepository
     }
 
     /// <inheritdoc />
-    public IReadOnlyCollection<ContentVersionCleanupPolicySettings>? GetCleanupPolicies()
+    public IReadOnlyCollection<ContentVersionCleanupPolicySettings> GetCleanupPolicies()
     {
-        Sql<ISqlContext>? query = _scopeAccessor.AmbientScope?.SqlContext.Sql();
+        if (_scopeAccessor.AmbientScope is null)
+        {
+            return [];
+        }
 
-        query?.Select<ContentVersionCleanupPolicyDto>()
+        Sql<ISqlContext> query = _scopeAccessor.AmbientScope.SqlContext.Sql();
+
+        query.Select<ContentVersionCleanupPolicyDto>()
             .From<ContentVersionCleanupPolicyDto>();
 
-        return _scopeAccessor.AmbientScope?.Database.Fetch<ContentVersionCleanupPolicySettings>(query);
+        return _scopeAccessor.AmbientScope.Database.Fetch<ContentVersionCleanupPolicySettings>(query);
     }
 
     /// <inheritdoc />
-    public IEnumerable<ContentVersionMeta>? GetPagedItemsByContentId(int contentId, long pageIndex, int pageSize, out long totalRecords, int? languageId = null)
+    public IEnumerable<ContentVersionMeta> GetPagedItemsByContentId(int contentId, long pageIndex, int pageSize, out long totalRecords, int? languageId = null)
     {
         IScope? ambientScope = _scopeAccessor.AmbientScope;
         if (ambientScope is null)
         {
             totalRecords = 0;
-            return null;
+            return [];
         }
 
         ISqlSyntaxProvider syntax = ambientScope.SqlContext.SqlSyntax;
         Sql<ISqlContext> query = ambientScope.SqlContext.Sql()
-            .Select(GetQuotedSelectCoumns(syntax))
+            .Select(GetQuotedSelectColumns(syntax))
             .From<DocumentDto>()
             .InnerJoin<ContentDto>()
             .On<DocumentDto, ContentDto>(left => left.NodeId, right => right.NodeId)
@@ -129,12 +134,12 @@ internal sealed class DocumentVersionRepository : IDocumentVersionRepository
 
         query = query.OrderByDescending<ContentVersionDto>(x => x.Id);
 
-        Page<ContentVersionMeta>? page =
-            _scopeAccessor.AmbientScope?.Database.Page<ContentVersionMeta>(pageIndex + 1, pageSize, query);
+        Page<ContentVersionMeta> page =
+            ambientScope.Database.Page<ContentVersionMeta>(pageIndex + 1, pageSize, query);
 
-        totalRecords = page?.TotalItems ?? 0;
+        totalRecords = page.TotalItems;
 
-        List<ContentVersionMeta>? results = page?.Items;
+        List<ContentVersionMeta> results = page.Items;
         EnsureUtcDates(results);
         return results;
     }
@@ -145,6 +150,11 @@ internal sealed class DocumentVersionRepository : IDocumentVersionRepository
     /// </remarks>
     public void DeleteVersions(IEnumerable<int> versionIds)
     {
+        if (_scopeAccessor.AmbientScope is null)
+        {
+            return;
+        }
+
         foreach (IEnumerable<int> group in versionIds.InGroupsOf(Constants.Sql.MaxParameterCount))
         {
             var groupedVersionIds = group.ToList();
@@ -154,32 +164,37 @@ internal sealed class DocumentVersionRepository : IDocumentVersionRepository
             *  Can use test PerformContentVersionCleanup_WithNoKeepPeriods_DeletesEverythingExceptActive to try things out.
             */
 
-            Sql<ISqlContext>? query = _scopeAccessor.AmbientScope?.SqlContext.Sql()
+            Sql<ISqlContext> query = _scopeAccessor.AmbientScope.SqlContext.Sql()
                 .Delete<PropertyDataDto>()
                 .WhereIn<PropertyDataDto>(x => x.VersionId, groupedVersionIds);
-            _scopeAccessor.AmbientScope?.Database.Execute(query);
+            _scopeAccessor.AmbientScope.Database.Execute(query);
 
-            query = _scopeAccessor.AmbientScope?.SqlContext.Sql()
+            query = _scopeAccessor.AmbientScope.SqlContext.Sql()
                 .Delete<ContentVersionCultureVariationDto>()
                 .WhereIn<ContentVersionCultureVariationDto>(x => x.VersionId, groupedVersionIds);
-            _scopeAccessor.AmbientScope?.Database.Execute(query);
+            _scopeAccessor.AmbientScope.Database.Execute(query);
 
-            query = _scopeAccessor.AmbientScope?.SqlContext.Sql()
+            query = _scopeAccessor.AmbientScope.SqlContext.Sql()
                 .Delete<DocumentVersionDto>()
                 .WhereIn<DocumentVersionDto>(x => x.Id, groupedVersionIds);
-            _scopeAccessor.AmbientScope?.Database.Execute(query);
+            _scopeAccessor.AmbientScope.Database.Execute(query);
 
-            query = _scopeAccessor.AmbientScope?.SqlContext.Sql()
+            query = _scopeAccessor.AmbientScope.SqlContext.Sql()
                 .Delete<ContentVersionDto>()
                 .WhereIn<ContentVersionDto>(x => x.Id, groupedVersionIds);
-            _scopeAccessor.AmbientScope?.Database.Execute(query);
+            _scopeAccessor.AmbientScope.Database.Execute(query);
         }
     }
 
     /// <inheritdoc />
     public void SetPreventCleanup(int versionId, bool preventCleanup)
     {
-        Sql<ISqlContext>? query = _scopeAccessor.AmbientScope?.SqlContext.Sql()
+        if (_scopeAccessor.AmbientScope is null)
+        {
+            return;
+        }
+
+        Sql<ISqlContext>? query = _scopeAccessor.AmbientScope.SqlContext.Sql()
             .Update<ContentVersionDto>(x => x.Set(y => y.PreventCleanup, preventCleanup))
             .Where<ContentVersionDto>(x => x.Id == versionId);
 
@@ -197,7 +212,7 @@ internal sealed class DocumentVersionRepository : IDocumentVersionRepository
 
         ISqlSyntaxProvider syntax = ambientScope.SqlContext.SqlSyntax;
         Sql<ISqlContext> query = ambientScope.SqlContext.Sql()
-            .Select(GetQuotedSelectCoumns(syntax))
+            .Select(GetQuotedSelectColumns(syntax))
             .From<DocumentDto>()
             .InnerJoin<ContentDto>()
             .On<DocumentDto, ContentDto>(left => left.NodeId, right => right.NodeId)
@@ -209,14 +224,14 @@ internal sealed class DocumentVersionRepository : IDocumentVersionRepository
             .On<UserDto, ContentVersionDto>(left => left.Id, right => right.UserId)
             .Where<ContentVersionDto>(x => x.Id == versionId);
 
-        ContentVersionMeta? result = _scopeAccessor.AmbientScope?.Database.Single<ContentVersionMeta>(query);
-        result?.EnsureUtc();
+        ContentVersionMeta result = ambientScope.Database.Single<ContentVersionMeta>(query);
+        result.EnsureUtc();
         return result;
     }
 
-    private static void EnsureUtcDates(IEnumerable<ContentVersionMeta>? versions)
+    private static void EnsureUtcDates(IEnumerable<ContentVersionMeta> versions)
     {
-        foreach (ContentVersionMeta version in versions ?? [])
+        foreach (ContentVersionMeta version in versions)
         {
             version.EnsureUtc();
         }

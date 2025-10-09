@@ -15,9 +15,20 @@ namespace Umbraco.Cms.Infrastructure.Persistence.Repositories.Implement;
 
 internal sealed class DomainRepository : EntityRepositoryBase<int, IDomain>, IDomainRepository
 {
-    public DomainRepository(IScopeAccessor scopeAccessor, AppCaches cache, ILogger<DomainRepository> logger)
-        : base(scopeAccessor, cache, logger)
-    { }
+    public DomainRepository(
+        IScopeAccessor scopeAccessor,
+        AppCaches cache,
+        ILogger<DomainRepository> logger,
+        IRepositoryCacheVersionService repositoryCacheVersionService,
+        ICacheSyncService cacheSyncService)
+        : base(
+            scopeAccessor,
+            cache,
+            logger,
+            repositoryCacheVersionService,
+            cacheSyncService)
+    {
+    }
 
     public IDomain? GetByName(string domainName)
         => GetMany().FirstOrDefault(x => x.DomainName.InvariantEquals(domainName));
@@ -32,7 +43,7 @@ internal sealed class DomainRepository : EntityRepositoryBase<int, IDomain>, IDo
         => GetMany().Where(x => x.RootContentId == contentId).Where(x => includeWildcards || x.IsWildcard == false);
 
     protected override IRepositoryCachePolicy<IDomain, int> CreateCachePolicy()
-        => new FullDataSetRepositoryCachePolicy<IDomain, int>(GlobalIsolatedCache, ScopeAccessor, GetEntityId, false);
+        => new FullDataSetRepositoryCachePolicy<IDomain, int>(GlobalIsolatedCache, ScopeAccessor,  RepositoryCacheVersionService, CacheSyncService, GetEntityId, false);
 
     protected override IDomain? PerformGet(int id)
         // Use the underlying GetAll which will force cache all domains
@@ -62,7 +73,7 @@ internal sealed class DomainRepository : EntityRepositoryBase<int, IDomain>, IDo
         }
         else
         {
-            sql.Select($"{SqlSyntax.GetQuotedTableName(Constants.DatabaseSchema.Tables.Domain)}.*, {SqlSyntax.GetQuotedTableName(Constants.DatabaseSchema.Tables.Language)}.{SqlSyntax.GetQuotedColumnName("languageISOCode")}")
+            sql.Select($"{QuoteTableName(Constants.DatabaseSchema.Tables.Domain)}.*, {QuoteTableName(Constants.DatabaseSchema.Tables.Language)}.{QuoteColumnName("languageISOCode")}")
                 .From<DomainDto>()
                 .LeftJoin<LanguageDto>()
                 .On<DomainDto, LanguageDto>(dto => dto.DefaultLanguage, dto => dto.Id);
@@ -72,18 +83,18 @@ internal sealed class DomainRepository : EntityRepositoryBase<int, IDomain>, IDo
     }
 
     protected override string GetBaseWhereClause()
-        => $"{SqlSyntax.GetQuotedTableName(Constants.DatabaseSchema.Tables.Domain)}.id = @id";
+        => $"{QuoteTableName(Constants.DatabaseSchema.Tables.Domain)}.id = @id";
 
     protected override IEnumerable<string> GetDeleteClauses()
         => new []
         {
-            $"DELETE FROM {SqlSyntax.GetQuotedTableName(Constants.DatabaseSchema.Tables.Domain)} WHERE id = @id",
+            $"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.Domain)} WHERE id = @id",
         };
 
     protected override void PersistNewItem(IDomain entity)
     {
         var exists = Database.ExecuteScalar<int>(
-            $"SELECT COUNT(*) FROM {SqlSyntax.GetQuotedTableName(Constants.DatabaseSchema.Tables.Domain)} WHERE {SqlSyntax.GetQuotedColumnName("domainName")} = @domainName",
+            $"SELECT COUNT(*) FROM {QuoteTableName(Constants.DatabaseSchema.Tables.Domain)} WHERE {QuoteColumnName("domainName")} = @domainName",
             new { domainName = entity.DomainName });
         if (exists > 0)
         {
@@ -93,7 +104,7 @@ internal sealed class DomainRepository : EntityRepositoryBase<int, IDomain>, IDo
         if (entity.RootContentId.HasValue)
         {
             var contentExists = Database.ExecuteScalar<int>(
-                $"SELECT COUNT(*) FROM {SqlSyntax.GetQuotedTableName(Constants.DatabaseSchema.Tables.Content)} WHERE {SqlSyntax.GetQuotedColumnName("nodeId")} = @id",
+                $"SELECT COUNT(*) FROM {QuoteTableName(Constants.DatabaseSchema.Tables.Content)} WHERE {QuoteColumnName("nodeId")} = @id",
                 new { id = entity.RootContentId.Value });
             if (contentExists == 0)
             {
@@ -104,7 +115,7 @@ internal sealed class DomainRepository : EntityRepositoryBase<int, IDomain>, IDo
         if (entity.LanguageId.HasValue)
         {
             var languageExists = Database.ExecuteScalar<int>(
-                $"SELECT COUNT(*) FROM {SqlSyntax.GetQuotedTableName(Constants.DatabaseSchema.Tables.Language)} WHERE id = @id",
+                $"SELECT COUNT(*) FROM {QuoteTableName(Constants.DatabaseSchema.Tables.Language)} WHERE id = @id",
                 new { id = entity.LanguageId.Value });
             if (languageExists == 0)
             {
@@ -126,7 +137,7 @@ internal sealed class DomainRepository : EntityRepositoryBase<int, IDomain>, IDo
         if (entity.LanguageId.HasValue)
         {
             ((UmbracoDomain)entity).LanguageIsoCode = Database.ExecuteScalar<string>(
-                $"SELECT {SqlSyntax.GetQuotedColumnName("languageISOCode")} FROM {SqlSyntax.GetQuotedTableName(Constants.DatabaseSchema.Tables.Language)} WHERE id = @langId",
+                $"SELECT {QuoteColumnName("languageISOCode")} FROM {QuoteTableName(Constants.DatabaseSchema.Tables.Language)} WHERE id = @langId",
                 new { langId = entity.LanguageId });
         }
 
@@ -139,7 +150,7 @@ internal sealed class DomainRepository : EntityRepositoryBase<int, IDomain>, IDo
 
         // Ensure there is no other domain with the same name on another entity
         var exists = Database.ExecuteScalar<int>(
-            $"SELECT COUNT(*) FROM {SqlSyntax.GetQuotedTableName(Constants.DatabaseSchema.Tables.Domain)} WHERE {SqlSyntax.GetQuotedColumnName("domainName")} = @domainName AND id <> @id",
+            $"SELECT COUNT(*) FROM {QuoteTableName(Constants.DatabaseSchema.Tables.Domain)} WHERE {QuoteColumnName("domainName")} = @domainName AND id <> @id",
             new { domainName = entity.DomainName, id = entity.Id });
         if (exists > 0)
         {
@@ -149,7 +160,7 @@ internal sealed class DomainRepository : EntityRepositoryBase<int, IDomain>, IDo
         if (entity.RootContentId.HasValue)
         {
             var contentExists = Database.ExecuteScalar<int>(
-                $"SELECT COUNT(*) FROM {SqlSyntax.GetQuotedTableName(Constants.DatabaseSchema.Tables.Content)} WHERE {SqlSyntax.GetQuotedColumnName("nodeId")} = @id",
+                $"SELECT COUNT(*) FROM {QuoteTableName(Constants.DatabaseSchema.Tables.Content)} WHERE {QuoteColumnName("nodeId")} = @id",
                 new { id = entity.RootContentId.Value });
             if (contentExists == 0)
             {
@@ -160,7 +171,7 @@ internal sealed class DomainRepository : EntityRepositoryBase<int, IDomain>, IDo
         if (entity.LanguageId.HasValue)
         {
             var languageExists = Database.ExecuteScalar<int>(
-                $"SELECT COUNT(*) FROM {SqlSyntax.GetQuotedTableName(Constants.DatabaseSchema.Tables.Language)} WHERE id = @id",
+                $"SELECT COUNT(*) FROM {QuoteTableName(Constants.DatabaseSchema.Tables.Language)} WHERE id = @id",
                 new { id = entity.LanguageId.Value });
             if (languageExists == 0)
             {
@@ -176,7 +187,7 @@ internal sealed class DomainRepository : EntityRepositoryBase<int, IDomain>, IDo
         if (entity.WasPropertyDirty("LanguageId"))
         {
             ((UmbracoDomain)entity).LanguageIsoCode = Database.ExecuteScalar<string>(
-                $"SELECT {SqlSyntax.GetQuotedColumnName("languageISOCode")} FROM {SqlSyntax.GetQuotedTableName(Constants.DatabaseSchema.Tables.Language)} WHERE id = @langId",
+                $"SELECT {QuoteColumnName("languageISOCode")} FROM {QuoteTableName(Constants.DatabaseSchema.Tables.Language)} WHERE id = @langId",
                 new { langId = entity.LanguageId });
         }
 
@@ -187,6 +198,6 @@ internal sealed class DomainRepository : EntityRepositoryBase<int, IDomain>, IDo
         => isWildcard
         ? -1
         : Database.ExecuteScalar<int>(
-            $"SELECT COALESCE(MAX({SqlSyntax.GetQuotedColumnName("sortOrder")}), -1) + 1 FROM {SqlSyntax.GetQuotedTableName(Constants.DatabaseSchema.Tables.Domain)} WHERE {SqlSyntax.GetQuotedColumnName("domainRootStructureID")} = @rootContentId AND NOT ({SqlSyntax.GetQuotedColumnName("domainName")} = '' OR {SqlSyntax.GetQuotedColumnName("domainName")} LIKE '*%')",
+            $"SELECT COALESCE(MAX({QuoteColumnName("sortOrder")}), -1) + 1 FROM {QuoteTableName(Constants.DatabaseSchema.Tables.Domain)} WHERE {QuoteColumnName("domainRootStructureID")} = @rootContentId AND NOT ({QuoteColumnName("domainName")} = '' OR {QuoteColumnName("domainName")} LIKE '*%')",
             new { rootContentId });
 }
