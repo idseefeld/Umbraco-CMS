@@ -260,14 +260,14 @@ internal sealed class LanguageRepository : EntityRepositoryBase<int, ILanguage>,
         {
             // NOTE: There is no constraint between the Language and cmsDictionary/cmsLanguageText tables (?)
             // but we still need to remove them
-            $"DELETE FROM {QuotedName(Constants.DatabaseSchema.Tables.DictionaryValue)} {lIdWhere}",
-            $"DELETE FROM {QuotedName(Constants.DatabaseSchema.Tables.PropertyData)} {lIdWhere}",
-            $"DELETE FROM {QuotedName(Constants.DatabaseSchema.Tables.ContentVersionCultureVariation)} {lIdWhere}",
-            $"DELETE FROM {QuotedName(Constants.DatabaseSchema.Tables.DocumentCultureVariation)} {lIdWhere}",
-            $"DELETE FROM {QuotedName(Constants.DatabaseSchema.Tables.TagRelationship)} WHERE {QuoteColumnName("tagId")} IN (SELECT id FROM {QuotedName(Constants.DatabaseSchema.Tables.Tag)} {lIdWhere})",
-            $"DELETE FROM {QuotedName(Constants.DatabaseSchema.Tables.Tag)} {lIdWhere}",
-            $"DELETE FROM {QuotedName(Constants.DatabaseSchema.Tables.DocumentUrl)} {lIdWhere}",
-            $"DELETE FROM {QuotedName(Constants.DatabaseSchema.Tables.Language)} WHERE id = @id",
+            $"DELETE FROM {QuoteName(Constants.DatabaseSchema.Tables.DictionaryValue)} {lIdWhere}",
+            $"DELETE FROM {QuoteName(Constants.DatabaseSchema.Tables.PropertyData)} {lIdWhere}",
+            $"DELETE FROM {QuoteName(Constants.DatabaseSchema.Tables.ContentVersionCultureVariation)} {lIdWhere}",
+            $"DELETE FROM {QuoteName(Constants.DatabaseSchema.Tables.DocumentCultureVariation)} {lIdWhere}",
+            $"DELETE FROM {QuoteName(Constants.DatabaseSchema.Tables.TagRelationship)} WHERE {QuoteColumnName("tagId")} IN (SELECT id FROM {QuoteName(Constants.DatabaseSchema.Tables.Tag)} {lIdWhere})",
+            $"DELETE FROM {QuoteName(Constants.DatabaseSchema.Tables.Tag)} {lIdWhere}",
+            $"DELETE FROM {QuoteName(Constants.DatabaseSchema.Tables.DocumentUrl)} {lIdWhere}",
+            $"DELETE FROM {QuoteName(Constants.DatabaseSchema.Tables.Language)} WHERE id = @id",
         };
         return list;
     }

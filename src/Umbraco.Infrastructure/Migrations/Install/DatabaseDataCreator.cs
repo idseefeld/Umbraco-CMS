@@ -1854,7 +1854,7 @@ internal sealed class DatabaseDataCreator
                     CultureName = culture.EnglishName,
                     IsDefault = isDefault,
                 };
-                _ = _database.Insert(Constants.DatabaseSchema.Tables.Language, "id", applyAutoIncrement, dto);
+                _database.Insert(Constants.DatabaseSchema.Tables.Language, "id", applyAutoIncrement, dto);
                 isDefault = false;
                 id += autoIncrementValue;
             }

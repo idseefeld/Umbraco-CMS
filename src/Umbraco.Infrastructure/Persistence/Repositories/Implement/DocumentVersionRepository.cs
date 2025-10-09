@@ -56,18 +56,23 @@ internal sealed class DocumentVersionRepository : IDocumentVersionRepository
 
     private string GetQuotedSelectColumns(ISqlSyntaxProvider syntax) =>
         $@"
-{syntax.ColumnWithAlias(ContentVersionDto.TableName,"id", "versionId")},
+{syntax.ColumnWithAlias(ContentVersionDto.TableName, "id", "versionId")},
 {syntax.ColumnWithAlias(DocumentDto.TableName, "nodeId", "contentId")},
 {syntax.ColumnWithAlias(ContentDto.TableName, "contentTypeId", "contentTypeId")},
-{syntax.ColumnWithAlias(ContentVersionDto.TableName,"userId", "userId")},
-{syntax.ColumnWithAlias(ContentVersionDto.TableName,"versionDate", "versionDate")},
-{syntax.ColumnWithAlias(DocumentVersionDto.TableName,"published", "currentPublishedVersion")},
-{syntax.ColumnWithAlias(ContentVersionDto.TableName,"current", "currentDraftVersion")},
-{syntax.ColumnWithAlias(ContentVersionDto.TableName,"preventCleanup", "preventCleanup")},
-{syntax.ColumnWithAlias(UserDto.TableName,"userName", "username")}
+{syntax.ColumnWithAlias(ContentVersionDto.TableName, "userId", "userId")},
+{syntax.ColumnWithAlias(ContentVersionDto.TableName, "versionDate", "versionDate")},
+{syntax.ColumnWithAlias(DocumentVersionDto.TableName, "published", "currentPublishedVersion")},
+{syntax.ColumnWithAlias(ContentVersionDto.TableName, "current", "currentDraftVersion")},
+{syntax.ColumnWithAlias(ContentVersionDto.TableName, "preventCleanup", "preventCleanup")},
+{syntax.ColumnWithAlias(UserDto.TableName, "userName", "username")}
 ";
 
     private static string GetQuotedSelectCoumn(ISqlSyntaxProvider syntax, string columnName, string? alias = null, string? tableName = null)
+    {
+        return GetQuotedSelectColumn(syntax, columnName, alias, tableName);
+    }
+
+    private static string GetQuotedSelectColumn(ISqlSyntaxProvider syntax, string columnName, string? alias = null, string? tableName = null)
     {
         var sb = new StringBuilder();
         if (tableName is not null)

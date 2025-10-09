@@ -556,8 +556,8 @@ namespace Umbraco.Cms.Infrastructure.Persistence.Repositories.Implement
                             WHEN {QuoteColumnName("decimalValue")} IS NOT NULL THEN {sortedDecimal}
                             WHEN {QuoteColumnName("dateValue")} IS NOT NULL THEN {sortedDate}
                             ELSE {sortedString}
-                        END AS {QuotedName("customPropVal")},
-                        cver.{QuoteColumnName("nodeId")} AS {QuotedName("customPropNodeId")}")
+                        END AS {QuoteName("customPropVal")},
+                        cver.{QuoteColumnName("nodeId")} AS {QuoteName("customPropNodeId")}")
                 .From<ContentVersionDto>("cver")
                 .InnerJoin<PropertyDataDto>("opdata")
                     .On<ContentVersionDto, PropertyDataDto>((version, pdata) => version.Id == pdata.VersionId, "cver", "opdata")
@@ -572,14 +572,14 @@ namespace Umbraco.Cms.Infrastructure.Persistence.Repositories.Implement
             var innerSqlString = ParameterHelper.ProcessParams(innerSql.SQL, innerSql.Arguments, argsList);
 
             // create the outer join complete sql fragment
-            var outerJoinTempTable = $@"LEFT OUTER JOIN ({innerSqlString}) AS {QuotedName("customPropData")}
-                ON {QuotedName("customPropData")}.{QuoteColumnName("customPropNodeId")} = {QuoteColumnName(NodeDto.TableName)}.id "; // trailing space is important!
+            var outerJoinTempTable = $@"LEFT OUTER JOIN ({innerSqlString}) AS {QuoteName("customPropData")}
+                ON {QuoteName("customPropData")}.{QuoteColumnName("customPropNodeId")} = {QuoteColumnName(NodeDto.TableName)}.id "; // trailing space is important!
 
             // insert this just above the first WHERE
             var newSql = InsertBefore(sql.SQL, "WHERE", outerJoinTempTable);
 
             // see notes in ApplyOrdering: the field MUST be selected + aliased
-            newSql = InsertBefore(newSql, "FROM", $", {QuotedName("customPropData")}.{QuoteColumnName("customPropVal")} AS ordering "); // trailing space is important!
+            newSql = InsertBefore(newSql, "FROM", $", {QuoteName("customPropData")}.{QuoteColumnName("customPropVal")} AS ordering "); // trailing space is important!
 
             // create the new sql
             sql = Sql(newSql, argsList.ToArray());

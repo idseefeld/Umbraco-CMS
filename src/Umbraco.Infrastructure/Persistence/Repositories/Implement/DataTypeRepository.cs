@@ -269,7 +269,7 @@ internal sealed class DataTypeRepository : EntityRepositoryBase<int, IDataType>,
         }
         else
         {
-            _ = dataTypeSql.Where<NodeDto>(x => x.NodeObjectType == NodeObjectTypeId);
+            dataTypeSql.Where<NodeDto>(x => x.NodeObjectType == NodeObjectTypeId);
         }
 
         List<DataTypeDto>? dtos = Database.Fetch<DataTypeDto>(dataTypeSql);
@@ -362,7 +362,7 @@ internal sealed class DataTypeRepository : EntityRepositoryBase<int, IDataType>,
 
         // Create the (base) node data - umbracoNode
         NodeDto nodeDto = dto.NodeDto;
-        nodeDto.Path = parent?.Path ?? "-1";
+        nodeDto.Path = parent.Path;
         nodeDto.Level = short.Parse(level.ToString(CultureInfo.InvariantCulture));
         nodeDto.SortOrder = sortOrder;
         var o = Database.IsNew(nodeDto) ? Convert.ToInt32(Database.Insert(nodeDto)) : Database.Update(nodeDto);
