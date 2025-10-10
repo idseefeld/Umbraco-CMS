@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Umbraco.Cms.Persistence.EFCore;
@@ -11,9 +12,11 @@ using Umbraco.Cms.Persistence.EFCore;
 namespace Our.Umbraco.PostgreSql.EFCore.Migrations
 {
     [DbContext(typeof(UmbracoDbContext))]
-    partial class UmbracoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251010090410_UpdateOpenIddictToV7")]
+    partial class UpdateOpenIddictToV7
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
