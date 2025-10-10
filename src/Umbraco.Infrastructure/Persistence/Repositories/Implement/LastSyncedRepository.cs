@@ -1,4 +1,4 @@
-﻿using NPoco;
+using NPoco;
 using Umbraco.Cms.Core.Cache;
 using Umbraco.Cms.Core.Factories;
 using Umbraco.Cms.Core.Persistence.Repositories;
@@ -79,7 +79,7 @@ public class LastSyncedRepository : RepositoryBase, ILastSyncedRepository
 
         await Database.InsertOrUpdateAsync(
             dto,
-            "SET lastSyncedExternalId=@LastSyncedExternalId, lastSyncedDate=@LastSyncedDate WHERE machineId=@MachineId",
+            $"SET {QuoteColumnName("lastSyncedExternalId")}=@LastSyncedExternalId, {QuoteColumnName("lastSyncedDate")}=@LastSyncedDate WHERE {QuoteColumnName("machineId")}=@MachineId",
             new
             {
                 dto.LastSyncedExternalId,
