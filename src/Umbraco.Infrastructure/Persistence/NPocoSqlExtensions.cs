@@ -1530,7 +1530,7 @@ namespace Umbraco.Extensions
         public static Sql<ISqlContext> AppendSubQuery(this Sql<ISqlContext> sql, Sql<ISqlContext> subQuery, string alias)
         {
             // Append the subquery as a derived table with an alias
-            sql.Append("(").Append(subQuery.SQL, subQuery.Arguments).Append($") AS {alias}");
+            sql.Append("(").Append(subQuery.SQL, subQuery.Arguments).Append($") AS {sql.SqlContext.SqlSyntax.GetQuotedName(alias)}");
 
             return sql;
         }
