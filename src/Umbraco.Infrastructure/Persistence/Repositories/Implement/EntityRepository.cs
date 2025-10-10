@@ -294,12 +294,15 @@ internal sealed class EntityRepository : RepositoryBase, IEntityRepositoryExtend
         // the final query for before and after positions will increase. So we need to calculate the offset based on the provided values.
         int beforeAfterParameterIndexOffset = GetBeforeAfterParameterOffset(objectTypes, filter);
 
+        // use all lower case alias names to avoid sql syntax issues
+        string targetAlias = "target";
+
         // Find the specific row number of the target node.
         // We need this to determine the bounds of the row numbers to select.
         Sql<ISqlContext> targetRowSql = Sql()
             .Select("rn")
-            .From().AppendSubQuery(rowNumberSql, "Target")
-            .Where<NodeDto>(x => x.UniqueId == targetKey, "Target");
+            .From().AppendSubQuery(rowNumberSql, targetAlias)
+            .Where<NodeDto>(x => x.UniqueId == targetKey, targetAlias);
 
         // We have to reuse the target row sql arguments, however, we also need to add the "before" and "after" values to the arguments.
         // If we try to do this directly in the params array it'll consider the initial argument array as a single argument.
@@ -933,7 +936,9 @@ internal sealed class EntityRepository : RepositoryBase, IEntityRepositoryExtend
                     orderingIncludesNodeId = true;
                     break;
                 default:
-                    orderBy = QuoteColumnName(runner.OrderBy) ?? string.Empty;
+                    orderBy = runner.OrderBy != null
+                        ? SqlSyntax.GetQuotedColumn(NodeDto.TableName, runner.OrderBy)
+                        : string.Empty;
                     break;
             }
 
