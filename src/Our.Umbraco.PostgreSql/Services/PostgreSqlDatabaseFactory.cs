@@ -1,17 +1,15 @@
 using System.Data.Common;
-using Microsoft.EntityFrameworkCore.Scaffolding.Metadata;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NPoco;
 using NPoco.FluentMappings;
-using Serilog.Core;
 using Umbraco.Cms.Core.Configuration.Models;
 using Umbraco.Cms.Infrastructure.Migrations.Install;
 using Umbraco.Cms.Infrastructure.Persistence;
 using Umbraco.Cms.Infrastructure.Persistence.Mappers;
 using Umbraco.Cms.Infrastructure.Persistence.SqlSyntax;
-using Umbraco.Cms.Infrastructure.Scoping;
 using Umbraco.Extensions;
+using IMapperCollection = Umbraco.Cms.Infrastructure.Persistence.Mappers.IMapperCollection;
 
 namespace Our.Umbraco.PostgreSql.Services
 {

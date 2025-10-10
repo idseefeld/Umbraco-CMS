@@ -684,6 +684,12 @@ public class NpgsqlSqlSyntaxProvider<TSyntax> : SqlSyntaxProviderBase<TSyntax>
 
     public override bool TryGetDefaultConstraint(IDatabase db, string? tableName, string columnName, [MaybeNullWhen(false)] out string constraintName)
     {
+        if (string.IsNullOrEmpty(tableName))
+        {
+            constraintName = null;
+            return false;
+        }
+
         // Query the default value for the column from information_schema
         const string sql = @"
             SELECT column_default

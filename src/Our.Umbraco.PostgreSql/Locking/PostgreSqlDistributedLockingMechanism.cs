@@ -148,7 +148,7 @@ namespace Our.Umbraco.PostgreSql.Locking
                         "PostgreSqlDistributedLockingMechanism requires a transaction to function.");
                 }
 
-                if (db.Transaction.IsolationLevel < IsolationLevel.ReadCommitted)
+                if (db.Transaction is not null && db.Transaction.IsolationLevel < IsolationLevel.ReadCommitted)
                 {
                     throw new InvalidOperationException(
                         "A transaction with minimum ReadCommitted isolation level is required.");
@@ -183,7 +183,7 @@ namespace Our.Umbraco.PostgreSql.Locking
                         "PostgreSqlDistributedLockingMechanism requires a transaction to function.");
                 }
 
-                if (db.Transaction.IsolationLevel < IsolationLevel.ReadCommitted)
+                if (db.Transaction is not null && db.Transaction.IsolationLevel < IsolationLevel.ReadCommitted)
                 {
                     throw new InvalidOperationException(
                         "A transaction with minimum ReadCommitted isolation level is required.");
