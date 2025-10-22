@@ -1,11 +1,13 @@
 using System.Linq.Expressions;
 using System.Net;
 using System.Net.Http.Json;
+using Microsoft.Extensions.Options;
 using NUnit.Framework;
 using Umbraco.Cms.Api.Management.Controllers.User;
 using Umbraco.Cms.Api.Management.ViewModels;
 using Umbraco.Cms.Api.Management.ViewModels.User;
 using Umbraco.Cms.Core;
+using Umbraco.Cms.Core.Configuration.Models;
 using Umbraco.Cms.Core.Services;
 
 namespace Umbraco.Cms.Tests.Integration.ManagementApi.User;
@@ -15,6 +17,8 @@ public class InviteUserControllerTests : ManagementApiUserGroupTestBase<InviteUs
     private IUserGroupService UserGroupService => GetRequiredService<IUserGroupService>();
 
     private Guid _userGroupKey;
+
+    private GlobalSettings GlobalSettings => GetRequiredService<IOptionsMonitor<GlobalSettings>>().CurrentValue;
 
     [SetUp]
     public async Task SetUp()
@@ -27,7 +31,9 @@ public class InviteUserControllerTests : ManagementApiUserGroupTestBase<InviteUs
 
     protected override UserGroupAssertionModel AdminUserGroupAssertionModel => new()
     {
-        ExpectedStatusCode = HttpStatusCode.Created,
+        ExpectedStatusCode = GlobalSettings.IsSmtpServerConfigured
+            ? HttpStatusCode.Created
+            : HttpStatusCode.InternalServerError,
     };
 
     protected override UserGroupAssertionModel EditorUserGroupAssertionModel => new()
