@@ -218,9 +218,10 @@ internal sealed class DatabaseDataCreator
         {
             foreach (var permission in permissions)
             {
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
                 _database.Insert(
                     Constants.DatabaseSchema.Tables.UserGroup2Permission,
-                    "id",
+                    null, // NPoco Insert for PostgreSQL only returns nothing when primaryKey is null. And here we do not use any returned value.
                     false,
                     new UserGroup2PermissionDto
                     {
@@ -228,6 +229,7 @@ internal sealed class DatabaseDataCreator
                         UserGroupKey = userGroupKey,
                         Permission = permission,
                     });
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
             }
         }
     }
@@ -1316,16 +1318,18 @@ internal sealed class DatabaseDataCreator
 
     private void CreateUser2UserGroupData()
     {
-        _database.Insert(new User2UserGroupDto
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+        _database.Insert(User2UserGroupDto.TableName, null, new User2UserGroupDto
         {
             UserGroupId = 1,
             UserId = Constants.Security.SuperUserId,
         }); // add super to admins
-        _database.Insert(new User2UserGroupDto
+        _database.Insert(User2UserGroupDto.TableName, null, new User2UserGroupDto
         {
             UserGroupId = 5,
             UserId = Constants.Security.SuperUserId,
         }); // add super to sensitive data
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
     }
 
     private void CreateUserGroup2AppData()
