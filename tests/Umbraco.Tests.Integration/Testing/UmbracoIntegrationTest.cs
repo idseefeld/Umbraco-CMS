@@ -85,7 +85,7 @@ public abstract class UmbracoIntegrationTest : UmbracoIntegrationTestBase
             Services.GetRequiredService<IUmbracoContextFactory>().EnsureUmbracoContext();
         }
 
-        CleanupViewFiles();
+        // CleanupViewFiles();
     }
 
     [TearDown]
@@ -95,6 +95,7 @@ public abstract class UmbracoIntegrationTest : UmbracoIntegrationTestBase
         (Services as IDisposable)?.Dispose();
     }
 
+    /* is this still needed?
     protected void AwaitCleanupViewFiles()
     {
         // This method is used to ensure that the view files are cleaned up after each test
@@ -126,6 +127,7 @@ public abstract class UmbracoIntegrationTest : UmbracoIntegrationTestBase
 
         return success;
     }
+    */
 
     /// <summary>
     ///     Create the Generic Host and execute startup ConfigureServices/Configure calls

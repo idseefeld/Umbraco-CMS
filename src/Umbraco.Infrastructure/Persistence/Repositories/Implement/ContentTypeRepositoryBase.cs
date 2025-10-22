@@ -1644,18 +1644,18 @@ internal abstract class ContentTypeRepositoryBase<TEntity> : EntityRepositoryBas
         // is included here just to be 100% sure since it has a FK on cmsPropertyType.
         var list = new List<string>
         {
-            $"DELETE FROM {QuoteTableName(User2NodeNotifyDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("nodeId")} = @id",
-            $@"DELETE FROM {QuoteTableName(UserGroup2GranularPermissionDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("uniqueId")} IN
-                (SELECT {SqlSyntax.GetQuotedColumnName("uniqueId")} FROM {QuoteTableName(NodeDto.TableName)} WHERE id = @id)",
-            $"DELETE FROM {QuoteTableName(TagRelationshipDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("nodeId")} = @id",
-            $"DELETE FROM {QuoteTableName(ContentTypeAllowedContentTypeDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("Id")} = @id",
-            $"DELETE FROM {QuoteTableName(ContentTypeAllowedContentTypeDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("AllowedId")} = @id",
-            $"DELETE FROM {QuoteTableName(ContentType2ContentTypeDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("parentContentTypeId")} = @id",
-            $"DELETE FROM {QuoteTableName(ContentType2ContentTypeDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("childContentTypeId")} = @id",
-            $@"DELETE FROM {QuoteTableName(PropertyDataDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("propertyTypeId")} IN
-                (SELECT id FROM {QuoteTableName(PropertyTypeDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("contentTypeId")} = @id)",
-            $"DELETE FROM {QuoteTableName(PropertyTypeDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("contentTypeId")} = @id",
-            $"DELETE FROM {QuoteTableName(PropertyTypeGroupDto.TableName)} WHERE {SqlSyntax.GetQuotedColumnName("contenttypeNodeId")} = @id",
+            $"DELETE FROM {QuoteTableName(User2NodeNotifyDto.TableName)} WHERE {QuoteColumnName("nodeId")} = @id",
+            $@"DELETE FROM {QuoteTableName(UserGroup2GranularPermissionDto.TableName)} WHERE {QuoteColumnName("uniqueId")} IN
+                (SELECT {QuoteColumnName("uniqueId")} FROM {QuoteTableName(NodeDto.TableName)} WHERE id = @id)",
+            $"DELETE FROM {QuoteTableName(TagRelationshipDto.TableName)} WHERE {QuoteColumnName("nodeId")} = @id",
+            $"DELETE FROM {QuoteTableName(ContentTypeAllowedContentTypeDto.TableName)} WHERE {QuoteColumnName("Id")} = @id",
+            $"DELETE FROM {QuoteTableName(ContentTypeAllowedContentTypeDto.TableName)} WHERE {QuoteColumnName("AllowedId")} = @id",
+            $"DELETE FROM {QuoteTableName(ContentType2ContentTypeDto.TableName)} WHERE {QuoteColumnName("parentContentTypeId")} = @id",
+            $"DELETE FROM {QuoteTableName(ContentType2ContentTypeDto.TableName)} WHERE {QuoteColumnName("childContentTypeId")} = @id",
+            $@"DELETE FROM {QuoteTableName(PropertyDataDto.TableName)} WHERE {QuoteColumnName("propertyTypeId")} IN
+                (SELECT id FROM {QuoteTableName(PropertyTypeDto.TableName)} WHERE {QuoteColumnName("contentTypeId")} = @id)",
+            $"DELETE FROM {QuoteTableName(PropertyTypeDto.TableName)} WHERE {QuoteColumnName("contentTypeId")} = @id",
+            $"DELETE FROM {QuoteTableName(PropertyTypeGroupDto.TableName)} WHERE {QuoteColumnName("contenttypeNodeId")} = @id",
         };
         return list;
     }

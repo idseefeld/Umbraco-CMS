@@ -173,7 +173,7 @@ public abstract class UmbracoIntegrationTestBase
                 PrepareThreadCount = Configuration.GetValue<int>("Tests:Database:PrepareThreadCount"),
                 EmptyDatabasesCount = Configuration.GetValue<int>("Tests:Database:EmptyDatabasesCount"),
                 SchemaDatabaseCount = Configuration.GetValue<int>("Tests:Database:SchemaDatabaseCount"),
-                SQLServerMasterConnectionString = Configuration.GetValue<string>("Tests:Database:SQLServerMasterConnectionString"),
+                TestMasterConnectionString = Configuration.GetValue<string>("Tests:Database:TestMasterConnectionString"),
             };
 
             Directory.CreateDirectory(settings.FilesPath);

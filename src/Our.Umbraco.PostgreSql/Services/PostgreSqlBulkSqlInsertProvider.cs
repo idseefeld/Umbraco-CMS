@@ -46,7 +46,6 @@ namespace Our.Umbraco.PostgreSql.Services
             }
 
             string tableName = pocoData.TableInfo.TableName;
-            string primaryKeyName = pocoData.TableInfo.PrimaryKey ?? "id";
             string[] noAutoIncrementTableNames = Constants.NoAutoIncrementTableNames.Split(',');
             bool autoIncrement = true;
             if (noAutoIncrementTableNames.Contains(tableName))
@@ -58,7 +57,10 @@ namespace Our.Umbraco.PostgreSql.Services
             {
                 try
                 {
-                    _ = database.Insert(tableName, primaryKeyName, autoIncrement, record);
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+                    // NPoco Insert for PostgreSQL only returns nothing when primaryKey is null
+                    _ = database.Insert(tableName, null, autoIncrement, record);
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
                 }
                 catch (Exception)
                 {
@@ -75,54 +77,5 @@ namespace Our.Umbraco.PostgreSql.Services
 
             return count;
         }
-
-        /*
-        public int BulkInsertRecords<T>(IUmbracoDatabase database, IEnumerable<T> records)
-        {
-            if (database == null) throw new ArgumentNullException(nameof(database));
-            if (records == null) throw new ArgumentNullException(nameof(records));
-
-            var recordList = records.ToList();
-            if (!recordList.Any())
-                return 0;
-
-            // Get table name and columns using PocoData
-            var pocoData = database.SqlContext.PocoDataFactory.ForType(typeof(T));
-            var tableName = pocoData.TableInfo.TableName;
-            var columns = pocoData.Columns
-                .Where(c => !c.Value.ResultColumn)
-                .Select(c => c.Value.ColumnName)
-                .ToList();
-
-            var sb = new StringBuilder();
-            sb.Append($"INSERT INTO \"{tableName}\" (");
-            sb.Append(string.Join(", ", columns.Select(c => $"\"{c}\"")));
-            sb.Append(") VALUES ");
-
-            var paramList = new List<object>();
-            int rowIndex = 0;
-            foreach (var record in recordList)
-            {
-                if (rowIndex > 0)
-                    sb.Append(", ");
-
-                sb.Append("(");
-                sb.Append(string.Join(", ", columns.Select((col, colIndex) =>
-                {
-                    var paramName = $"@p_{rowIndex}_{colIndex}";
-                    paramList.Add(pocoData.Columns[col].GetValue(record));
-                    return paramName;
-                })));
-                sb.Append(")");
-                rowIndex++;
-            }
-
-            // Build parameterized query
-            var sql = sb.ToString();
-            var args = paramList.ToArray();
-
-            return database.Execute(sql, args);
-        }
-        */
     }
 }

@@ -70,10 +70,13 @@ public static class UmbracoBuilderExtensions
                 {
                     options.UseSqlite(serviceProvider.GetRequiredService<IOptionsMonitor<ConnectionStrings>>().CurrentValue.ConnectionString);
                 }
-                else
+                else if (testDatabaseType is TestDatabaseSettings.TestDatabaseType.SqlServer)
                 {
-                    // If not Sqlite, assume SqlServer
                     options.UseSqlServer(serviceProvider.GetRequiredService<IOptionsMonitor<ConnectionStrings>>().CurrentValue.ConnectionString);
+                }
+                else if (testDatabaseType is TestDatabaseSettings.TestDatabaseType.PostgreSql)
+                {
+                    options.UseNpgsql(serviceProvider.GetRequiredService<IOptionsMonitor<ConnectionStrings>>().CurrentValue.ConnectionString);
                 }
             },
             optionsLifetime: ServiceLifetime.Singleton);

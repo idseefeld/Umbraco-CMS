@@ -155,10 +155,6 @@ public interface ISqlSyntaxProvider
 
     bool SupportsClustered();
 
-    /// <summary>
-    /// SupportsIdentityInsert and SupportsAutoIncrement are both needed because SQLite, SQL Server and e.g PostgreSQl have different behaviour with auto-increment/identity columns.
-    /// </summary>
-    /// <returns></returns>
     bool SupportsIdentityInsert();
 
     /// <summary>

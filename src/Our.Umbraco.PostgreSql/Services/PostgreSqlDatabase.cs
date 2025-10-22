@@ -72,45 +72,13 @@ namespace Our.Umbraco.PostgreSql.Services
                 _logger.LogDebug("Inserting into \"{TableName}\" without auto-increment", tableName);
             }
 
-            //if (autoIncrement && IsUmbracoInstalled())
-            //{
-            //    var quotedId = SqlContext.SqlSyntax.GetQuotedColumnName(primaryKeyName);
-            //    var quotedTable = SqlContext.SqlSyntax.GetQuotedTableName(tableName);
-            //    _logger.LogDebug("Inserting into {TableName} with auto-incrementand sequence update.", quotedTable);
-
-            //    string seqName = $"{tableName}_{primaryKeyName}_seq";
-            //    try
-            //    {
-            //        if (_lastInsertIds.TryGetValue(seqName, out long currentSeqVal) is false)
-            //        {
-            //            var maxIdSql = $"SELECT MAX({quotedId}) FROM {quotedTable}";
-            //            long maxId = ExecuteScalar<long>(maxIdSql);
-            //            _lastInsertIds[seqName] = maxId;
-            //            if (maxId > 0)
-            //            {
-            //                var alterSeqSql = $"ALTER SEQUENCE \"{seqName}\" RESTART WITH {maxId + 1}";
-            //                Execute(alterSeqSql);
-            //            }
-            //        }
-            //        else
-            //        {
-            //            var maxIdSql = $"SELECT MAX({quotedId}) FROM {quotedTable}";
-            //            long maxId = ExecuteScalar<long>(maxIdSql);
-            //            _lastInsertIds[seqName] = maxId;
-            //            if (maxId > currentSeqVal)
-            //            {
-            //                _lastInsertIds[seqName] = maxId;
-            //                var alterSeqSql = $"ALTER SEQUENCE \"{seqName}\" RESTART WITH {maxId + 1}";
-            //                Execute(alterSeqSql);
-            //            }
-            //        }
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        var msg = ex.Message;
-            //        _logger.LogError(ex, "Error updating sequence for {TableName}.{PrimaryKeyName}", tableName, primaryKeyName);
-            //    }
-            //}
+            if (primaryKeyName.Contains(',') || primaryKeyName == "ID")
+            {
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+                // NPoco Insert for PostgreSQL only returns nothing when primaryKey is null
+                return base.Insert(tableName, null, autoIncrement, poco);
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+            }
 
             return base.Insert(tableName, primaryKeyName, autoIncrement, poco);
         }

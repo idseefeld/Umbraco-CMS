@@ -27,7 +27,7 @@ public class InviteUserControllerTests : ManagementApiUserGroupTestBase<InviteUs
 
     protected override UserGroupAssertionModel AdminUserGroupAssertionModel => new()
     {
-        ExpectedStatusCode = HttpStatusCode.InternalServerError,
+        ExpectedStatusCode = HttpStatusCode.Created,
     };
 
     protected override UserGroupAssertionModel EditorUserGroupAssertionModel => new()

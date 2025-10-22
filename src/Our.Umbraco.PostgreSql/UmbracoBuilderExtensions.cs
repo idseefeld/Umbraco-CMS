@@ -1,6 +1,7 @@
 using System.Data.Common;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Our.Umbraco.PostgreSql.Interceptors;
 using Our.Umbraco.PostgreSql.Locking;
 using Our.Umbraco.PostgreSql.Services;
 using Umbraco.Cms.Core.DependencyInjection;
@@ -33,9 +34,11 @@ namespace Our.Umbraco.PostgreSql
 
             builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IDistributedLockingMechanism, PostgreSqlDistributedLockingMechanism>());
 
+            //builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IProviderSpecificInterceptor, PostgreSqlAddDbConnectionInterceptor>());
+
             builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IProviderSpecificInterceptor, PostgreSqlAddMiniProfilerInterceptor>());
 
-            builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IProviderSpecificInterceptor, PostgreSqlAddRetryPolicyInterceptor>());
+            //builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IProviderSpecificInterceptor, PostgreSqlAddRetryPolicyInterceptor>());
 
             builder.Services.Replace(ServiceDescriptor.Singleton<IUmbracoDatabaseFactory, PostgreSqlDatabaseFactory>());
 

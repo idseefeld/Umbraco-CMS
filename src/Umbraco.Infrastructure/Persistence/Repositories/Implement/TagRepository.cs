@@ -593,10 +593,4 @@ ON (tagset.tag = {cmsTags}.tag AND tagset.{group} = {cmsTags}.{group} AND COALES
     }
 
     #endregion
-
-    private string QuoteTab(string tableName) => SqlSyntax.GetQuotedTableName(tableName);
-
-    private string QuoteCol(string columnName) => SqlSyntax.GetQuotedColumnName(columnName);
-
-    private string QuoteName(string name) => SqlSyntax.GetQuotedName(name);
 }

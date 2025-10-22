@@ -31,10 +31,10 @@ public class SqlServerTestDatabase : SqlServerBaseTestDatabase, ITestDatabase
         var counter = 0;
 
         var schema = Enumerable.Range(0, _settings.SchemaDatabaseCount)
-            .Select(x => TestDbMeta.CreateWithMasterConnectionString($"{DatabaseName}-{++counter}", false, _settings.SQLServerMasterConnectionString));
+            .Select(x => TestDbMeta.CreateWithMasterConnectionString($"{DatabaseName}-{++counter}", false, _settings.TestMasterConnectionString));
 
         var empty = Enumerable.Range(0, _settings.EmptyDatabasesCount)
-            .Select(x => TestDbMeta.CreateWithMasterConnectionString($"{DatabaseName}-{++counter}", true, _settings.SQLServerMasterConnectionString));
+            .Select(x => TestDbMeta.CreateWithMasterConnectionString($"{DatabaseName}-{++counter}", true, _settings.TestMasterConnectionString));
 
         _testDatabases = schema.Concat(empty).ToList();
     }
@@ -62,7 +62,7 @@ public class SqlServerTestDatabase : SqlServerBaseTestDatabase, ITestDatabase
     {
         Drop(meta);
 
-        using (var connection = new SqlConnection(_settings.SQLServerMasterConnectionString))
+        using (var connection = new SqlConnection(_settings.TestMasterConnectionString))
         {
             connection.Open();
             using (var command = connection.CreateCommand())
@@ -75,7 +75,7 @@ public class SqlServerTestDatabase : SqlServerBaseTestDatabase, ITestDatabase
 
     private void Drop(TestDbMeta meta)
     {
-        using (var connection = new SqlConnection(_settings.SQLServerMasterConnectionString))
+        using (var connection = new SqlConnection(_settings.TestMasterConnectionString))
         {
             connection.Open();
             using (var command = connection.CreateCommand())

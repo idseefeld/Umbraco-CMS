@@ -115,13 +115,6 @@ internal sealed class TemplateRepository : EntityRepositoryBase<int, ITemplate>,
                 n => n.NodeId,
                 n2 => n2.ParentId,
                 templates.Select(x => x.NodeDto.ParentId),
-                templates.Select(x => x.NodeId))
-
-            // lookup axis's
-            .WhereInOr<NodeDto, NodeDto>(
-                n => n.NodeId,
-                n2 => n2.ParentId,
-                templates.Select(x => x.NodeDto.ParentId),
                 templates.Select(x => x.NodeId));
 
         IEnumerable<EntitySlim> childIds = Database.Fetch<AxisDefintionDto>(childIdsSql)
@@ -661,7 +654,4 @@ internal sealed class TemplateRepository : EntityRepositoryBase<int, ITemplate>,
     }
 
     #endregion
-
-    private string QuoteTab(string tableName) => SqlSyntax.GetQuotedTableName(tableName);
-    private string QuoteCol(string columnName) => SqlSyntax.GetQuotedColumnName(columnName);
 }

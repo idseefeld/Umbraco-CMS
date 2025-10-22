@@ -285,13 +285,6 @@ internal sealed class DatabaseCacheRepository : RepositoryBase, IDatabaseCacheRe
     [Obsolete("Use the typed version OnRepositoryRefreshedTyped instead")]
     private async Task OnRepositoryRefreshed(IContentCacheDataSerializer serializer, ContentCacheNode content, bool preview)
     {
-        //bool useTyped = true; // Todo: Check this withs all databases and all scenarios. Then remove the flag and the obsolete method.
-        //if (useTyped)
-        //{
-        //    await OnRepositoryRefreshedTyped(serializer, content, preview);
-        //    return;
-        //}
-
         ContentNuDto dto = GetDtoFromCacheNode(content, !preview, serializer);
 
         string c(string s) => SqlSyntax.GetQuotedColumnName(s);
@@ -337,7 +330,6 @@ internal sealed class DatabaseCacheRepository : RepositoryBase, IDatabaseCacheRe
     /// <remarks>
     /// Assumes content tree lock.
     /// </remarks>
-    /// Rebuilds the content database cache by clearing and repopulating the cache with the latest content data.
     private void RebuildContentDbCache(IContentCacheDataSerializer serializer, int groupSize, IReadOnlyCollection<int>? contentTypeIds)
     {
         if (contentTypeIds is null)
@@ -431,6 +423,7 @@ internal sealed class DatabaseCacheRepository : RepositoryBase, IDatabaseCacheRe
         {
             return;
         }
+
         Guid memberObjectType = Constants.ObjectTypes.Member;
 
         // Remove all - if anything fails the transaction will rollback.
