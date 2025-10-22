@@ -266,11 +266,11 @@ internal sealed class DatabaseDataCreator
                 Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
                 uniqueId,
                 nodeDto,
-                Constants.DatabaseSchema.Tables.Node,
-                "id");
+                Constants.DatabaseSchema.Tables.Node);
         }
 
-        _database.Insert(Constants.DatabaseSchema.Tables.Node, "id", false,
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+        _database.Insert(Constants.DatabaseSchema.Tables.Node, null, false,
             new NodeDto
             {
                 NodeId = -1,
@@ -285,7 +285,7 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.SystemRoot,
                 CreateDate = DateTime.UtcNow,
             });
-        _database.Insert(Constants.DatabaseSchema.Tables.Node, "id", false,
+        _database.Insert(Constants.DatabaseSchema.Tables.Node, null, false,
             new NodeDto
             {
                 NodeId = Constants.System.RecycleBinContent,
@@ -300,7 +300,7 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.ContentRecycleBin,
                 CreateDate = DateTime.UtcNow,
             });
-        _database.Insert(Constants.DatabaseSchema.Tables.Node, "id", false,
+        _database.Insert(Constants.DatabaseSchema.Tables.Node, null, false,
             new NodeDto
             {
                 NodeId = Constants.System.RecycleBinMedia,
@@ -315,6 +315,7 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.MediaRecycleBin,
                 CreateDate = DateTime.UtcNow,
             });
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
 
         InsertDataTypeNodeDto(Constants.DataTypes.LabelString, 35, Constants.DataTypes.Guids.LabelString,
             "Label (string)");
@@ -348,8 +349,7 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node,
-            "id");
+            Constants.DatabaseSchema.Tables.Node);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.UploadVideo,
@@ -367,8 +367,7 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node,
-            "id");
+            Constants.DatabaseSchema.Tables.Node);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.UploadAudio,
@@ -386,8 +385,7 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node,
-            "id");
+            Constants.DatabaseSchema.Tables.Node);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.UploadArticle,
@@ -405,8 +403,7 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node,
-            "id");
+            Constants.DatabaseSchema.Tables.Node);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.UploadVectorGraphics,
@@ -424,8 +421,7 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node,
-            "id");
+            Constants.DatabaseSchema.Tables.Node);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.Textarea,
@@ -443,8 +439,7 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node,
-            "id");
+            Constants.DatabaseSchema.Tables.Node);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.Textstring,
@@ -462,8 +457,7 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node,
-            "id");
+            Constants.DatabaseSchema.Tables.Node);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.RichtextEditor,
@@ -481,8 +475,7 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node,
-            "id");
+            Constants.DatabaseSchema.Tables.Node);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.Numeric,
@@ -500,8 +493,7 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node,
-            "id");
+            Constants.DatabaseSchema.Tables.Node);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.Checkbox,
@@ -519,8 +511,7 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node,
-            "id");
+            Constants.DatabaseSchema.Tables.Node);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.CheckboxList,
@@ -538,8 +529,7 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node,
-            "id");
+            Constants.DatabaseSchema.Tables.Node);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.Dropdown,
@@ -557,8 +547,7 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node,
-            "id");
+            Constants.DatabaseSchema.Tables.Node);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.DatePicker,
@@ -576,8 +565,7 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node,
-            "id");
+            Constants.DatabaseSchema.Tables.Node);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.Radiobox,
@@ -595,8 +583,7 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node,
-            "id");
+            Constants.DatabaseSchema.Tables.Node);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.DropdownMultiple,
@@ -614,8 +601,7 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node,
-            "id");
+            Constants.DatabaseSchema.Tables.Node);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.ApprovedColor,
@@ -633,8 +619,7 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node,
-            "id");
+            Constants.DatabaseSchema.Tables.Node);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.DatePickerWithTime,
@@ -652,8 +637,7 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node,
-            "id");
+            Constants.DatabaseSchema.Tables.Node);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.ListViewContent,
@@ -671,8 +655,7 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node,
-            "id");
+            Constants.DatabaseSchema.Tables.Node);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.ListViewMedia,
@@ -690,8 +673,7 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node,
-            "id");
+            Constants.DatabaseSchema.Tables.Node);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.Tags,
@@ -709,8 +691,7 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node,
-            "id");
+            Constants.DatabaseSchema.Tables.Node);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.ImageCropper,
@@ -728,8 +709,7 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node,
-            "id");
+            Constants.DatabaseSchema.Tables.Node);
 
         // New UDI pickers with newer Ids
         ConditionalInsert(
@@ -749,8 +729,7 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node,
-            "id");
+            Constants.DatabaseSchema.Tables.Node);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.MemberPicker,
@@ -768,9 +747,7 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node,
-            "id");
-
+            Constants.DatabaseSchema.Tables.Node);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.RelatedLinks,
@@ -788,9 +765,7 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node,
-            "id");
-
+            Constants.DatabaseSchema.Tables.Node);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.MediaPicker3,
@@ -808,8 +783,7 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node,
-            "id");
+            Constants.DatabaseSchema.Tables.Node);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.MediaPicker3Multiple,
@@ -827,8 +801,7 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node,
-            "id");
+            Constants.DatabaseSchema.Tables.Node);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.MediaPicker3SingleImage,
@@ -846,8 +819,7 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node,
-            "id");
+            Constants.DatabaseSchema.Tables.Node);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.MediaPicker3MultipleImages,
@@ -865,8 +837,7 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node,
-            "id");
+            Constants.DatabaseSchema.Tables.Node);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.DateTimePickerWithTimeZone,
@@ -884,8 +855,7 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node,
-            "id");
+            Constants.DatabaseSchema.Tables.Node);
     }
 
     private void CreateNodeDataForMediaTypes()
@@ -908,8 +878,7 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.MediaType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node,
-            "id");
+            Constants.DatabaseSchema.Tables.Node);
 
         var imageUniqueId = new Guid(ImageMediaTypeKey);
         ConditionalInsert(
@@ -929,8 +898,7 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.MediaType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node,
-            "id");
+            Constants.DatabaseSchema.Tables.Node);
 
         var fileUniqueId = new Guid("4c52d8ab-54e6-40cd-999c-7a5f24903e4d");
         ConditionalInsert(
@@ -950,8 +918,7 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.MediaType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node,
-            "id");
+            Constants.DatabaseSchema.Tables.Node);
 
         var videoUniqueId = new Guid("f6c515bb-653c-4bdc-821c-987729ebe327");
         ConditionalInsert(
@@ -971,8 +938,7 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.MediaType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node,
-            "id");
+            Constants.DatabaseSchema.Tables.Node);
 
         var audioUniqueId = new Guid("a5ddeee0-8fd8-4cee-a658-6f1fcdb00de3");
         ConditionalInsert(
@@ -992,8 +958,7 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.MediaType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node,
-            "id");
+            Constants.DatabaseSchema.Tables.Node);
 
         var articleUniqueId = new Guid("a43e3414-9599-4230-a7d3-943a21b20122");
         ConditionalInsert(
@@ -1013,8 +978,7 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.MediaType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node,
-            "id");
+            Constants.DatabaseSchema.Tables.Node);
 
         var svgUniqueId = new Guid("c4b1efcf-a9d5-41c4-9621-e9d273b52a9c");
         ConditionalInsert(
@@ -1034,8 +998,7 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.MediaType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node,
-            "id");
+            Constants.DatabaseSchema.Tables.Node);
     }
 
     private void CreateNodeDataForMemberTypes()
@@ -1058,8 +1021,7 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.MemberType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node,
-            "id");
+            Constants.DatabaseSchema.Tables.Node);
     }
 
     private void CreateLockData()
