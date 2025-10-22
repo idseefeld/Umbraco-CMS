@@ -580,8 +580,6 @@ public class MediaRepository : ContentRepositoryBase<int, IMedia, MediaRepositor
         _mediaByGuidReadRepository.GetMany(ids);
 
     public bool Exists(Guid id) => _mediaByGuidReadRepository.Exists(id);
-    private string QuoteTab(string tableName) => SqlSyntax.GetQuotedTableName(tableName);
-    private string QuoteCol(string columnName) => SqlSyntax.GetQuotedColumnName(columnName);
 
     // A reading repository purely for looking up by GUID
     // TODO: This is ugly and to fix we need to decouple the IRepositoryQueryable -> IRepository -> IReadRepository which should all be separate things!

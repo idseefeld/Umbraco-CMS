@@ -1319,6 +1319,7 @@ internal sealed class DatabaseDataCreator
     private void CreateUser2UserGroupData()
     {
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+        // NPoco Insert for PostgreSQL only returns nothing when primaryKey is null. And here we do not use any returned value.
         _database.Insert(User2UserGroupDto.TableName, null, new User2UserGroupDto
         {
             UserGroupId = 1,
@@ -1858,7 +1859,12 @@ internal sealed class DatabaseDataCreator
                     CultureName = culture.EnglishName,
                     IsDefault = isDefault,
                 };
-                _database.Insert(Constants.DatabaseSchema.Tables.Language, "id", applyAutoIncrement, dto);
+
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+                // NPoco Insert for PostgreSQL only returns nothing when primaryKey is null. And here we do not use any returned value.
+                _database.Insert(Constants.DatabaseSchema.Tables.Language, null, applyAutoIncrement, dto);
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+
                 isDefault = false;
                 id += autoIncrementValue;
             }
@@ -1873,7 +1879,6 @@ internal sealed class DatabaseDataCreator
                     culture.Name,
                     new LanguageDto { Id = startId, IsoCode = culture.Name, CultureName = culture.EnglishName, IsDefault = true },
                     Constants.DatabaseSchema.Tables.Language,
-                    "id",
                     applyAutoIncrement);
             }
         }
@@ -2423,7 +2428,6 @@ internal sealed class DatabaseDataCreator
         string id,
         TDto dto,
         string tableName,
-        string primaryKeyName,
         bool autoIncrement = false)
     {
         var alwaysInsert = _entitiesToAlwaysCreate.ContainsKey(configKey) &&
@@ -2454,6 +2458,9 @@ internal sealed class DatabaseDataCreator
             return;
         }
 
-        _database.Insert(tableName, primaryKeyName, autoIncrement, dto);
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+        // NPoco Insert for PostgreSQL only returns nothing when primaryKey is null. And here we do not use any returned value.
+        _database.Insert(tableName, null, autoIncrement, dto);
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
     }
 }

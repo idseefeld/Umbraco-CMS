@@ -106,6 +106,7 @@ namespace Umbraco.Cms.Infrastructure.Migrations.Install
             using (ICoreScope scope = _scopeProvider.CreateCoreScope())
             {
                 IScope ambientScope = _scopeAccessor.AmbientScope ?? throw new InvalidOperationException("Cannot execute without a valid AmbientScope.");
+
                 // look for the super user with default password
                 NPoco.Sql<ISqlContext> sql = ambientScope.Database.SqlContext.Sql()
                     .SelectCount()

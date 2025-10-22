@@ -41,7 +41,7 @@ internal sealed class CacheInstructionRepository : ICacheInstructionRepository
             return 0;
         }
 
-        Sql<ISqlContext> sql = AmbientScope.SqlContext.Sql()
+        Sql<ISqlContext>? sql = AmbientScope.SqlContext.Sql()
             .SelectSum<CacheInstructionDto>(c => c.InstructionCount)
             .From<CacheInstructionDto>()
             .Where<CacheInstructionDto>(dto => dto.Id > lastId);
@@ -103,8 +103,12 @@ internal sealed class CacheInstructionRepository : ICacheInstructionRepository
             .SelectMax<CacheInstructionDto>(c => c.Id)
             .From<CacheInstructionDto>();
         var maxId = AmbientScope.Database.ExecuteScalar<int>(sql);
+        if (maxId == 0)
+        {
+            return; // No instructions to delete.
+        }
 
-        Sql<ISqlContext> deleteSql = AmbientScope.SqlContext.Sql()
+        Sql<ISqlContext>? deleteSql = AmbientScope.SqlContext.Sql()
             .Delete<CacheInstructionDto>()
             .Where<CacheInstructionDto>(dto => dto.UtcStamp < pruneDate && dto.Id < maxId);
 

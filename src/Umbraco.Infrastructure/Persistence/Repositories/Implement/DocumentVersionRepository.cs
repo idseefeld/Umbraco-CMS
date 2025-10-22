@@ -67,29 +67,6 @@ internal sealed class DocumentVersionRepository : IDocumentVersionRepository
 {syntax.ColumnWithAlias(UserDto.TableName, "userName", "username")}
 ";
 
-    private static string GetQuotedSelectCoumn(ISqlSyntaxProvider syntax, string columnName, string? alias = null, string? tableName = null)
-    {
-        return GetQuotedSelectColumn(syntax, columnName, alias, tableName);
-    }
-
-    private static string GetQuotedSelectColumn(ISqlSyntaxProvider syntax, string columnName, string? alias = null, string? tableName = null)
-    {
-        var sb = new StringBuilder();
-        if (tableName is not null)
-        {
-            _ = sb.Append($"{syntax.GetQuotedTableName(tableName)}.");
-        }
-
-        _ = sb.Append(syntax.GetQuotedColumnName(columnName));
-
-        if (alias is not null)
-        {
-            _ = sb.Append($" AS {syntax.GetQuotedName(alias)}");
-        }
-
-        return sb.ToString();
-    }
-
     /// <inheritdoc />
     public IReadOnlyCollection<ContentVersionCleanupPolicySettings> GetCleanupPolicies()
     {

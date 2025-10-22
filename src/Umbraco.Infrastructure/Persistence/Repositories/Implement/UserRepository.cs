@@ -850,7 +850,7 @@ SELECT 4 AS {keyAlias}, COUNT(id) AS {valueAlias} FROM {userTableName}
         //only update the changed cols
         if (changedCols.Count > 0)
         {
-            _ = Database.Update(userDto, changedCols);
+            Database.Update(userDto, changedCols);
         }
 
         if (entity.IsPropertyDirty("StartContentIds") || entity.IsPropertyDirty("StartMediaIds"))
@@ -1245,7 +1245,6 @@ SELECT 4 AS {keyAlias}, COUNT(id) AS {valueAlias} FROM {userTableName}
     private string GetSuQueryInExclude(string inOrNotIn)
     {
         var userIdQuoted = SqlSyntax.GetQuotedColumn("umbracoUser", "id");
-
         // this is used to get the correct query for the in or not in clause
         return @$"AND ({userIdQuoted} {inOrNotIn} (SELECT DISTINCT {userIdQuoted}
             FROM {QuoteTableName("umbracoUser")}
@@ -1379,8 +1378,4 @@ SELECT 4 AS {keyAlias}, COUNT(id) AS {valueAlias} FROM {userTableName}
     }
 
     #endregion
-
-    private string QuoteTab(string tableName) => SqlSyntax.GetQuotedTableName(tableName);
-
-    private string QuoteCol(string columnName) => SqlSyntax.GetQuotedColumnName(columnName);
 }
