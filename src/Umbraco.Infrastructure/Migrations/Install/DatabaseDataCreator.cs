@@ -22,6 +22,15 @@ namespace Umbraco.Cms.Infrastructure.Migrations.Install;
 /// </summary>
 internal sealed class DatabaseDataCreator
 {
+#pragma warning disable CS8604 // Possible null reference argument.
+#pragma warning disable SA1117 // Parameters should be on same line or separate lines
+
+    private class InsertSettings
+    {
+        public string? TableName { get; set; }
+        public string? PrimaryKeyName { get; set; }
+        public bool AutoIncrement { get; set; } = false;
+    }
 
     internal const string EditorGroupAlias = "editor";
 
@@ -214,14 +223,14 @@ internal sealed class DatabaseDataCreator
         };
 
         var i = 1;
+        var primaryKeyName = GetPrimaryKeyName("id");
         foreach (var (userGroupKey, permissions) in userGroupKeyToPermissions)
         {
             foreach (var permission in permissions)
             {
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
                 _database.Insert(
                     Constants.DatabaseSchema.Tables.UserGroup2Permission,
-                    null, // NPoco Insert for PostgreSQL only returns nothing when primaryKey is null. And here we do not use any returned value.
+                   primaryKeyName,
                     false,
                     new UserGroup2PermissionDto
                     {
@@ -229,9 +238,14 @@ internal sealed class DatabaseDataCreator
                         UserGroupKey = userGroupKey,
                         Permission = permission,
                     });
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
             }
         }
+    }
+
+    private string? GetPrimaryKeyName(string? name = null)
+    {
+        // e.g. NPoco Insert for PostgreSQL only returns nothing when primaryKey is null. And here we do not use any returned value.
+        return _database.DatabaseType is not NPoco.DatabaseTypes.PostgreSQLDatabaseType ? name : null;
     }
 
     internal static Guid CreateUniqueRelationTypeId(string alias, string name) => (alias + "____" + name).ToGuid();
@@ -241,6 +255,14 @@ internal sealed class DatabaseDataCreator
         CreateNodeDataForDataTypes();
         CreateNodeDataForMediaTypes();
         CreateNodeDataForMemberTypes();
+    }
+    private void Insert<T>(InsertSettings insertSettings, T nodeDto)
+    {
+        _database.Insert(
+            insertSettings.TableName,
+            insertSettings.PrimaryKeyName,
+            insertSettings.AutoIncrement,
+            nodeDto);
     }
 
     private void CreateNodeDataForDataTypes()
@@ -266,11 +288,20 @@ internal sealed class DatabaseDataCreator
                 Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
                 uniqueId,
                 nodeDto,
-                Constants.DatabaseSchema.Tables.Node);
+                Constants.DatabaseSchema.Tables.Node,
+                GetPrimaryKeyName("id"));
         }
 
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-        _database.Insert(Constants.DatabaseSchema.Tables.Node, null, false,
+        var primaryKeyName = GetPrimaryKeyName("id");
+        var insertSettings = new InsertSettings
+        {
+            TableName = NodeDto.TableName,
+            PrimaryKeyName = primaryKeyName,
+            AutoIncrement = false,
+        };
+
+        Insert(
+            insertSettings,
             new NodeDto
             {
                 NodeId = -1,
@@ -285,7 +316,8 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.SystemRoot,
                 CreateDate = DateTime.UtcNow,
             });
-        _database.Insert(Constants.DatabaseSchema.Tables.Node, null, false,
+        Insert(
+            insertSettings,
             new NodeDto
             {
                 NodeId = Constants.System.RecycleBinContent,
@@ -300,7 +332,8 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.ContentRecycleBin,
                 CreateDate = DateTime.UtcNow,
             });
-        _database.Insert(Constants.DatabaseSchema.Tables.Node, null, false,
+        Insert(
+            insertSettings,
             new NodeDto
             {
                 NodeId = Constants.System.RecycleBinMedia,
@@ -315,7 +348,6 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.MediaRecycleBin,
                 CreateDate = DateTime.UtcNow,
             });
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
 
         InsertDataTypeNodeDto(Constants.DataTypes.LabelString, 35, Constants.DataTypes.Guids.LabelString,
             "Label (string)");
@@ -349,7 +381,8 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node);
+            Constants.DatabaseSchema.Tables.Node,
+            primaryKeyName);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.UploadVideo,
@@ -367,7 +400,8 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node);
+            Constants.DatabaseSchema.Tables.Node,
+            primaryKeyName);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.UploadAudio,
@@ -385,7 +419,8 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node);
+            Constants.DatabaseSchema.Tables.Node,
+            primaryKeyName);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.UploadArticle,
@@ -403,7 +438,8 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node);
+            Constants.DatabaseSchema.Tables.Node,
+            primaryKeyName);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.UploadVectorGraphics,
@@ -421,7 +457,8 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node);
+            Constants.DatabaseSchema.Tables.Node,
+            primaryKeyName);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.Textarea,
@@ -439,7 +476,8 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node);
+            Constants.DatabaseSchema.Tables.Node,
+            primaryKeyName);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.Textstring,
@@ -457,7 +495,8 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node);
+            Constants.DatabaseSchema.Tables.Node,
+            primaryKeyName);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.RichtextEditor,
@@ -475,7 +514,8 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node);
+            Constants.DatabaseSchema.Tables.Node,
+            primaryKeyName);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.Numeric,
@@ -493,7 +533,8 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node);
+            Constants.DatabaseSchema.Tables.Node,
+            primaryKeyName);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.Checkbox,
@@ -511,7 +552,8 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node);
+            Constants.DatabaseSchema.Tables.Node,
+            primaryKeyName);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.CheckboxList,
@@ -529,7 +571,8 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node);
+            Constants.DatabaseSchema.Tables.Node,
+            primaryKeyName);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.Dropdown,
@@ -547,7 +590,8 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node);
+            Constants.DatabaseSchema.Tables.Node,
+            primaryKeyName);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.DatePicker,
@@ -565,7 +609,8 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node);
+            Constants.DatabaseSchema.Tables.Node,
+            primaryKeyName);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.Radiobox,
@@ -583,7 +628,8 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node);
+            Constants.DatabaseSchema.Tables.Node,
+            primaryKeyName);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.DropdownMultiple,
@@ -601,7 +647,8 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node);
+            Constants.DatabaseSchema.Tables.Node,
+            primaryKeyName);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.ApprovedColor,
@@ -619,7 +666,8 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node);
+            Constants.DatabaseSchema.Tables.Node,
+            primaryKeyName);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.DatePickerWithTime,
@@ -637,7 +685,8 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node);
+            Constants.DatabaseSchema.Tables.Node,
+            primaryKeyName);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.ListViewContent,
@@ -655,7 +704,8 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node);
+            Constants.DatabaseSchema.Tables.Node,
+            primaryKeyName);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.ListViewMedia,
@@ -673,7 +723,8 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node);
+            Constants.DatabaseSchema.Tables.Node,
+            primaryKeyName);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.Tags,
@@ -691,7 +742,8 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node);
+            Constants.DatabaseSchema.Tables.Node,
+            primaryKeyName);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.ImageCropper,
@@ -709,7 +761,8 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node);
+            Constants.DatabaseSchema.Tables.Node,
+            primaryKeyName);
 
         // New UDI pickers with newer Ids
         ConditionalInsert(
@@ -729,7 +782,8 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node);
+            Constants.DatabaseSchema.Tables.Node,
+            primaryKeyName);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.MemberPicker,
@@ -747,7 +801,8 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node);
+            Constants.DatabaseSchema.Tables.Node,
+            primaryKeyName);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.RelatedLinks,
@@ -765,7 +820,8 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node);
+            Constants.DatabaseSchema.Tables.Node,
+            primaryKeyName);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.MediaPicker3,
@@ -783,7 +839,8 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node);
+            Constants.DatabaseSchema.Tables.Node,
+            primaryKeyName);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.MediaPicker3Multiple,
@@ -801,7 +858,8 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node);
+            Constants.DatabaseSchema.Tables.Node,
+            primaryKeyName);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.MediaPicker3SingleImage,
@@ -819,7 +877,8 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node);
+            Constants.DatabaseSchema.Tables.Node,
+            primaryKeyName);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.MediaPicker3MultipleImages,
@@ -837,7 +896,8 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node);
+            Constants.DatabaseSchema.Tables.Node,
+            primaryKeyName);
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.DataTypes,
             Constants.DataTypes.Guids.DateTimePickerWithTimeZone,
@@ -855,11 +915,14 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.DataType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node);
+            Constants.DatabaseSchema.Tables.Node,
+            primaryKeyName);
     }
+
 
     private void CreateNodeDataForMediaTypes()
     {
+        var primaryKeyName = GetPrimaryKeyName("id");
         var folderUniqueId = new Guid("f38bd2d7-65d0-48e6-95dc-87ce06ec2d3d");
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.MediaTypes,
@@ -878,7 +941,8 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.MediaType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node);
+            Constants.DatabaseSchema.Tables.Node,
+            primaryKeyName);
 
         var imageUniqueId = new Guid(ImageMediaTypeKey);
         ConditionalInsert(
@@ -898,7 +962,8 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.MediaType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node);
+            Constants.DatabaseSchema.Tables.Node,
+            primaryKeyName);
 
         var fileUniqueId = new Guid("4c52d8ab-54e6-40cd-999c-7a5f24903e4d");
         ConditionalInsert(
@@ -918,7 +983,8 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.MediaType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node);
+            Constants.DatabaseSchema.Tables.Node,
+            primaryKeyName);
 
         var videoUniqueId = new Guid("f6c515bb-653c-4bdc-821c-987729ebe327");
         ConditionalInsert(
@@ -938,7 +1004,8 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.MediaType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node);
+            Constants.DatabaseSchema.Tables.Node,
+            primaryKeyName);
 
         var audioUniqueId = new Guid("a5ddeee0-8fd8-4cee-a658-6f1fcdb00de3");
         ConditionalInsert(
@@ -958,7 +1025,8 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.MediaType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node);
+            Constants.DatabaseSchema.Tables.Node,
+            primaryKeyName);
 
         var articleUniqueId = new Guid("a43e3414-9599-4230-a7d3-943a21b20122");
         ConditionalInsert(
@@ -978,7 +1046,8 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.MediaType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node);
+            Constants.DatabaseSchema.Tables.Node,
+            primaryKeyName);
 
         var svgUniqueId = new Guid("c4b1efcf-a9d5-41c4-9621-e9d273b52a9c");
         ConditionalInsert(
@@ -998,11 +1067,13 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.MediaType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node);
+            Constants.DatabaseSchema.Tables.Node,
+            primaryKeyName);
     }
 
     private void CreateNodeDataForMemberTypes()
     {
+        var primaryKeyName = GetPrimaryKeyName("id");
         var memberUniqueId = new Guid("d59be02f-1df9-4228-aa1e-01917d806cda");
         ConditionalInsert(
             Constants.Configuration.NamedOptions.InstallDefaultData.MemberTypes,
@@ -1021,30 +1092,34 @@ internal sealed class DatabaseDataCreator
                 NodeObjectType = Constants.ObjectTypes.MemberType,
                 CreateDate = DateTime.UtcNow,
             },
-            Constants.DatabaseSchema.Tables.Node);
+            Constants.DatabaseSchema.Tables.Node,
+            primaryKeyName);
     }
 
     private void CreateLockData()
     {
+        var autoIncrement = false;
+        string? primaryKeyName = GetPrimaryKeyName("id");
+
         // all lock objects
-        _database.Insert(Constants.DatabaseSchema.Tables.Lock, "id", false, new LockDto { Id = Constants.Locks.Servers, Name = "Servers" });
-        _database.Insert(Constants.DatabaseSchema.Tables.Lock, "id", false, new LockDto { Id = Constants.Locks.ContentTypes, Name = "ContentTypes" });
-        _database.Insert(Constants.DatabaseSchema.Tables.Lock, "id", false, new LockDto { Id = Constants.Locks.ContentTree, Name = "ContentTree" });
-        _database.Insert(Constants.DatabaseSchema.Tables.Lock, "id", false, new LockDto { Id = Constants.Locks.MediaTypes, Name = "MediaTypes" });
-        _database.Insert(Constants.DatabaseSchema.Tables.Lock, "id", false, new LockDto { Id = Constants.Locks.MediaTree, Name = "MediaTree" });
-        _database.Insert(Constants.DatabaseSchema.Tables.Lock, "id", false, new LockDto { Id = Constants.Locks.MemberTypes, Name = "MemberTypes" });
-        _database.Insert(Constants.DatabaseSchema.Tables.Lock, "id", false, new LockDto { Id = Constants.Locks.MemberTree, Name = "MemberTree" });
-        _database.Insert(Constants.DatabaseSchema.Tables.Lock, "id", false, new LockDto { Id = Constants.Locks.Domains, Name = "Domains" });
-        _database.Insert(Constants.DatabaseSchema.Tables.Lock, "id", false, new LockDto { Id = Constants.Locks.KeyValues, Name = "KeyValues" });
-        _database.Insert(Constants.DatabaseSchema.Tables.Lock, "id", false, new LockDto { Id = Constants.Locks.Languages, Name = "Languages" });
-        _database.Insert(Constants.DatabaseSchema.Tables.Lock, "id", false, new LockDto { Id = Constants.Locks.ScheduledPublishing, Name = "ScheduledPublishing" });
-        _database.Insert(Constants.DatabaseSchema.Tables.Lock, "id", false, new LockDto { Id = Constants.Locks.MainDom, Name = "MainDom" });
-        _database.Insert(Constants.DatabaseSchema.Tables.Lock, "id", false, new LockDto { Id = Constants.Locks.WebhookRequest, Name = "WebhookRequest" });
-        _database.Insert(Constants.DatabaseSchema.Tables.Lock, "id", false, new LockDto { Id = Constants.Locks.WebhookLogs, Name = "WebhookLogs" });
-        _database.Insert(Constants.DatabaseSchema.Tables.Lock, "id", false, new LockDto { Id = Constants.Locks.LongRunningOperations, Name = "LongRunningOperations" });
-        _database.Insert(Constants.DatabaseSchema.Tables.Lock, "id", false, new LockDto { Id = Constants.Locks.DocumentUrls, Name = "DocumentUrls" });
-        _database.Insert(Constants.DatabaseSchema.Tables.Lock, "id", false, new LockDto { Id = Constants.Locks.DistributedJobs, Name = "DistributedJobs" });
-        _database.Insert(Constants.DatabaseSchema.Tables.Lock, "id", false, new LockDto { Id = Constants.Locks.CacheVersion, Name = "CacheVersion" });
+        _database.Insert(Constants.DatabaseSchema.Tables.Lock, primaryKeyName, autoIncrement, new LockDto { Id = Constants.Locks.Servers, Name = "Servers" });
+        _database.Insert(Constants.DatabaseSchema.Tables.Lock, primaryKeyName, autoIncrement, new LockDto { Id = Constants.Locks.ContentTypes, Name = "ContentTypes" });
+        _database.Insert(Constants.DatabaseSchema.Tables.Lock, primaryKeyName, autoIncrement, new LockDto { Id = Constants.Locks.ContentTree, Name = "ContentTree" });
+        _database.Insert(Constants.DatabaseSchema.Tables.Lock, primaryKeyName, autoIncrement, new LockDto { Id = Constants.Locks.MediaTypes, Name = "MediaTypes" });
+        _database.Insert(Constants.DatabaseSchema.Tables.Lock, primaryKeyName, autoIncrement, new LockDto { Id = Constants.Locks.MediaTree, Name = "MediaTree" });
+        _database.Insert(Constants.DatabaseSchema.Tables.Lock, primaryKeyName, autoIncrement, new LockDto { Id = Constants.Locks.MemberTypes, Name = "MemberTypes" });
+        _database.Insert(Constants.DatabaseSchema.Tables.Lock, primaryKeyName, autoIncrement, new LockDto { Id = Constants.Locks.MemberTree, Name = "MemberTree" });
+        _database.Insert(Constants.DatabaseSchema.Tables.Lock, primaryKeyName, autoIncrement, new LockDto { Id = Constants.Locks.Domains, Name = "Domains" });
+        _database.Insert(Constants.DatabaseSchema.Tables.Lock, primaryKeyName, autoIncrement, new LockDto { Id = Constants.Locks.KeyValues, Name = "KeyValues" });
+        _database.Insert(Constants.DatabaseSchema.Tables.Lock, primaryKeyName, autoIncrement, new LockDto { Id = Constants.Locks.Languages, Name = "Languages" });
+        _database.Insert(Constants.DatabaseSchema.Tables.Lock, primaryKeyName, autoIncrement, new LockDto { Id = Constants.Locks.ScheduledPublishing, Name = "ScheduledPublishing" });
+        _database.Insert(Constants.DatabaseSchema.Tables.Lock, primaryKeyName, autoIncrement, new LockDto { Id = Constants.Locks.MainDom, Name = "MainDom" });
+        _database.Insert(Constants.DatabaseSchema.Tables.Lock, primaryKeyName, autoIncrement, new LockDto { Id = Constants.Locks.WebhookRequest, Name = "WebhookRequest" });
+        _database.Insert(Constants.DatabaseSchema.Tables.Lock, primaryKeyName, autoIncrement, new LockDto { Id = Constants.Locks.WebhookLogs, Name = "WebhookLogs" });
+        _database.Insert(Constants.DatabaseSchema.Tables.Lock, primaryKeyName, autoIncrement, new LockDto { Id = Constants.Locks.LongRunningOperations, Name = "LongRunningOperations" });
+        _database.Insert(Constants.DatabaseSchema.Tables.Lock, primaryKeyName, autoIncrement, new LockDto { Id = Constants.Locks.DocumentUrls, Name = "DocumentUrls" });
+        _database.Insert(Constants.DatabaseSchema.Tables.Lock, primaryKeyName, autoIncrement, new LockDto { Id = Constants.Locks.DistributedJobs, Name = "DistributedJobs" });
+        _database.Insert(Constants.DatabaseSchema.Tables.Lock, primaryKeyName, autoIncrement, new LockDto { Id = Constants.Locks.CacheVersion, Name = "CacheVersion" });
     }
 
     private void CreateContentTypeData()
@@ -1052,10 +1127,19 @@ internal sealed class DatabaseDataCreator
         // Insert content types only if the corresponding Node record exists (which may or may not have been created depending on configuration
         // of media or member types to create).
 
+        var primaryKeyName = GetPrimaryKeyName("pk");
+        var insertSettings = new InsertSettings
+        {
+            TableName = ContentTypeDto.TableName,
+            PrimaryKeyName = primaryKeyName,
+            AutoIncrement = false,
+        };
+
         // Media types.
         if (_database.Exists<NodeDto>(1031))
         {
-            _database.Insert(Constants.DatabaseSchema.Tables.ContentType, "pk", false,
+            Insert(
+                insertSettings,
                 new ContentTypeDto
                 {
                     PrimaryKey = 532,
@@ -1071,7 +1155,8 @@ internal sealed class DatabaseDataCreator
 
         if (_database.Exists<NodeDto>(1032))
         {
-            _database.Insert(Constants.DatabaseSchema.Tables.ContentType, "pk", false,
+            Insert(
+                insertSettings,
                 new ContentTypeDto
                 {
                     PrimaryKey = 533,
@@ -1086,7 +1171,8 @@ internal sealed class DatabaseDataCreator
 
         if (_database.Exists<NodeDto>(1033))
         {
-            _database.Insert(Constants.DatabaseSchema.Tables.ContentType, "pk", false,
+            Insert(
+                insertSettings,
                 new ContentTypeDto
                 {
                     PrimaryKey = 534,
@@ -1101,7 +1187,8 @@ internal sealed class DatabaseDataCreator
 
         if (_database.Exists<NodeDto>(1034))
         {
-            _database.Insert(Constants.DatabaseSchema.Tables.ContentType, "pk", false,
+            Insert(
+                insertSettings,
                 new ContentTypeDto
                 {
                     PrimaryKey = 540,
@@ -1116,7 +1203,8 @@ internal sealed class DatabaseDataCreator
 
         if (_database.Exists<NodeDto>(1035))
         {
-            _database.Insert(Constants.DatabaseSchema.Tables.ContentType, "pk", false,
+            Insert(
+                insertSettings,
                 new ContentTypeDto
                 {
                     PrimaryKey = 541,
@@ -1131,7 +1219,8 @@ internal sealed class DatabaseDataCreator
 
         if (_database.Exists<NodeDto>(1036))
         {
-            _database.Insert(Constants.DatabaseSchema.Tables.ContentType, "pk", false,
+            Insert(
+                insertSettings,
                 new ContentTypeDto
                 {
                     PrimaryKey = 542,
@@ -1146,7 +1235,8 @@ internal sealed class DatabaseDataCreator
 
         if (_database.Exists<NodeDto>(1037))
         {
-            _database.Insert(Constants.DatabaseSchema.Tables.ContentType, "pk", false,
+            Insert(
+                insertSettings,
                 new ContentTypeDto
                 {
                     PrimaryKey = 543,
@@ -1162,7 +1252,8 @@ internal sealed class DatabaseDataCreator
         // Member type.
         if (_database.Exists<NodeDto>(1044))
         {
-            _database.Insert(Constants.DatabaseSchema.Tables.ContentType, "pk", false,
+            Insert(
+                insertSettings,
                 new ContentTypeDto
                 {
                     PrimaryKey = 531,
@@ -1175,7 +1266,10 @@ internal sealed class DatabaseDataCreator
         }
     }
 
-    private void CreateUserData() => _database.Insert(Constants.DatabaseSchema.Tables.User, "id", false,
+    private void CreateUserData() => _database.Insert(
+        UserDto.TableName,
+        GetPrimaryKeyName("id"),
+        false,
         new UserDto
         {
             Id = Constants.Security.SuperUserId,
@@ -1193,27 +1287,30 @@ internal sealed class DatabaseDataCreator
 
     private void CreateUserGroupData()
     {
-        _database.Insert(
-            Constants.DatabaseSchema.Tables.UserGroup,
-            "id",
-            false,
-            new UserGroupDto
-            {
-                Id = 1,
-                Key = Constants.Security.AdminGroupKey,
-                StartMediaId = -1,
-                StartContentId = -1,
-                Alias = Constants.Security.AdminGroupAlias,
-                Name = "Administrators",
-                CreateDate = DateTime.UtcNow,
-                UpdateDate = DateTime.UtcNow,
-                Icon = "icon-medal",
-                HasAccessToAllLanguages = true,
-            });
-        _database.Insert(
-            Constants.DatabaseSchema.Tables.UserGroup,
-            "id",
-            false,
+        var insertSettings = new InsertSettings
+        {
+            TableName = UserGroupDto.TableName,
+            PrimaryKeyName = GetPrimaryKeyName("id"),
+            AutoIncrement = false,
+        };
+
+        Insert(
+             insertSettings,
+             new UserGroupDto
+             {
+                 Id = 1,
+                 Key = Constants.Security.AdminGroupKey,
+                 StartMediaId = -1,
+                 StartContentId = -1,
+                 Alias = Constants.Security.AdminGroupAlias,
+                 Name = "Administrators",
+                 CreateDate = DateTime.UtcNow,
+                 UpdateDate = DateTime.UtcNow,
+                 Icon = "icon-medal",
+                 HasAccessToAllLanguages = true,
+             });
+        Insert(
+            insertSettings,
             new UserGroupDto
             {
                 Id = 2,
@@ -1227,10 +1324,8 @@ internal sealed class DatabaseDataCreator
                 Icon = "icon-edit",
                 HasAccessToAllLanguages = true,
             });
-        _database.Insert(
-            Constants.DatabaseSchema.Tables.UserGroup,
-            "id",
-            false,
+        Insert(
+            insertSettings,
             new UserGroupDto
             {
                 Id = 3,
@@ -1244,10 +1339,8 @@ internal sealed class DatabaseDataCreator
                 Icon = "icon-tools",
                 HasAccessToAllLanguages = true,
             });
-        _database.Insert(
-            Constants.DatabaseSchema.Tables.UserGroup,
-            "id",
-            false,
+        Insert(
+            insertSettings,
             new UserGroupDto
             {
                 Id = 4,
@@ -1261,10 +1354,8 @@ internal sealed class DatabaseDataCreator
                 Icon = "icon-globe",
                 HasAccessToAllLanguages = true,
             });
-        _database.Insert(
-            Constants.DatabaseSchema.Tables.UserGroup,
-            "id",
-            false,
+        Insert(
+            insertSettings,
             new UserGroupDto
             {
                 Id = 5,
@@ -1280,39 +1371,36 @@ internal sealed class DatabaseDataCreator
 
     private void CreateUser2UserGroupData()
     {
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-        // NPoco Insert for PostgreSQL only returns nothing when primaryKey is null. And here we do not use any returned value.
-        _database.Insert(User2UserGroupDto.TableName, null, new User2UserGroupDto
+        _database.Insert(User2UserGroupDto.TableName, GetPrimaryKeyName(), new User2UserGroupDto
         {
             UserGroupId = 1,
             UserId = Constants.Security.SuperUserId,
         }); // add super to admins
-        _database.Insert(User2UserGroupDto.TableName, null, new User2UserGroupDto
+        _database.Insert(User2UserGroupDto.TableName, GetPrimaryKeyName(), new User2UserGroupDto
         {
             UserGroupId = 5,
             UserId = Constants.Security.SuperUserId,
         }); // add super to sensitive data
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
     }
 
     private void CreateUserGroup2AppData()
     {
-        _database.Insert(new UserGroup2AppDto { UserGroupId = 1, AppAlias = Constants.Applications.Content });
-        _database.Insert(new UserGroup2AppDto { UserGroupId = 1, AppAlias = Constants.Applications.Packages });
-        _database.Insert(new UserGroup2AppDto { UserGroupId = 1, AppAlias = Constants.Applications.Media });
-        _database.Insert(new UserGroup2AppDto { UserGroupId = 1, AppAlias = Constants.Applications.Members });
-        _database.Insert(new UserGroup2AppDto { UserGroupId = 1, AppAlias = Constants.Applications.Settings });
-        _database.Insert(new UserGroup2AppDto { UserGroupId = 1, AppAlias = Constants.Applications.Users });
-        _database.Insert(new UserGroup2AppDto { UserGroupId = 1, AppAlias = Constants.Applications.Forms });
-        _database.Insert(new UserGroup2AppDto { UserGroupId = 1, AppAlias = Constants.Applications.Translation });
+        _database.Insert(UserGroup2AppDto.TableName, GetPrimaryKeyName(), new UserGroup2AppDto { UserGroupId = 1, AppAlias = Constants.Applications.Content });
+        _database.Insert(UserGroup2AppDto.TableName, GetPrimaryKeyName(), new UserGroup2AppDto { UserGroupId = 1, AppAlias = Constants.Applications.Packages });
+        _database.Insert(UserGroup2AppDto.TableName, GetPrimaryKeyName(), new UserGroup2AppDto { UserGroupId = 1, AppAlias = Constants.Applications.Media });
+        _database.Insert(UserGroup2AppDto.TableName, GetPrimaryKeyName(), new UserGroup2AppDto { UserGroupId = 1, AppAlias = Constants.Applications.Members });
+        _database.Insert(UserGroup2AppDto.TableName, GetPrimaryKeyName(), new UserGroup2AppDto { UserGroupId = 1, AppAlias = Constants.Applications.Settings });
+        _database.Insert(UserGroup2AppDto.TableName, GetPrimaryKeyName(), new UserGroup2AppDto { UserGroupId = 1, AppAlias = Constants.Applications.Users });
+        _database.Insert(UserGroup2AppDto.TableName, GetPrimaryKeyName(), new UserGroup2AppDto { UserGroupId = 1, AppAlias = Constants.Applications.Forms });
+        _database.Insert(UserGroup2AppDto.TableName, GetPrimaryKeyName(), new UserGroup2AppDto { UserGroupId = 1, AppAlias = Constants.Applications.Translation });
 
-        _database.Insert(new UserGroup2AppDto { UserGroupId = 2, AppAlias = Constants.Applications.Content });
+        _database.Insert(UserGroup2AppDto.TableName, GetPrimaryKeyName(), new UserGroup2AppDto { UserGroupId = 2, AppAlias = Constants.Applications.Content });
 
-        _database.Insert(new UserGroup2AppDto { UserGroupId = 3, AppAlias = Constants.Applications.Content });
-        _database.Insert(new UserGroup2AppDto { UserGroupId = 3, AppAlias = Constants.Applications.Media });
-        _database.Insert(new UserGroup2AppDto { UserGroupId = 3, AppAlias = Constants.Applications.Forms });
+        _database.Insert(UserGroup2AppDto.TableName, GetPrimaryKeyName(), new UserGroup2AppDto { UserGroupId = 3, AppAlias = Constants.Applications.Content });
+        _database.Insert(UserGroup2AppDto.TableName, GetPrimaryKeyName(), new UserGroup2AppDto { UserGroupId = 3, AppAlias = Constants.Applications.Media });
+        _database.Insert(UserGroup2AppDto.TableName, GetPrimaryKeyName(), new UserGroup2AppDto { UserGroupId = 3, AppAlias = Constants.Applications.Forms });
 
-        _database.Insert(new UserGroup2AppDto { UserGroupId = 4, AppAlias = Constants.Applications.Translation });
+        _database.Insert(UserGroup2AppDto.TableName, GetPrimaryKeyName(), new UserGroup2AppDto { UserGroupId = 4, AppAlias = Constants.Applications.Translation });
     }
 
     private void CreatePropertyTypeGroupData()
@@ -1320,10 +1408,18 @@ internal sealed class DatabaseDataCreator
         // Insert property groups only if the corresponding content type node record exists (which may or may not have been created depending on configuration
         // of media or member types to create).
 
+        var insertSettings = new InsertSettings
+        {
+            TableName = PropertyTypeGroupDto.TableName,
+            PrimaryKeyName = GetPrimaryKeyName("id"),
+            AutoIncrement = false,
+        };
+
         // Media property groups.
         if (_database.Exists<NodeDto>(1032))
         {
-            _database.Insert(Constants.DatabaseSchema.Tables.PropertyTypeGroup, "id", false,
+            Insert(
+                insertSettings,
                 new PropertyTypeGroupDto
                 {
                     Id = 3,
@@ -1337,7 +1433,8 @@ internal sealed class DatabaseDataCreator
 
         if (_database.Exists<NodeDto>(1033))
         {
-            _database.Insert(Constants.DatabaseSchema.Tables.PropertyTypeGroup, "id", false,
+            Insert(
+                insertSettings,
                 new PropertyTypeGroupDto
                 {
                     Id = 4,
@@ -1351,7 +1448,8 @@ internal sealed class DatabaseDataCreator
 
         if (_database.Exists<NodeDto>(1034))
         {
-            _database.Insert(Constants.DatabaseSchema.Tables.PropertyTypeGroup, "id", false,
+            Insert(
+                insertSettings,
                 new PropertyTypeGroupDto
                 {
                     Id = 52,
@@ -1365,7 +1463,8 @@ internal sealed class DatabaseDataCreator
 
         if (_database.Exists<NodeDto>(1035))
         {
-            _database.Insert(Constants.DatabaseSchema.Tables.PropertyTypeGroup, "id", false,
+            Insert(
+                insertSettings,
                 new PropertyTypeGroupDto
                 {
                     Id = 53,
@@ -1379,7 +1478,8 @@ internal sealed class DatabaseDataCreator
 
         if (_database.Exists<NodeDto>(1036))
         {
-            _database.Insert(Constants.DatabaseSchema.Tables.PropertyTypeGroup, "id", false,
+            Insert(
+                insertSettings,
                 new PropertyTypeGroupDto
                 {
                     Id = 54,
@@ -1393,7 +1493,8 @@ internal sealed class DatabaseDataCreator
 
         if (_database.Exists<NodeDto>(1037))
         {
-            _database.Insert(Constants.DatabaseSchema.Tables.PropertyTypeGroup, "id", false,
+            Insert(
+                insertSettings,
                 new PropertyTypeGroupDto
                 {
                     Id = 55,
@@ -1408,7 +1509,8 @@ internal sealed class DatabaseDataCreator
         // Membership property group.
         if (_database.Exists<NodeDto>(1044))
         {
-            _database.Insert(Constants.DatabaseSchema.Tables.PropertyTypeGroup, "id", false,
+            Insert(
+                insertSettings,
                 new PropertyTypeGroupDto
                 {
                     Id = 11,
@@ -1426,10 +1528,18 @@ internal sealed class DatabaseDataCreator
         // Insert property types only if the corresponding property group record exists (which may or may not have been created depending on configuration
         // of media or member types to create).
 
+        var insertSettings = new InsertSettings
+        {
+            TableName = PropertyTypeDto.TableName,
+            PrimaryKeyName = GetPrimaryKeyName("id"),
+            AutoIncrement = false,
+        };
+
         // Media property types.
         if (_database.Exists<PropertyTypeGroupDto>(3))
         {
-            _database.Insert(Constants.DatabaseSchema.Tables.PropertyType, "id", false,
+            Insert(
+                insertSettings,
                 new PropertyTypeDto
                 {
                     Id = 6,
@@ -1445,7 +1555,8 @@ internal sealed class DatabaseDataCreator
                     Description = null,
                     Variations = (byte)ContentVariation.Nothing,
                 });
-            _database.Insert(Constants.DatabaseSchema.Tables.PropertyType, "id", false,
+            Insert(
+                insertSettings,
                 new PropertyTypeDto
                 {
                     Id = 7,
@@ -1461,7 +1572,8 @@ internal sealed class DatabaseDataCreator
                     Description = null,
                     Variations = (byte)ContentVariation.Nothing,
                 });
-            _database.Insert(Constants.DatabaseSchema.Tables.PropertyType, "id", false,
+            Insert(
+                insertSettings,
                 new PropertyTypeDto
                 {
                     Id = 8,
@@ -1477,7 +1589,8 @@ internal sealed class DatabaseDataCreator
                     Description = null,
                     Variations = (byte)ContentVariation.Nothing,
                 });
-            _database.Insert(Constants.DatabaseSchema.Tables.PropertyType, "id", false,
+            Insert(
+                insertSettings,
                 new PropertyTypeDto
                 {
                     Id = 9,
@@ -1493,7 +1606,8 @@ internal sealed class DatabaseDataCreator
                     Description = null,
                     Variations = (byte)ContentVariation.Nothing,
                 });
-            _database.Insert(Constants.DatabaseSchema.Tables.PropertyType, "id", false,
+            Insert(
+                insertSettings,
                 new PropertyTypeDto
                 {
                     Id = 10,
@@ -1513,7 +1627,8 @@ internal sealed class DatabaseDataCreator
 
         if (_database.Exists<PropertyTypeGroupDto>(4))
         {
-            _database.Insert(Constants.DatabaseSchema.Tables.PropertyType, "id", false,
+            Insert(
+                insertSettings,
                 new PropertyTypeDto
                 {
                     Id = 24,
@@ -1529,7 +1644,8 @@ internal sealed class DatabaseDataCreator
                     Description = null,
                     Variations = (byte)ContentVariation.Nothing,
                 });
-            _database.Insert(Constants.DatabaseSchema.Tables.PropertyType, "id", false,
+            Insert(
+                insertSettings,
                 new PropertyTypeDto
                 {
                     Id = 25,
@@ -1545,7 +1661,8 @@ internal sealed class DatabaseDataCreator
                     Description = null,
                     Variations = (byte)ContentVariation.Nothing,
                 });
-            _database.Insert(Constants.DatabaseSchema.Tables.PropertyType, "id", false,
+            Insert(
+                insertSettings,
                 new PropertyTypeDto
                 {
                     Id = 26,
@@ -1565,7 +1682,8 @@ internal sealed class DatabaseDataCreator
 
         if (_database.Exists<PropertyTypeGroupDto>(52))
         {
-            _database.Insert(Constants.DatabaseSchema.Tables.PropertyType, "id", false,
+            Insert(
+                insertSettings,
                 new PropertyTypeDto
                 {
                     Id = 40,
@@ -1581,7 +1699,8 @@ internal sealed class DatabaseDataCreator
                     Description = null,
                     Variations = (byte)ContentVariation.Nothing,
                 });
-            _database.Insert(Constants.DatabaseSchema.Tables.PropertyType, "id", false,
+            Insert(
+                insertSettings,
                 new PropertyTypeDto
                 {
                     Id = 41,
@@ -1597,7 +1716,8 @@ internal sealed class DatabaseDataCreator
                     Description = null,
                     Variations = (byte)ContentVariation.Nothing,
                 });
-            _database.Insert(Constants.DatabaseSchema.Tables.PropertyType, "id", false,
+            Insert(
+                insertSettings,
                 new PropertyTypeDto
                 {
                     Id = 42,
@@ -1617,7 +1737,8 @@ internal sealed class DatabaseDataCreator
 
         if (_database.Exists<PropertyTypeGroupDto>(53))
         {
-            _database.Insert(Constants.DatabaseSchema.Tables.PropertyType, "id", false,
+            Insert(
+                insertSettings,
                 new PropertyTypeDto
                 {
                     Id = 43,
@@ -1633,7 +1754,8 @@ internal sealed class DatabaseDataCreator
                     Description = null,
                     Variations = (byte)ContentVariation.Nothing,
                 });
-            _database.Insert(Constants.DatabaseSchema.Tables.PropertyType, "id", false,
+            Insert(
+                insertSettings,
                 new PropertyTypeDto
                 {
                     Id = 44,
@@ -1649,7 +1771,8 @@ internal sealed class DatabaseDataCreator
                     Description = null,
                     Variations = (byte)ContentVariation.Nothing,
                 });
-            _database.Insert(Constants.DatabaseSchema.Tables.PropertyType, "id", false,
+            Insert(
+                insertSettings,
                 new PropertyTypeDto
                 {
                     Id = 45,
@@ -1669,7 +1792,8 @@ internal sealed class DatabaseDataCreator
 
         if (_database.Exists<PropertyTypeGroupDto>(54))
         {
-            _database.Insert(Constants.DatabaseSchema.Tables.PropertyType, "id", false,
+            Insert(
+                insertSettings,
                 new PropertyTypeDto
                 {
                     Id = 46,
@@ -1685,7 +1809,8 @@ internal sealed class DatabaseDataCreator
                     Description = null,
                     Variations = (byte)ContentVariation.Nothing,
                 });
-            _database.Insert(Constants.DatabaseSchema.Tables.PropertyType, "id", false,
+            Insert(
+                insertSettings,
                 new PropertyTypeDto
                 {
                     Id = 47,
@@ -1701,7 +1826,8 @@ internal sealed class DatabaseDataCreator
                     Description = null,
                     Variations = (byte)ContentVariation.Nothing,
                 });
-            _database.Insert(Constants.DatabaseSchema.Tables.PropertyType, "id", false,
+            Insert(
+                insertSettings,
                 new PropertyTypeDto
                 {
                     Id = 48,
@@ -1721,7 +1847,8 @@ internal sealed class DatabaseDataCreator
 
         if (_database.Exists<PropertyTypeGroupDto>(55))
         {
-            _database.Insert(Constants.DatabaseSchema.Tables.PropertyType, "id", false,
+            Insert(
+                insertSettings,
                 new PropertyTypeDto
                 {
                     Id = 49,
@@ -1737,7 +1864,8 @@ internal sealed class DatabaseDataCreator
                     Description = null,
                     Variations = (byte)ContentVariation.Nothing,
                 });
-            _database.Insert(Constants.DatabaseSchema.Tables.PropertyType, "id", false,
+            Insert(
+                insertSettings,
                 new PropertyTypeDto
                 {
                     Id = 50,
@@ -1753,7 +1881,8 @@ internal sealed class DatabaseDataCreator
                     Description = null,
                     Variations = (byte)ContentVariation.Nothing,
                 });
-            _database.Insert(Constants.DatabaseSchema.Tables.PropertyType, "id", false,
+            Insert(
+                insertSettings,
                 new PropertyTypeDto
                 {
                     Id = 51,
@@ -1774,7 +1903,8 @@ internal sealed class DatabaseDataCreator
         // Membership property types.
         if (_database.Exists<PropertyTypeGroupDto>(11))
         {
-            _database.Insert(Constants.DatabaseSchema.Tables.PropertyType, "id", false,
+            Insert(
+                insertSettings,
                 new PropertyTypeDto
                 {
                     Id = 28,
@@ -1814,18 +1944,17 @@ internal sealed class DatabaseDataCreator
                     continue;
                 }
 
-                var dto = new LanguageDto
-                {
-                    Id = id,
-                    IsoCode = culture.Name,
-                    CultureName = culture.EnglishName,
-                    IsDefault = isDefault,
-                };
-
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-                // NPoco Insert for PostgreSQL only returns nothing when primaryKey is null. And here we do not use any returned value.
-                _database.Insert(Constants.DatabaseSchema.Tables.Language, null, applyAutoIncrement, dto);
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+                _database.Insert(
+                    LanguageDto.TableName,
+                    GetPrimaryKeyName("id"),
+                    applyAutoIncrement,
+                    new LanguageDto
+                    {
+                        Id = id,
+                        IsoCode = culture.Name,
+                        CultureName = culture.EnglishName,
+                        IsDefault = isDefault,
+                    });
 
                 isDefault = false;
                 id += autoIncrementValue;
@@ -1840,7 +1969,8 @@ internal sealed class DatabaseDataCreator
                     Constants.Configuration.NamedOptions.InstallDefaultData.Languages,
                     culture.Name,
                     new LanguageDto { Id = startId, IsoCode = culture.Name, CultureName = culture.EnglishName, IsDefault = true },
-                    Constants.DatabaseSchema.Tables.Language,
+                    LanguageDto.TableName,
+                    GetPrimaryKeyName("id"),
                     applyAutoIncrement);
             }
         }
@@ -1870,15 +2000,20 @@ internal sealed class DatabaseDataCreator
             return;
         }
 
-        _database.Insert(Constants.DatabaseSchema.Tables.ContentChildType, "Id", false,
-            new ContentTypeAllowedContentTypeDto { Id = 1031, AllowedId = 1031 });
+        var insertSettings = new InsertSettings
+        {
+            TableName = ContentTypeAllowedContentTypeDto.TableName,
+            PrimaryKeyName = GetPrimaryKeyName("id"),
+            AutoIncrement = false,
+        };
+
+        Insert(insertSettings, new ContentTypeAllowedContentTypeDto { Id = 1031, AllowedId = 1031 });
 
         for (var i = 1032; i <= 1037; i++)
         {
             if (_database.Exists<NodeDto>(i))
             {
-                _database.Insert(Constants.DatabaseSchema.Tables.ContentChildType, "Id", false,
-                    new ContentTypeAllowedContentTypeDto { Id = 1031, AllowedId = i });
+                Insert(insertSettings, new ContentTypeAllowedContentTypeDto { Id = 1031, AllowedId = i });
             }
         }
     }
@@ -1896,7 +2031,7 @@ internal sealed class DatabaseDataCreator
 
             if (_database.Exists<NodeDto>(id))
             {
-                _database.Insert(Constants.DatabaseSchema.Tables.DataType, "pk", false, dataTypeDto);
+                _database.Insert(DataTypeDto.TableName, GetPrimaryKeyName("pk"), false, dataTypeDto);
             }
         }
 
@@ -1911,9 +2046,18 @@ internal sealed class DatabaseDataCreator
 
         // Insert data types only if the corresponding Node record exists (which may or may not have been created depending on configuration
         // of data types to create).
+
+        var insertSettings = new InsertSettings
+        {
+            TableName = DataTypeDto.TableName,
+            PrimaryKeyName = GetPrimaryKeyName("pk"),
+            AutoIncrement = false,
+        };
+
         if (_database.Exists<NodeDto>(Constants.DataTypes.Boolean))
         {
-            _database.Insert(Constants.DatabaseSchema.Tables.DataType, "pk", false,
+            Insert(
+                insertSettings,
                 new DataTypeDto
                 {
                     NodeId = Constants.DataTypes.Boolean,
@@ -1925,7 +2069,8 @@ internal sealed class DatabaseDataCreator
 
         if (_database.Exists<NodeDto>(-51))
         {
-            _database.Insert(Constants.DatabaseSchema.Tables.DataType, "pk", false,
+            Insert(
+                insertSettings,
                 new DataTypeDto
                 {
                     NodeId = -51,
@@ -1937,10 +2082,8 @@ internal sealed class DatabaseDataCreator
 
         if (_database.Exists<NodeDto>(Constants.DataTypes.RichtextEditor))
         {
-            _database.Insert(
-                Constants.DatabaseSchema.Tables.DataType,
-                "pk",
-                false,
+            Insert(
+                insertSettings,
                 new DataTypeDto
                 {
                     NodeId = Constants.DataTypes.RichtextEditor,
@@ -1953,7 +2096,8 @@ internal sealed class DatabaseDataCreator
 
         if (_database.Exists<NodeDto>(Constants.DataTypes.Textbox))
         {
-            _database.Insert(Constants.DatabaseSchema.Tables.DataType, "pk", false,
+            Insert(
+                insertSettings,
                 new DataTypeDto
                 {
                     NodeId = Constants.DataTypes.Textbox,
@@ -1965,7 +2109,8 @@ internal sealed class DatabaseDataCreator
 
         if (_database.Exists<NodeDto>(Constants.DataTypes.Textarea))
         {
-            _database.Insert(Constants.DatabaseSchema.Tables.DataType, "pk", false,
+            Insert(
+                insertSettings,
                 new DataTypeDto
                 {
                     NodeId = Constants.DataTypes.Textarea,
@@ -1977,7 +2122,8 @@ internal sealed class DatabaseDataCreator
 
         if (_database.Exists<NodeDto>(Constants.DataTypes.Upload))
         {
-            _database.Insert(Constants.DatabaseSchema.Tables.DataType, "pk", false,
+            Insert(
+                insertSettings,
                 new DataTypeDto
                 {
                     NodeId = Constants.DataTypes.Upload,
@@ -2006,7 +2152,8 @@ internal sealed class DatabaseDataCreator
 
         if (_database.Exists<NodeDto>(Constants.DataTypes.DateTime))
         {
-            _database.Insert(Constants.DatabaseSchema.Tables.DataType, "pk", false,
+            Insert(
+                insertSettings,
                 new DataTypeDto
                 {
                     NodeId = Constants.DataTypes.DateTime,
@@ -2019,7 +2166,8 @@ internal sealed class DatabaseDataCreator
 
         if (_database.Exists<NodeDto>(-37))
         {
-            _database.Insert(Constants.DatabaseSchema.Tables.DataType, "pk", false,
+            Insert(
+                insertSettings,
                 new DataTypeDto
                 {
                     NodeId = -37,
@@ -2034,7 +2182,8 @@ internal sealed class DatabaseDataCreator
 
         if (_database.Exists<NodeDto>(-40))
         {
-            _database.Insert(Constants.DatabaseSchema.Tables.DataType, "pk", false,
+            Insert(
+                insertSettings,
                 new DataTypeDto
                 {
                     NodeId = -40,
@@ -2046,7 +2195,8 @@ internal sealed class DatabaseDataCreator
 
         if (_database.Exists<NodeDto>(-41))
         {
-            _database.Insert(Constants.DatabaseSchema.Tables.DataType, "pk", false,
+            Insert(
+                insertSettings,
                 new DataTypeDto
                 {
                     NodeId = -41,
@@ -2062,7 +2212,8 @@ internal sealed class DatabaseDataCreator
 
         if (_database.Exists<NodeDto>(-43))
         {
-            _database.Insert(Constants.DatabaseSchema.Tables.DataType, "pk", false,
+            Insert(
+                insertSettings,
                 new DataTypeDto
                 {
                     NodeId = -43,
@@ -2074,10 +2225,8 @@ internal sealed class DatabaseDataCreator
 
         if (_database.Exists<NodeDto>(Constants.DataTypes.Tags))
         {
-            _database.Insert(
-                Constants.DatabaseSchema.Tables.DataType,
-                "pk",
-                false,
+            Insert(
+                insertSettings,
                 new DataTypeDto
                 {
                     NodeId = Constants.DataTypes.Tags,
@@ -2090,7 +2239,8 @@ internal sealed class DatabaseDataCreator
 
         if (_database.Exists<NodeDto>(Constants.DataTypes.ImageCropper))
         {
-            _database.Insert(Constants.DatabaseSchema.Tables.DataType, "pk", false,
+            Insert(
+                insertSettings,
                 new DataTypeDto
                 {
                     NodeId = Constants.DataTypes.ImageCropper,
@@ -2102,10 +2252,8 @@ internal sealed class DatabaseDataCreator
 
         if (_database.Exists<NodeDto>(Constants.DataTypes.DefaultContentListView))
         {
-            _database.Insert(
-                Constants.DatabaseSchema.Tables.DataType,
-                "pk",
-                false,
+            Insert(
+                insertSettings,
                 new DataTypeDto
                 {
                     NodeId = Constants.DataTypes.DefaultContentListView,
@@ -2121,10 +2269,8 @@ internal sealed class DatabaseDataCreator
 
         if (_database.Exists<NodeDto>(Constants.DataTypes.DefaultMediaListView))
         {
-            _database.Insert(
-                Constants.DatabaseSchema.Tables.DataType,
-                "pk",
-                false,
+            Insert(
+                insertSettings,
                 new DataTypeDto
                 {
                     NodeId = Constants.DataTypes.DefaultMediaListView,
@@ -2140,10 +2286,8 @@ internal sealed class DatabaseDataCreator
 
         if (_database.Exists<NodeDto>(Constants.DataTypes.DefaultMembersListView))
         {
-            _database.Insert(
-                Constants.DatabaseSchema.Tables.DataType,
-                "pk",
-                false,
+            Insert(
+                insertSettings,
                 new DataTypeDto
                 {
                     NodeId = Constants.DataTypes.DefaultMembersListView,
@@ -2158,7 +2302,8 @@ internal sealed class DatabaseDataCreator
         // New UDI pickers with newer Ids
         if (_database.Exists<NodeDto>(1046))
         {
-            _database.Insert(Constants.DatabaseSchema.Tables.DataType, "pk", false,
+            Insert(
+                insertSettings,
                 new DataTypeDto
                 {
                     NodeId = 1046,
@@ -2170,7 +2315,8 @@ internal sealed class DatabaseDataCreator
 
         if (_database.Exists<NodeDto>(1047))
         {
-            _database.Insert(Constants.DatabaseSchema.Tables.DataType, "pk", false,
+            Insert(
+                insertSettings,
                 new DataTypeDto
                 {
                     NodeId = 1047,
@@ -2182,7 +2328,8 @@ internal sealed class DatabaseDataCreator
 
         if (_database.Exists<NodeDto>(1050))
         {
-            _database.Insert(Constants.DatabaseSchema.Tables.DataType, "pk", false,
+            Insert(
+                insertSettings,
                 new DataTypeDto
                 {
                     NodeId = 1050,
@@ -2194,7 +2341,8 @@ internal sealed class DatabaseDataCreator
 
         if (_database.Exists<NodeDto>(Constants.DataTypes.UploadVideo))
         {
-            _database.Insert(Constants.DatabaseSchema.Tables.DataType, "pk", false,
+            Insert(
+                insertSettings,
                 new DataTypeDto
                 {
                     NodeId = Constants.DataTypes.UploadVideo,
@@ -2208,7 +2356,8 @@ internal sealed class DatabaseDataCreator
 
         if (_database.Exists<NodeDto>(Constants.DataTypes.UploadAudio))
         {
-            _database.Insert(Constants.DatabaseSchema.Tables.DataType, "pk", false,
+            Insert(
+                insertSettings,
                 new DataTypeDto
                 {
                     NodeId = Constants.DataTypes.UploadAudio,
@@ -2222,7 +2371,8 @@ internal sealed class DatabaseDataCreator
 
         if (_database.Exists<NodeDto>(Constants.DataTypes.UploadArticle))
         {
-            _database.Insert(Constants.DatabaseSchema.Tables.DataType, "pk", false,
+            Insert(
+                insertSettings,
                 new DataTypeDto
                 {
                     NodeId = Constants.DataTypes.UploadArticle,
@@ -2236,7 +2386,8 @@ internal sealed class DatabaseDataCreator
 
         if (_database.Exists<NodeDto>(Constants.DataTypes.UploadVectorGraphics))
         {
-            _database.Insert(Constants.DatabaseSchema.Tables.DataType, "pk", false,
+            Insert(
+                insertSettings,
                 new DataTypeDto
                 {
                     NodeId = Constants.DataTypes.UploadVectorGraphics,
@@ -2249,7 +2400,8 @@ internal sealed class DatabaseDataCreator
 
         if (_database.Exists<NodeDto>(1051))
         {
-            _database.Insert(Constants.DatabaseSchema.Tables.DataType, "pk", false,
+            Insert(
+                insertSettings,
                 new DataTypeDto
                 {
                     NodeId = 1051,
@@ -2262,7 +2414,8 @@ internal sealed class DatabaseDataCreator
 
         if (_database.Exists<NodeDto>(1052))
         {
-            _database.Insert(Constants.DatabaseSchema.Tables.DataType, "pk", false,
+            Insert(
+                insertSettings,
                 new DataTypeDto
                 {
                     NodeId = 1052,
@@ -2275,7 +2428,8 @@ internal sealed class DatabaseDataCreator
 
         if (_database.Exists<NodeDto>(1053))
         {
-            _database.Insert(Constants.DatabaseSchema.Tables.DataType, "pk", false,
+            Insert(
+                insertSettings,
                 new DataTypeDto
                 {
                     NodeId = 1053,
@@ -2289,7 +2443,8 @@ internal sealed class DatabaseDataCreator
 
         if (_database.Exists<NodeDto>(1054))
         {
-            _database.Insert(Constants.DatabaseSchema.Tables.DataType, "pk", false,
+            Insert(
+                insertSettings,
                 new DataTypeDto
                 {
                     NodeId = 1054,
@@ -2303,10 +2458,8 @@ internal sealed class DatabaseDataCreator
 
         if (_database.Exists<NodeDto>(1055))
         {
-            _database.Insert(
-                Constants.DatabaseSchema.Tables.DataType,
-                "pk",
-                false,
+            Insert(
+                insertSettings,
                 new DataTypeDto
                 {
                     NodeId = 1055,
@@ -2341,19 +2494,21 @@ internal sealed class DatabaseDataCreator
     private void CreateRelationTypeData(int id, string alias, string name, Guid? parentObjectType,
         Guid? childObjectType, bool dual, bool isDependency)
     {
-        var relationType = new RelationTypeDto
-        {
-            Id = id,
-            Alias = alias,
-            ChildObjectType = childObjectType,
-            ParentObjectType = parentObjectType,
-            Dual = dual,
-            Name = name,
-            IsDependency = isDependency,
-        };
-        relationType.UniqueId = CreateUniqueRelationTypeId(relationType.Alias, relationType.Name);
-
-        _database.Insert(Constants.DatabaseSchema.Tables.RelationType, "id", false, relationType);
+        _database.Insert(
+            RelationTypeDto.TableName,
+            GetPrimaryKeyName("id"),
+            false,
+            new RelationTypeDto
+            {
+                Id = id,
+                Alias = alias,
+                ChildObjectType = childObjectType,
+                ParentObjectType = parentObjectType,
+                Dual = dual,
+                Name = name,
+                IsDependency = isDependency,
+                UniqueId = CreateUniqueRelationTypeId(alias, name)
+            });
     }
 
     private void CreateKeyValueData()
@@ -2363,7 +2518,11 @@ internal sealed class DatabaseDataCreator
         var stateValueKey = upgrader.StateValueKey;
         var finalState = upgrader.Plan.FinalState;
 
-        _database.Insert(Constants.DatabaseSchema.Tables.KeyValue, "key", false,
+        var primaryKeyName = GetPrimaryKeyName("key");
+        _database.Insert(
+            KeyValueDto.TableName,
+            primaryKeyName,
+            false,
             new KeyValueDto { Key = stateValueKey, Value = finalState, UpdateDate = DateTime.UtcNow });
 
 
@@ -2371,7 +2530,10 @@ internal sealed class DatabaseDataCreator
         stateValueKey = upgrader.StateValueKey;
         finalState = upgrader.Plan.FinalState;
 
-        _database.Insert(Constants.DatabaseSchema.Tables.KeyValue, "key", false,
+        _database.Insert(
+            KeyValueDto.TableName,
+            primaryKeyName,
+            false,
             new KeyValueDto { Key = stateValueKey, Value = finalState, UpdateDate = DateTime.UtcNow });
     }
 
@@ -2381,7 +2543,7 @@ internal sealed class DatabaseDataCreator
         {
             LogViewerQueryDto dto = _defaultLogQueries[i];
             dto.Id = i + 1;
-            _database.Insert(Constants.DatabaseSchema.Tables.LogViewerQuery, "id", false, dto);
+            _database.Insert(LogViewerQueryDto.TableName, GetPrimaryKeyName("id"), false, dto);
         }
     }
 
@@ -2390,6 +2552,7 @@ internal sealed class DatabaseDataCreator
         string id,
         TDto dto,
         string tableName,
+        string? primaryKeyName = null,
         bool autoIncrement = false)
     {
         var alwaysInsert = _entitiesToAlwaysCreate.ContainsKey(configKey) &&
@@ -2420,9 +2583,9 @@ internal sealed class DatabaseDataCreator
             return;
         }
 
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-        // NPoco Insert for PostgreSQL only returns nothing when primaryKey is null. And here we do not use any returned value.
-        _database.Insert(tableName, null, autoIncrement, dto);
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+        primaryKeyName ??= "id";
+        _database.Insert(tableName, GetPrimaryKeyName(primaryKeyName), autoIncrement, dto);
     }
+#pragma warning restore CS8604 // Possible null reference argument.
+#pragma warning restore SA1117 // Parameters should be on same line or separate lines
 }
