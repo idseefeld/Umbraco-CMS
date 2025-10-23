@@ -1587,6 +1587,13 @@ internal abstract class ContentTypeRepositoryBase<TEntity> : EntityRepositoryBas
             .From<ContentTypeDto>()
             .InnerJoin<NodeDto>().On<ContentTypeDto, NodeDto>((ct, n) => ct.NodeId == n.NodeId)
             .WhereLike<ContentTypeDto>(c => c.Alias, $"{alias}{SqlSyntax.GetWildcardPlaceholder()}");
+
+        // sql = Sql()
+        //    .Select<ContentTypeDto>(c => c.Alias)
+        //    .From<ContentTypeDto>()
+        //    .InnerJoin<NodeDto>().On<ContentTypeDto, NodeDto>((ct, n) => ct.NodeId == n.NodeId)
+        //    .WhereLike<ContentTypeDto>(c => c.Alias, alias)
+        //    .Where<NodeDto>(x => x.NodeObjectType == NodeObjectTypeId);
         List<string> aliases = Database.Fetch<string>(sql);
 
 
@@ -1637,18 +1644,18 @@ internal abstract class ContentTypeRepositoryBase<TEntity> : EntityRepositoryBas
         // is included here just to be 100% sure since it has a FK on cmsPropertyType.
         var list = new List<string>
         {
-            $"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.User2NodeNotify)} WHERE {QuoteColumnName("nodeId")} = @id",
-            $@"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.UserGroup2GranularPermission)} WHERE {QuoteColumnName("uniqueId")} IN
+            $"DELETE FROM {QuoteTableName(User2NodeNotifyDto.TableName)} WHERE {QuoteColumnName("nodeId")} = @id",
+            $@"DELETE FROM {QuoteTableName(UserGroup2GranularPermissionDto.TableName)} WHERE {QuoteColumnName("uniqueId")} IN
                 (SELECT {QuoteColumnName("uniqueId")} FROM {QuoteTableName(NodeDto.TableName)} WHERE id = @id)",
-            $"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.TagRelationship)} WHERE {QuoteColumnName("nodeId")} = @id",
-            $"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.ContentChildType)} WHERE {QuoteColumnName("Id")} = @id",
-            $"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.ContentChildType)} WHERE {QuoteColumnName("AllowedId")} = @id",
-            $"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.ContentTypeTree)} WHERE {QuoteColumnName("parentContentTypeId")} = @id",
-            $"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.ContentTypeTree)} WHERE {QuoteColumnName("childContentTypeId")} = @id",
+            $"DELETE FROM {QuoteTableName(TagRelationshipDto.TableName)} WHERE {QuoteColumnName("nodeId")} = @id",
+            $"DELETE FROM {QuoteTableName(ContentTypeAllowedContentTypeDto.TableName)} WHERE {QuoteColumnName("Id")} = @id",
+            $"DELETE FROM {QuoteTableName(ContentTypeAllowedContentTypeDto.TableName)} WHERE {QuoteColumnName("AllowedId")} = @id",
+            $"DELETE FROM {QuoteTableName(ContentType2ContentTypeDto.TableName)} WHERE {QuoteColumnName("parentContentTypeId")} = @id",
+            $"DELETE FROM {QuoteTableName(ContentType2ContentTypeDto.TableName)} WHERE {QuoteColumnName("childContentTypeId")} = @id",
             $@"DELETE FROM {QuoteTableName(PropertyDataDto.TableName)} WHERE {QuoteColumnName("propertyTypeId")} IN
-                (SELECT id FROM {QuoteTableName(Constants.DatabaseSchema.Tables.PropertyType)} WHERE {QuoteColumnName("contentTypeId")} = @id)",
-            $"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.PropertyType)} WHERE {QuoteColumnName("contentTypeId")} = @id",
-            $"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.PropertyTypeGroup)} WHERE {QuoteColumnName("contenttypeNodeId")} = @id",
+                (SELECT id FROM {QuoteTableName(PropertyTypeDto.TableName)} WHERE {QuoteColumnName("contentTypeId")} = @id)",
+            $"DELETE FROM {QuoteTableName(PropertyTypeDto.TableName)} WHERE {QuoteColumnName("contentTypeId")} = @id",
+            $"DELETE FROM {QuoteTableName(PropertyTypeGroupDto.TableName)} WHERE {QuoteColumnName("contenttypeNodeId")} = @id",
         };
         return list;
     }

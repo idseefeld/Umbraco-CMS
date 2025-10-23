@@ -58,9 +58,9 @@ internal sealed class PropertyTypeUsageRepository : IPropertyTypeUsageRepository
 
         Sql<ISqlContext> selectQuery = database.SqlContext.Sql()
             .SelectAll()
-            .From<NodeDto>("n")
-            .Where<NodeDto>(n => n.UniqueId == contentTypeKey, "n")
-            .Where<NodeDto>(n => NodeObjectTypes.Contains(n.NodeObjectType), "n");
+            .From<NodeDto>()
+            .Where<NodeDto>(n => n.UniqueId == contentTypeKey)
+            .WhereIn<NodeDto>(n => n.NodeObjectType, NodeObjectTypes);
 
         Sql<ISqlContext> hasValuesQuery = database.SqlContext.Sql()
             .SelectAnyIfExists(selectQuery);
