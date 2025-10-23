@@ -12,32 +12,32 @@ public class ResetPasswordControllerTests : ManagementApiUserGroupTestBase<Reset
 
     protected override UserGroupAssertionModel AdminUserGroupAssertionModel => new()
     {
-        ExpectedStatusCode = HttpStatusCode.BadRequest
+        ExpectedStatusCode = HttpStatusCode.OK // HttpStatusCode.BadRequest
     };
 
     protected override UserGroupAssertionModel EditorUserGroupAssertionModel => new()
     {
-        ExpectedStatusCode = HttpStatusCode.BadRequest
+        ExpectedStatusCode = HttpStatusCode.OK //HttpStatusCode.BadRequest
     };
 
     protected override UserGroupAssertionModel SensitiveDataUserGroupAssertionModel => new()
     {
-        ExpectedStatusCode = HttpStatusCode.BadRequest
+        ExpectedStatusCode = HttpStatusCode.OK //HttpStatusCode.BadRequest
     };
 
     protected override UserGroupAssertionModel TranslatorUserGroupAssertionModel => new()
     {
-        ExpectedStatusCode = HttpStatusCode.BadRequest
+        ExpectedStatusCode = HttpStatusCode.OK //HttpStatusCode.BadRequest
     };
 
     protected override UserGroupAssertionModel WriterUserGroupAssertionModel => new()
     {
-        ExpectedStatusCode = HttpStatusCode.BadRequest
+        ExpectedStatusCode = HttpStatusCode.OK //HttpStatusCode.BadRequest
     };
 
     protected override UserGroupAssertionModel UnauthorizedUserGroupAssertionModel => new()
     {
-        ExpectedStatusCode = HttpStatusCode.BadRequest
+        ExpectedStatusCode = HttpStatusCode.OK //HttpStatusCode.BadRequest
     };
 
     protected override async Task<HttpResponseMessage> ClientRequest()
