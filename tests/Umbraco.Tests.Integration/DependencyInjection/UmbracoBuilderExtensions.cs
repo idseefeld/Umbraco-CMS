@@ -43,6 +43,8 @@ public static class UmbracoBuilderExtensions
     /// </summary>
     public static IUmbracoBuilder AddTestServices(this IUmbracoBuilder builder, TestHelper testHelper)
     {
+        var testDatabaseType = builder.Config.GetValue<TestDatabaseSettings.TestDatabaseType>("Tests:Database:DatabaseType");
+
         builder.Services.AddUnique(AppCaches.NoCache);
         builder.Services.AddUnique(Mock.Of<IMemberPartialViewCacheInvalidator>());
 
@@ -65,7 +67,6 @@ public static class UmbracoBuilderExtensions
         builder.Services.AddDbContext<TestUmbracoDbContext>(
             (serviceProvider, options) =>
             {
-                var testDatabaseType = builder.Config.GetValue<TestDatabaseSettings.TestDatabaseType>("Tests:Database:DatabaseType");
                 if (testDatabaseType is TestDatabaseSettings.TestDatabaseType.Sqlite)
                 {
                     options.UseSqlite(serviceProvider.GetRequiredService<IOptionsMonitor<ConnectionStrings>>().CurrentValue.ConnectionString);
@@ -84,15 +85,17 @@ public static class UmbracoBuilderExtensions
         builder.Services.AddDbContextFactory<TestUmbracoDbContext>(
             (serviceProvider, options) =>
             {
-                var testDatabaseType = builder.Config.GetValue<TestDatabaseSettings.TestDatabaseType>("Tests:Database:DatabaseType");
                 if (testDatabaseType is TestDatabaseSettings.TestDatabaseType.Sqlite)
                 {
                     options.UseSqlite(serviceProvider.GetRequiredService<IOptionsMonitor<ConnectionStrings>>().CurrentValue.ConnectionString);
                 }
-                else
+                else if (testDatabaseType is TestDatabaseSettings.TestDatabaseType.SqlServer)
                 {
-                    // If not Sqlite, assume SqlServer
                     options.UseSqlServer(serviceProvider.GetRequiredService<IOptionsMonitor<ConnectionStrings>>().CurrentValue.ConnectionString);
+                }
+                else if (testDatabaseType is TestDatabaseSettings.TestDatabaseType.PostgreSql)
+                {
+                    options.UseNpgsql(serviceProvider.GetRequiredService<IOptionsMonitor<ConnectionStrings>>().CurrentValue.ConnectionString);
                 }
             });
 

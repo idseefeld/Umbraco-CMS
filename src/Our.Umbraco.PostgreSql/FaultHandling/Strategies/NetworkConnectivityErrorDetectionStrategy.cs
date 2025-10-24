@@ -12,14 +12,15 @@ public class NetworkConnectivityErrorDetectionStrategy : ITransientErrorDetectio
     {
         if (ex != null && ex is NpgsqlException sqlException)
         {
-            switch (sqlException.ErrorCode)
+            switch (sqlException.SqlState)
             {
-                //// SQL Error Code: 11001
-                //// A network-related or instance-specific error occurred while establishing a connection to SQL Server.
-                //// The server was not found or was not accessible. Verify that the instance name is correct and that SQL
-                //// Server is configured to allow remote connections. (provider: TCP Provider, error: 0 - No such host is known.)
-                //case 11001:
-                //    return true;
+                case "25P02":
+                    // 25P02: aktuelle Transaktion wurde abgebrochen, Befehle werden bis zum Ende der Transaktion ignoriert
+                    return true;
+                case "42703":
+                    // 42703: Spalte »ID« existiert nicht
+                    // throw ex;
+                    break;
             }
         }
 
