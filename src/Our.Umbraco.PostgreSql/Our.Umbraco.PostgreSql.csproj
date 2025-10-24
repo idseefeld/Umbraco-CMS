@@ -12,10 +12,9 @@
   </ItemGroup>
   
   <ItemGroup>
+    <Compile Remove="FaultHandling\Strategies\ThrottlingCondition.cs" />
     <Compile Remove="GlobalSuppressions.cs" />
     <Compile Remove="Interceptors\PostgreSqlAddDbConnectionInterceptor.cs" />
-    <Compile Remove="Interceptors\PostgreSqlAddRetryPolicyInterceptor.cs" />
-    <Compile Remove="Interceptors\PostgreSqlConnectionInterceptor.cs" />
     <Compile Remove="NPocoPostgreSqlDatabaseExtensions.cs" />
   </ItemGroup>
 

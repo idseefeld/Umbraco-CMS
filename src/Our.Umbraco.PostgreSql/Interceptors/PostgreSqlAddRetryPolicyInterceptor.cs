@@ -1,23 +1,36 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Data.Common;
+using Microsoft.Extensions.Options;
 using NPoco;
-using Umbraco.Cms.Infrastructure.Persistence;
+using Our.Umbraco.PostgreSql.FaultHandling;
+using Umbraco.Cms.Core.Configuration.Models;
 using Umbraco.Cms.Infrastructure.Persistence.FaultHandling;
+using Umbraco.Extensions;
 
 namespace Our.Umbraco.PostgreSql.Interceptors
 {
     public class PostgreSqlAddRetryPolicyInterceptor : PostgreSqlConnectionInterceptor
     {
-        public override System.Data.Common.DbConnection OnConnectionOpened(IDatabase database, System.Data.Common.DbConnection conn)
+        private readonly IOptionsMonitor<ConnectionStrings> _connectionStrings;
+
+        public PostgreSqlAddRetryPolicyInterceptor(IOptionsMonitor<ConnectionStrings> connectionStrings)
+            => _connectionStrings = connectionStrings;
+
+        public override DbConnection OnConnectionOpened(IDatabase database, DbConnection conn)
         {
+            if (!_connectionStrings.CurrentValue.IsConnectionStringConfigured())
             {
-                RetryStrategy retryStrategy = RetryStrategy.DefaultExponential;
-                var commandRetryPolicy = new RetryPolicy(new SqliteTransientErrorDetectionStrategy(), retryStrategy);
-                return new RetryDbConnection(conn, null, commandRetryPolicy);
+                return conn;
             }
+
+            RetryPolicy? connectionRetryPolicy = RetryPolicyFactory.GetPostgreSqlConnectionRetryPolicy();
+            RetryPolicy? commandRetryPolicy = RetryPolicyFactory.GetPostgreSqlCommandRetryPolicy();
+
+            if (connectionRetryPolicy == null && commandRetryPolicy == null)
+            {
+                return conn;
+            }
+
+            return new RetryDbConnection(conn, connectionRetryPolicy, commandRetryPolicy);
         }
     }
 }
