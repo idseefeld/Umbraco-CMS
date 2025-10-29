@@ -28,11 +28,11 @@ namespace Our.Umbraco.PostgreSql.Services;
 ///     All Sql Syntax provider implementations should derive from this abstract class.
 /// </remarks>
 /// <typeparam name="TSyntax"></typeparam>
-public class NpgsqlSqlSyntaxProvider<TSyntax> : SqlSyntaxProviderBase<TSyntax>
+public class PostgreSqlSyntaxProviderBase<TSyntax> : SqlSyntaxProviderBase<TSyntax>
     where TSyntax : ISqlSyntaxProvider
 {
     /// <inheritdoc />
-    public NpgsqlSqlSyntaxProvider()
+    public PostgreSqlSyntaxProviderBase()
     {
         ClauseOrder = new List<Func<ColumnDefinition, string>>
         {

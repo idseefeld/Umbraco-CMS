@@ -42,6 +42,7 @@ namespace Our.Umbraco.PostgreSql.Mappers
             });
         }
     }
+
     public class PostgreSqlGuidScalarMapper : ScalarMapper<Guid>
     {
         protected override Guid Map(object value)

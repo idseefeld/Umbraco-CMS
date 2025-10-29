@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
 using System.Diagnostics.Metrics;
 using System.Linq;
@@ -81,6 +82,64 @@ namespace Our.Umbraco.PostgreSql.Services
             }
 
             return base.Insert(tableName, primaryKeyName, autoIncrement, poco);
+        }
+
+        /// <summary>
+        /// Inserts a collection of objects into the database in bulk, using the specified options.
+        /// </summary>
+        /// <typeparam name="T">The type of objects to insert. Must be compatible with the database schema.</typeparam>
+        /// <param name="pocos">The collection of objects to be inserted. Cannot be null.</param>
+        /// <param name="options">Optional settings that control bulk insert behavior, such as batching or transaction options. If null,
+        /// default options are used.</param>
+        public new void InsertBulk<T>(IEnumerable<T> pocos, InsertBulkOptions? options = null)
+        {
+            if (options?.BulkCopyTimeout is not null)
+            {
+                // throw new NotSupportedException("The BulkCopyTimeout option is not supported for PostgreSQL bulk inserts.");
+            }
+
+            base.BulkInsertRecords<T>(pocos);
+        }
+
+        //public void ExecuteInsert(string sql, params object[] args)
+        //{
+        //    _commands ??= new List<CommandInfo>();
+        //    var cmd = CreateCommand(sql, args);
+        //    _commands.Add(cmd);
+        //    Execute(cmd);
+        //}
+
+        protected override void OnExecutingCommand(DbCommand cmd)
+        {
+            base.OnExecutingCommand(cmd);
+        }
+
+        /// <inheritdoc cref="Database.ExecuteScalar{T}(string,object[])" />
+        public new T ExecuteScalar<T>(string sql, params object[] args)
+            => ExecuteScalar<T>(new Sql(sql, args));
+
+        /// <inheritdoc cref="Database.ExecuteScalar{T}(Sql)" />
+        public new T ExecuteScalar<T>(Sql sql)
+            => ExecuteScalar<T>(sql.SQL, CommandType.Text, sql.Arguments);
+
+        /// <inheritdoc cref="Database.ExecuteScalar{T}(string,CommandType,object[])" />
+        /// <remarks>
+        ///     Be nice if handled upstream <a href="https://github.com/schotime/NPoco/issues/653">GH issue</a>
+        /// </remarks>
+        public new T ExecuteScalar<T>(string sql, CommandType commandType, params object[] args)
+        {
+            if (SqlContext.SqlSyntax.ScalarMappers == null)
+            {
+                return base.ExecuteScalar<T>(sql, commandType, args);
+            }
+
+            if (!SqlContext.SqlSyntax.ScalarMappers.TryGetValue(typeof(T), out IScalarMapper? mapper))
+            {
+                return base.ExecuteScalar<T>(sql, commandType, args);
+            }
+
+            var result = base.ExecuteScalar<object>(sql, commandType, args);
+            return (T)mapper.Map(result);
         }
     }
 }

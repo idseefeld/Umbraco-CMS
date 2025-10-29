@@ -154,7 +154,7 @@ namespace Our.Umbraco.PostgreSql.Services
             // create the database factory
             _npocoDatabaseFactory = DatabaseFactory.Config(cfg =>
             {
-                cfg.UsingDatabase(CreateDatabaseInstance) // creating UmbracoDatabase instances
+                cfg.UsingDatabase(CreateDatabaseInstance) // creating IUmbracoDatabase instances
                     .WithFluentConfig(config); // with proper configuration
 
                 foreach (IProviderSpecificInterceptor interceptor in _dbProviderFactoryCreator
