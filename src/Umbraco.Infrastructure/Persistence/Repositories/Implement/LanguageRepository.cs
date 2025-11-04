@@ -260,14 +260,14 @@ internal sealed class LanguageRepository : EntityRepositoryBase<int, ILanguage>,
         {
             // NOTE: There is no constraint between the Language and cmsDictionary/cmsLanguageText tables (?)
             // but we still need to remove them
-            $"DELETE FROM {SqlSyntax.GetQuotedName(Constants.DatabaseSchema.Tables.DictionaryValue)} {lIdWhere}",
-            $"DELETE FROM {SqlSyntax.GetQuotedName(Constants.DatabaseSchema.Tables.PropertyData)} {lIdWhere}",
-            $"DELETE FROM {SqlSyntax.GetQuotedName(Constants.DatabaseSchema.Tables.ContentVersionCultureVariation)} {lIdWhere}",
-            $"DELETE FROM {SqlSyntax.GetQuotedName(Constants.DatabaseSchema.Tables.DocumentCultureVariation)} {lIdWhere}",
-            $"DELETE FROM {SqlSyntax.GetQuotedName(Constants.DatabaseSchema.Tables.TagRelationship)} WHERE {QuoteColumnName("tagId")} IN (SELECT id FROM {SqlSyntax.GetQuotedName(Constants.DatabaseSchema.Tables.Tag)} {lIdWhere})",
-            $"DELETE FROM {SqlSyntax.GetQuotedName(Constants.DatabaseSchema.Tables.Tag)} {lIdWhere}",
-            $"DELETE FROM {SqlSyntax.GetQuotedName(Constants.DatabaseSchema.Tables.DocumentUrl)} {lIdWhere}",
-            $"DELETE FROM {SqlSyntax.GetQuotedName(Constants.DatabaseSchema.Tables.Language)} WHERE id = @id",
+            $"DELETE FROM {QuoteName(Constants.DatabaseSchema.Tables.DictionaryValue)} {lIdWhere}",
+            $"DELETE FROM {QuoteName(Constants.DatabaseSchema.Tables.PropertyData)} {lIdWhere}",
+            $"DELETE FROM {QuoteName(Constants.DatabaseSchema.Tables.ContentVersionCultureVariation)} {lIdWhere}",
+            $"DELETE FROM {QuoteName(Constants.DatabaseSchema.Tables.DocumentCultureVariation)} {lIdWhere}",
+            $"DELETE FROM {QuoteName(Constants.DatabaseSchema.Tables.TagRelationship)} WHERE {QuoteColumnName("tagId")} IN (SELECT id FROM {QuoteName(Constants.DatabaseSchema.Tables.Tag)} {lIdWhere})",
+            $"DELETE FROM {QuoteName(Constants.DatabaseSchema.Tables.Tag)} {lIdWhere}",
+            $"DELETE FROM {QuoteName(Constants.DatabaseSchema.Tables.DocumentUrl)} {lIdWhere}",
+            $"DELETE FROM {QuoteName(Constants.DatabaseSchema.Tables.Language)} WHERE id = @id",
         };
         return list;
     }
