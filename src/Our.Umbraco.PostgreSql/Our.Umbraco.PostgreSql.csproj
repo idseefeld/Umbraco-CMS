@@ -21,7 +21,7 @@
 
   <ItemGroup>
     <PackageReference Include="Npgsql" />
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+    <!--<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />-->
     <PackageReference Include="Npgsql.NodaTime" />
   </ItemGroup>
 

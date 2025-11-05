@@ -44,7 +44,7 @@ namespace Our.Umbraco.PostgreSql
             // builder.Services.Replace(ServiceDescriptor.Singleton<IUmbracoDatabaseFactory, PostgreSqlDatabaseFactory>());
 
             DbProviderFactories.UnregisterFactory(Constants.ProviderName);
-            DbProviderFactories.RegisterFactory(Constants.ProviderName, Npgsql.NpgsqlFactory.Instance);
+            DbProviderFactories.RegisterFactory(Constants.ProviderName, PostgreSqlDbProviderFactory.Instance);
 
             return builder;
         }

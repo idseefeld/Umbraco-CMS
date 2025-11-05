@@ -16,7 +16,7 @@ using Umbraco.Extensions;
 
 namespace Our.Umbraco.PostgreSql.EFCore.Locking;
 
-internal sealed class PostgreSqlEFCoreDistributedLockingMechanism<T> : IDistributedLockingMechanism
+public sealed class PostgreSqlEFCoreDistributedLockingMechanism<T> : IDistributedLockingMechanism
     where T : DbContext
 {
     private ConnectionStrings _connectionStrings;

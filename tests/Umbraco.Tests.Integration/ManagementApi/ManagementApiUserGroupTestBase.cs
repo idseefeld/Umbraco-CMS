@@ -9,7 +9,11 @@ namespace Umbraco.Cms.Tests.Integration.ManagementApi;
 public abstract class ManagementApiUserGroupTestBase<T> : ManagementApiTest<T>
     where T : ManagementApiControllerBase
 {
+#pragma warning disable IDE1006 // Naming Styles
+#pragma warning disable SA1306 // Field names should begin with lower-case letter
     protected string UserEmail = "test@umbraco.com";
+#pragma warning restore SA1306 // Field names should begin with lower-case letter
+#pragma warning restore IDE1006 // Naming Styles
     protected const string UserPassword = "1234567890";
 
     protected override Expression<Func<T, object>> MethodSelector { get; set; }
