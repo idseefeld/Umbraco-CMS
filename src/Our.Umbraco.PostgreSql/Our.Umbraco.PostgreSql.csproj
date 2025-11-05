@@ -16,12 +16,10 @@
     <Compile Remove="GlobalSuppressions.cs" />
     <Compile Remove="Interceptors\PostgreSqlAddDbConnectionInterceptor.cs" />
     <Compile Remove="NPocoPostgreSqlDatabaseExtensions.cs" />
-    <Compile Remove="Services\PostgreSqlSyntaxProviderBase.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Npgsql" />
-    <!--<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />-->
     <PackageReference Include="Npgsql.NodaTime" />
   </ItemGroup>
 
