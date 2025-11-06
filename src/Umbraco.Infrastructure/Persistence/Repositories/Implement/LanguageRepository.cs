@@ -192,7 +192,7 @@ internal sealed class LanguageRepository : EntityRepositoryBase<int, ILanguage>,
 
     protected override IEnumerable<ILanguage> PerformGetAll(params int[]? ids)
     {
-        Sql<ISqlContext> sql = GetBaseQuery(false);
+        Sql<ISqlContext> sql = GetBaseQuery(false).Where<LanguageDto>(x => x.Id > 0);
         if (ids?.Any() ?? false)
         {
             sql.WhereIn<LanguageDto>(x => x.Id, ids);
