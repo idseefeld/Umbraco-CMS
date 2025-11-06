@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 using NPoco;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Services;
@@ -97,7 +97,7 @@ internal sealed class UserIdKeyResolver : IUserIdKeyResolver
                 .From<UserDto>()
                 .Where<UserDto>(x => x.Id == id);
 
-            Guid? fetchedKey = scope.Database.ExecuteScalar<Guid?>(query);
+            Guid? fetchedKey = scope.Database.Fetch<Guid>(query).FirstOrDefault();
             if (fetchedKey is null)
             {
                 return Attempt<Guid>.Fail();
@@ -106,6 +106,10 @@ internal sealed class UserIdKeyResolver : IUserIdKeyResolver
             _idToKey[id] = fetchedKey.Value;
 
             return Attempt.Succeed(fetchedKey.Value);
+        }
+        catch (Exception ex)
+        {
+            return Attempt.Fail<Guid>(key, ex);
         }
         finally
         {
