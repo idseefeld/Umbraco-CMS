@@ -286,22 +286,6 @@ internal sealed class DatabaseCacheRepository : RepositoryBase, IDatabaseCacheRe
     private async Task OnRepositoryRefreshed(IContentCacheDataSerializer serializer, ContentCacheNode content, bool preview)
     {
         await OnRepositoryRefreshedTyped(serializer, content, preview);
-        return;
-
-        //ContentNuDto dto = GetDtoFromCacheNode(content, !preview, serializer);
-
-        //string c(string s) => SqlSyntax.GetQuotedColumnName(s);
-
-        //await Database.InsertOrUpdateAsync(
-        //    dto,
-        //    $"SET data = @data, {c("dataRaw")} = @dataRaw, rv = rv + 1 WHERE {c("nodeId")} = @id AND published = @published",
-        //    new
-        //    {
-        //        dataRaw = dto.RawData ?? Array.Empty<byte>(),
-        //        data = dto.Data,
-        //        id = dto.NodeId,
-        //        published = dto.Published,
-        //    });
     }
 
     private async Task OnRepositoryRefreshedTyped(IContentCacheDataSerializer serializer, ContentCacheNode content, bool preview)
