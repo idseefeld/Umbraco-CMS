@@ -188,11 +188,11 @@ internal sealed class LanguageRepository : EntityRepositoryBase<int, ILanguage>,
 
     #region Overrides of RepositoryBase<int,Language>
 
-    protected override ILanguage? PerformGet(int id) => PerformGetAll(id).FirstOrDefault();
+    protected override ILanguage? PerformGet(int id) => PerformGetAll([id]).FirstOrDefault();
 
     protected override IEnumerable<ILanguage> PerformGetAll(params int[]? ids)
     {
-        Sql<ISqlContext> sql = GetBaseQuery(false).Where<LanguageDto>(x => x.Id > 0);
+        Sql<ISqlContext> sql = GetBaseQuery(false);
         if (ids?.Any() ?? false)
         {
             sql.WhereIn<LanguageDto>(x => x.Id, ids);

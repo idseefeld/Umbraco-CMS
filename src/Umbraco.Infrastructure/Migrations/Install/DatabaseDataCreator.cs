@@ -1928,15 +1928,12 @@ internal sealed class DatabaseDataCreator
         // For languages we support the installation of records that are additional to the default installed data.
         // We can do this as they are specified by ISO code, which is enough to fully detail them.
         // All other customizable install data is specified by GUID, and hence we only know about the set that are installed by default.
-        bool applyAutoIncrement = SqlSyntax.SupportsAutoIncrement() && SqlSyntax.SupportsIdentityInsert() == false; // SQLite, SQL Server and PostgreSQL supports it. SQL Server e. g. needs spezial sql statments to handle identity inserts. See usage of SqlSyntax.SupportsIdentityInsert()
-        short startId = (short)(applyAutoIncrement ? 0 : 1);
-        short autoIncrementValue = (short)(applyAutoIncrement ? 0 : 1);
         InstallDefaultDataSettings? languageInstallDefaultDataSettings = _installDefaultDataSettings.Get(Constants.Configuration.NamedOptions.InstallDefaultData.Languages);
         if (languageInstallDefaultDataSettings?.InstallData == InstallDefaultDataOption.Values)
         {
             // Insert the specified languages, ensuring the first is marked as default.
             bool isDefault = true;
-            short id = startId;
+            short id = 1;
             foreach (var isoCode in languageInstallDefaultDataSettings.Values)
             {
                 if (!TryCreateCulture(isoCode, out CultureInfo? culture))
@@ -1944,20 +1941,16 @@ internal sealed class DatabaseDataCreator
                     continue;
                 }
 
-                _database.Insert(
-                    LanguageDto.TableName,
-                    GetPrimaryKeyName("id"),
-                    applyAutoIncrement,
-                    new LanguageDto
-                    {
-                        Id = id,
-                        IsoCode = culture.Name,
-                        CultureName = culture.EnglishName,
-                        IsDefault = isDefault,
-                    });
-
+                var dto = new LanguageDto
+                {
+                    Id = id,
+                    IsoCode = culture.Name,
+                    CultureName = culture.EnglishName,
+                    IsDefault = isDefault,
+                };
+                _database.Insert(LanguageDto.TableName, GetPrimaryKeyName("id"), false, dto);
                 isDefault = false;
-                id += autoIncrementValue;
+                id += 1;
             }
         }
         else
@@ -1968,10 +1961,9 @@ internal sealed class DatabaseDataCreator
                 ConditionalInsert(
                     Constants.Configuration.NamedOptions.InstallDefaultData.Languages,
                     culture.Name,
-                    new LanguageDto { Id = startId, IsoCode = culture.Name, CultureName = culture.EnglishName, IsDefault = true },
+                    new LanguageDto { Id = 1, IsoCode = culture.Name, CultureName = culture.EnglishName, IsDefault = true },
                     LanguageDto.TableName,
-                    GetPrimaryKeyName("id"),
-                    applyAutoIncrement);
+                    GetPrimaryKeyName("id"));
             }
         }
     }
