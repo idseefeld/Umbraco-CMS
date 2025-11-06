@@ -157,14 +157,6 @@ public interface ISqlSyntaxProvider
 
     bool SupportsIdentityInsert();
 
-    /// <summary>
-    /// SupportsAutoIncrement and SupportsIdentityInsert are both needed because SQLite, SQL Server and e.g PostgreSQl have different behaviour with auto-increment/identity columns.
-    /// All three mentioned databases support auto-increment/identity columns, but for future databases implementation this should be explicitly configurable.
-    /// See <see cref="Migrations.Install.DatabaseDataCreator.CreateLanguageData"/> for an example of why this is needed.
-    /// </summary>
-    /// <returns></returns>
-    bool SupportsAutoIncrement();
-
     IEnumerable<string> GetTablesInSchema(IDatabase db);
 
     IEnumerable<ColumnInfo> GetColumnsInSchema(IDatabase db);
