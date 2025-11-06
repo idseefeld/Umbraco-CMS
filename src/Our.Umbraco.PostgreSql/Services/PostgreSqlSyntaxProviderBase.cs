@@ -713,7 +713,7 @@ public class PostgreSqlSyntaxProviderBase<TSyntax> : SqlSyntaxProviderBase<TSynt
         return false;
     }
 
-    public override void HandleCreateTable(IDatabase database, TableDefinition tableDefinition, bool skipKeysAndIndexes = false) { }
+    public override void HandleCreateTable(IDatabase database, TableDefinition tableDefinition, bool skipKeysAndIndexes = false) => throw new NotImplementedException();
 
     private class ConstraintsPerColumn
     {
