@@ -253,7 +253,7 @@ public class MemberRepository : ContentRepositoryBase<int, IMember, MemberReposi
 
         //get the COUNT base query
         Sql<ISqlContext> fullSql = GetBaseQuery(true)
-            .Append(new Sql("WHERE umbracoNode.id IN (" + sql.SQL + ")", sql.Arguments));
+            .Append(new Sql($"WHERE {SqlSyntax.GetQuotedTableName("umbracoNode")}.id IN ({sql.SQL })", sql.Arguments));
 
         return Database.ExecuteScalar<int>(fullSql);
     }
