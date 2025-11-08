@@ -9,6 +9,6 @@ namespace Our.Umbraco.PostgreSql.Services
         public string ProviderName => Constants.ProviderName;
 
         /// <inheritdoc />
-        public NPocoMapperCollection Mappers => new(() => [new PostgreSqlDefaultMapper()]);
+        public NPocoMapperCollection Mappers => new(() => [new PostgreSqlPocoMapper()]);
     }
 }

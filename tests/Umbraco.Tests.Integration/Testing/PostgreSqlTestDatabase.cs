@@ -4,13 +4,18 @@ using System.Data.Common;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Npgsql;
+using NPoco;
 using Our.Umbraco.PostgreSql;
+using Our.Umbraco.PostgreSql.Mappers;
 using Umbraco.Cms.Core.Configuration;
 using Umbraco.Cms.Core.Configuration.Models;
 using Umbraco.Cms.Core.Events;
 using Umbraco.Cms.Infrastructure.Migrations.Install;
 using Umbraco.Cms.Infrastructure.Persistence;
+using Umbraco.Cms.Infrastructure.Persistence.Mappers;
+using Umbraco.Cms.Persistence.Sqlite.Mappers;
 using Umbraco.Cms.Tests.Common;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Umbraco.Cms.Tests.Integration.Testing
 {
@@ -43,6 +48,9 @@ namespace Umbraco.Cms.Tests.Integration.Testing
 
         protected override void RebuildSchema(IDbCommand command, TestDbMeta meta)
         {
+            using var connection = GetConnection(meta);
+            connection.Open();
+
             lock (_cachedDatabaseInitCommands)
             {
                 if (!_cachedDatabaseInitCommands.Any())
@@ -51,6 +59,13 @@ namespace Umbraco.Cms.Tests.Integration.Testing
                     return;
                 }
             }
+
+            // Get NPoco to handle all the type mappings (e.g. dates) for us.
+            var database = new Database(connection, DatabaseType.PostgreSQL);
+            database.BeginTransaction();
+
+            database.Mappers.Add(new NullableDateMapper());
+            database.Mappers.Add(new PostgreSqlPocoMapper());
 
             foreach (var dbCommand in _cachedDatabaseInitCommands)
             {
@@ -64,6 +79,8 @@ namespace Umbraco.Cms.Tests.Integration.Testing
 
                 command.ExecuteNonQuery();
             }
+
+            database.CompleteTransaction();
         }
 
         private void RebuildSchemaFirstTime(TestDbMeta meta)

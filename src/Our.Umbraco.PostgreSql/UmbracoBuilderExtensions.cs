@@ -41,7 +41,7 @@ namespace Our.Umbraco.PostgreSql
             builder.Services.TryAddEnumerable(ServiceDescriptor
                 .Singleton<IProviderSpecificInterceptor, PostgreSqlAddRetryPolicyInterceptor>());
 
-            // builder.Services.Replace(ServiceDescriptor.Singleton<IUmbracoDatabaseFactory, PostgreSqlDatabaseFactory>());
+            builder.Services.Replace(ServiceDescriptor.Singleton<IUmbracoDatabaseFactory, PostgreSqlDatabaseFactory>());
 
             DbProviderFactories.UnregisterFactory(Constants.ProviderName);
             DbProviderFactories.RegisterFactory(Constants.ProviderName, PostgreSqlDbProviderFactory.Instance);

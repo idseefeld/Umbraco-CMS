@@ -184,44 +184,15 @@ public class PostgreSqlSyntaxProviderBase<TSyntax> : SqlSyntaxProviderBase<TSynt
 
     /// <inheritdoc />
     public override string GetColumn(DatabaseType dbType, string tableName, string columnName, string? columnAlias, string? referenceName = null, bool forInsert = false)
-    {
-        tableName = GetQuotedTableName(tableName);
-        columnName = GetQuotedColumnName(columnName);
-        var column = forInsert ? columnName : tableName + "." + columnName;
-        if (columnAlias == null)
-        {
-            return column;
-        }
-
-        referenceName = referenceName == null ? string.Empty : referenceName + "__";
-        columnAlias = GetQuotedColumnName(referenceName + columnAlias);
-        column += " AS " + columnAlias;
-        return column;
-    }
+        => throw new NotImplementedException();
 
     /// <inheritdoc />
     public override IEnumerable<string> GetTablesInSchema(IDatabase db)
-    {
-        List<string> rVal = db.Fetch<string>("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'");
-        return rVal;
-    }
+        => throw new NotImplementedException();
 
     /// <inheritdoc />
     public override IEnumerable<ColumnInfo> GetColumnsInSchema(IDatabase db)
-    {
-        const string sql = @"
-            SELECT
-                table_name AS ""TableName"",
-                column_name AS ""ColumnName"",
-                ordinal_position AS ""Ordinal"",
-                column_default AS ""ColumnDefault"",
-                is_nullable = 'YES' AS ""IsNullable"",
-                data_type AS ""DataType""
-              FROM information_schema.columns
-              WHERE table_schema = 'public'";
-
-        return db.Fetch<ColumnInfo>(sql);
-    }
+        => throw new NotImplementedException();
 
     /// <inheritdoc />
     public override IEnumerable<Tuple<string, string>> GetConstraintsPerTable(IDatabase db)

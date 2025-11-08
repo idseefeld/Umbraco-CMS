@@ -302,4 +302,8 @@
       <DependentUpon>ContentBlueprintEditingServiceTests.cs</DependentUpon>
     </Compile>
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="umbraco\" />
+  </ItemGroup>
 </Project>

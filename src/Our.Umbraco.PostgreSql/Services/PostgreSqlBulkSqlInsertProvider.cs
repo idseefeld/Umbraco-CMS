@@ -46,21 +46,20 @@ namespace Our.Umbraco.PostgreSql.Services
             }
 
             string tableName = pocoData.TableInfo.TableName;
-            string[] noAutoIncrementTableNames = Constants.NoAutoIncrementTableNames.Split(',');
-            bool autoIncrement = true;
-            if (noAutoIncrementTableNames.Contains(tableName))
-            {
-                autoIncrement = false;
-            }
+            bool autoIncrement = pocoData.TableInfo.AutoIncrement;
+
+            var primaryKeyName = autoIncrement
+                ? pocoData.TableInfo.PrimaryKey
+                : null;
 
             foreach (T record in records)
             {
                 try
                 {
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
                     // NPoco Insert for PostgreSQL only returns nothing when primaryKey is null
-                    _ = database.Insert(tableName, null, autoIncrement, record);
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+#pragma warning disable CS8604 // Possible null reference argument.
+                    _ = database.Insert(tableName, primaryKeyName, autoIncrement, record);
+#pragma warning restore CS8604 // Possible null reference argument.
                 }
                 catch (Exception)
                 {

@@ -24,7 +24,7 @@ namespace Our.Umbraco.PostgreSql.Services;
 /// <summary>
 ///     Represents a SqlSyntaxProvider for PostgreSQL.
 /// </summary>
-public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxProvider> // PostgreSqlSyntaxProviderBase<PostgreSqlSyntaxProvider> // 
+public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxProvider>
 {
     private readonly IOptions<GlobalSettings> _globalSettings;
     private readonly ILogger<PostgreSqlSyntaxProvider> _logger;

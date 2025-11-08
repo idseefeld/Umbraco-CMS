@@ -15,7 +15,9 @@
     <Compile Remove="FaultHandling\Strategies\ThrottlingCondition.cs" />
     <Compile Remove="GlobalSuppressions.cs" />
     <Compile Remove="Interceptors\PostgreSqlAddDbConnectionInterceptor.cs" />
+    <Compile Remove="Interceptors\PostgreSqlDataInterceptor.cs" />
     <Compile Remove="NPocoPostgreSqlDatabaseExtensions.cs" />
+    <Compile Remove="Services\PostgreSqlSyntaxProviderBase.cs" />
   </ItemGroup>
 
   <ItemGroup>

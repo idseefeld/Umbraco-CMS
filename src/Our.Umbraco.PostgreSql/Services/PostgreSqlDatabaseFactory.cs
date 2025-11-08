@@ -91,7 +91,7 @@ namespace Our.Umbraco.PostgreSql.Services
             {
                 // this is true on every restart!
                 // ToDo: How to handle this better? Only after inital install or upgrade?
-                AlterSequences(database);
+                AlterSequences();
             }
 
             return database;
@@ -287,8 +287,10 @@ namespace Our.Umbraco.PostgreSql.Services
                 _pocoMappers);
         }
 
-        private void AlterSequences(IUmbracoDatabase database)
+        public void AlterSequences()
         {
+            IUmbracoDatabase database = (IUmbracoDatabase)_npocoDatabaseFactory!.GetDatabase();
+
             var tablesToAlter = new Dictionary<string, string>
             {
                 {"cmsContentType","pk"},
