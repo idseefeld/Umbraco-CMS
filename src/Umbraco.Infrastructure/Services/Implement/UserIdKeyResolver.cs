@@ -97,7 +97,7 @@ internal sealed class UserIdKeyResolver : IUserIdKeyResolver
                 .From<UserDto>()
                 .Where<UserDto>(x => x.Id == id);
 
-            Guid? fetchedKey = scope.Database.Fetch<Guid>(query).FirstOrDefault();
+            Guid? fetchedKey = scope.Database.ExecuteScalar<Guid?>(query);
             if (fetchedKey is null)
             {
                 return Attempt<Guid>.Fail();
@@ -107,10 +107,10 @@ internal sealed class UserIdKeyResolver : IUserIdKeyResolver
 
             return Attempt.Succeed(fetchedKey.Value);
         }
-        catch (Exception ex)
-        {
-            return Attempt.Fail<Guid>(key, ex);
-        }
+        //catch (Exception ex)
+        //{
+        //    return Attempt.Fail<Guid>(key, ex);
+        //}
         finally
         {
             _idToKeyLock.Release();
