@@ -319,8 +319,8 @@ internal sealed class EntityRepository : RepositoryBase, IEntityRepositoryExtend
         totalAfter = GetNumberOfSiblingsOutsideSiblingRange(rowNumberSql, targetRowSql, beforeAfterParameterIndex, afterArgumentsArray, false);
 
         return Sql()
-            .Select("uniqueId")
-            .From().AppendSubQuery(rowNumberSql, "NumberedNodes")
+            .Select(SqlSyntax.GetQuotedColumnName("uniqueId"))
+            .From().AppendSubQuery(rowNumberSql, "nn")
             .Where($"rn >= ({targetRowSql.SQL}) - @{beforeAfterParameterIndex}", beforeArgumentsArray)
             .Where($"rn <= ({targetRowSql.SQL}) + @{beforeAfterParameterIndex}", afterArgumentsArray)
             .OrderBy("rn");
@@ -358,7 +358,7 @@ internal sealed class EntityRepository : RepositoryBase, IEntityRepositoryExtend
     {
         Sql<ISqlContext>? sql = Sql()
             .SelectCount()
-            .From().AppendSubQuery(rowNumberSql, "NumberedNodes")
+            .From().AppendSubQuery(rowNumberSql, "nn")
             .Where($"rn {(getBefore ? "<" : ">")} ({targetRowSql.SQL}) {(getBefore ? "-" : "+")} @{parameterIndex}", arguments);
         return Database.ExecuteScalar<long>(sql);
     }
@@ -498,14 +498,14 @@ internal sealed class EntityRepository : RepositoryBase, IEntityRepositoryExtend
     {
         Sql<ISqlContext> sql = Sql().Select<NodeDto>(x => x.NodeObjectType).From<NodeDto>()
             .Where<NodeDto>(x => x.NodeId == id);
-        return ObjectTypes.GetUmbracoObjectType(Database.ExecuteScalar<Guid>(sql));
+        return ObjectTypes.GetUmbracoObjectType(Database.First<Guid>(sql));
     }
 
     public UmbracoObjectTypes GetObjectType(Guid key)
     {
         Sql<ISqlContext> sql = Sql().Select<NodeDto>(x => x.NodeObjectType).From<NodeDto>()
             .Where<NodeDto>(x => x.UniqueId == key);
-        return ObjectTypes.GetUmbracoObjectType(Database.ExecuteScalar<Guid>(sql));
+        return ObjectTypes.GetUmbracoObjectType(Database.First<Guid>(sql));
     }
 
     public int ReserveId(Guid key)
