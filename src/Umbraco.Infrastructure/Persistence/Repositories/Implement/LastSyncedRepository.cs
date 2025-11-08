@@ -58,7 +58,7 @@ public class LastSyncedRepository : RepositoryBase, ILastSyncedRepository
 
         await Database.InsertOrUpdateAsync(
             dto,
-            "SET lastSyncedInternalId=@LastSyncedInternalId, lastSyncedDate=@LastSyncedDate WHERE machineId=@MachineId",
+            $"SET {QuoteColumnName("lastSyncedInternalId")}=@LastSyncedInternalId, {QuoteColumnName("lastSyncedDate")}=@LastSyncedDate WHERE {QuoteColumnName("machineId")}=@MachineId",
             new
             {
                 dto.LastSyncedInternalId,
@@ -91,11 +91,11 @@ public class LastSyncedRepository : RepositoryBase, ILastSyncedRepository
     /// <inheritdoc />
     public async Task DeleteEntriesOlderThanAsync(DateTime pruneDate)
     {
-        var maxId = Database.ExecuteScalar<int>($"SELECT MAX(Id) FROM umbracoCacheInstruction;");
+        var maxId = Database.ExecuteScalar<int>($"SELECT MAX(Id) FROM {QuoteTableName("umbracoCacheInstruction")};");
 
         Sql sql =
             new Sql().Append(
-                @"DELETE FROM umbracoLastSynced WHERE lastSyncedDate < @pruneDate OR lastSyncedInternalId > @maxId AND lastSyncedExternalId > @maxId;",
+                @$"DELETE FROM {QuoteTableName("umbracoLastSynced")} WHERE {QuoteColumnName("lastSyncedDate")} < @pruneDate OR {QuoteColumnName("lastSyncedInternalId")} > @maxId AND {QuoteColumnName("lastSyncedExternalId")} > @maxId;",
                 new { pruneDate, maxId });
 
         await Database.ExecuteAsync(sql);
