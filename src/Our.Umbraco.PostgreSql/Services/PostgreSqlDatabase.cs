@@ -59,37 +59,41 @@ namespace Our.Umbraco.PostgreSql.Services
 
         public override object Insert<T>(string tableName, string primaryKeyName, bool autoIncrement, T poco)
         {
+            autoIncrement = ValidateAutoIncrement(tableName, primaryKeyName, autoIncrement, poco);
+
+#pragma warning disable CS8604 // Possible null reference argument.
+            return base.Insert(tableName, FixPrimaryKey(primaryKeyName), autoIncrement, poco);
+#pragma warning restore CS8604 // Possible null reference argument.
+        }
+
+        public override async Task<object> InsertAsync<T>(string tableName, string primaryKeyName, bool autoIncrement, T poco, CancellationToken cancellationToken = default)
+        {
+            autoIncrement = ValidateAutoIncrement(tableName, primaryKeyName, autoIncrement, poco);
+
+#pragma warning disable CS8604 // Possible null reference argument.
+            return await base.InsertAsync<T>(tableName, FixPrimaryKey(primaryKeyName), autoIncrement, poco, cancellationToken);
+#pragma warning restore CS8604 // Possible null reference argument.
+        }
+
+        private static string? FixPrimaryKey(string primaryKeyName)
+        {
+            if (primaryKeyName == null || primaryKeyName.Contains(',') || primaryKeyName == "ID")
+            {
+                return null;
+            }
+
+            return primaryKeyName;
+        }
+
+        private bool ValidateAutoIncrement<T>(string tableName, string primaryKeyName, bool autoIncrement, T poco)
+        {
             PocoData pocoData = PocoDataFactory.ForObject(poco, primaryKeyName, autoIncrement);
             if (autoIncrement != pocoData.TableInfo.AutoIncrement)
             {
                 _logger.LogDebug("AutoIncrement mismatch for \"{TableName}\": method parameter is {MethodAutoIncrement} but PocoData is {PocoDataAutoIncrement}", tableName, autoIncrement, pocoData.TableInfo.AutoIncrement);
             }
 
-            autoIncrement = pocoData.TableInfo.AutoIncrement;
-
-            //if (autoIncrement)
-            //{
-            //    string[] noAutoIncrementTableNames = Constants.NoAutoIncrementTableNames.Split(',');
-
-            //    if (noAutoIncrementTableNames.Contains(pocoData.TableInfo.TableName))
-            //    {
-            //        autoIncrement = false;
-            //    }
-            //}
-            //else
-            //{
-            //    _logger.LogDebug("Inserting into \"{TableName}\" without auto-increment", tableName);
-            //}
-
-            if (primaryKeyName == null || primaryKeyName.Contains(',') || primaryKeyName == "ID")
-            {
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-                // NPoco Insert for PostgreSQL only returns nothing when primaryKey is null
-                return base.Insert(tableName, null, autoIncrement, poco);
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
-            }
-
-            return base.Insert(tableName, primaryKeyName, autoIncrement, poco);
+            return pocoData.TableInfo.AutoIncrement;
         }
     }
 }
