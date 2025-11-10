@@ -15,7 +15,7 @@ namespace Our.Umbraco.PostgreSql.Services
 {
     public class PostgreSqlDatabaseFactory : IUmbracoDatabaseFactory
     {
-        private static Dictionary<string, long> _lastInsertIds = new Dictionary<string, long>();
+        private readonly Dictionary<string, long> _lastInsertIds = new Dictionary<string, long>();
 
         private readonly DatabaseSchemaCreatorFactory _databaseSchemaCreatorFactory;
         private readonly IDbProviderFactoryCreator _dbProviderFactoryCreator;
