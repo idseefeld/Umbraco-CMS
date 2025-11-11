@@ -15,8 +15,7 @@ namespace Our.Umbraco.PostgreSql.Services
 {
     public class PostgreSqlDatabase : UmbracoDatabase
     {
-        // private static Dictionary<string, long> _lastInsertIds = new Dictionary<string, long>();
-
+#pragma warning disable CS8604 // Possible null reference argument.
         private readonly ILogger<PostgreSqlDatabase> _logger;
         private readonly IBulkSqlInsertProvider? _bulkSqlInsertProvider;
         private readonly DatabaseSchemaCreatorFactory? _databaseSchemaCreatorFactory;
@@ -47,32 +46,18 @@ namespace Our.Umbraco.PostgreSql.Services
             _databaseSchemaCreatorFactory = databaseSchemaCreatorFactory;
             _mapperCollection = mapperCollection;
         }
-
-        //public new bool InTransaction { get; private set; }
-        //protected override void OnAbortTransaction()
-        //{
-        //    InTransaction = false;
-
-        //    // base.OnAbortTransaction();
-        //    OnCompleteTransaction();
-        //}
-
         public override object Insert<T>(string tableName, string primaryKeyName, bool autoIncrement, T poco)
         {
             autoIncrement = ValidateAutoIncrement(tableName, primaryKeyName, autoIncrement, poco);
 
-#pragma warning disable CS8604 // Possible null reference argument.
             return base.Insert(tableName, FixPrimaryKey(primaryKeyName), autoIncrement, poco);
-#pragma warning restore CS8604 // Possible null reference argument.
         }
 
         public override async Task<object> InsertAsync<T>(string tableName, string primaryKeyName, bool autoIncrement, T poco, CancellationToken cancellationToken = default)
         {
             autoIncrement = ValidateAutoIncrement(tableName, primaryKeyName, autoIncrement, poco);
 
-#pragma warning disable CS8604 // Possible null reference argument.
             return await base.InsertAsync<T>(tableName, FixPrimaryKey(primaryKeyName), autoIncrement, poco, cancellationToken);
-#pragma warning restore CS8604 // Possible null reference argument.
         }
 
         private static string? FixPrimaryKey(string primaryKeyName)
@@ -95,5 +80,6 @@ namespace Our.Umbraco.PostgreSql.Services
 
             return pocoData.TableInfo.AutoIncrement;
         }
+#pragma warning restore CS8604 // Possible null reference argument.
     }
 }

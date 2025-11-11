@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
+using Our.Umbraco.PostgreSql;
 using Umbraco.Cms.Api.Management.DependencyInjection;
 using Umbraco.Cms.Core.Cache;
 using Umbraco.Cms.Core.Configuration.Models;
@@ -202,6 +203,7 @@ public abstract class UmbracoIntegrationTest : UmbracoIntegrationTestBase
             .AddBackOfficeIdentity()
             .AddMembersIdentity()
             .AddExamine()
+            .AddUmbracoPostgreSqlSupport()
             .AddUmbracoSqlServerSupport()
             .AddUmbracoSqliteSupport()
             .AddUmbracoHybridCache()

@@ -294,12 +294,12 @@ namespace Our.Umbraco.PostgreSql.Services
             var tablesToAlter = new Dictionary<string, string>
             {
                 {"cmsContentType","pk"},
-                {"cmsDictionary","pk"},
-                {"cmsLanguageText","pk"},
-                {"cmsMemberType","pk"},
+                {"cmsDictionary","pk"},//
+                {"cmsLanguageText","pk"},//
+                {"cmsMemberType","pk"},//
                 {"cmsPropertyType","id"},
                 {"cmsPropertyTypeGroup","id"},
-                {"cmsTags","id"},
+                {"cmsTags","id"},//
                 {"cmsTemplate","pk"},
                 {"umbracoAudit","id"},
                 {"umbracoCacheInstruction","id"},
