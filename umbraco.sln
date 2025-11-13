@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.0.11205.157 d18.0
+VisualStudioVersion = 18.0.11205.157
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.Web.UI", "src\Umbraco.Web.UI\Umbraco.Web.UI.csproj", "{DCDFE97C-5630-4F6F-855D-8AEEB96556A5}"
 EndProject
@@ -203,13 +203,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.PostgreSql", "s
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.PostgreSql.EFCore", "src\Our.Umbraco.PostgreSql.EFCore\Our.Umbraco.PostgreSql.EFCore.csproj", "{67561E80-30DC-493E-1C37-6572A5EF97C2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPoco", "..\..\..\NPoco\src\NPoco\NPoco.csproj", "{92B813BE-D5DC-28D6-71BF-4175274CECE1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPoco", "..\..\..\_idseefeld\NPoco\src\NPoco\NPoco.csproj", "{92B813BE-D5DC-28D6-71BF-4175274CECE1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPoco.JsonNet", "..\..\..\NPoco\src\NPoco.JsonNet\NPoco.JsonNet.csproj", "{79DFE1F2-2C70-DBEF-0345-0DF22A17170F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPoco.JsonNet", "..\..\..\_idseefeld\NPoco\src\NPoco.JsonNet\NPoco.JsonNet.csproj", "{79DFE1F2-2C70-DBEF-0345-0DF22A17170F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPoco.SqlServer", "..\..\..\NPoco\src\NPoco.SqlServer\NPoco.SqlServer.csproj", "{8E741826-B37F-B3DD-22E0-FE0EFB26CE5C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPoco.SqlServer", "..\..\..\_idseefeld\NPoco\src\NPoco.SqlServer\NPoco.SqlServer.csproj", "{8E741826-B37F-B3DD-22E0-FE0EFB26CE5C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPoco.Tests", "..\..\..\NPoco\test\NPoco.Tests\NPoco.Tests.csproj", "{8E19F09D-DF83-AA39-06CC-38D0B63C8853}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPoco.Tests", "..\..\..\_idseefeld\NPoco\test\NPoco.Tests\NPoco.Tests.csproj", "{8E19F09D-DF83-AA39-06CC-38D0B63C8853}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPoco.Abstractions", "..\..\..\_idseefeld\NPoco\src\NPoco.Abstractions\NPoco.Abstractions.csproj", "{130BF51C-EA1B-0704-3380-928B58A43ED7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -427,6 +429,12 @@ Global
 		{8E19F09D-DF83-AA39-06CC-38D0B63C8853}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8E19F09D-DF83-AA39-06CC-38D0B63C8853}.SkipTests|Any CPU.ActiveCfg = Release|Any CPU
 		{8E19F09D-DF83-AA39-06CC-38D0B63C8853}.SkipTests|Any CPU.Build.0 = Release|Any CPU
+		{130BF51C-EA1B-0704-3380-928B58A43ED7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{130BF51C-EA1B-0704-3380-928B58A43ED7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{130BF51C-EA1B-0704-3380-928B58A43ED7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{130BF51C-EA1B-0704-3380-928B58A43ED7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{130BF51C-EA1B-0704-3380-928B58A43ED7}.SkipTests|Any CPU.ActiveCfg = Release|Any CPU
+		{130BF51C-EA1B-0704-3380-928B58A43ED7}.SkipTests|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
