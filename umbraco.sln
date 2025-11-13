@@ -203,6 +203,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.PostgreSql", "s
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.PostgreSql.EFCore", "src\Our.Umbraco.PostgreSql.EFCore\Our.Umbraco.PostgreSql.EFCore.csproj", "{67561E80-30DC-493E-1C37-6572A5EF97C2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPoco", "..\..\..\NPoco\src\NPoco\NPoco.csproj", "{92B813BE-D5DC-28D6-71BF-4175274CECE1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPoco.JsonNet", "..\..\..\NPoco\src\NPoco.JsonNet\NPoco.JsonNet.csproj", "{79DFE1F2-2C70-DBEF-0345-0DF22A17170F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPoco.SqlServer", "..\..\..\NPoco\src\NPoco.SqlServer\NPoco.SqlServer.csproj", "{8E741826-B37F-B3DD-22E0-FE0EFB26CE5C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPoco.Tests", "..\..\..\NPoco\test\NPoco.Tests\NPoco.Tests.csproj", "{8E19F09D-DF83-AA39-06CC-38D0B63C8853}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -395,6 +403,30 @@ Global
 		{67561E80-30DC-493E-1C37-6572A5EF97C2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{67561E80-30DC-493E-1C37-6572A5EF97C2}.SkipTests|Any CPU.ActiveCfg = Release|Any CPU
 		{67561E80-30DC-493E-1C37-6572A5EF97C2}.SkipTests|Any CPU.Build.0 = Release|Any CPU
+		{92B813BE-D5DC-28D6-71BF-4175274CECE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92B813BE-D5DC-28D6-71BF-4175274CECE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92B813BE-D5DC-28D6-71BF-4175274CECE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92B813BE-D5DC-28D6-71BF-4175274CECE1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92B813BE-D5DC-28D6-71BF-4175274CECE1}.SkipTests|Any CPU.ActiveCfg = Release|Any CPU
+		{92B813BE-D5DC-28D6-71BF-4175274CECE1}.SkipTests|Any CPU.Build.0 = Release|Any CPU
+		{79DFE1F2-2C70-DBEF-0345-0DF22A17170F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79DFE1F2-2C70-DBEF-0345-0DF22A17170F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79DFE1F2-2C70-DBEF-0345-0DF22A17170F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79DFE1F2-2C70-DBEF-0345-0DF22A17170F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79DFE1F2-2C70-DBEF-0345-0DF22A17170F}.SkipTests|Any CPU.ActiveCfg = Release|Any CPU
+		{79DFE1F2-2C70-DBEF-0345-0DF22A17170F}.SkipTests|Any CPU.Build.0 = Release|Any CPU
+		{8E741826-B37F-B3DD-22E0-FE0EFB26CE5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E741826-B37F-B3DD-22E0-FE0EFB26CE5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E741826-B37F-B3DD-22E0-FE0EFB26CE5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E741826-B37F-B3DD-22E0-FE0EFB26CE5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E741826-B37F-B3DD-22E0-FE0EFB26CE5C}.SkipTests|Any CPU.ActiveCfg = Release|Any CPU
+		{8E741826-B37F-B3DD-22E0-FE0EFB26CE5C}.SkipTests|Any CPU.Build.0 = Release|Any CPU
+		{8E19F09D-DF83-AA39-06CC-38D0B63C8853}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E19F09D-DF83-AA39-06CC-38D0B63C8853}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E19F09D-DF83-AA39-06CC-38D0B63C8853}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E19F09D-DF83-AA39-06CC-38D0B63C8853}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E19F09D-DF83-AA39-06CC-38D0B63C8853}.SkipTests|Any CPU.ActiveCfg = Release|Any CPU
+		{8E19F09D-DF83-AA39-06CC-38D0B63C8853}.SkipTests|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
