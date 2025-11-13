@@ -33,6 +33,9 @@
     <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.0-rc.2.25502.107" />
     <PackageVersion Include="Microsoft.Extensions.Options.DataAnnotations" Version="10.0.0-rc.2.25502.107" />
     <PackageVersion Include="Microsoft.Extensions.Caching.Hybrid" Version="9.9.0" />
+    <PackageVersion Include="Npgsql" Version="10.0.0-rc.1" />
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0-rc.2" />
+    <PackageVersion Include="Npgsql.NodaTime" Version="10.0.0-rc.1" />
     <PackageVersion Include="System.Linq.Async" Version="6.0.3" />
   </ItemGroup>
   <!-- Umbraco packages -->
