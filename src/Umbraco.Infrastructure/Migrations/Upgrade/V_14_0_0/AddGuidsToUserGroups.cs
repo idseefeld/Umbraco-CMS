@@ -1,4 +1,4 @@
-﻿using NPoco;
+using NPoco;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Infrastructure.Persistence.DatabaseAnnotations;
 using Umbraco.Cms.Infrastructure.Persistence.DatabaseModelDefinitions;
@@ -137,17 +137,18 @@ public class AddGuidsToUserGroups : UnscopedMigrationBase
         };
 
     [TableName(Constants.DatabaseSchema.Tables.UserGroup)]
-    [PrimaryKey("id")]
+    [PrimaryKey(PrimaryKeyName)]
     [ExplicitColumns]
     private class OldUserGroupDto
     {
+        public const string PrimaryKeyName = Constants.DatabaseSchema.PrimaryKeyNameId;
         public OldUserGroupDto()
         {
             UserGroup2AppDtos = new List<UserGroup2AppDto>();
             UserGroup2LanguageDtos = new List<UserGroup2LanguageDto>();
         }
 
-        [Column("id")]
+        [Column(PrimaryKeyName)]
         [PrimaryKeyColumn(IdentitySeed = 6)]
         public int Id { get; set; }
 

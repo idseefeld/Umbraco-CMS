@@ -1,4 +1,4 @@
-﻿using NPoco;
+using NPoco;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Infrastructure.Migrations.Upgrade.V_14_0_0;
 using Umbraco.Cms.Infrastructure.Persistence.DatabaseAnnotations;
@@ -177,11 +177,12 @@ internal class AddGuidsToUsers : UnscopedMigrationBase
     }
 
     [TableName(TableName)]
-    [PrimaryKey("id", AutoIncrement = true)]
+    [PrimaryKey(PrimaryKeyName, AutoIncrement = true)]
     [ExplicitColumns]
     public class OldUserDto
     {
         public const string TableName = Constants.DatabaseSchema.Tables.User;
+        public const string PrimaryKeyName = Constants.DatabaseSchema.PrimaryKeyNameId;
 
         public OldUserDto()
         {
@@ -189,7 +190,7 @@ internal class AddGuidsToUsers : UnscopedMigrationBase
             UserStartNodeDtos = new HashSet<UserStartNodeDto>();
         }
 
-        [Column("id")]
+        [Column(PrimaryKeyName)]
         [PrimaryKeyColumn(Name = "PK_user")]
         public int Id { get; set; }
 
@@ -290,11 +291,12 @@ internal class AddGuidsToUsers : UnscopedMigrationBase
     }
 
     [TableName(TableName)]
-    [PrimaryKey("id", AutoIncrement = true)]
+    [PrimaryKey(PrimaryKeyName, AutoIncrement = true)]
     [ExplicitColumns]
     public class NewUserDto
     {
         public const string TableName = Constants.DatabaseSchema.Tables.User;
+        public const string PrimaryKeyName = Constants.DatabaseSchema.PrimaryKeyNameId;
 
         public NewUserDto()
         {
@@ -302,7 +304,7 @@ internal class AddGuidsToUsers : UnscopedMigrationBase
             UserStartNodeDtos = new HashSet<UserStartNodeDto>();
         }
 
-        [Column("id")]
+        [Column(PrimaryKeyName)]
         [PrimaryKeyColumn(Name = "PK_user")]
         public int Id { get; set; }
 

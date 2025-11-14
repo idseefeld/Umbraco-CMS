@@ -1,4 +1,4 @@
-﻿using NPoco;
+using NPoco;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Infrastructure.Persistence.DatabaseAnnotations;
 using Umbraco.Extensions;
@@ -6,18 +6,19 @@ using Umbraco.Extensions;
 namespace Umbraco.Cms.Infrastructure.Persistence.Dtos;
 
 [TableName(TableName)]
-[PrimaryKey("id")]
+[PrimaryKey(PrimaryKeyName)]
 [ExplicitColumns]
 internal sealed class PropertyDataDto
 {
     public const string TableName = Constants.DatabaseSchema.Tables.PropertyData;
+    public const string PrimaryKeyName = Constants.DatabaseSchema.PrimaryKeyNameId;
     public const int VarcharLength = 512;
     public const int SegmentLength = 256;
 
     private decimal? _decimalValue;
 
     // pk, not used at the moment (never updating)
-    [Column("id")]
+    [Column(PrimaryKeyName)]
     [PrimaryKeyColumn]
     public int Id { get; set; }
 

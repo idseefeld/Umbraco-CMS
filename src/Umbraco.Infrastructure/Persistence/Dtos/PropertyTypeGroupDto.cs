@@ -6,13 +6,14 @@ using Umbraco.Cms.Infrastructure.Persistence.DatabaseModelDefinitions;
 namespace Umbraco.Cms.Infrastructure.Persistence.Dtos;
 
 [TableName(TableName)]
-[PrimaryKey("id", AutoIncrement = true)]
+[PrimaryKey(PrimaryKeyName, AutoIncrement = true)]
 [ExplicitColumns]
 internal sealed class PropertyTypeGroupDto
 {
     public const string TableName = Constants.DatabaseSchema.Tables.PropertyTypeGroup;
+    public const string PrimaryKeyName = Constants.DatabaseSchema.PrimaryKeyNameId;
 
-    [Column("id")]
+    [Column(PrimaryKeyName)]
     [PrimaryKeyColumn(IdentitySeed = 56)]
     public int Id { get; set; }
 

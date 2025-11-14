@@ -316,7 +316,7 @@ namespace Umbraco.Cms.Infrastructure.Migrations.Install
 
                 _logger.LogInformation("Database configuration status: Started");
 
-                IUmbracoDatabase? database = _scopeAccessor.AmbientScope?.Database;
+                IUmbracoDatabase database = _scopeAccessor.AmbientScope?.Database ?? throw new ArgumentNullException(nameof(database));
 
                 var message = string.Empty;
 
@@ -333,6 +333,8 @@ namespace Umbraco.Cms.Infrastructure.Migrations.Install
 
                     DatabaseSchemaCreator creator = _databaseSchemaCreatorFactory.Create(database);
                     creator.InitializeDatabaseSchema();
+
+                    _aggregator.Publish(new DatabaseSchemaInitializedNotification(database));
 
                     message += "<p>Installation completed!</p>";
 

@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using NPoco;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Infrastructure.Persistence;
@@ -44,11 +44,12 @@ public class ChangeLogStatusCode : MigrationBase
     }
 
     [TableName(Constants.DatabaseSchema.Tables.WebhookLog)]
-    [PrimaryKey("id")]
+    [PrimaryKey(PrimaryKeyName)]
     [ExplicitColumns]
     private class WebhookLogDtoOld
     {
-        [Column("id")]
+        public const string PrimaryKeyName = Constants.DatabaseSchema.PrimaryKeyNameId;
+        [Column(PrimaryKeyName)]
         [PrimaryKeyColumn(AutoIncrement = true)]
         public int Id { get; set; }
 

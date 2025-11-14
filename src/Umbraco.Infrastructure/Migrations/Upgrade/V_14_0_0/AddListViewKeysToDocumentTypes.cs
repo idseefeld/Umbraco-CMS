@@ -1,4 +1,4 @@
-﻿using NPoco;
+using NPoco;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Services;
@@ -151,14 +151,15 @@ public class AddListViewKeysToDocumentTypes : UnscopedMigrationBase
 
 
     [TableName(Constants.DatabaseSchema.Tables.ContentType)]
-    [PrimaryKey("pk")]
+    [PrimaryKey(PrimaryKeyName)]
     [ExplicitColumns]
     private class ContentTypeDtoOld
     {
         public const string TableName = Constants.DatabaseSchema.Tables.ContentType;
+        public const string PrimaryKeyName = "pk";
         private string? _alias;
 
-        [Column("pk")]
+        [Column(PrimaryKeyName)]
         [PrimaryKeyColumn(IdentitySeed = 700)]
         public int PrimaryKey { get; set; }
 
