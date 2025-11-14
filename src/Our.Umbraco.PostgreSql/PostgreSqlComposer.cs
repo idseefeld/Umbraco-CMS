@@ -18,8 +18,7 @@ public class PostgreSqlComposer : IComposer
     {
         builder
             .AddUmbracoPostgreSqlSupport()
-            .AddNotificationAsyncHandler<DatabaseSchemaAndDataCreatedNotification, DatabaseInitializedHandler>()
-            .AddNotificationAsyncHandler<UnattendedInstallNotification, DatabaseInitializedHandler>();
+            .AddNotificationAsyncHandler<DatabaseSchemaInitializedNotification, BaseDataInitializedHandler>();
 
         builder.Services.AddUnique<IProviderSpecificInterceptor, PostgreSqlExecutingInterceptor>();
 

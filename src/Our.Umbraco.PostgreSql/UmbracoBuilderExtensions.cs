@@ -25,7 +25,7 @@ namespace Our.Umbraco.PostgreSql
             builder.Services.TryAddEnumerable(ServiceDescriptor
                 .Singleton<ISqlSyntaxProvider, PostgreSqlSyntaxProvider>());
             builder.Services.TryAddEnumerable(ServiceDescriptor
-                .Singleton<IBulkSqlInsertProvider, PostgreSqlBulkSqlInsertProvider>());
+                .Singleton<IBulkSqlInsertProvider, PostgreSqlBatchSqlInsertProvider>());
             builder.Services.TryAddEnumerable(ServiceDescriptor
                 .Singleton<IDatabaseCreator, PostgreSqlDatabaseCreator>());
             builder.Services.TryAddEnumerable(ServiceDescriptor
@@ -40,8 +40,6 @@ namespace Our.Umbraco.PostgreSql
                 .Singleton<IProviderSpecificInterceptor, PostgreSqlAddMiniProfilerInterceptor>());
             builder.Services.TryAddEnumerable(ServiceDescriptor
                 .Singleton<IProviderSpecificInterceptor, PostgreSqlAddRetryPolicyInterceptor>());
-
-            builder.Services.Replace(ServiceDescriptor.Singleton<IUmbracoDatabaseFactory, PostgreSqlDatabaseFactory>());
 
             DbProviderFactories.UnregisterFactory(Constants.ProviderName);
             DbProviderFactories.RegisterFactory(Constants.ProviderName, PostgreSqlDbProviderFactory.Instance);
