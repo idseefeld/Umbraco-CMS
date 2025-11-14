@@ -1,4 +1,4 @@
-﻿using NPoco;
+using NPoco;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Infrastructure.Persistence.DatabaseAnnotations;
 using Umbraco.Cms.Infrastructure.Persistence.DatabaseModelDefinitions;
@@ -104,11 +104,12 @@ public class AddKindToUser : UnscopedMigrationBase
     }
 
     [TableName(TableName)]
-    [PrimaryKey("id", AutoIncrement = true)]
+    [PrimaryKey(PrimaryKeyName, AutoIncrement = true)]
     [ExplicitColumns]
     public class OldUserDto
     {
         public const string TableName = Constants.DatabaseSchema.Tables.User;
+        public const string PrimaryKeyName = Constants.DatabaseSchema.PrimaryKeyNameId;
 
         public OldUserDto()
         {
@@ -116,7 +117,7 @@ public class AddKindToUser : UnscopedMigrationBase
             UserStartNodeDtos = new HashSet<UserStartNodeDto>();
         }
 
-        [Column("id")]
+        [Column(PrimaryKeyName)]
         [PrimaryKeyColumn(Name = "PK_user")]
         public int Id { get; set; }
 
