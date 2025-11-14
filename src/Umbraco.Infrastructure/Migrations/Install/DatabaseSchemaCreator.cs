@@ -103,20 +103,20 @@ public class DatabaseSchemaCreator
     private readonly ILoggerFactory _loggerFactory;
     private readonly IUmbracoVersion _umbracoVersion;
 
-        public DatabaseSchemaCreator(
-            IUmbracoDatabase? database,
-            ILogger<DatabaseSchemaCreator> logger,
-            ILoggerFactory loggerFactory,
-            IUmbracoVersion umbracoVersion,
-            IEventAggregator eventAggregator,
-            IOptionsMonitor<InstallDefaultDataSettings> defaultDataCreationSettings)
-        {
-            _database = database ?? throw new ArgumentNullException(nameof(database));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _loggerFactory = loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory));
-            _umbracoVersion = umbracoVersion ?? throw new ArgumentNullException(nameof(umbracoVersion));
-            _eventAggregator = eventAggregator;
-            _installDefaultDataSettings = defaultDataCreationSettings;  // TODO (V13): Rename this parameter to installDefaultDataSettings.
+    public DatabaseSchemaCreator(
+        IUmbracoDatabase? database,
+        ILogger<DatabaseSchemaCreator> logger,
+        ILoggerFactory loggerFactory,
+        IUmbracoVersion umbracoVersion,
+        IEventAggregator eventAggregator,
+        IOptionsMonitor<InstallDefaultDataSettings> defaultDataCreationSettings)
+    {
+        _database = database ?? throw new ArgumentNullException(nameof(database));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _loggerFactory = loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory));
+        _umbracoVersion = umbracoVersion ?? throw new ArgumentNullException(nameof(umbracoVersion));
+        _eventAggregator = eventAggregator;
+        _installDefaultDataSettings = defaultDataCreationSettings;  // TODO (V13): Rename this parameter to installDefaultDataSettings.
 
         if (_database?.SqlContext?.SqlSyntax == null)
         {
@@ -480,6 +480,7 @@ public class DatabaseSchemaCreator
 
         TableDefinition tableDefinition = DefinitionFactory.GetTableDefinition(modelType, SqlSyntax);
         var tableName = tableDefinition.Name;
+        var primaryKeyName = tableDefinition.Columns.FirstOrDefault(c => c.IsIdentity && c.IsPrimaryKey)?.Name;
         var tableExist = TableExists(tableName);
         if (string.IsNullOrEmpty(tableName))
         {

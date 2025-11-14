@@ -4,12 +4,15 @@ using Umbraco.Cms.Infrastructure.Persistence.DatabaseAnnotations;
 
 namespace Umbraco.Cms.Infrastructure.Persistence.Dtos;
 
-[TableName(Constants.DatabaseSchema.Tables.MemberPropertyType)]
-[PrimaryKey("pk")]
+[TableName(TableName)]
+[PrimaryKey(PrimaryKeyName)]
 [ExplicitColumns]
 internal sealed class MemberPropertyTypeDto
 {
-    [Column("pk")]
+    public const string TableName = Constants.DatabaseSchema.Tables.MemberPropertyType;
+    public const string PrimaryKeyName = Constants.DatabaseSchema.PrimaryKeyNamePK;
+
+    [Column(PrimaryKeyName)]
     [PrimaryKeyColumn]
     public int PrimaryKey { get; set; }
 
