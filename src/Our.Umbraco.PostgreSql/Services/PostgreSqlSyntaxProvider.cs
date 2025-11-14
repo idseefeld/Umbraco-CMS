@@ -98,7 +98,7 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
     public override string StringColumnDefinition { get; } = "TEXT";
 
     /// <inheritdoc />
-    public override string CreateForeignKeyConstraint => "ALTER TABLE {0} ADD CONSTRAINT {1} FOREIGN KEY ({2}) REFERENCES {3} ({4}){5}{6}";
+    public override string CreateForeignKeyConstraint => "ALTER TABLE {0} ADD CONSTRAINT {1} FOREIGN KEY ({2}) REFERENCES {3} ({4}){5}{6}{7}";
 
     /// <inheritdoc />
     public override string CreateDefaultConstraint => "ALTER TABLE {0} ALTER COLUMN {3} SET DEFAULT {2}";
@@ -111,8 +111,11 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
         base.GetWildcardConcat(concatDefault);
 
     /// <inheritdoc/>
-    public override DatabaseType GetUpdatedDatabaseType(DatabaseType current, string? connectionString) =>
-            current; // DatabaseType.PostgreSQL;
+    public override DatabaseType GetUpdatedDatabaseType(DatabaseType current, string? connectionString)
+    {
+        current.EscapeTableColumAliasNames = false;
+        return current;
+    }
 
     /// <inheritdoc/>
     public override void HandleCreateTable(IDatabase database, TableDefinition tableDefinition, bool skipKeysAndIndexes = false)
@@ -182,14 +185,25 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
     /// <inheritdoc />
     public override string GetConcat(params string[] args) => string.Join(" || ", args);
 
-    /// <inheritdoc />
-    public override string GetQuotedTableName(string? tableName) => $"\"{tableName}\""; // tableName != null ? tableName.ToLower() : string.Empty;
+    private readonly string[] SqlKeywords = ["USER", "ORDER", "GROUP", "SELECT", "INSERT", "UPDATE", "DELETE", "TABLE", "COLUMN", "INDEX", "WHERE", "FROM", "JOIN"];
+    private string GetQuotedIdentifier(string? identifier)
+    {
+        if (string.IsNullOrWhiteSpace(identifier))
+        {
+            throw new ArgumentNullException(nameof(identifier));
+        }
+
+        return SqlKeywords.InvariantContains(identifier) ? $"\"{identifier}\"" : $"{identifier}";
+    }
 
     /// <inheritdoc />
-    public override string GetQuotedColumnName(string? columnName) => $"\"{columnName}\""; // columnName != null ? columnName.ToLower() : string.Empty;
+    public override string GetQuotedTableName(string? tableName) => GetQuotedIdentifier(tableName); // tableName != null ? tableName.ToLower() : string.Empty;
 
     /// <inheritdoc />
-    public override string GetQuotedName(string? name) => $"\"{name}\"";// name != null ? name.ToLower() : string.Empty;//
+    public override string GetQuotedColumnName(string? columnName) => GetQuotedIdentifier(columnName); // columnName != null ? columnName.ToLower() : string.Empty;
+
+    /// <inheritdoc />
+    public override string GetQuotedName(string? name) => GetQuotedIdentifier(name);// name != null ? name.ToLower() : string.Empty;//
 
     /// <inheritdoc />
     public override string GetQuotedValue(string value) => $"'{value.Replace("'", "''")}'";
@@ -394,6 +408,9 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
             ? $"FK_{foreignKey.ForeignTable}_{foreignKey.PrimaryTable}_{foreignKey.PrimaryColumns.First()}"
             : foreignKey.Name;
 
+        var anyRule = foreignKey.OnDelete != Rule.None || foreignKey.OnUpdate != Rule.None;
+        var deferrableInitiallyDeferred = anyRule ? string.Empty : " DEFERRABLE INITIALLY DEFERRED ";
+
         return string.Format(
             CreateForeignKeyConstraint,
             GetQuotedTableName(foreignKey.ForeignTable),
@@ -401,6 +418,7 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
             GetQuotedColumnName(foreignKey.ForeignColumns.First()),
             GetQuotedTableName(foreignKey.PrimaryTable),
             GetQuotedColumnName(foreignKey.PrimaryColumns.First()),
+            deferrableInitiallyDeferred,
             FormatCascade("DELETE", foreignKey.OnDelete),
             FormatCascade("UPDATE", foreignKey.OnUpdate));
     }

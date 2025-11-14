@@ -17,6 +17,8 @@
     <Compile Remove="Interceptors\PostgreSqlAddDbConnectionInterceptor.cs" />
     <Compile Remove="Interceptors\PostgreSqlDataInterceptor.cs" />
     <Compile Remove="NPocoPostgreSqlDatabaseExtensions.cs" />
+    <Compile Remove="Services\PostgreSqlDatabase.cs" />
+    <Compile Remove="Services\PostgreSqlDatabaseFactory.cs" />
     <Compile Remove="Services\PostgreSqlSyntaxProviderBase.cs" />
   </ItemGroup>
 

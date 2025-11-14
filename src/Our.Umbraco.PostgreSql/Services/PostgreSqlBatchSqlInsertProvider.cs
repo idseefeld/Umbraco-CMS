@@ -9,7 +9,7 @@ using Umbraco.Cms.Infrastructure.Persistence;
 
 namespace Our.Umbraco.PostgreSql.Services
 {
-    public class PostgreSqlBulkSqlInsertProvider : IBulkSqlInsertProvider
+    public class PostgreSqlBatchSqlInsertProvider : IBulkSqlInsertProvider
     {
         public string ProviderName => Constants.ProviderName;
 
