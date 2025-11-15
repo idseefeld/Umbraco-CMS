@@ -9,12 +9,12 @@ namespace Our.Umbraco.PostgreSql
     public class DatabaseInitializedHandler : INotificationAsyncHandler<DatabaseSchemaAndDataCreatedNotification>, INotificationAsyncHandler<UnattendedInstallNotification>
     {
         //private readonly ILogger<DatabaseInitializedHandler> _logger;
-        private readonly IUmbracoDatabaseFactory? _databaseFactory;
+        private readonly IPostgreSqlAlterSequences _alterService;
 
         public DatabaseInitializedHandler(
-            IUmbracoDatabaseFactory databaseFactory)
+            IPostgreSqlAlterSequences alterService)
         {
-            _databaseFactory = databaseFactory;
+            _alterService = alterService;
         }
 
         public async Task HandleAsync(DatabaseSchemaAndDataCreatedNotification notification, CancellationToken cancellationToken)
@@ -35,10 +35,7 @@ namespace Our.Umbraco.PostgreSql
         /// </summary>
         private async Task HandleAsync()
         {
-            if (_databaseFactory is PostgreSqlDatabaseFactory factory)
-            {
-                factory.AlterSequences();
-            }
+            _alterService.AlterSequences();
         }
     }
 }

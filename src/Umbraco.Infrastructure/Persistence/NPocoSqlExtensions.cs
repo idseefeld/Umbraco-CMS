@@ -1572,6 +1572,12 @@ namespace Umbraco.Extensions
                     return alias;
                 }
 
+                if ((column.MemberInfoKey.InvariantEquals("uniqueid") && !column.MemberInfoKey.Equals("uniqueId"))
+                    || (column.MemberInfoKey.InvariantEquals("languageid") && !column.MemberInfoKey.Equals("languageId")))
+                {
+                    return withAlias ? (string.IsNullOrEmpty(column.ColumnAlias) ? column.ColumnName
+                    : column.ColumnAlias) : null;
+                }
                 return withAlias ? (string.IsNullOrEmpty(column.ColumnAlias) ? column.MemberInfoKey : column.ColumnAlias) : null;
             }
 

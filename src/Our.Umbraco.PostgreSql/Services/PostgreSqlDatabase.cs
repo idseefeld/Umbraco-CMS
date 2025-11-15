@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using NPoco;
 using Umbraco.Cms.Infrastructure.Migrations.Install;
 using Umbraco.Cms.Infrastructure.Persistence;
+using Umbraco.Cms.Infrastructure.Persistence.SqlSyntax;
 
 namespace Our.Umbraco.PostgreSql.Services
 {
@@ -80,6 +81,7 @@ namespace Our.Umbraco.PostgreSql.Services
 
             return pocoData.TableInfo.AutoIncrement;
         }
+
 #pragma warning restore CS8604 // Possible null reference argument.
     }
 }

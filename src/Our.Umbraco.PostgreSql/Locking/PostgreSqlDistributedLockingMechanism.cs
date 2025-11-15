@@ -30,6 +30,7 @@ namespace Our.Umbraco.PostgreSql.Locking
             _scopeAccessor = scopeAccessor;
             _globalSettings = globalSettings.CurrentValue;
             _connectionStrings = connectionStrings.CurrentValue;
+            _connectionStrings.ProviderName = Constants.ProviderName;
             globalSettings.OnChange(x => _globalSettings = x);
             connectionStrings.OnChange(x => _connectionStrings = x);
 

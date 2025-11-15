@@ -421,7 +421,25 @@ public class UmbracoDatabase : Database, IUmbracoDatabase
             return base.ExecuteScalar<T>(sql, commandType, args);
         }
 
-        var result = base.ExecuteScalar<object>(sql, commandType, args);
-        return (T)mapper.Map(result);
+        object? result = null;
+        try
+        {
+            result = base.ExecuteScalar<T>(sql, commandType, args);
+        }
+        catch (InvalidCastException)
+        {
+            return default!;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error executing scalar with custom mapper for type {Type}", typeof(T).FullName);
+        }
+
+        if (result is not null)
+        {
+            return (T)mapper.Map(result);
+        }
+
+        return default!;
     }
 }

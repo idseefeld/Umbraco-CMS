@@ -63,6 +63,7 @@ namespace Our.Umbraco.PostgreSql.Services
             _loggerFactory = loggerFactory;
 
             ConnectionStrings umbracoConnectionString = connectionStrings.CurrentValue;
+            // umbracoConnectionString.ProviderName = Constants.ProviderName;
             if (!umbracoConnectionString.IsConnectionStringConfigured())
             {
                 if (_logger.IsEnabled(LogLevel.Debug))
@@ -91,7 +92,6 @@ namespace Our.Umbraco.PostgreSql.Services
             {
                 // this is true on every restart!
                 // ToDo: How to handle this better? Only after inital install or upgrade?
-                AlterSequences();
             }
 
             return database;
@@ -285,94 +285,6 @@ namespace Our.Umbraco.PostgreSql.Services
                 _bulkSqlInsertProvider,
                 _databaseSchemaCreatorFactory,
                 _pocoMappers);
-        }
-
-        public void AlterSequences()
-        {
-            IUmbracoDatabase database = (IUmbracoDatabase)_npocoDatabaseFactory!.GetDatabase();
-
-            var tablesToAlter = new Dictionary<string, string>
-            {
-                {"cmsContentType","pk"},
-                {"cmsDictionary","pk"},//
-                {"cmsLanguageText","pk"},//
-                {"cmsMemberType","pk"},//
-                {"cmsPropertyType","id"},
-                {"cmsPropertyTypeGroup","id"},
-                {"cmsTags","id"},//
-                {"cmsTemplate","pk"},
-                {"umbracoAudit","id"},
-                {"umbracoCacheInstruction","id"},
-                {"umbracoConsent","id"},
-                {"umbracoContentVersionCultureVariation","id"},
-                {"umbracoContentVersion","id"},
-                {"umbracoCreatedPackageSchema","id"},
-                {"umbracoDocumentCultureVariation","id"},
-                {"umbracoDocumentUrl","id"},
-                {"umbracoDomain","id"},
-                {"umbracoExternalLogin","id"},
-                {"umbracoExternalLoginToken","id"},
-                {"umbracoLanguage","id"},
-                {"umbracoLogViewerQuery","id"},
-                {"umbracoLog","id"},
-                {"umbracoNode","id"},
-                {"umbracoPropertyData","id"},
-                {"umbracoRelation","id"},
-                {"umbracoRelationType","id"},
-                {"umbracoServer","id"},
-                {"umbracoTwoFactorLogin","id"},
-                {"umbracoUser","id"},
-                {"umbracoUserGroup","id"},
-                {"umbracoUserGroup2GranularPermission","id"},
-                {"umbracoUserGroup2Permission","id"},
-                {"umbracoUserStartNode","id"},
-                {"umbracoWebhook","id"},
-                {"umbracoWebhookLog","id"},
-                {"umbracoWebhookRequest","id"},
-            };
-            if (_lastInsertIds.Count < tablesToAlter.Count)
-            {
-                _logger.LogDebug("Altering sequences for PostgreSQL database after schema and data creation.");
-
-                foreach (var table in tablesToAlter)
-                {
-                    AlterSequence(database, table.Key, table.Value);
-                }
-            }
-
-        }
-
-        private void AlterSequence(IUmbracoDatabase database, string tableName, string primaryKeyName)
-        {
-            ISqlContext? sqlContext = database.SqlContext;
-            if (sqlContext is null)
-            {
-                _logger.LogWarning("No ambient scope or SQL context available, cannot alter sequences.");
-                return;
-            }
-
-            ISqlSyntaxProvider sqlSyntax = sqlContext.SqlSyntax;
-            var quotedId = sqlSyntax.GetQuotedColumnName(primaryKeyName);
-            var quotedTable = sqlSyntax.GetQuotedTableName(tableName);
-
-            string seqName = $"{tableName}_{primaryKeyName}_seq";
-            try
-            {
-                var maxIdSql = $"SELECT MAX({quotedId}) FROM {quotedTable}";
-                long maxId = database.ExecuteScalar<long>(maxIdSql);
-                _lastInsertIds[seqName] = maxId;
-                if (maxId > 0)
-                {
-                    var alterSeqSql = $"ALTER SEQUENCE \"{seqName}\" RESTART WITH {maxId + 1}";
-                    _logger.LogDebug("Identity sequence updated: {alterSeqSql}", alterSeqSql);
-                    database.Execute(alterSeqSql);
-                }
-            }
-            catch (Exception ex)
-            {
-                var msg = ex.Message;
-                _logger.LogError(ex, "Error updating sequence for {TableName}.{PrimaryKeyName}", tableName, primaryKeyName);
-            }
         }
     }
 }

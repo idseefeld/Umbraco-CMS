@@ -13,7 +13,10 @@ namespace Our.Umbraco.PostgreSql.Interceptors
         private readonly IOptionsMonitor<ConnectionStrings> _connectionStrings;
 
         public PostgreSqlAddRetryPolicyInterceptor(IOptionsMonitor<ConnectionStrings> connectionStrings)
-            => _connectionStrings = connectionStrings;
+        {
+            connectionStrings.CurrentValue.ProviderName = Constants.ProviderName;
+            _connectionStrings = connectionStrings;
+        }
 
         public override DbConnection OnConnectionOpened(IDatabase database, DbConnection conn)
         {
