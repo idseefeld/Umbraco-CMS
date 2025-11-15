@@ -7,7 +7,8 @@ public class TestDatabaseSettings
         Unknown,
         Sqlite,
         SqlServer,
-        LocalDb
+        LocalDb,
+        PostgreSql
     }
 
     public TestDatabaseType DatabaseType { get; set; }
@@ -21,7 +22,8 @@ public class TestDatabaseSettings
     public string FilesPath { get; set; }
 
     /// <remarks>
-    ///     Only used for SQL Server e.g. on Linux/MacOS (not required for localdb).
+    ///     Used for SQL Server e.g. on Linux/MacOS (not required for localdb)
+    ///     and PostgreSQL
     /// </remarks>
-    public string SQLServerMasterConnectionString { get; set; }
+    public string TestMasterConnectionString { get; set; }
 }

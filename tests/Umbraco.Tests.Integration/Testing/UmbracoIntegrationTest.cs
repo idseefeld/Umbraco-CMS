@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
+using Our.Umbraco.PostgreSql;
 using Umbraco.Cms.Api.Management.DependencyInjection;
 using Umbraco.Cms.Core.Cache;
 using Umbraco.Cms.Core.Configuration.Models;
@@ -84,6 +85,8 @@ public abstract class UmbracoIntegrationTest : UmbracoIntegrationTestBase
         {
             Services.GetRequiredService<IUmbracoContextFactory>().EnsureUmbracoContext();
         }
+
+        // CleanupViewFiles();
     }
 
     [TearDown]
@@ -92,6 +95,40 @@ public abstract class UmbracoIntegrationTest : UmbracoIntegrationTestBase
         _host.StopAsync();
         (Services as IDisposable)?.Dispose();
     }
+
+    /* is this still needed?
+    protected void AwaitCleanupViewFiles()
+    {
+        // This method is used to ensure that the view files are cleaned up after each test
+        // It will retry until the cleanup is successful
+        while (!CleanupViewFiles())
+        {
+            // Wait a bit before retrying
+            Thread.Sleep(100);
+        }
+    }
+
+    private bool CleanupViewFiles()
+    {
+        var success = true;
+
+        FileSystems fileSystem = GetRequiredService<FileSystems>();
+        var viewFileSystem = fileSystem.MvcViewsFileSystem!;
+        try
+        {
+            foreach (var file in viewFileSystem.GetFiles(string.Empty).ToArray())
+            {
+                viewFileSystem.DeleteFile(file);
+            }
+        }
+        catch (Exception)
+        {
+            success = false;
+        }
+
+        return success;
+    }
+    */
 
     /// <summary>
     ///     Create the Generic Host and execute startup ConfigureServices/Configure calls
@@ -166,6 +203,7 @@ public abstract class UmbracoIntegrationTest : UmbracoIntegrationTestBase
             .AddBackOfficeIdentity()
             .AddMembersIdentity()
             .AddExamine()
+            .AddUmbracoPostgreSqlSupport()
             .AddUmbracoSqlServerSupport()
             .AddUmbracoSqliteSupport()
             .AddUmbracoHybridCache()

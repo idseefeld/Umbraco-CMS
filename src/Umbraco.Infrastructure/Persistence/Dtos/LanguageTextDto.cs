@@ -18,10 +18,10 @@ public class LanguageTextDto
 
     [Column("languageId")]
     [ForeignKey(typeof(LanguageDto), Column = "id")]
-    [Index(IndexTypes.UniqueNonClustered, Name = "IX_" + TableName + "_languageId", ForColumns = "languageId,UniqueId")]
+    [Index(IndexTypes.UniqueNonClustered, Name = "IX_" + TableName + "_languageId", ForColumns = "languageId,uniqueId")]
     public int LanguageId { get; set; }
 
-    [Column("UniqueId")]
+    [Column("uniqueId")]
     [ForeignKey(typeof(DictionaryDto), Column = "id")]
     public Guid UniqueId { get; set; }
 

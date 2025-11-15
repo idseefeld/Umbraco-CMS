@@ -25,10 +25,13 @@ namespace Our.Umbraco.PostgreSql.EFCore
             await context.Database.MigrateAsync();
         }
         private static Type GetMigrationType(EFCoreMigration migration) =>
-       migration switch
-       {
-           //EFCoreMigration.initialCreatePostgreSQL => typeof(Migrations.UpdateOpenIddictToV5),
-           _ => throw new ArgumentOutOfRangeException(nameof(migration), $@"Not expected migration value: {migration}")
-       };
+            migration switch
+            {
+                EFCoreMigration.InitialCreate => typeof(Migrations.InitialCreate),
+                EFCoreMigration.AddOpenIddict => typeof(Migrations.AddOpenIddict),
+                EFCoreMigration.UpdateOpenIddictToV5 => typeof(Migrations.UpdateOpenIddictToV5),
+                EFCoreMigration.UpdateOpenIddictToV7 => typeof(Migrations.UpdateOpenIddictToV7),
+                _ => throw new ArgumentOutOfRangeException(nameof(migration), $@"Not expected migration value: {migration}"),
+            };
     }
 }

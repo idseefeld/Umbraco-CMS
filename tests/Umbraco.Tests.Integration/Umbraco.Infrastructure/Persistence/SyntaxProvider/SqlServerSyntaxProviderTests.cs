@@ -38,7 +38,9 @@ internal sealed class SqlServerSyntaxProviderTests : UmbracoIntegrationTest
     {
         var logger = Mock.Of<ILogger<MigrationContext>>();
         var sqlSyntax = GetSqlSyntax();
-        db = new TestDatabase(DatabaseType.SqlServer2005, sqlSyntax);
+        var dbType = DatabaseType.SqlServer2005;
+        // dbType = DatabaseType.PostgreSQL;
+        db = new TestDatabase(dbType, sqlSyntax);
         return new MigrationContext(new TestPlan(), db, logger);
     }
 

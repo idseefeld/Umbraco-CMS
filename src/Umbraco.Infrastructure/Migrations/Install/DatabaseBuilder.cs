@@ -106,6 +106,7 @@ namespace Umbraco.Cms.Infrastructure.Migrations.Install
             using (ICoreScope scope = _scopeProvider.CreateCoreScope())
             {
                 IScope ambientScope = _scopeAccessor.AmbientScope ?? throw new InvalidOperationException("Cannot execute without a valid AmbientScope.");
+
                 // look for the super user with default password
                 NPoco.Sql<ISqlContext> sql = ambientScope.Database.SqlContext.Sql()
                     .SelectCount()
@@ -117,10 +118,10 @@ namespace Umbraco.Cms.Infrastructure.Migrations.Install
                 {
                     // found only 1 user == the default user with default password
                     // however this always exists on uCloud, also need to check if there are other users too
-                    sql = _scopeAccessor.AmbientScope.Database.SqlContext.Sql()
+                    sql = ambientScope.Database.SqlContext.Sql()
                         .SelectCount()
                         .From<UserDto>();
-                    result = _scopeAccessor.AmbientScope.Database.ExecuteScalar<int>(sql);
+                    result = ambientScope.Database.ExecuteScalar<int>(sql);
                     has = result != 1;
                 }
                 scope.Complete();

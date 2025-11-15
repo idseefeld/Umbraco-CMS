@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <!-- Add design/build time support for EF Core migrations -->
+    <PackageReference Include="Microsoft.Build.Tasks.Core" Version="17.14.28" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" PrivateAssets="all" Version="10.0.0-rc.2.25502.107" />
     <!--
     Added the following direct dependency due to Microsoft.EntityFrameworkCore.Design having a dependency on an insecure version.
@@ -37,6 +38,7 @@
     <!-- Ensure the AppLocalIcu setting is the same as the referenced ICU package version and changes are also done to the template project! -->
     <!-- Opt-in to app-local ICU to ensure consistent globalization APIs across different platforms -->
     <PackageReference Include="Microsoft.ICU.ICU4C.Runtime" Version="72.1.0.3" />
+    <PackageReference Include="uSync" Version="17.0.0-rc1" />
     <RuntimeHostConfigurationOption Include="System.Globalization.AppLocalIcu" Value="72.1.0.3" Condition="$(RuntimeIdentifier.StartsWith('linux')) or $(RuntimeIdentifier.StartsWith('win')) or ('$(RuntimeIdentifier)' == '' and !$([MSBuild]::IsOSPlatform('osx')))" />
   </ItemGroup>
 

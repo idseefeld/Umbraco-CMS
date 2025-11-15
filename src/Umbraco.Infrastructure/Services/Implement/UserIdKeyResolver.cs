@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 using NPoco;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Services;
@@ -107,6 +107,10 @@ internal sealed class UserIdKeyResolver : IUserIdKeyResolver
 
             return Attempt.Succeed(fetchedKey.Value);
         }
+        //catch (Exception ex)
+        //{
+        //    return Attempt.Fail<Guid>(key, ex);
+        //}
         finally
         {
             _idToKeyLock.Release();

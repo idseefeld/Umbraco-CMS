@@ -39,6 +39,8 @@
   <Import Project="..\..\src\Umbraco.Cms.Targets\buildTransitive\Umbraco.Cms.Targets.targets" />
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Our.Umbraco.PostgreSql.EFCore\Our.Umbraco.PostgreSql.EFCore.csproj" />
+    <ProjectReference Include="..\..\src\Our.Umbraco.PostgreSql\Our.Umbraco.PostgreSql.csproj" />
     <ProjectReference Include="..\..\src\Umbraco.Cms.Api.Management\Umbraco.Cms.Api.Management.csproj" />
     <ProjectReference Include="..\..\src\Umbraco.Cms.Persistence.EFCore\Umbraco.Cms.Persistence.EFCore.csproj" />
     <ProjectReference Include="..\..\src\Umbraco.Cms\Umbraco.Cms.csproj" />

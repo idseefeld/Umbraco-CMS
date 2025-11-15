@@ -197,13 +197,12 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
     }
 
     /// <inheritdoc />
-    public override string GetQuotedTableName(string? tableName) => GetQuotedIdentifier(tableName); // tableName != null ? tableName.ToLower() : string.Empty;
+    public override string GetQuotedTableName(string? tableName) => GetQuotedIdentifier(tableName);
+    /// <inheritdoc />
+    public override string GetQuotedColumnName(string? columnName) => GetQuotedIdentifier(columnName);
 
     /// <inheritdoc />
-    public override string GetQuotedColumnName(string? columnName) => GetQuotedIdentifier(columnName); // columnName != null ? columnName.ToLower() : string.Empty;
-
-    /// <inheritdoc />
-    public override string GetQuotedName(string? name) => GetQuotedIdentifier(name);// name != null ? name.ToLower() : string.Empty;//
+    public override string GetQuotedName(string? name) => GetQuotedIdentifier(name);
 
     /// <inheritdoc />
     public override string GetQuotedValue(string value) => $"'{value.Replace("'", "''")}'";
