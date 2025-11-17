@@ -120,7 +120,7 @@ public class ContentTypeRepositorySqlClausesTest : BaseUsingSqlSyntax
         var expected = Sql();
         expected.SelectAll()
             .From("[cmsContentTypeAllowedContentType]")
-            .Where("([cmsContentTypeAllowedContentType].[Id] = @0)", 1050);
+            .Where("([cmsContentTypeAllowedContentType].[id] = @0)", 1050);
 
         var sql = Sql();
         sql.SelectAll()
