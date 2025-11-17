@@ -253,7 +253,7 @@ public class MemberRepository : ContentRepositoryBase<int, IMember, MemberReposi
 
         //get the COUNT base query
         Sql<ISqlContext> fullSql = GetBaseQuery(true)
-            .Append(new Sql("WHERE umbracoNode.id IN (" + sql.SQL + ")", sql.Arguments));
+            .Append(new Sql($"WHERE {SqlSyntax.GetQuotedTableName("umbracoNode")}.id IN ({sql.SQL})", sql.Arguments));
 
         return Database.ExecuteScalar<int>(fullSql);
     }
@@ -316,7 +316,7 @@ public class MemberRepository : ContentRepositoryBase<int, IMember, MemberReposi
         }
 
         var pageIndex = skip / take;
-        Page<MemberDto>? pageResult = await Database.PageAsync<MemberDto>(pageIndex+1, take, sql);
+        Page<MemberDto>? pageResult = await Database.PageAsync<MemberDto>(pageIndex + 1, take, sql);
 
         // shortcut so our join is not too big, but we also hope these are cached, so we don't have to map them again.
         var nodeIds = pageResult.Items.Select(x => x.NodeId).ToArray();
@@ -532,7 +532,7 @@ public class MemberRepository : ContentRepositoryBase<int, IMember, MemberReposi
         var versionId = dto.ContentVersionDto.Id;
         var temp = new TempContent<Member>(dto.ContentDto.NodeId, versionId, 0, memberType);
         IDictionary<int, PropertyCollection> properties =
-            GetPropertyCollections(new List<TempContent<Member>> {temp});
+            GetPropertyCollections(new List<TempContent<Member>> { temp });
         member.Properties = properties[versionId];
 
         // reset dirty initial properties (U4-1946)
@@ -745,8 +745,8 @@ public class MemberRepository : ContentRepositoryBase<int, IMember, MemberReposi
 
     protected override void PerformDeleteVersion(int id, int versionId)
     {
-        Database.Delete<PropertyDataDto>("WHERE versionId = @VersionId", new {versionId});
-        Database.Delete<ContentVersionDto>("WHERE versionId = @VersionId", new {versionId});
+        Database.Delete<PropertyDataDto>("WHERE versionId = @VersionId", new { versionId });
+        Database.Delete<ContentVersionDto>("WHERE versionId = @VersionId", new { versionId });
     }
 
     #endregion

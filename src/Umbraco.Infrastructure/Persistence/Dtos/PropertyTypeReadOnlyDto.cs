@@ -67,6 +67,6 @@ internal sealed class PropertyTypeReadOnlyDto
     [Column("dbType")]
     public string? DbType { get; set; }
 
-    [Column("UniqueID")]
+    [Column("uniqueId")]
     public Guid UniqueId { get; set; }
 }

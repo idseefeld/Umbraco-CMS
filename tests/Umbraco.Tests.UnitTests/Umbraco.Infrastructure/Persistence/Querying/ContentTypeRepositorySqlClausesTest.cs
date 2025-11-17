@@ -189,7 +189,7 @@ public class ContentTypeRepositorySqlClausesTest : BaseUsingSqlSyntax
 @"DELETE FROM [umbracoUserGroup2GranularPermission]
 WHERE (([umbracoUserGroup2GranularPermission].[uniqueId] = @0))
 AND ([umbracoUserGroup2GranularPermission].[permission] LIKE CONCAT(((SELECT 
- CONVERT(nvarchar(36), [cmsPropertyType].[UniqueId])
+ CONVERT(nvarchar(36), [cmsPropertyType].[uniqueId])
  
 FROM [cmsPropertyType]
 WHERE (([cmsPropertyType].[id] = @1))

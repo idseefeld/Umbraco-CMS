@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 using NPoco;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Services;
@@ -58,7 +58,6 @@ internal sealed class UserIdKeyResolver : IUserIdKeyResolver
             {
                 return Attempt.Fail<int>();
             }
-
 
             _keyToId[key] = fetchedId.Value;
             return Attempt.Succeed(fetchedId.Value);
