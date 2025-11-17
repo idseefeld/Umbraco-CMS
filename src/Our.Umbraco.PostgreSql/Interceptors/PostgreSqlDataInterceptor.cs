@@ -8,16 +8,16 @@ public class PostgreSqlDataInterceptor : IProviderSpecificDataInterceptor
 {
     public string ProviderName => Constants.ProviderName;
 
-    public object? OnConvertValue(object? value, Type targetType)
-    {
-        // Gets this ever called?
-        // Example: convert Int64 -> Int32 when target is Int32 (some PG aggregates return bigint)
-        if (value is long l && targetType == typeof(int))
-        {
-            return checked((int)l);
-        }
-        return value;
-    }
+    //public object? OnConvertValue(object? value, Type targetType)
+    //{
+    //    // Gets this ever called?
+    //    // Example: convert Int64 -> Int32 when target is Int32 (some PG aggregates return bigint)
+    //    if (value is long l && targetType == typeof(int))
+    //    {
+    //        return checked((int)l);
+    //    }
+    //    return value;
+    //}
 
     //public void OnIncludeCacheMiss(Type type, string sql, object[] args) { }
     //public void OnIncludeLoaded(Type type) { }

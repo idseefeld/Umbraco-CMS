@@ -1,6 +1,7 @@
 using System.Data.Common;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using NPoco;
 using Our.Umbraco.PostgreSql.Interceptors;
 using Our.Umbraco.PostgreSql.Locking;
 using Our.Umbraco.PostgreSql.Services;
@@ -44,15 +45,15 @@ namespace Our.Umbraco.PostgreSql
                 .Singleton<IProviderSpecificInterceptor, PostgreSqlAddMiniProfilerInterceptor>());
             builder.Services.TryAddEnumerable(ServiceDescriptor
                 .Singleton<IProviderSpecificInterceptor, PostgreSqlAddRetryPolicyInterceptor>());
+            builder.Services.TryAddEnumerable(ServiceDescriptor
+                .Singleton<IProviderSpecificInterceptor, PostgreSqlExecutingInterceptor>());
+            builder.Services.TryAddEnumerable(ServiceDescriptor
+                .Singleton<IProviderSpecificInterceptor, PostgreSqlDataInterceptor>());
 
             DbProviderFactories.UnregisterFactory(Constants.ProviderName);
             DbProviderFactories.RegisterFactory(Constants.ProviderName, PostgreSqlDbProviderFactory.Instance);
 
             builder.Services.Replace(ServiceDescriptor.Singleton<IUmbracoDatabaseFactory, PostgreSqlDatabaseFactory>());
-
-            builder.Services.AddUnique<IProviderSpecificInterceptor, PostgreSqlExecutingInterceptor>();
-
-            builder.Services.AddUnique<IProviderSpecificInterceptor, PostgreSqlDataInterceptor>();
 
             return builder;
         }

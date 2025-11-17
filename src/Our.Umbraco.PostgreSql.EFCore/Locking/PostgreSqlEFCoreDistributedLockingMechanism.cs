@@ -40,7 +40,7 @@ public sealed class PostgreSqlEFCoreDistributedLockingMechanism<T> : IDistribute
         _scopeAccessorEFCore = scopeAccessorEFCore;
         _globalSettings = globalSettings.CurrentValue;
         _connectionStrings = connectionStrings.CurrentValue;
-        _connectionStrings.ProviderName = Constants.ProviderName; // force provider name to our provider
+        //_connectionStrings.ProviderName = Constants.ProviderName; // force provider name to our provider
         globalSettings.OnChange(x => _globalSettings = x);
         connectionStrings.OnChange(x => _connectionStrings = x);
     }

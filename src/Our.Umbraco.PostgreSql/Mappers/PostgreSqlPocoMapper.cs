@@ -15,6 +15,13 @@ namespace Our.Umbraco.PostgreSql.Mappers
 {
     public class PostgreSqlPocoMapper : DefaultMapper
     {
+        public override Func<object, object> GetFromDbConverter(MemberInfo destMemberInfo, Type sourceType)
+        {
+            var destName = destMemberInfo.Name;
+            var sourceName = sourceType.Name;
+
+            return base.GetFromDbConverter(destMemberInfo, sourceType);
+        }
         public override Func<object, object?> GetFromDbConverter(Type destType, Type sourceType)
         {
             var destName = destType.Name;
@@ -39,6 +46,16 @@ namespace Our.Umbraco.PostgreSql.Mappers
                     }
 
                     return default(Guid?);
+                };
+            }
+
+            if (destType == typeof(DateTime))
+            {
+                return value =>
+                {
+                    var dateAsString = $"{value}";
+                    var result = DateTime.Parse(dateAsString).ToUniversalTime();
+                    return result;
                 };
             }
 

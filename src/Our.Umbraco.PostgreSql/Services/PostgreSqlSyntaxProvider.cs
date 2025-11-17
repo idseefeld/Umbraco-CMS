@@ -58,8 +58,8 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
         BoolColumnDefinition = "BOOLEAN";
 
         GuidColumnDefinition = "UUID";
-        DateTimeColumnDefinition = "TIMESTAMP";
-        DateTimeOffsetColumnDefinition = "TIMESTAMP"; // "TIMESTAMPTZ";
+        DateTimeColumnDefinition = "TIMESTAMP WITHOUT TIME ZONE";
+        DateTimeOffsetColumnDefinition = "TIMESTAMP WITHOUT TIME ZONE"; // "TIMESTAMPTZ";
         TimeColumnDefinition = "TIME";
         DecimalColumnDefinition = "NUMERIC(20,9)";
 
@@ -688,15 +688,18 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
         {
             return string.Empty;
         }
+
         if (string.Equals(column.DefaultValue.ToString(), "NOW()", StringComparison.OrdinalIgnoreCase))
         {
             column.DefaultValue = SystemMethods.CurrentDateTime;
         }
-        if (column.DefaultValue is SystemMethods)
+
+        if (column.DefaultValue is SystemMethods systemMethod)
         {
-            var method = FormatSystemMethods((SystemMethods)column.DefaultValue);
+            var method = FormatSystemMethods(systemMethod);
             return string.IsNullOrEmpty(method) ? string.Empty : string.Format(DefaultValueFormat, method);
         }
+
         return string.Format(DefaultValueFormat, GetQuotedValue(column.DefaultValue.ToString()!));
     }
 

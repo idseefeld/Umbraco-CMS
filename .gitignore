@@ -110,4 +110,4 @@ tools/docfx/
 playwright-report
 trace.zip
 /src/Error-Playlist.playlist
-/src/Umbraco.Web.UI/uSync/v17
+/src/Umbraco.Web.UI/uSync

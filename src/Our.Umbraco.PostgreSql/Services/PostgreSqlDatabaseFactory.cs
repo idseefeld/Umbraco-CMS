@@ -45,7 +45,7 @@ namespace Our.Umbraco.PostgreSql.Services
             _loggerFactory = loggerFactory;
 
             ConnectionStrings umbracoConnectionString = connectionStrings.CurrentValue;
-            if (!umbracoConnectionString.ProviderName.IsNullOrWhiteSpace())
+            if (umbracoConnectionString.ProviderName.IsNullOrWhiteSpace())
             {
                 umbracoConnectionString.ProviderName = Constants.ProviderName;
             }
