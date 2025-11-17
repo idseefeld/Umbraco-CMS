@@ -70,7 +70,7 @@ internal sealed class LanguageService : RepositoryService, ILanguageService
 
     public Task<string[]> GetIsoCodesByIdsAsync(ICollection<int> ids)
     {
-        using ICoreScope scope = ScopeProvider.CreateCoreScope(autoComplete:true);
+        using ICoreScope scope = ScopeProvider.CreateCoreScope(autoComplete: true);
 
         return Task.FromResult(_languageRepository.GetIsoCodesByIds(ids, throwOnNotFound: true));
     }

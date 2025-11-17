@@ -61,7 +61,7 @@ internal sealed class DocumentVersionRepository : IDocumentVersionRepository
 {syntax.ColumnWithAlias(ContentDto.TableName, "contentTypeId", "contentTypeId")},
 {syntax.ColumnWithAlias(ContentVersionDto.TableName, "userId", "userId")},
 {syntax.ColumnWithAlias(ContentVersionDto.TableName, "versionDate", "versionDate")},
-{syntax.ColumnWithAlias(DocumentVersionDto.TableName ,"published", "currentPublishedVersion")},
+{syntax.ColumnWithAlias(DocumentVersionDto.TableName, "published", "currentPublishedVersion")},
 {syntax.ColumnWithAlias(ContentVersionDto.TableName, "current", "currentDraftVersion")},
 {syntax.ColumnWithAlias(ContentVersionDto.TableName, "preventCleanup", "preventCleanup")},
 {syntax.ColumnWithAlias(UserDto.TableName, "userName", "username")}

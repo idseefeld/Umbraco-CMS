@@ -43,6 +43,12 @@ namespace Umbraco.Extensions
             return sql.Where<TDto>(predicate, alias).Append(")");
         }
 
+        public static Sql<ISqlContext> WhereParam<TDto>(this Sql<ISqlContext> sql, Expression<Func<TDto, object?>> field, string param)
+        {
+            string s = $"{sql.GetColumns(columnExpressions: [field], withAlias: false).FirstOrDefault()} = {param}";
+            return sql.Where(s, []);
+        }
+
         /// <summary>
         /// Appends a WHERE clause to the Sql statement.
         /// </summary>
@@ -787,6 +793,26 @@ namespace Umbraco.Extensions
         }
 
         /// <summary>
+        /// Adds a SQL SELECT statement to retrieve the maximum value of the specified field from the table associated
+        /// with the specified DTO type.
+        /// </summary>
+        /// <typeparam name="TDto">The type of the Data Transfer Object (DTO) that represents the table from which the maximum value will be
+        /// selected.</typeparam>
+        /// <param name="sql">The SQL query builder to which the SELECT statement will be appended. Cannot be <see langword="null"/>.</param>
+        /// <param name="field">An expression specifying the field for which the maximum value will be calculated. Cannot be <see
+        /// langword="null"/>.</param>
+        /// <param name="coalesceValue">COALESCE string value.</param>
+        /// <returns>A modified SQL query builder that includes the SELECT statement for the maximum value of the specified
+        /// field or the coalesceValue.</returns>
+        public static Sql<ISqlContext> SelectMax<TDto>(this Sql<ISqlContext> sql, Expression<Func<TDto, object?>> field, string coalesceValue)
+        {
+            ArgumentNullException.ThrowIfNull(sql);
+            ArgumentNullException.ThrowIfNull(field);
+
+            return sql.Select($"COALESCE(MAX {sql.SqlContext.SqlSyntax.GetFieldName(field)}), '{coalesceValue}')");
+        }
+
+        /// <summary>
         /// Adds a SQL SELECT statement to retrieve the sum of the values of the specified field from the table associated
         /// with the specified DTO type.
         /// </summary>
@@ -1503,7 +1529,7 @@ namespace Umbraco.Extensions
         public static Sql<ISqlContext> AppendSubQuery(this Sql<ISqlContext> sql, Sql<ISqlContext> subQuery, string alias)
         {
             // Append the subquery as a derived table with an alias
-            sql.Append("(").Append(subQuery.SQL, subQuery.Arguments).Append($") AS {alias}");
+            sql.Append("(").Append(subQuery.SQL, subQuery.Arguments).Append($") AS {sql.SqlContext.SqlSyntax.GetQuotedName(alias)}");
 
             return sql;
         }
@@ -1543,6 +1569,13 @@ namespace Umbraco.Extensions
                 if (aliases != null && aliases.TryGetValue(column.ColumnName, out var alias))
                 {
                     return alias;
+                }
+
+                if ((column.MemberInfoKey.InvariantEquals("uniqueid") && !column.MemberInfoKey.Equals("uniqueId"))
+                    || (column.MemberInfoKey.InvariantEquals("languageid") && !column.MemberInfoKey.Equals("languageId")))
+                {
+                    return withAlias ? (string.IsNullOrEmpty(column.ColumnAlias) ? column.ColumnName
+                    : column.ColumnAlias) : null;
                 }
 
                 return withAlias ? (string.IsNullOrEmpty(column.ColumnAlias) ? column.MemberInfoKey : column.ColumnAlias) : null;

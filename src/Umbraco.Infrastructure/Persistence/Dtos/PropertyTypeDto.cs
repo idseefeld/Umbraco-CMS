@@ -79,7 +79,7 @@ internal class PropertyTypeDto
     [Reference(ReferenceType.OneToOne, ColumnName = "DataTypeId")]
     public DataTypeDto DataTypeDto { get; set; } = null!;
 
-    [Column("UniqueId")]
+    [Column("uniqueId")]
     [NullSetting(NullSetting = NullSettings.NotNull)]
     [Constraint(Default = SystemMethods.NewGuid)]
     [Index(IndexTypes.UniqueNonClustered, Name = "IX_cmsPropertyTypeUniqueID")]

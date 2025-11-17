@@ -17,7 +17,7 @@ internal sealed class PropertyTypeGroupDto
     [PrimaryKeyColumn(IdentitySeed = 56)]
     public int Id { get; set; }
 
-    [Column("uniqueID")]
+    [Column("uniqueId")]
     [NullSetting(NullSetting = NullSettings.NotNull)]
     [Constraint(Default = SystemMethods.NewGuid)]
     [Index(IndexTypes.UniqueNonClustered, Name = "IX_cmsPropertyTypeGroupUniqueID")]

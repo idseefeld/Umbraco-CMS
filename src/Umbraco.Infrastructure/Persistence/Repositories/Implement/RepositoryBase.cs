@@ -88,4 +88,9 @@ public abstract class RepositoryBase : IRepository
     /// Quotes a column name according to the registered SQL syntax provider.
     /// </summary>
     protected string QuoteColumnName(string? columnName) => SqlSyntax.GetQuotedColumnName(columnName);
+
+    /// <summary>
+    /// Quotes a column name according to the registered SQL syntax provider.
+    /// </summary>
+    protected string QuoteName(string? name) => SqlSyntax.GetQuotedName(name);
 }

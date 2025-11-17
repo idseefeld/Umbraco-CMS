@@ -20,6 +20,8 @@ public class NodeDto
     public const string ParentIdColumnName = "parentId";
     public const string SortOrderColumnName = "sortOrder";
     public const string TrashedColumnName = "trashed";
+    public const string NodeObjectTypeColumnName = "nodeObjectType";
+    public const string TextColumnName = "text";
 
     private int? _userId;
 
