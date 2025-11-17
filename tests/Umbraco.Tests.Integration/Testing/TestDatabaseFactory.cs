@@ -34,6 +34,7 @@ public static class TestDatabaseFactory
             TestDatabaseSettings.TestDatabaseType.Sqlite => new SqliteTestDatabase(settings, dbFactory, loggerFactory),
             TestDatabaseSettings.TestDatabaseType.SqlServer => CreateSqlServer(settings, loggerFactory, dbFactory),
             TestDatabaseSettings.TestDatabaseType.LocalDb => CreateLocalDb(settings, loggerFactory, dbFactory),
+            TestDatabaseSettings.TestDatabaseType.PostgreSql => new PostgreSqlTestDatabase(settings, dbFactory, loggerFactory),
             _ => throw new ApplicationException("Unsupported test database provider")
         };
 

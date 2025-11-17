@@ -1,0 +1,40 @@
+using NPoco;
+using Umbraco.Cms.Infrastructure.Persistence;
+using Our.Umbraco.PostgreSql;
+using System.Data.Common;
+
+namespace Our.Umbraco.PostgreSql.Interceptors;
+
+/// <summary>
+/// Provider-specific interceptor to customize PostgreSQL command execution and scalar mapping.
+/// </summary>
+public class PostgreSqlExecutingInterceptor : IProviderSpecificExecutingInterceptor
+{
+    public string ProviderName => Constants.ProviderName;
+
+    // Called before NPoco executes a DbCommand
+    public void OnExecutingCommand(IDatabase database, DbCommand command)
+    {
+        // Example: normalize RETURNING clauses or adjust timeout
+        if (command?.CommandText is { } sql)
+        {
+            // Simple demo: ensure trailing semicolon (optional)
+            if (!sql.EndsWith(';'))
+            {
+                command.CommandText = sql + ';';
+            }
+        }
+
+        // Example: set a per-command timeout if not set already
+        if (command?.CommandTimeout is null or 0)
+        {
+            command?.CommandTimeout = 30;
+        }
+    }
+
+    // Called after execution (both for readers and scalars)
+    public void OnExecutedCommand(IDatabase database, DbCommand command)
+    {
+        // Place for diagnostics or lightweight metrics
+    }
+}

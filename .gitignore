@@ -109,3 +109,5 @@ tools/docfx/
 /src/Umbraco.Cms/appsettings-schema.json
 playwright-report
 trace.zip
+/src/Error-Playlist.playlist
+/src/Umbraco.Web.UI/uSync/v17

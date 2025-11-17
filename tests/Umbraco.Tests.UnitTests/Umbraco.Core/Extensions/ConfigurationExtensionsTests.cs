@@ -16,6 +16,30 @@ public class ConfigurationExtensionsTests
     private const string DataDirectory = @"C:\Data";
 
     [Test]
+    public void CanParsePostgreSqlConnectionString()
+    {
+        const string ConfiguredConnectionString = @"Host=localhost;Port=5433;Database=UmbracoTest-1;Username=umb;Password=umb;SSL Mode=Allow;";
+        var mockedConfig = CreateConfig(ConfiguredConnectionString, Our.Umbraco.PostgreSql.Constants.ProviderName);
+        var connectionString = mockedConfig.Object.GetUmbracoConnectionString(out var providerName);
+        AssertResults(
+            ConfiguredConnectionString,
+            "Npgsql",
+            connectionString,
+            providerName);
+    }
+    [Test]
+    public void CanParsePostgreSqlConnectionStringWithErrorDetails()
+    {
+        const string ConfiguredConnectionString= @"Host=localhost;Port=5433;Database=UmbracoTest-1;Username=umb;Password=umb;SSL Mode=Allow;Include Error Detail=True;";
+        var mockedConfig = CreateConfig(ConfiguredConnectionString, Our.Umbraco.PostgreSql.Constants.ProviderName);
+        var connectionString = mockedConfig.Object.GetUmbracoConnectionString(out var providerName);
+        AssertResults(
+            ConfiguredConnectionString,
+            "Npgsql",
+            connectionString,
+            providerName);
+    }
+    [Test]
     public void CanParseSqlServerConnectionString()
     {
         const string ConfiguredConnectionString = @"Server=.\SQLEXPRESS;Database=UmbracoCms;Integrated Security=true";
