@@ -27,6 +27,7 @@ public class ConfigurationExtensionsTests
             connectionString,
             providerName);
     }
+
     [Test]
     public void CanParsePostgreSqlConnectionStringWithErrorDetails()
     {
@@ -39,6 +40,7 @@ public class ConfigurationExtensionsTests
             connectionString,
             providerName);
     }
+
     [Test]
     public void CanParseSqlServerConnectionString()
     {

@@ -44,10 +44,12 @@ namespace Our.Umbraco.PostgreSql.Services
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _loggerFactory = loggerFactory;
 
-            ConnectionStrings umbracoConnectionString = new()
+            ConnectionStrings umbracoConnectionString = connectionStrings.CurrentValue;
+            if (!umbracoConnectionString.ProviderName.IsNullOrWhiteSpace())
             {
-                ProviderName = Constants.ProviderName
-            };
+                umbracoConnectionString.ProviderName = Constants.ProviderName;
+            }
+
             if (!umbracoConnectionString.IsConnectionStringConfigured())
             {
                 if (_logger.IsEnabled(LogLevel.Debug))
