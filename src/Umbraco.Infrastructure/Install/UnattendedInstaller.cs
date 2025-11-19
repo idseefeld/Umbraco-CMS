@@ -118,8 +118,6 @@ public class UnattendedInstaller : INotificationAsyncHandler<RuntimeUnattendedIn
                 creator.InitializeDatabaseSchema();
                 database.CompleteTransaction();
 
-                _eventAggregator.Publish(new DatabaseSchemaInitializedNotification(database));
-
                 _logger.LogInformation("Unattended install completed.");
 
                 // Emit an event with EventAggregator that unattended install completed
