@@ -516,9 +516,16 @@ public class DatabaseSchemaCreator
 
         dataCreation.InitializeBaseData(tableName);
 
-        if (SqlSyntax.SupportsIdentityInsert() && tableDefinition.Columns.Any(x => x.IsIdentity))
+        if (tableDefinition.Columns.Any(x => x.IsIdentity))
         {
-            _database.Execute(new Sql($"SET IDENTITY_INSERT {SqlSyntax.GetQuotedTableName(tableName)} OFF;"));
+            if (SqlSyntax.SupportsIdentityInsert())
+            {
+                _database.Execute(new Sql($"SET IDENTITY_INSERT {SqlSyntax.GetQuotedTableName(tableName)} OFF;"));
+            }
+            else if (SqlSyntax.SupportsSequences())
+            {
+                SqlSyntax.AlterSequences(_database, tableName);
+            }
         }
 
         if (overwrite)

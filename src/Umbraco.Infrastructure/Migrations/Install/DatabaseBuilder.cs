@@ -335,8 +335,6 @@ namespace Umbraco.Cms.Infrastructure.Migrations.Install
                     DatabaseSchemaCreator creator = _databaseSchemaCreatorFactory.Create(database);
                     creator.InitializeDatabaseSchema();
 
-                    _aggregator.Publish(new DatabaseSchemaInitializedNotification(database));
-
                     message += "<p>Installation completed!</p>";
 
                     //now that everything is done, we need to determine the version of SQL server that is executing
