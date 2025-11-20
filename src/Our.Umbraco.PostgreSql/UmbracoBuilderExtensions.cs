@@ -16,8 +16,11 @@ using Umbraco.Extensions;
 namespace Our.Umbraco.PostgreSql
 {
     /// <summary>
-    ///     SQLite support extensions for IUmbracoBuilder.
+    /// Provides extension methods for configuring Umbraco to support PostgreSQL as a database provider.
     /// </summary>
+    /// <remarks>These extension methods register the necessary services and components required for Umbraco to
+    /// operate with a PostgreSQL database. Use these methods during application startup to enable PostgreSQL support in
+    /// your Umbraco application.</remarks>
     public static class UmbracoBuilderExtensions
     {
         /// <summary>
@@ -25,7 +28,7 @@ namespace Our.Umbraco.PostgreSql
         /// </summary>
         public static IUmbracoBuilder AddUmbracoPostgreSqlSupport(this IUmbracoBuilder builder)
         {
-            builder.AddNotificationAsyncHandler<DatabaseSchemaInitializedNotification, BaseDataInitializedHandler>();
+            //builder.AddNotificationAsyncHandler<DatabaseSchemaInitializedNotification, PostgreSqlDataInitializedHandler>();
 
             builder.Services.TryAddEnumerable(ServiceDescriptor
                 .Singleton<ISqlSyntaxProvider, PostgreSqlSyntaxProvider>());

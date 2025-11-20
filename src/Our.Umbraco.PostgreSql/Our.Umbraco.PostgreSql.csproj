@@ -13,10 +13,14 @@
   
   <ItemGroup>
     <Compile Remove="DatabaseInitializedHandler.cs" />
+    <Compile Remove="FaultHandling\Strategies\PostgreSqlTransientErrorDetectionStrategy.cs" />
     <Compile Remove="FaultHandling\Strategies\ThrottlingCondition.cs" />
     <Compile Remove="GlobalSuppressions.cs" />
     <Compile Remove="Interceptors\PostgreSqlAddDbConnectionInterceptor.cs" />
+    <Compile Remove="Mappers\PostgreSqlDateTimeScalarMapper.cs" />
+    <Compile Remove="Mappers\PostgreSqlNullableDateTimeScalarMapper.cs" />
     <Compile Remove="NPocoPostgreSqlDatabaseExtensions.cs" />
+    <Compile Remove="PostgreSqlDataInitializedHandler.cs" />
     <Compile Remove="Services\IPostgreSqlAlterSequences.cs" />
     <Compile Remove="Services\PostgreSqlAlterSequences.cs" />
     <Compile Remove="Services\PostgreSqlBulkSqlInsertProvider.cs" />

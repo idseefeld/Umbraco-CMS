@@ -2,9 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Npgsql;
+using Our.Umbraco.PostgreSql.Services;
 using Umbraco.Cms.Infrastructure.Persistence.FaultHandling;
 
-namespace Our.Umbraco.PostgreSql.Services
+namespace Our.Umbraco.PostgreSql.FaultHandling.Strategies
 {
     public class PostgreSqlTransientErrorDetectionStrategy : ITransientErrorDetectionStrategy
     {

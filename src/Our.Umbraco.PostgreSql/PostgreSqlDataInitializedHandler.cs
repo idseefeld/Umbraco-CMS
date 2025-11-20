@@ -8,14 +8,16 @@ using Umbraco.Cms.Infrastructure.Persistence.SqlSyntax;
 
 namespace Our.Umbraco.PostgreSql
 {
-    public class BaseDataInitializedHandler : INotificationAsyncHandler<DatabaseSchemaInitializedNotification>
+    public class PostgreSqlDataInitializedHandler : INotificationAsyncHandler<DatabaseSchemaInitializedNotification>
     {
         private readonly Dictionary<string, long> _lastInsertIds = new Dictionary<string, long>();
-        private readonly ILogger<BaseDataInitializedHandler> _logger;
+        private readonly ILogger<PostgreSqlDataInitializedHandler> _logger;
+        private readonly ISqlSyntaxProvider _syntaxProvider;
 
-        public BaseDataInitializedHandler(ILogger<BaseDataInitializedHandler> logger)
+        public PostgreSqlDataInitializedHandler(ILogger<PostgreSqlDataInitializedHandler> logger, ISqlSyntaxProvider syntaxProvider)
         {
             _logger = logger;
+            _syntaxProvider = syntaxProvider;
         }
 
         public async Task HandleAsync(DatabaseSchemaInitializedNotification notification, CancellationToken cancellationToken)
@@ -25,7 +27,7 @@ namespace Our.Umbraco.PostgreSql
                 return;
             }
 
-            AlterSequences(notification.Database);
+            _syntaxProvider.AlterSequences(notification.Database);
         }
 
         private void AlterSequences(IUmbracoDatabase database)

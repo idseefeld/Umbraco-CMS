@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using NodaTime.Extensions;
 using NPoco;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Infrastructure.Persistence;
@@ -17,7 +18,7 @@ namespace Our.Umbraco.PostgreSql.Mappers
     {
         public override Func<object, object> GetFromDbConverter(MemberInfo destMemberInfo, Type sourceType)
         {
-            var destName = destMemberInfo.Name;
+            var destName = destMemberInfo.DeclaringType?.Name;
             var sourceName = sourceType.Name;
 
             return base.GetFromDbConverter(destMemberInfo, sourceType);
@@ -26,6 +27,15 @@ namespace Our.Umbraco.PostgreSql.Mappers
         {
             var destName = destType.Name;
             var sourceName = sourceType.Name;
+
+            if (destType == typeof(long))
+            {
+                return value =>
+                {
+                    var result = long.Parse($"{value}");
+                    return result;
+                };
+            }
 
             if (destType == typeof(Guid))
             {
@@ -54,7 +64,10 @@ namespace Our.Umbraco.PostgreSql.Mappers
                 return value =>
                 {
                     var dateAsString = $"{value}";
-                    var result = DateTime.Parse(dateAsString).ToUniversalTime();
+                    var dateTime = DateTime.Parse(dateAsString);
+                    var nodaTime = dateTime.ToLocalDateTime();
+                    var result = nodaTime.ToDateTimeUnspecified();
+
                     return result;
                 };
             }

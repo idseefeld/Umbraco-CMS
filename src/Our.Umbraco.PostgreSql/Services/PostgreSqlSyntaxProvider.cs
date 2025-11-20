@@ -31,6 +31,48 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
     private readonly ILogger<PostgreSqlSyntaxProvider> _logger;
     private readonly IDictionary<Type, IScalarMapper> _scalarMappers;
 
+    private readonly Dictionary<string, long> _lastInsertIds = new Dictionary<string, long>();
+    private readonly Dictionary<string, string> _tablesToAlter = new()
+    {
+        {"cmsContentType","pk"},//#
+        {"cmsPropertyType","id"},//#
+        {"cmsPropertyTypeGroup","id"},//#
+        {"umbracoLanguage","id"},//#
+        {"umbracoUser","id"},//#
+        {"umbracoUserGroup","id"},//#
+        {"umbracoNode","id"},//#
+        {"umbracoUserStartNode","id"},
+
+        {"cmsDictionary","pk"},
+        {"cmsLanguageText","pk"},
+        {"cmsMemberType","pk"},
+        {"cmsTags","id"},
+        {"cmsTemplate","pk"},
+        {"umbracoAudit","id"},
+        {"umbracoCacheInstruction","id"},
+        {"umbracoConsent","id"},
+        {"umbracoContentVersionCultureVariation","id"},
+        {"umbracoContentVersion","id"},
+        {"umbracoCreatedPackageSchema","id"},
+        {"umbracoDocumentCultureVariation","id"},
+        {"umbracoDocumentUrl","id"},
+        {"umbracoDomain","id"},
+        {"umbracoExternalLogin","id"},
+        {"umbracoExternalLoginToken","id"},
+        {"umbracoLogViewerQuery","id"},
+        {"umbracoLog","id"},
+        {"umbracoPropertyData","id"},
+        {"umbracoRelation","id"},
+        {"umbracoRelationType","id"},
+        {"umbracoServer","id"},
+        {"umbracoTwoFactorLogin","id"},
+        {"umbracoUserGroup2GranularPermission","id"},
+        {"umbracoUserGroup2Permission","id"},
+        {"umbracoWebhook","id"},
+        {"umbracoWebhookLog","id"},
+        {"umbracoWebhookRequest","id"},
+    };
+
     /// <summary>
     /// Initializes a new instance of the <see cref="PostgreSqlSyntaxProvider"/> class.
     /// </summary>
@@ -45,6 +87,8 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
 
         _scalarMappers = new Dictionary<Type, IScalarMapper>
         {
+            [typeof(long)] = new PostgreSqlLongScalarMapper(),
+            [typeof(long?)] = new PostgreSqlNullableLongScalarMapper(),
             [typeof(Guid)] = new PostgreSqlGuidScalarMapper(),
             [typeof(Guid?)] = new PostgreSqlNullableGuidScalarMapper(),
             [typeof(DateTime)] = new PostgreSqlDateTimeScalarMapper(),
@@ -58,8 +102,8 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
         BoolColumnDefinition = "BOOLEAN";
 
         GuidColumnDefinition = "UUID";
-        DateTimeColumnDefinition = "TIMESTAMP WITHOUT TIME ZONE";
-        DateTimeOffsetColumnDefinition = "TIMESTAMP WITHOUT TIME ZONE"; // "TIMESTAMPTZ";
+        DateTimeColumnDefinition = "TIMESTAMP"; // "TIMESTAMPTZ"; // "TIMESTAMP WITH TIME ZONE";
+        DateTimeOffsetColumnDefinition = "TIMESTAMP"; // "TIMESTAMP"; // "TIMESTAMP WITHOUT TIME ZONE";
         TimeColumnDefinition = "TIME";
         DecimalColumnDefinition = "NUMERIC(20,9)";
 
@@ -93,6 +137,77 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
 
     /// <inheritdoc />
     public override bool SupportsIdentityInsert() => false; // PostgreSQL does not support identity insert
+
+    /// <inheritdoc />
+    public override bool SupportsSequences() => true; // PostgreSQL does not support identity insert
+
+    /// <inheritdoc />
+    public override void AlterSequences(IUmbracoDatabase database)
+    {
+        if (_lastInsertIds.Count < _tablesToAlter.Count)
+        {
+            _logger.LogDebug("Altering sequences for PostgreSQL database after schema and data creation.");
+
+            foreach (var table in _tablesToAlter)
+            {
+                AlterSequence(database, table.Key, table.Value);
+            }
+        }
+    }
+
+    /// <inheritdoc />
+    public override void AlterSequences(IUmbracoDatabase database, string tableName)
+    {
+        if (string.IsNullOrEmpty(tableName))
+        {
+            AlterSequences(database);
+        }
+        else
+        {
+            KeyValuePair<string, string> tableToAlter = _tablesToAlter.FirstOrDefault(t => t.Key.Equals(tableName, StringComparison.InvariantCultureIgnoreCase));
+            AlterSequence(database, tableToAlter.Key, tableToAlter.Value);
+        }
+    }
+
+    private void AlterSequence(IUmbracoDatabase database, string tableName, string primaryKeyName)
+    {
+        ISqlContext? sqlContext = database.SqlContext;
+        if (sqlContext is null)
+        {
+            _logger.LogWarning("No ambient scope or SQL context available, cannot alter sequences.");
+            return;
+        }
+
+        if (string.IsNullOrEmpty(tableName) || string.IsNullOrEmpty(primaryKeyName))
+        {
+            _logger.LogWarning("Cannot alter sequence, if table name or primary key name is null or empty.");
+            return;
+        }
+
+        ISqlSyntaxProvider sqlSyntax = sqlContext.SqlSyntax;
+        var quotedId = sqlSyntax.GetQuotedColumnName(primaryKeyName);
+        var quotedTable = sqlSyntax.GetQuotedTableName(tableName);
+
+        string seqName = sqlSyntax.GetQuotedTableName($"{tableName}_{primaryKeyName}_seq");
+        try
+        {
+            var maxIdSql = $"SELECT MAX({quotedId}) FROM {quotedTable}";
+            long maxId = database.ExecuteScalar<long>(maxIdSql);
+            _lastInsertIds[seqName] = maxId;
+            if (maxId > 0)
+            {
+                var alterSeqSql = $"ALTER SEQUENCE {seqName} RESTART WITH {maxId + 1}";
+                _logger.LogDebug("Identity sequence updated: {alterSeqSql}", alterSeqSql);
+                database.Execute(alterSeqSql);
+            }
+        }
+        catch (Exception ex)
+        {
+            var msg = ex.Message;
+            _logger.LogError(ex, "Error updating sequence for {TableName}.{PrimaryKeyName}", tableName, primaryKeyName);
+        }
+    }
+
 
     /// <inheritdoc />
     public override string StringColumnDefinition { get; } = "TEXT";
@@ -189,7 +304,7 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
 
     private readonly string[] SqlKeywords = ["USER", "ORDER", "GROUP", "SELECT", "INSERT", "UPDATE", "DELETE", "TABLE", "COLUMN", "INDEX", "WHERE", "FROM", "JOIN"];
 
-    
+
 
     private string GetQuotedIdentifier(string? identifier)
     {

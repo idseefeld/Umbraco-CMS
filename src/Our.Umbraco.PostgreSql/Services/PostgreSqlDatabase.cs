@@ -5,7 +5,9 @@ using System.Data.Common;
 using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Transactions;
 using Microsoft.Extensions.Logging;
 using NPoco;
 using Umbraco.Cms.Infrastructure.Migrations.Install;
@@ -58,6 +60,12 @@ namespace Our.Umbraco.PostgreSql.Services
             autoIncrement = ValidateAutoIncrement(tableName, primaryKeyName, autoIncrement, poco);
 
             return await base.InsertAsync<T>(tableName, FixPrimaryKey(primaryKeyName), autoIncrement, poco, cancellationToken);
+        }
+
+        public override DbCommand CreateCommand(DbConnection connection, CommandType commandType, string sql, params object[] args)
+        {
+            var convertedArgs = args.Select(arg => arg is DateTime uct ? uct.ToUniversalTime() : arg).ToArray();
+            return base.CreateCommand(connection,commandType, sql, convertedArgs);
         }
 
         private static string? FixPrimaryKey(string primaryKeyName)

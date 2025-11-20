@@ -411,12 +411,37 @@ public class UmbracoDatabase : Database, IUmbracoDatabase
     /// </remarks>
     public new T ExecuteScalar<T>(string sql, CommandType commandType, params object[] args)
     {
-        if (SqlContext.SqlSyntax.ScalarMappers == null)
+        // Special case Guid/Guid? when no scalar mapper exists.
+        // NPoco's default implementation uses Convert.ChangeType which throws for Guid because Guid does not implement IConvertible.
+        // This reproduces the InvalidCastException seen in tests when querying a Guid column with ExecuteScalar<Guid?> on providers
+        // that do not supply ScalarMappers (e.g. SQL Server / PostgreSQL). We bypass Convert.ChangeType and manually coerce.
+        bool isGuidType = typeof(T) == typeof(Guid) || typeof(T) == typeof(Guid?);
+        var mappers = SqlContext.SqlSyntax.ScalarMappers;
+        if (isGuidType && (mappers == null || !mappers.ContainsKey(typeof(T))))
+        {
+            var raw = base.ExecuteScalar<object>(sql, commandType, args);
+            if (raw == null || raw is DBNull)
+            {
+                return default!; // null for Guid? ; Guid default for Guid
+            }
+            if (raw is Guid g)
+            {
+                return (T)(object)g;
+            }
+            if (Guid.TryParse(raw.ToString(), out var parsed))
+            {
+                return (T)(object)parsed;
+            }
+            // Could not parse, return default (will be null for Guid?)
+            return default!;
+        }
+
+        if (mappers == null)
         {
             return base.ExecuteScalar<T>(sql, commandType, args);
         }
 
-        if (!SqlContext.SqlSyntax.ScalarMappers.TryGetValue(typeof(T), out IScalarMapper? mapper))
+        if (!mappers.TryGetValue(typeof(T), out IScalarMapper? mapper))
         {
             return base.ExecuteScalar<T>(sql, commandType, args);
         }

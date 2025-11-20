@@ -18,11 +18,7 @@ public class PostgreSqlExecutingInterceptor : IProviderSpecificExecutingIntercep
         // Example: normalize RETURNING clauses or adjust timeout
         if (command?.CommandText is { } sql)
         {
-            // Simple demo: ensure trailing semicolon (optional)
-            if (!sql.EndsWith(';'))
-            {
-                command.CommandText = sql + ';';
-            }
+
         }
 
         // Example: set a per-command timeout if not set already

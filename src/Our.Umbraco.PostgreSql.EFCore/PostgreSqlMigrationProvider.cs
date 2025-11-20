@@ -17,7 +17,8 @@ namespace Our.Umbraco.PostgreSql.EFCore
         {
             // ToDo: wait until BaseDataInitializedHandler.AlterSquences is done - see Umbraco.Cms.Infrastructure.Migrations.EFCoreMigrationProvider
             UmbracoDbContext context = await _dbContextFactory.CreateDbContextAsync();
-            await context.MigrateDatabaseAsync(GetMigrationType(migration));
+            var migrationType = GetMigrationType(migration);
+            await context.MigrateDatabaseAsync(migrationType);
         }
 
         public async Task MigrateAllAsync()

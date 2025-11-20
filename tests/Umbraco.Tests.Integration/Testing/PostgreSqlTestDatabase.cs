@@ -11,7 +11,9 @@ using Our.Umbraco.PostgreSql.Services;
 using Umbraco.Cms.Core.Configuration;
 using Umbraco.Cms.Core.Configuration.Models;
 using Umbraco.Cms.Core.Events;
+using Umbraco.Cms.Core.Notifications;
 using Umbraco.Cms.Infrastructure.Migrations.Install;
+using Umbraco.Cms.Infrastructure.Migrations.Notifications;
 using Umbraco.Cms.Infrastructure.Persistence;
 using Umbraco.Cms.Infrastructure.Persistence.Mappers;
 using Umbraco.Cms.Persistence.Sqlite.Mappers;
@@ -93,18 +95,31 @@ namespace Umbraco.Cms.Tests.Integration.Testing
             {
                 database.LogCommands = true;
 
+                var isPostgreSqlDatabase = database is PostgreSqlDatabase;
+
                 using (var transaction = database.GetTransaction())
                 {
                     var options =
                     new TestOptionsMonitor<InstallDefaultDataSettings>(
                         new InstallDefaultDataSettings { InstallData = InstallDefaultDataOption.All });
 
+                    var logger = _loggerFactory.CreateLogger<DatabaseSchemaCreator>();
+                    var umbarcoVersion = new UmbracoVersion();
+
+                    var eventAggregator = Mock.Of<IEventAggregator>();
+                    //var eventAggregator = new Mock<IEventAggregator>();
+                    //eventAggregator.Setup(x => x.Publish(It.IsAny<DatabaseSchemaInitializedNotification>()))
+                    //    .Callback<DatabaseSchemaInitializedNotification>(n =>
+                    //    {
+                    //        new EventAggregator(_serviceFactory).Publish(n);
+                    //    });
+
                     var schemaCreator = new DatabaseSchemaCreator(
                         database,
-                        _loggerFactory.CreateLogger<DatabaseSchemaCreator>(),
+                        logger,
                         _loggerFactory,
-                        new UmbracoVersion(),
-                        Mock.Of<IEventAggregator>(),
+                        umbarcoVersion,
+                        eventAggregator,
                         options);
 
                     schemaCreator.InitializeDatabaseSchema();
@@ -117,12 +132,14 @@ namespace Umbraco.Cms.Tests.Integration.Testing
                 }
             }
         }
-
+        private readonly ServiceFactory _serviceFactory;
         public PostgreSqlTestDatabase(
             TestDatabaseSettings settings,
             TestUmbracoDatabaseFactoryProvider dbFactoryProvider,
-            ILoggerFactory loggerFactory)
+            ILoggerFactory loggerFactory,
+            ServiceFactory serviceFactory)
         {
+            _serviceFactory = serviceFactory;
             _loggerFactory = loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory));
             _dbFactoryProvider = dbFactoryProvider;
             _databaseFactory = dbFactoryProvider.Create();
