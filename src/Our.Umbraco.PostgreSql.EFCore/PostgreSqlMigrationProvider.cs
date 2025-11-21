@@ -24,12 +24,6 @@ namespace Our.Umbraco.PostgreSql.EFCore
         public async Task MigrateAllAsync()
         {
             UmbracoDbContext context = await _dbContextFactory.CreateDbContextAsync();
-
-            if (context.Database.CurrentTransaction is not null)
-            {
-                throw new InvalidOperationException("Cannot migrate all when a transaction is active.");
-            }
-
             await context.Database.MigrateAsync();
         }
 

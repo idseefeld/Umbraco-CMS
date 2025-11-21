@@ -25,6 +25,8 @@
     <Compile Remove="Services\PostgreSqlAlterSequences.cs" />
     <Compile Remove="Services\PostgreSqlBulkSqlInsertProvider.cs" />
     <Compile Remove="Services\PostgreSqlDatabaseFactory - Copy.cs" />
+    <Compile Remove="Services\PostgreSqlDatabaseSchemaCreator.cs" />
+    <Compile Remove="Services\PostgreSqlDatabaseSchemaCreatorFactory.cs" />
     <Compile Remove="Services\PostgreSqlSyntaxProviderBase.cs" />
   </ItemGroup>
 

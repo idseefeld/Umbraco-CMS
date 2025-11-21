@@ -29,13 +29,13 @@ public static class TestDatabaseFactory
     /// $ docker run -e 'ACCEPT_EULA=Y' -e "SA_PASSWORD=MySuperSecretPassword123!" -e 'MSSQL_PID=Developer' -p 1433:1433 -d mcr.microsoft.com/mssql/server:2017-latest-ubuntu
     /// </code>
     /// </example>
-    public static ITestDatabase Create(TestDatabaseSettings settings, TestUmbracoDatabaseFactoryProvider dbFactory, ILoggerFactory loggerFactory, ServiceFactory serviceFactory) =>
+    public static ITestDatabase Create(TestDatabaseSettings settings, TestUmbracoDatabaseFactoryProvider dbFactory, ILoggerFactory loggerFactory) =>
         settings.DatabaseType switch
         {
             TestDatabaseSettings.TestDatabaseType.Sqlite => new SqliteTestDatabase(settings, dbFactory, loggerFactory),
             TestDatabaseSettings.TestDatabaseType.SqlServer => CreateSqlServer(settings, loggerFactory, dbFactory),
             TestDatabaseSettings.TestDatabaseType.LocalDb => CreateLocalDb(settings, loggerFactory, dbFactory),
-            TestDatabaseSettings.TestDatabaseType.PostgreSql => new PostgreSqlTestDatabase(settings, dbFactory, loggerFactory, serviceFactory),
+            TestDatabaseSettings.TestDatabaseType.PostgreSql => new PostgreSqlTestDatabase(settings, dbFactory, loggerFactory),
             _ => throw new ApplicationException("Unsupported test database provider")
         };
 

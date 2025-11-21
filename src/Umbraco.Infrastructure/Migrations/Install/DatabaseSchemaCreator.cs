@@ -179,14 +179,7 @@ public class DatabaseSchemaCreator
                 _installDefaultDataSettings);
             foreach (Type table in _orderedTables)
             {
-                try
-                {
-                    CreateTable(false, table, dataCreation);
-                }
-                catch (Exception ex)
-                {
-                    throw;
-                }
+                CreateTable(false, table, dataCreation);
             }
         }
 

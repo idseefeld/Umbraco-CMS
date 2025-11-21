@@ -1,12 +1,10 @@
 // Copyright (c) Umbraco.
 // See LICENSE for more details.
 
-using System;
 using Examine;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -14,7 +12,6 @@ using Moq;
 using NUnit.Framework;
 using Our.Umbraco.PostgreSql.EFCore;
 using Our.Umbraco.PostgreSql.EFCore.Locking;
-using Our.Umbraco.PostgreSql.Services;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Cache;
 using Umbraco.Cms.Core.Cache.PartialViewCacheInvalidators;
@@ -27,7 +24,6 @@ using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.Sync;
 using Umbraco.Cms.Infrastructure.Examine;
 using Umbraco.Cms.Infrastructure.HostedServices;
-using Umbraco.Cms.Infrastructure.Persistence;
 using Umbraco.Cms.Infrastructure.PublishedCache;
 using Umbraco.Cms.Persistence.EFCore.Locking;
 using Umbraco.Cms.Persistence.EFCore.Scoping;
@@ -35,7 +31,6 @@ using Umbraco.Cms.Tests.Common.TestHelpers.Stubs;
 using Umbraco.Cms.Tests.Integration.Implementations;
 using Umbraco.Cms.Tests.Integration.Testing;
 using Umbraco.Cms.Tests.Integration.Umbraco.Persistence.EFCore.DbContext;
-using Constants = Umbraco.Cms.Core.Constants;
 
 namespace Umbraco.Cms.Tests.Integration.DependencyInjection;
 
@@ -50,7 +45,6 @@ public static class UmbracoBuilderExtensions
     /// </summary>
     public static IUmbracoBuilder AddTestServices(this IUmbracoBuilder builder, TestHelper testHelper)
     {
-        var testDatabaseType = builder.Config.GetValue<TestDatabaseSettings.TestDatabaseType>("Tests:Database:DatabaseType");
         builder.Services.AddUnique(AppCaches.NoCache);
         builder.Services.AddUnique(Mock.Of<IMemberPartialViewCacheInvalidator>());
 
@@ -73,6 +67,7 @@ public static class UmbracoBuilderExtensions
         builder.Services.AddDbContext<TestUmbracoDbContext>(
             (serviceProvider, options) =>
             {
+                var testDatabaseType = builder.Config.GetValue<TestDatabaseSettings.TestDatabaseType>("Tests:Database:DatabaseType");
                 if (testDatabaseType is TestDatabaseSettings.TestDatabaseType.Sqlite)
                 {
                     options.UseSqlite(serviceProvider.GetRequiredService<IOptionsMonitor<ConnectionStrings>>().CurrentValue.ConnectionString);
@@ -92,6 +87,7 @@ public static class UmbracoBuilderExtensions
         builder.Services.AddDbContextFactory<TestUmbracoDbContext>(
             (serviceProvider, options) =>
             {
+                var testDatabaseType = builder.Config.GetValue<TestDatabaseSettings.TestDatabaseType>("Tests:Database:DatabaseType");
                 if (testDatabaseType is TestDatabaseSettings.TestDatabaseType.Sqlite)
                 {
                     options.UseSqlite(serviceProvider.GetRequiredService<IOptionsMonitor<ConnectionStrings>>().CurrentValue.ConnectionString);

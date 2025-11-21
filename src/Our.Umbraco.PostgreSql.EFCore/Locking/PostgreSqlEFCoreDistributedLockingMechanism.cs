@@ -16,6 +16,16 @@ using Umbraco.Extensions;
 
 namespace Our.Umbraco.PostgreSql.EFCore.Locking;
 
+/// <summary>
+/// Provides a distributed locking mechanism for PostgreSQL databases using Entity Framework Core, enabling safe
+/// coordination of concurrent operations across multiple processes or instances.
+/// </summary>
+/// <remarks>This implementation integrates with the Umbraco scope and transaction system to ensure that
+/// distributed locks are acquired and released in the context of an active EF Core transaction. Locks are managed at
+/// the database level, allowing multiple application instances to coordinate access to shared resources. The mechanism
+/// requires that the connection string is configured for PostgreSQL and that an ambient EF Core scope is present.
+/// Thread safety and correct transaction isolation are enforced by the underlying infrastructure.</remarks>
+/// <typeparam name="T">The type of the Entity Framework Core DbContext to use for database access.</typeparam>
 public sealed class PostgreSqlEFCoreDistributedLockingMechanism<T> : IDistributedLockingMechanism
     where T : DbContext
 {
@@ -127,12 +137,8 @@ public sealed class PostgreSqlEFCoreDistributedLockingMechanism<T> : IDistribute
 
         private void ObtainReadLock()
         {
-            IEfCoreScope<T>? scope = _parent._scopeAccessorEFCore.Value.AmbientScope;
-
-            if (scope is null)
-            {
-                throw new PanicException("No ambient scope");
-            }
+            IEfCoreScope<T>? scope = _parent._scopeAccessorEFCore.Value.AmbientScope
+                ?? throw new PanicException("No ambient scope");
 
             scope.ExecuteWithContextAsync<Task>(async dbContext =>
             {
@@ -168,11 +174,8 @@ public sealed class PostgreSqlEFCoreDistributedLockingMechanism<T> : IDistribute
 
         private void ObtainWriteLock()
         {
-            IEfCoreScope<T>? scope = _parent._scopeAccessorEFCore.Value.AmbientScope;
-            if (scope is null)
-            {
-                throw new PanicException("No ambient scope");
-            }
+            IEfCoreScope<T>? scope = _parent._scopeAccessorEFCore.Value.AmbientScope
+                ?? throw new PanicException("No ambient scope");
 
             scope.ExecuteWithContextAsync<Task>(async dbContext =>
             {

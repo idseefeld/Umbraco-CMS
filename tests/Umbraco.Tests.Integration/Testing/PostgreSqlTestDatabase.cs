@@ -52,8 +52,8 @@ namespace Umbraco.Cms.Tests.Integration.Testing
 
         protected override void RebuildSchema(IDbCommand command, TestDbMeta meta)
         {
-            using var connection = GetConnection(meta);
-            connection.Open();
+            //using var connection = GetConnection(meta);
+            //connection.Open();
 
             lock (_cachedDatabaseInitCommands)
             {
@@ -64,12 +64,12 @@ namespace Umbraco.Cms.Tests.Integration.Testing
                 }
             }
 
-            // Get NPoco to handle all the type mappings (e.g. dates) for us.
-            var database = new Database(connection, DatabaseType.PostgreSQL);
-            database.BeginTransaction();
+            //// Get NPoco to handle all the type mappings (e.g. dates) for us.
+            //var database = new Database(connection, DatabaseType.PostgreSQL);
+            //database.BeginTransaction();
 
-            database.Mappers.Add(new NullableDateMapper());
-            database.Mappers.Add(new PostgreSqlPocoMapper());
+            //database.Mappers.Add(new NullableDateMapper());
+            //database.Mappers.Add(new PostgreSqlPocoMapper());
 
             foreach (var dbCommand in _cachedDatabaseInitCommands)
             {
@@ -84,7 +84,7 @@ namespace Umbraco.Cms.Tests.Integration.Testing
                 command.ExecuteNonQuery();
             }
 
-            database.CompleteTransaction();
+            //database.CompleteTransaction();
         }
 
         private void RebuildSchemaFirstTime(TestDbMeta meta)
@@ -106,20 +106,12 @@ namespace Umbraco.Cms.Tests.Integration.Testing
                     var logger = _loggerFactory.CreateLogger<DatabaseSchemaCreator>();
                     var umbarcoVersion = new UmbracoVersion();
 
-                    var eventAggregator = Mock.Of<IEventAggregator>();
-                    //var eventAggregator = new Mock<IEventAggregator>();
-                    //eventAggregator.Setup(x => x.Publish(It.IsAny<DatabaseSchemaInitializedNotification>()))
-                    //    .Callback<DatabaseSchemaInitializedNotification>(n =>
-                    //    {
-                    //        new EventAggregator(_serviceFactory).Publish(n);
-                    //    });
-
                     var schemaCreator = new DatabaseSchemaCreator(
                         database,
                         logger,
                         _loggerFactory,
                         umbarcoVersion,
-                        eventAggregator,
+                        Mock.Of<IEventAggregator>(),
                         options);
 
                     schemaCreator.InitializeDatabaseSchema();
@@ -132,14 +124,12 @@ namespace Umbraco.Cms.Tests.Integration.Testing
                 }
             }
         }
-        private readonly ServiceFactory _serviceFactory;
+
         public PostgreSqlTestDatabase(
             TestDatabaseSettings settings,
             TestUmbracoDatabaseFactoryProvider dbFactoryProvider,
-            ILoggerFactory loggerFactory,
-            ServiceFactory serviceFactory)
+            ILoggerFactory loggerFactory)
         {
-            _serviceFactory = serviceFactory;
             _loggerFactory = loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory));
             _dbFactoryProvider = dbFactoryProvider;
             _databaseFactory = dbFactoryProvider.Create();

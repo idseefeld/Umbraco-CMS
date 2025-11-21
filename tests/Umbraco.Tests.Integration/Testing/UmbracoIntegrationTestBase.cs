@@ -25,11 +25,7 @@ public abstract class UmbracoIntegrationTestBase
     private static readonly Lock _dbLocker = new();
     private static ITestDatabase? _dbInstance;
     private static TestDbMeta _fixtureDbMeta;
-#pragma warning disable IDE1006 // Naming Styles
-#pragma warning disable SA1306 // Field names should begin with lower-case letter
     protected static int TestCount = 1;
-#pragma warning restore SA1306 // Field names should begin with lower-case letter
-#pragma warning restore IDE1006 // Naming Styles
     private readonly List<Action> _fixtureTeardown = new();
     private readonly Queue<Action> _testTeardown = new();
     private bool _firstTestInFixture = true;
@@ -124,8 +120,7 @@ public abstract class UmbracoIntegrationTestBase
 
         var db = GetOrCreateDatabase(
             serviceProvider.GetRequiredService<ILoggerFactory>(),
-            serviceProvider.GetRequiredService<TestUmbracoDatabaseFactoryProvider>(),
-            serviceProvider);
+            serviceProvider.GetRequiredService<TestUmbracoDatabaseFactoryProvider>());
 
         TestDbMeta meta = TestOptions.Database switch
         {
@@ -161,7 +156,7 @@ public abstract class UmbracoIntegrationTestBase
         return _fixtureDbMeta;
     }
 
-    private ITestDatabase GetOrCreateDatabase(ILoggerFactory loggerFactory, TestUmbracoDatabaseFactoryProvider dbFactory, IServiceProvider serviceProvider)
+    private ITestDatabase GetOrCreateDatabase(ILoggerFactory loggerFactory, TestUmbracoDatabaseFactoryProvider dbFactory)
     {
         lock (_dbLocker)
         {
@@ -183,8 +178,7 @@ public abstract class UmbracoIntegrationTestBase
 
             Directory.CreateDirectory(settings.FilesPath);
 
-            var serviceFactory = serviceProvider.GetRequiredService<ServiceFactory>();
-            _dbInstance = TestDatabaseFactory.Create(settings, dbFactory, loggerFactory, serviceFactory);
+            _dbInstance = TestDatabaseFactory.Create(settings, dbFactory, loggerFactory);
 
             return _dbInstance;
         }
