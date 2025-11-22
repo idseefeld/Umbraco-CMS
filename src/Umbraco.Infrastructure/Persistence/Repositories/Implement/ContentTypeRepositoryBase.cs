@@ -1625,7 +1625,7 @@ internal abstract class ContentTypeRepositoryBase<TEntity> : EntityRepositoryBas
     public bool HasContentNodes(int id)
     {
         var sql = new Sql(
-            $"SELECT CASE WHEN EXISTS (SELECT * FROM {QuoteTableName(ContentDto.TableName)} WHERE {QuoteColumnName("contentTypeId")} = @id) THEN 1 ELSE 0 END",
+            $"SELECT CASE WHEN EXISTS (SELECT * FROM {QuoteTableName(ContentDto.TableName)} WHERE {QuoteColumnName(ContentDto.ContentTypeIdName)} = @id) THEN 1 ELSE 0 END",
             new { id });
         return Database.ExecuteScalar<int>(sql) == 1;
     }
@@ -1637,18 +1637,18 @@ internal abstract class ContentTypeRepositoryBase<TEntity> : EntityRepositoryBas
         // is included here just to be 100% sure since it has a FK on cmsPropertyType.
         var list = new List<string>
         {
-            $"DELETE FROM {QuoteTableName(User2NodeNotifyDto.TableName)} WHERE {QuoteColumnName("nodeId")} = @id",
-            $@"DELETE FROM {QuoteTableName(UserGroup2GranularPermissionDto.TableName)} WHERE {QuoteColumnName("uniqueId")} IN
-                (SELECT {QuoteColumnName("uniqueId")} FROM {QuoteTableName(NodeDto.TableName)} WHERE id = @id)",
-            $"DELETE FROM {QuoteTableName(TagRelationshipDto.TableName)} WHERE {QuoteColumnName("nodeId")} = @id",
-            $"DELETE FROM {QuoteTableName(ContentTypeAllowedContentTypeDto.TableName)} WHERE {QuoteColumnName("Id")} = @id",
-            $"DELETE FROM {QuoteTableName(ContentTypeAllowedContentTypeDto.TableName)} WHERE {QuoteColumnName("AllowedId")} = @id",
-            $"DELETE FROM {QuoteTableName(ContentType2ContentTypeDto.TableName)} WHERE {QuoteColumnName("parentContentTypeId")} = @id",
-            $"DELETE FROM {QuoteTableName(ContentType2ContentTypeDto.TableName)} WHERE {QuoteColumnName("childContentTypeId")} = @id",
-            $@"DELETE FROM {QuoteTableName(PropertyDataDto.TableName)} WHERE {QuoteColumnName("propertyTypeId")} IN
-                (SELECT id FROM {QuoteTableName(PropertyTypeDto.TableName)} WHERE {QuoteColumnName("contentTypeId")} = @id)",
-            $"DELETE FROM {QuoteTableName(PropertyTypeDto.TableName)} WHERE {QuoteColumnName("contentTypeId")} = @id",
-            $"DELETE FROM {QuoteTableName(PropertyTypeGroupDto.TableName)} WHERE {QuoteColumnName("contenttypeNodeId")} = @id",
+            $"DELETE FROM {QuoteTableName(User2NodeNotifyDto.TableName)} WHERE {QuoteColumnName(User2NodeNotifyDto.PrimaryKeyName)} = @id",
+            $@"DELETE FROM {QuoteTableName(UserGroup2GranularPermissionDto.TableName)} WHERE {QuoteColumnName(UserGroup2GranularPermissionDto.PrimaryKeyName)} IN
+                (SELECT {QuoteColumnName("uniqueId")} FROM {QuoteTableName(NodeDto.TableName)} WHERE {QuoteColumnName(NodeDto.PrimaryKeyName)} = @id)",
+            $"DELETE FROM {QuoteTableName(TagRelationshipDto.TableName)} WHERE {QuoteColumnName(TagRelationshipDto.PrimaryKeyName)} = @id",
+            $"DELETE FROM {QuoteTableName(ContentTypeAllowedContentTypeDto.TableName)} WHERE {QuoteColumnName(ContentTypeAllowedContentTypeDto.PrimaryKeyName)} = @id",
+            $"DELETE FROM {QuoteTableName(ContentTypeAllowedContentTypeDto.TableName)} WHERE {QuoteColumnName(ContentTypeAllowedContentTypeDto.AllowedIdName)} = @id",
+            $"DELETE FROM {QuoteTableName(ContentType2ContentTypeDto.TableName)} WHERE {QuoteColumnName(ContentType2ContentTypeDto.PrimaryKeyName)} = @id",
+            $"DELETE FROM {QuoteTableName(ContentType2ContentTypeDto.TableName)} WHERE {QuoteColumnName(ContentType2ContentTypeDto.ChildIdName)} = @id",
+            $@"DELETE FROM {QuoteTableName(PropertyDataDto.TableName)} WHERE {QuoteColumnName(PropertyDataDto.PropertyTypeIdName)} IN
+                (SELECT id FROM {QuoteTableName(PropertyTypeDto.TableName)} WHERE {QuoteColumnName(PropertyTypeDto.ContentTypeIdName)} = @id)",
+            $"DELETE FROM {QuoteTableName(PropertyTypeDto.TableName)} WHERE {QuoteColumnName(PropertyTypeDto.ContentTypeIdName)} = @id",
+            $"DELETE FROM {QuoteTableName(PropertyTypeGroupDto.TableName)} WHERE {QuoteColumnName(PropertyTypeGroupDto.ContentTypeNodeIdName)} = @id",
         };
         return list;
     }

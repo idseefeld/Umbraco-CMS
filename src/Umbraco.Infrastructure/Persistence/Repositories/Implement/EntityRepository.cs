@@ -360,7 +360,7 @@ internal sealed class EntityRepository : RepositoryBase, IEntityRepositoryExtend
             .SelectCount()
             .From().AppendSubQuery(rowNumberSql, "nn")
             .Where($"rn {(getBefore ? "<" : ">")} ({targetRowSql.SQL}) {(getBefore ? "-" : "+")} @{parameterIndex}", arguments);
-        return Database.ExecuteScalar<long>(sql);
+        return Database.FirstOrDefault<long>(sql);
     }
 
 
