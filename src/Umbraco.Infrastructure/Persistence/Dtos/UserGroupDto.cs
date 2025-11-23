@@ -12,6 +12,7 @@ public class UserGroupDto
 {
     public const string TableName = Constants.DatabaseSchema.Tables.UserGroup;
     public const string PrimaryKeyName = Constants.DatabaseSchema.PrimaryKeyNameId;
+    public const string KeyColumnName = Constants.DatabaseSchema.PrimaryKeyNameKey;
 
     public UserGroupDto()
     {
@@ -25,7 +26,7 @@ public class UserGroupDto
     [PrimaryKeyColumn(IdentitySeed = 6)]
     public int Id { get; set; }
 
-    [Column("key")]
+    [Column(KeyColumnName)]
     [NullSetting(NullSetting = NullSettings.NotNull)]
     [Constraint(Default = SystemMethods.NewGuid)]
     [Index(IndexTypes.UniqueNonClustered, Name = "IX_umbracoUserGroup_userGroupKey")]

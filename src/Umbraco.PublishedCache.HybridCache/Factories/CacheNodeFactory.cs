@@ -1,4 +1,4 @@
-﻿using Umbraco.Cms.Core.Models;
+using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Strings;
 using Umbraco.Extensions;
 
@@ -17,8 +17,6 @@ internal sealed class CacheNodeFactory : ICacheNodeFactory
 
     public ContentCacheNode ToContentCacheNode(IContent content, bool preview)
     {
-
-
         ContentData contentData = GetContentData(
             content,
               GetPublishedValue(content, preview),
