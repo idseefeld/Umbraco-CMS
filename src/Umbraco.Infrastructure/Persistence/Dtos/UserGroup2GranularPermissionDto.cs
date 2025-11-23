@@ -19,7 +19,7 @@ public class UserGroup2GranularPermissionDto
 
     [Column("userGroupKey")]
     [Index(IndexTypes.NonClustered, Name = "IX_umbracoUserGroup2GranularPermissionDto_UserGroupKey_UniqueId", IncludeColumns = UniqueIdName)]
-    [ForeignKey(typeof(UserGroupDto), Column = "key")]
+    [ForeignKey(typeof(UserGroupDto), Column = UserGroupDto.KeyColumnName)]
     public Guid UserGroupKey { get; set; }
 
     [Column(UniqueIdName)]
