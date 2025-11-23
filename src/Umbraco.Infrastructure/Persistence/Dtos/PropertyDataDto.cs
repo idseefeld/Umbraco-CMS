@@ -12,6 +12,8 @@ internal sealed class PropertyDataDto
 {
     public const string TableName = Constants.DatabaseSchema.Tables.PropertyData;
     public const string PrimaryKeyName = Constants.DatabaseSchema.PrimaryKeyNameId;
+    public const string PropertyTypeIdName = "propertyTypeId";
+    public const string VersionIdName = "versionId";
     public const int VarcharLength = 512;
     public const int SegmentLength = 256;
 
@@ -22,12 +24,12 @@ internal sealed class PropertyDataDto
     [PrimaryKeyColumn]
     public int Id { get; set; }
 
-    [Column("versionId")]
+    [Column(VersionIdName)]
     [ForeignKey(typeof(ContentVersionDto))]
-    [Index(IndexTypes.UniqueNonClustered, Name = "IX_" + TableName + "_VersionId", ForColumns = "versionId,propertyTypeId,languageId,segment")]
+    [Index(IndexTypes.UniqueNonClustered, Name = "IX_" + TableName + "_VersionId", ForColumns = $"{VersionIdName},{PropertyTypeIdName},languageId,segment")]
     public int VersionId { get; set; }
 
-    [Column("propertyTypeId")]
+    [Column(PropertyTypeIdName)]
     [ForeignKey(typeof(PropertyTypeDto))]
     [Index(IndexTypes.NonClustered, Name = "IX_" + TableName + "_PropertyTypeId")]
     public int PropertyTypeId { get; set; }

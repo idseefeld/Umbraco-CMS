@@ -12,6 +12,7 @@ public static partial class Constants
         public const string PrimaryKeyNameId = "id";
         public const string PrimaryKeyNamePK = "pk";
         public const string PrimaryKeyNameKey = "key";
+        public const string NodeIdName = "nodeId";
 
         public static class Tables
         {
