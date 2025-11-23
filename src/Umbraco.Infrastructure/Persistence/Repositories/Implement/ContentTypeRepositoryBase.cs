@@ -1637,8 +1637,8 @@ internal abstract class ContentTypeRepositoryBase<TEntity> : EntityRepositoryBas
         // is included here just to be 100% sure since it has a FK on cmsPropertyType.
         var list = new List<string>
         {
-            $"DELETE FROM {QuoteTableName(User2NodeNotifyDto.TableName)} WHERE {QuoteColumnName(User2NodeNotifyDto.PrimaryKeyName)} = @id",
-            $@"DELETE FROM {QuoteTableName(UserGroup2GranularPermissionDto.TableName)} WHERE {QuoteColumnName(UserGroup2GranularPermissionDto.PrimaryKeyName)} IN
+            $"DELETE FROM {QuoteTableName(User2NodeNotifyDto.TableName)} WHERE {QuoteColumnName(User2NodeNotifyDto.NodeIdColumnName)} = @id",
+            $@"DELETE FROM {QuoteTableName(UserGroup2GranularPermissionDto.TableName)} WHERE {QuoteColumnName(UserGroup2GranularPermissionDto.UniqueIdName)} IN
                 (SELECT {QuoteColumnName("uniqueId")} FROM {QuoteTableName(NodeDto.TableName)} WHERE {QuoteColumnName(NodeDto.PrimaryKeyName)} = @id)",
             $"DELETE FROM {QuoteTableName(TagRelationshipDto.TableName)} WHERE {QuoteColumnName(TagRelationshipDto.PrimaryKeyName)} = @id",
             $"DELETE FROM {QuoteTableName(ContentTypeAllowedContentTypeDto.TableName)} WHERE {QuoteColumnName(ContentTypeAllowedContentTypeDto.PrimaryKeyName)} = @id",
