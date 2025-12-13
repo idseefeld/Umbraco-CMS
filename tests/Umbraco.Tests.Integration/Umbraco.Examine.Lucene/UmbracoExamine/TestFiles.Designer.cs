@@ -9,6 +9,9 @@
 //------------------------------------------------------------------------------
 
 namespace Umbraco.Cms.Tests.Integration.Umbraco.Examine.Lucene.UmbracoExamine {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -16,19 +19,19 @@ namespace Umbraco.Cms.Tests.Integration.Umbraco.Examine.Lucene.UmbracoExamine {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "18.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class TestFiles {
-
+        
         private static global::System.Resources.ResourceManager resourceMan;
-
+        
         private static global::System.Globalization.CultureInfo resourceCulture;
-
+        
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         internal TestFiles() {
         }
-
+        
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
@@ -42,7 +45,7 @@ namespace Umbraco.Cms.Tests.Integration.Umbraco.Examine.Lucene.UmbracoExamine {
                 return resourceMan;
             }
         }
-
+        
         /// <summary>
         ///   Overrides the current thread's CurrentUICulture property for all
         ///   resource lookups using this strongly typed resource class.
@@ -56,7 +59,7 @@ namespace Umbraco.Cms.Tests.Integration.Umbraco.Examine.Lucene.UmbracoExamine {
                 resourceCulture = value;
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
         ///&lt;media&gt;
@@ -69,10 +72,10 @@ namespace Umbraco.Cms.Tests.Integration.Umbraco.Examine.Lucene.UmbracoExamine {
                 return ResourceManager.GetString("media", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
-        ///&lt;!DOCTYPE root[
+        ///&lt;!DOCTYPE root[ 
         ///&lt;!ELEMENT CWS_Contact ANY&gt;
         ///&lt;!ATTLIST CWS_Contact id ID #REQUIRED&gt;
         ///&lt;!ELEMENT CWS_EmailAFriend ANY&gt;
@@ -85,18 +88,17 @@ namespace Umbraco.Cms.Tests.Integration.Umbraco.Examine.Lucene.UmbracoExamine {
         ///&lt;!ATTLIST CWS_Gallery id ID #REQUIRED&gt;
         ///&lt;!ELEMENT CWS_Home ANY&gt;
         ///&lt;!ATTLIST CWS_Home id ID #REQUIRED&gt;
-        ///&lt;!ELEMENT CWS_NewsEventsList ANY&gt;
-        /// [rest of string was truncated]&quot;;.
+        ///&lt;!ELEMENT CWS_NewsEventsList ANY&gt;        /// [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string umbraco {
             get {
                 return ResourceManager.GetString("umbraco", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
-        ///&lt;!DOCTYPE root[
+        ///&lt;!DOCTYPE root[ 
         ///&lt;!ELEMENT CWS_Contact ANY&gt;
         ///&lt;!ATTLIST CWS_Contact id ID #REQUIRED&gt;
         ///&lt;!ELEMENT CWS_EmailAFriend ANY&gt;
@@ -109,8 +111,7 @@ namespace Umbraco.Cms.Tests.Integration.Umbraco.Examine.Lucene.UmbracoExamine {
         ///&lt;!ATTLIST CWS_Gallery id ID #REQUIRED&gt;
         ///&lt;!ELEMENT CWS_Home ANY&gt;
         ///&lt;!ATTLIST CWS_Home id ID #REQUIRED&gt;
-        ///&lt;!ELEMENT CWS_NewsEventsList ANY&gt;
-        /// [rest of string was truncated]&quot;;.
+        ///&lt;!ELEMENT CWS_NewsEventsList ANY&gt;        /// [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string umbraco_sort {
             get {
