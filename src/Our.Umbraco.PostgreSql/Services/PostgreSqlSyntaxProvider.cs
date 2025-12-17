@@ -9,25 +9,25 @@ using Microsoft.Extensions.Options;
 using NPoco;
 using Our.Umbraco.PostgreSql.Mappers;
 using Umbraco.Cms.Core;
-using Umbraco.Cms.Core.Configuration.Models;
 using Umbraco.Cms.Core.Persistence;
 using Umbraco.Cms.Infrastructure.Persistence;
 using Umbraco.Cms.Infrastructure.Persistence.DatabaseAnnotations;
 using Umbraco.Cms.Infrastructure.Persistence.DatabaseModelDefinitions;
 using Umbraco.Cms.Infrastructure.Persistence.SqlSyntax;
 using Umbraco.Extensions;
-using UCC = Umbraco.Cms.Core;
+
 using ColumnInfo = Umbraco.Cms.Infrastructure.Persistence.SqlSyntax.ColumnInfo;
-using Our.Umbraco.PostgreSql.Helper;
+using UCC = Umbraco.Cms.Core;
 
 namespace Our.Umbraco.PostgreSql.Services;
 
 /// <summary>
 ///     Represents a SqlSyntaxProvider for PostgreSQL.
+///     Update GetUpdatedDatabaseType(), when NPoco supports EscapeTableColumAliasNames for Postgres.
 /// </summary>
 public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxProvider>
 {
-    private readonly IOptions<GlobalSettings> _globalSettings;
+    private readonly IOptions<PostgreSqlOptions> _postgreSqlOptions;
     private readonly ILogger<PostgreSqlSyntaxProvider> _logger;
     private readonly IDictionary<Type, IScalarMapper> _scalarMappers;
 
@@ -76,13 +76,13 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
     /// <summary>
     /// Initializes a new instance of the <see cref="PostgreSqlSyntaxProvider"/> class.
     /// </summary>
-    /// <param name="globalSettings">Inject Globalsettings from configuration.</param>
+    /// <param name="postgreSqlOptions">Inject postgreSqlOptions from configuration.</param>
     /// <param name="logger">Inject Logger.</param>
     public PostgreSqlSyntaxProvider(
-        IOptions<GlobalSettings> globalSettings,
+        IOptions<PostgreSqlOptions> postgreSqlOptions,
         ILogger<PostgreSqlSyntaxProvider> logger)
     {
-        _globalSettings = globalSettings;
+        _postgreSqlOptions = postgreSqlOptions;
         _logger = logger;
 
         _scalarMappers = new Dictionary<Type, IScalarMapper>
@@ -110,6 +110,20 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
         RealColumnDefinition = "DOUBLE PRECISION";
 
         BlobColumnDefinition = "BYTEA";
+    }
+
+
+    /// <inheritdoc/>
+    public override DatabaseType GetUpdatedDatabaseType(DatabaseType current, string? connectionString)
+    {
+        var escapeTableColumAliasNames = _postgreSqlOptions?.Value?.EscapeTableColumAliasNames ?? false;
+        if (escapeTableColumAliasNames)
+        {
+            // ToDo: the following is needed to avoid issues with casing when comparing strings in Postgres. ATTENTION: this needs an updated NPoco version that supports this flag!
+            // current.EscapeTableColumAliasNames = true;
+        }
+
+        return current;
     }
 
     /// <summary>
@@ -226,15 +240,6 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
         base.GetWildcardConcat(concatDefault);
 
     /// <inheritdoc/>
-    public override DatabaseType GetUpdatedDatabaseType(DatabaseType current, string? connectionString)
-    {
-        // the following is needed to avoid issues with casing when comparing strings in Postgres. ATTENTION: this needs an updated NPoco version that supports this flag!
-        // current.EscapeTableColumAliasNames = false;
-
-        return current;
-    }
-
-    /// <inheritdoc/>
     public override void HandleCreateTable(IDatabase database, TableDefinition tableDefinition, bool skipKeysAndIndexes = false)
     {
         // Format columns, primary key, and foreign keys
@@ -313,11 +318,8 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
             throw new ArgumentNullException(nameof(identifier));
         }
 
-        // ToDo: when NPoco supports EscapeTableColumAliasNames, this could be simplified
-        PropertyInfo? escapeTableColumAliasNamesProperty = ReflectionHelper.GetInterfaceProperty(typeof(IDatabaseType), "EscapeTableColumAliasNames", typeof(bool));
-        var escapeTableColumAliasNames = escapeTableColumAliasNamesProperty == null
-            ? false
-            : (bool?)escapeTableColumAliasNamesProperty.GetValue(escapeTableColumAliasNamesProperty) ?? false;
+        var optionsValue = _postgreSqlOptions?.Value;
+        var escapeTableColumAliasNames = optionsValue?.EscapeTableColumAliasNames ?? false;
 
         var rVal = !escapeTableColumAliasNames || SqlKeywords.InvariantContains(identifier) ? $"\"{identifier}\"" : $"{identifier}";
         return rVal;
@@ -325,6 +327,7 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
 
     /// <inheritdoc />
     public override string GetQuotedTableName(string? tableName) => GetQuotedIdentifier(tableName);
+
     /// <inheritdoc />
     public override string GetQuotedColumnName(string? columnName) => GetQuotedIdentifier(columnName);
 

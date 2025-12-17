@@ -5,6 +5,7 @@ namespace Our.Umbraco.PostgreSql
     /// </summary>
     public static class Constants
     {
+        public const string Configuration = "PostgreSqlOptions";
         /// <summary>
         ///     PostgreSQL provider name.
         /// </summary>

@@ -6,8 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Helper\**" />
     <Compile Remove="Notifications\**" />
+    <EmbeddedResource Remove="Helper\**" />
     <EmbeddedResource Remove="Notifications\**" />
+    <None Remove="Helper\**" />
     <None Remove="Notifications\**" />
   </ItemGroup>
   

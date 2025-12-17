@@ -1,9 +1,11 @@
 using System.Data.Common;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Our.Umbraco.PostgreSql.Interceptors;
 using Our.Umbraco.PostgreSql.Locking;
 using Our.Umbraco.PostgreSql.Services;
+using Umbraco.Cms.Core.Configuration.Models;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Core.DistributedLocking;
 using Umbraco.Cms.Infrastructure.Persistence;
@@ -25,6 +27,8 @@ namespace Our.Umbraco.PostgreSql
         /// </summary>
         public static IUmbracoBuilder AddUmbracoPostgreSqlSupport(this IUmbracoBuilder builder)
         {
+            builder.Services.Configure<PostgreSqlOptions>(builder.Config.GetSection(Constants.Configuration));
+
             builder.Services.TryAddEnumerable(ServiceDescriptor
                 .Singleton<ISqlSyntaxProvider, PostgreSqlSyntaxProvider>());
             builder.Services.TryAddEnumerable(ServiceDescriptor
