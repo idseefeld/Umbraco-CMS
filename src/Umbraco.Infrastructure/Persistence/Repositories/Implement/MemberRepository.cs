@@ -745,8 +745,11 @@ public class MemberRepository : ContentRepositoryBase<int, IMember, MemberReposi
 
     protected override void PerformDeleteVersion(int id, int versionId)
     {
-        Database.Delete<PropertyDataDto>("WHERE versionId = @VersionId", new { versionId });
-        Database.Delete<ContentVersionDto>("WHERE versionId = @VersionId", new { versionId });
+        Sql<ISqlContext> sql = Sql().Delete<PropertyDataDto>(x => x.VersionId == versionId);
+        Database.Execute(sql);
+
+        sql = Sql().Delete<ContentVersionDto>(x => x.Id == versionId);
+        Database.Execute(sql);
     }
 
     #endregion
