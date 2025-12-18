@@ -54,6 +54,7 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
         {"umbracoContentVersionCultureVariation","id"},
         {"umbracoContentVersion","id"},
         {"umbracoCreatedPackageSchema","id"},
+        {"umbracoDistributedJob","id"},
         {"umbracoDocumentCultureVariation","id"},
         {"umbracoDocumentUrl","id"},
         {"umbracoDomain","id"},
