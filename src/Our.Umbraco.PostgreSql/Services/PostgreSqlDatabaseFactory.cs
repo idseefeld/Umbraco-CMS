@@ -20,7 +20,6 @@ namespace Our.Umbraco.PostgreSql.Services
         private readonly DatabaseSchemaCreatorFactory _databaseSchemaCreatorFactory;
         private readonly ILogger<PostgreSqlDatabaseFactory> _logger;
         private readonly ILoggerFactory _loggerFactory;
-        private IBulkSqlInsertProvider? _bulkSqlInsertProvider;
 
         private NPoco.MapperCollection? _pocoMappers;
 
@@ -79,7 +78,7 @@ namespace Our.Umbraco.PostgreSql.Services
                 SqlContext,
                 DbProviderFactory,
                 _loggerFactory.CreateLogger<PostgreSqlDatabase>(),
-                _bulkSqlInsertProvider,
+                BulkSqlInsertProvider,
                 _databaseSchemaCreatorFactory,
                 _pocoMappers);
         }
