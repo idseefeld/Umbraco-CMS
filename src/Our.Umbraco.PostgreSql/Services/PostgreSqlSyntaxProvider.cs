@@ -102,8 +102,8 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
         BoolColumnDefinition = "BOOLEAN";
 
         GuidColumnDefinition = "UUID";
-        DateTimeColumnDefinition = "TIMESTAMP"; // "TIMESTAMPTZ"; // "TIMESTAMP WITH TIME ZONE";
-        DateTimeOffsetColumnDefinition = "TIMESTAMP"; // "TIMESTAMP"; // "TIMESTAMP WITHOUT TIME ZONE";
+        DateTimeColumnDefinition = "TIMESTAMPTZ"; // "TIMESTAMPTZ"; // "TIMESTAMP WITH TIME ZONE";
+        DateTimeOffsetColumnDefinition = "TIMESTAMPTZ"; // "TIMESTAMP"; // "TIMESTAMP WITHOUT TIME ZONE";
         TimeColumnDefinition = "TIME";
         DecimalColumnDefinition = "NUMERIC(20,9)";
 
