@@ -34,18 +34,12 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
     private readonly Dictionary<string, long> _lastInsertIds = new Dictionary<string, long>();
     private readonly Dictionary<string, string> _tablesToAlter = new()
     {
-        {"cmsContentType","pk"},//#
-        {"cmsPropertyType","id"},//#
-        {"cmsPropertyTypeGroup","id"},//#
-        {"umbracoLanguage","id"},//#
-        {"umbracoUser","id"},//#
-        {"umbracoUserGroup","id"},//#
-        {"umbracoNode","id"},//#
-        {"umbracoUserStartNode","id"},
-
+        {"cmsContentType","pk"},
         {"cmsDictionary","pk"},
         {"cmsLanguageText","pk"},
         {"cmsMemberType","pk"},
+        {"cmsPropertyTypeGroup","id"},
+        {"cmsPropertyType","id"},
         {"cmsTags","id"},
         {"cmsTemplate","pk"},
         {"umbracoAudit","id"},
@@ -58,20 +52,25 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
         {"umbracoDocumentCultureVariation","id"},
         {"umbracoDocumentUrl","id"},
         {"umbracoDomain","id"},
-        {"umbracoExternalLogin","id"},
         {"umbracoExternalLoginToken","id"},
+        {"umbracoExternalLogin","id"},
+        {"umbracoLanguage","id"},
         {"umbracoLogViewerQuery","id"},
         {"umbracoLog","id"},
+        {"umbracoNode","id"},
         {"umbracoPropertyData","id"},
-        {"umbracoRelation","id"},
         {"umbracoRelationType","id"},
+        {"umbracoRelation","id"},
         {"umbracoServer","id"},
         {"umbracoTwoFactorLogin","id"},
         {"umbracoUserGroup2GranularPermission","id"},
         {"umbracoUserGroup2Permission","id"},
-        {"umbracoWebhook","id"},
+        {"umbracoUserGroup","id"},
+        {"umbracoUserStartNode","id"},
+        {"umbracoUser","id"},
         {"umbracoWebhookLog","id"},
         {"umbracoWebhookRequest","id"},
+        {"umbracoWebhook","id"},
     };
 
     /// <summary>
