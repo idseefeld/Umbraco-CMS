@@ -58,6 +58,7 @@ internal class PropertyTypeDto
 
     [Column("validationRegExp")]
     [NullSetting(NullSetting = NullSettings.Null)]
+    [SpecialDbType(SpecialDbTypes.NVARCHARMAX)]
     public string? ValidationRegExp { get; set; }
 
     [Column("validationRegExpMessage")]
