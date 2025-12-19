@@ -8,3 +8,11 @@
 
 ## Known Issues
 1. Can not create User Group
+
+
+## appSettings
+```
+  "PostgreSqlOptions": {
+    "EscapeTableColumAliasNames": false
+  }
+```
