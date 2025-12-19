@@ -7,6 +7,7 @@ using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Cache;
 using Umbraco.Cms.Core.Events;
 using Umbraco.Cms.Core.Exceptions;
+using Umbraco.Cms.Core.Media.EmbedProviders;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Persistence;
 using Umbraco.Cms.Core.Persistence.Repositories;
@@ -1067,10 +1068,15 @@ internal abstract class ContentTypeRepositoryBase<TEntity> : EntityRepositoryBas
         // select tags to insert: tags pointed to by a relation ship, for proper property/content types,
         // and of source language, and where we cannot left join to an existing tag with same text,
         // group and languageId
-        var targetLanguageIdS = targetLanguageId.HasValue ? targetLanguageId.ToString() : "NULL";
         Sql<ISqlContext> sqlSelectTagsToInsert1 = Sql()
-            .SelectDistinct<TagDto>(x => x.Text, x => x.Group)
-            .Append(", " + targetLanguageIdS)
+            .SelectDistinct<TagDto>(x => x.Text, x => x.Group);
+        if (targetLanguageId.HasValue)
+        {
+            sqlSelectTagsToInsert1
+                .Append($", {targetLanguageId}");
+        }
+
+        sqlSelectTagsToInsert1
             .From<TagDto>();
 
         sqlSelectTagsToInsert1
@@ -1093,7 +1099,12 @@ internal abstract class ContentTypeRepositoryBase<TEntity> : EntityRepositoryBas
             .WhereNull<TagDto>(x => x.Id, "xtags") // ie, not exists
             .Where<TagDto>(x => x.LanguageId.SqlNullableEquals(sourceLanguageId, -1));
 
-        var cols = Sql().ColumnsForInsert<TagDto>(x => x.Text, x => x.Group, x => x.LanguageId);
+        var cols = Sql().ColumnsForInsert<TagDto>(x => x.Text, x => x.Group);
+        if (targetLanguageId.HasValue)
+        {
+            cols = Sql().ColumnsForInsert<TagDto>(x => x.Text, x => x.Group, x => x.LanguageId);
+        }
+
         Sql<ISqlContext>? sqlInsertTags = Sql($"INSERT INTO {QuoteTableName(TagDto.TableName)} ({cols})").Append(sqlSelectTagsToInsert1);
 
         Database.Execute(sqlInsertTags);
