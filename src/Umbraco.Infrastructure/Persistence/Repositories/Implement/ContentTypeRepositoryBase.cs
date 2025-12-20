@@ -1070,7 +1070,7 @@ internal abstract class ContentTypeRepositoryBase<TEntity> : EntityRepositoryBas
         var targetLanguageIdS = targetLanguageId.HasValue ? targetLanguageId.ToString() : "NULL";
         Sql<ISqlContext> sqlSelectTagsToInsert1 = Sql()
             .SelectDistinct<TagDto>(x => x.Text, x => x.Group)
-            .Append($", {targetLanguageIdS}")
+            .Append($", {targetLanguageIdS} ")
             .From<TagDto>();
 
         sqlSelectTagsToInsert1
