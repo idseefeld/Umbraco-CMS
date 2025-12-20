@@ -50,6 +50,32 @@ namespace Our.Umbraco.PostgreSql.Mappers
                 };
             }
 
+            if (destType == typeof(DateTime))
+            {
+                return value =>
+                {
+                    if (value is DateTime result)
+                    {
+                        return result;
+                    }
+
+                    return default(DateTime);
+                };
+            }
+
+            if (destType == typeof(DateTime?))
+            {
+                return value =>
+                {
+                    if (value == null)
+                    {
+                        return default(DateTime?);
+                    }
+
+                    return value;
+                };
+            }
+
             return base.GetFromDbConverter(destType, sourceType);
         }
 

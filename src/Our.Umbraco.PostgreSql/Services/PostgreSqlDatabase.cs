@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using NPoco;
 using Umbraco.Cms.Infrastructure.Migrations.Install;
 using Umbraco.Cms.Infrastructure.Persistence;
+using Umbraco.Extensions;
 
 namespace Our.Umbraco.PostgreSql.Services
 {
@@ -64,6 +65,11 @@ namespace Our.Umbraco.PostgreSql.Services
 
         public override DbCommand CreateCommand(DbConnection connection, CommandType commandType, string sql, params object[] args)
         {
+            if (!sql.InvariantContains("NOT NULL ") && sql.InvariantContains("NULL "))
+            {
+                sql = Regex.Replace(sql, @"\s*NULL ", " NULL::int ", RegexOptions.IgnoreCase);
+            }
+
             var convertedArgs = args.Select(arg => arg is DateTime uct ? uct.ToUniversalTime() : arg).ToArray();
             return base.CreateCommand(connection,commandType, sql, convertedArgs);
         }

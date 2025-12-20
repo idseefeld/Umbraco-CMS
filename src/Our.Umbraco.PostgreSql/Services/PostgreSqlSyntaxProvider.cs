@@ -87,6 +87,7 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
 
         _scalarMappers = new Dictionary<Type, IScalarMapper>
         {
+            // [typeof(int?)] = new PostgreSqlNullableIntScalarMapper(),
             [typeof(long)] = new PostgreSqlLongScalarMapper(),
             [typeof(long?)] = new PostgreSqlNullableLongScalarMapper(),
             [typeof(Guid)] = new PostgreSqlGuidScalarMapper(),

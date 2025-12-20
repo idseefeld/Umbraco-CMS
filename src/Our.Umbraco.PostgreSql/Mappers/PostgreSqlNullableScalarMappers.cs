@@ -66,4 +66,25 @@ namespace Our.Umbraco.PostgreSql.Mappers
             }
         }
     }
+
+    public class PostgreSqlNullableIntScalarMapper : ScalarMapper<int?>
+    {
+        protected override int? Map(object? value)
+        {
+            if (value is null || value == DBNull.Value)
+            {
+                return default;
+            }
+            try
+            {
+                return int.TryParse($"{value}", out int result)
+                      ? result
+                      : default(int?);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+    }
 }
