@@ -1,15 +1,6 @@
-using System;
-using System.Collections.Generic;
 using System.Data.Common;
-using System.Globalization;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using NodaTime.Extensions;
 using NPoco;
-using Umbraco.Cms.Core;
-using Umbraco.Cms.Infrastructure.Persistence;
 using Umbraco.Extensions;
 
 namespace Our.Umbraco.PostgreSql.Mappers
@@ -56,19 +47,6 @@ namespace Our.Umbraco.PostgreSql.Mappers
                     }
 
                     return default(Guid?);
-                };
-            }
-
-            if (destType == typeof(DateTime))
-            {
-                return value =>
-                {
-                    var dateAsString = $"{value}";
-                    var dateTime = DateTime.Parse(dateAsString);
-                    var nodaTime = dateTime.ToLocalDateTime();
-                    var result = nodaTime.ToDateTimeUnspecified();
-
-                    return result;
                 };
             }
 

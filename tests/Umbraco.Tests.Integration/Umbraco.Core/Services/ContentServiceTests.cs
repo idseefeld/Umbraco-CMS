@@ -2279,7 +2279,7 @@ internal sealed class ContentServiceTests : UmbracoIntegrationTestWithContent
         Assert.AreEqual(0, contentTags.Length);
 
         // publish
-        ContentService.Publish(content, new []{ "*" });
+        ContentService.Publish(content, ["*"]);
 
         // now tags have been set (published)
         Assert.AreEqual("[\"hello\",\"world\"]", content.GetValue(propAlias));

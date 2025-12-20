@@ -373,7 +373,7 @@ public partial class ContentPublishingServiceTests : UmbracoIntegrationTestWithC
         var firstPublishDateBe = content.GetPublishDate(langBe.IsoCode)
                                  ?? throw new InvalidOperationException("Expected a publish date for BE");
 
-        Thread.Sleep(100);
+        // Thread.Sleep(10);
 
         publishAttempt = await ContentPublishingService.PublishAsync(
             content.Key,

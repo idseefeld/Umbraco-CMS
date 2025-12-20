@@ -1,0 +1,1029 @@
+<Playlist Version="2.0">
+  <Rule Name="Includes" Match="Any">
+    <Rule Match="All">
+      <Property Name="Solution" />
+      <Rule Match="Any">
+        <Rule Match="All">
+          <Property Name="Project" Value="Umbraco.Tests.Integration" />
+          <Rule Match="Any">
+            <Rule Match="All">
+              <Property Name="Namespace" Value="Umbraco.Cms.Tests.Integration.Umbraco.Core.Services" />
+              <Rule Match="Any">
+                <Rule Match="All">
+                  <Property Name="Class" Value="ContentServiceTests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Core.Services.ContentServiceTests.Can_Copy_Content_With_Tags" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Copy_Content_With_Tags" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Core.Services.ContentServiceTests.Can_Empty_RecycleBin_With_Content_That_Has_All_Related_Data" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Empty_RecycleBin_With_Content_That_Has_All_Related_Data" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Core.Services.ContentServiceTests.Can_Verify_Property_Types_On_Content" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Verify_Property_Types_On_Content" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="UserServiceCrudTests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Core.Services.UserServiceCrudTests.Cannot_See_Disabled_When_HideDisabled_Is_True" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Cannot_See_Disabled_When_HideDisabled_Is_True" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Core.Services.UserServiceCrudTests.Cannot_Request_Disabled_If_Hidden" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Cannot_Request_Disabled_If_Hidden(All,1)" />
+                        <Property Name="DisplayName" Value="Cannot_Request_Disabled_If_Hidden(Inactive,1)" />
+                        <Property Name="DisplayName" Value="Cannot_Request_Disabled_If_Hidden(null,1)" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+              </Rule>
+            </Rule>
+            <Rule Match="All">
+              <Property Name="Namespace" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Migrations" />
+              <Rule Match="Any">
+                <Rule Match="All">
+                  <Property Name="Class" Value="AdvancedMigrationTests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Migrations.AdvancedMigrationTests.AddColumnAsync" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="AddColumnAsync" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+              </Rule>
+            </Rule>
+            <Rule Match="All">
+              <Property Name="Namespace" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Migrations.Expressions.Create.Expressions" />
+              <Rule Match="Any">
+                <Rule Match="All">
+                  <Property Name="Class" Value="CreateTableExpressionTests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Migrations.Expressions.Create.Expressions.CreateTableExpressionTests.Do_ForDefinitionWithForeignKeys_ForeignKeysAreCreated" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Do_ForDefinitionWithForeignKeys_ForeignKeysAreCreated" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Migrations.Expressions.Create.Expressions.CreateTableExpressionTests.Do_ForDefinitionWithPrimaryKey_PrimaryKeyConstraintIsAdded" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Do_ForDefinitionWithPrimaryKey_PrimaryKeyConstraintIsAdded" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+              </Rule>
+            </Rule>
+            <Rule Match="All">
+              <Property Name="Namespace" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Migrations.Upgrade.V16_4_0" />
+              <Rule Match="Any">
+                <Rule Match="All">
+                  <Property Name="Class" Value="CreateMissingTabsTest" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Migrations.Upgrade.V16_4_0.CreateMissingTabsTest.Can_Create_Missing_Tabs" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Create_Missing_Tabs" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+              </Rule>
+            </Rule>
+            <Rule Match="All">
+              <Property Name="Namespace" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Packaging" />
+              <Rule Match="Any">
+                <Rule Match="All">
+                  <Property Name="Class" Value="PackageDataInstallationTests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Packaging.PackageDataInstallationTests.Can_Import_CheckboxList_Content_Package_Xml_With_Property_Editor_Aliases" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Import_CheckboxList_Content_Package_Xml_With_Property_Editor_Aliases" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+              </Rule>
+            </Rule>
+            <Rule Match="All">
+              <Property Name="Namespace" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence" />
+              <Rule Match="Any">
+                <Rule Match="All">
+                  <Property Name="Class" Value="LocksTests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.LocksTests.DeadLockTest" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="DeadLockTest" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.LocksTests.NoDeadLockTest" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="NoDeadLockTest" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.LocksTests.Throws_When_Lock_Timeout_Is_Exceeded_Read" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Throws_When_Lock_Timeout_Is_Exceeded_Read" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.LocksTests.Throws_When_Lock_Timeout_Is_Exceeded_Write" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Throws_When_Lock_Timeout_Is_Exceeded_Write" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="SchemaValidationTest" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.SchemaValidationTest.DatabaseSchemaCreation_Produces_DatabaseSchemaResult_With_Zero_Errors" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="DatabaseSchemaCreation_Produces_DatabaseSchemaResult_With_Zero_Errors" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+              </Rule>
+            </Rule>
+            <Rule Match="All">
+              <Property Name="Namespace" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.NPocoTests" />
+              <Rule Match="Any">
+                <Rule Match="All">
+                  <Property Name="Class" Value="NPocoBulkInsertTests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoBulkInsertTests.Can_Bulk_Insert_Native_Sql_Bulk_Inserts" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Bulk_Insert_Native_Sql_Bulk_Inserts" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoBulkInsertTests.Can_Bulk_Insert_Native_Sql_Bulk_Inserts_Transaction_Rollback" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Bulk_Insert_Native_Sql_Bulk_Inserts_Transaction_Rollback" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoBulkInsertTests.Generate_Bulk_Import_Sql" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Generate_Bulk_Import_Sql" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="NPocoFetchTests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoFetchTests.TestCalculated" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="TestCalculated" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoFetchTests.TestManyToMany" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="TestManyToMany" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoFetchTests.TestMultipleOneToOne" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="TestMultipleOneToOne" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoFetchTests.TestOneToManyOnMany" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="TestOneToManyOnMany" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoFetchTests.TestOneToManyOnManyTemplate" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="TestOneToManyOnManyTemplate" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoFetchTests.TestOneToManyOnOne" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="TestOneToManyOnOne" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoFetchTests.TestOneToOne" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="TestOneToOne" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoFetchTests.TestSimple" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="TestSimple" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoFetchTests.TestSql" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="TestSql" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+              </Rule>
+            </Rule>
+            <Rule Match="All">
+              <Property Name="Namespace" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.Repositories" />
+              <Rule Match="Any">
+                <Rule Match="All">
+                  <Property Name="Class" Value="AuditRepositoryTest" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.Repositories.AuditRepositoryTest.Has_Create_Date_When_Get_By_Query" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Has_Create_Date_When_Get_By_Query" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="CacheInstructionRepositoryTest" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.Repositories.CacheInstructionRepositoryTest.Can_Add_Cache_Instruction" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Add_Cache_Instruction" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="ContentTypeRepositoryTest" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.Repositories.ContentTypeRepositoryTest.Can_Perform_GetAll_By_Guid_On_ContentTypeRepository" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Perform_GetAll_By_Guid_On_ContentTypeRepository" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.Repositories.ContentTypeRepositoryTest.Can_Perform_GetAll_On_ContentTypeRepository" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Perform_GetAll_On_ContentTypeRepository" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="DictionaryRepositoryTest" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.Repositories.DictionaryRepositoryTest.Can_Perform_Cached_Request_For_Existing_Value_By_Key_On_DictionaryRepository_With_Cache" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Perform_Cached_Request_For_Existing_Value_By_Key_On_DictionaryRepository_With_Cache" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.Repositories.DictionaryRepositoryTest.Can_Perform_Cached_Request_For_NonExisting_Value_By_Key_On_DictionaryRepository_With_Cache" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Perform_Cached_Request_For_NonExisting_Value_By_Key_On_DictionaryRepository_With_Cache" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.Repositories.DictionaryRepositoryTest.Cannot_Perform_Cached_Request_For_Existing_Value_By_Key_On_DictionaryRepository_Without_Cache" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Cannot_Perform_Cached_Request_For_Existing_Value_By_Key_On_DictionaryRepository_Without_Cache" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.Repositories.DictionaryRepositoryTest.Cannot_Perform_Cached_Request_For_NonExisting_Value_By_Key_On_DictionaryRepository_Without_Cache" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Cannot_Perform_Cached_Request_For_NonExisting_Value_By_Key_On_DictionaryRepository_Without_Cache" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="DocumentRepositoryTest" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.Repositories.DocumentRepositoryTest.CreateVersions" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="CreateVersions" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.Repositories.DocumentRepositoryTest.GetPagedResultsByQuery_CustomPropertySort" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="GetPagedResultsByQuery_CustomPropertySort" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="DocumentVersionRepositoryTest" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.Repositories.DocumentVersionRepositoryTest.GetDocumentVersionsEligibleForCleanup_Always_ExcludesPinnedVersions" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="GetDocumentVersionsEligibleForCleanup_Always_ExcludesPinnedVersions" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="MediaTypeRepositoryTest" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.Repositories.MediaTypeRepositoryTest.Can_Perform_GetAll_By_Guid_On_MediaTypeRepository" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Perform_GetAll_By_Guid_On_MediaTypeRepository" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.Repositories.MediaTypeRepositoryTest.Can_Perform_GetAll_On_MediaTypeRepository" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Perform_GetAll_On_MediaTypeRepository" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="MemberTypeRepositoryTest" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.Repositories.MemberTypeRepositoryTest.Can_Delete_MemberType" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Delete_MemberType" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="TagRepositoryTest" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.Repositories.TagRepositoryTest.Can_Append_Tag_Relations" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Append_Tag_Relations" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.Repositories.TagRepositoryTest.Can_Clear_Tag_Relations" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Clear_Tag_Relations" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.Repositories.TagRepositoryTest.Can_Create_Tag_Relations" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Create_Tag_Relations" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.Repositories.TagRepositoryTest.Can_Create_Tag_Relations_With_Mixed_Casing_For_Group" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Create_Tag_Relations_With_Mixed_Casing_For_Group" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.Repositories.TagRepositoryTest.Can_Create_Tag_Relations_With_Mixed_Casing_For_Tag" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Create_Tag_Relations_With_Mixed_Casing_For_Tag" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.Repositories.TagRepositoryTest.Can_Get_All" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Get_All" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.Repositories.TagRepositoryTest.Can_Get_All_With_Ids" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Get_All_With_Ids" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.Repositories.TagRepositoryTest.Can_Get_Tagged_Entities_For_Tag" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Get_Tagged_Entities_For_Tag" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.Repositories.TagRepositoryTest.Can_Get_Tagged_Entities_For_Tag_Group" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Get_Tagged_Entities_For_Tag_Group" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.Repositories.TagRepositoryTest.Can_Get_Tags_For_Content_By_Id" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Get_Tags_For_Content_By_Id" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.Repositories.TagRepositoryTest.Can_Get_Tags_For_Content_By_Key" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Get_Tags_For_Content_By_Key" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.Repositories.TagRepositoryTest.Can_Get_Tags_For_Content_For_Group" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Get_Tags_For_Content_For_Group" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.Repositories.TagRepositoryTest.Can_Get_Tags_For_Entity_Type" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Get_Tags_For_Entity_Type" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.Repositories.TagRepositoryTest.Can_Get_Tags_For_Entity_Type_Excluding_Trashed_Entity" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Get_Tags_For_Entity_Type_Excluding_Trashed_Entity" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.Repositories.TagRepositoryTest.Can_Get_Tags_For_Entity_Type_For_Group" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Get_Tags_For_Entity_Type_For_Group" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.Repositories.TagRepositoryTest.Can_Get_Tags_For_Property_By_Id" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Get_Tags_For_Property_By_Id" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.Repositories.TagRepositoryTest.Can_Get_Tags_For_Property_By_Key" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Get_Tags_For_Property_By_Key" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.Repositories.TagRepositoryTest.Can_Get_Tags_For_Property_For_Group" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Get_Tags_For_Property_For_Group" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.Repositories.TagRepositoryTest.Can_Merge_Tag_Relations" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Merge_Tag_Relations" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.Repositories.TagRepositoryTest.Can_Remove_Specific_Tags_From_Property" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Remove_Specific_Tags_From_Property" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.Repositories.TagRepositoryTest.Can_Replace_Tag_Relations" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Replace_Tag_Relations" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.Repositories.TagRepositoryTest.Cascade_Deletes_Tag_Relations" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Cascade_Deletes_Tag_Relations" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+              </Rule>
+            </Rule>
+            <Rule Match="All">
+              <Property Name="Namespace" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Scoping" />
+              <Rule Match="Any">
+                <Rule Match="All">
+                  <Property Name="Class" Value="ScopeTests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Scoping.ScopeTests.NestedTransactionComplete" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="NestedTransactionComplete" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Scoping.ScopeTests.NestedTransactionInnerFail" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="NestedTransactionInnerFail" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Scoping.ScopeTests.NestedTransactionOuterFail" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="NestedTransactionOuterFail" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Scoping.ScopeTests.Transaction" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Transaction" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+              </Rule>
+            </Rule>
+            <Rule Match="All">
+              <Property Name="Namespace" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services" />
+              <Rule Match="Any">
+                <Rule Match="All">
+                  <Property Name="Class" Value="ContentListViewServiceTests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services.ContentListViewServiceTests.Can_Order_List_View_Items_By_Custom_List_View_Field" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Order_List_View_Items_By_Custom_List_View_Field" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="ContentServiceTagsTests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services.ContentServiceTagsTests.Can_Append_Tag_Data_To_Published_Content" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Append_Tag_Data_To_Published_Content" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services.ContentServiceTagsTests.Can_Remove_Tag_Data_To_Published_Content" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Remove_Tag_Data_To_Published_Content" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services.ContentServiceTagsTests.Can_Replace_Tag_Data_To_Published_Content" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Replace_Tag_Data_To_Published_Content" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services.ContentServiceTagsTests.Can_Save_Tag_With_Comma_Separated_Values_As_One_When_JSON_Storage" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Save_Tag_With_Comma_Separated_Values_As_One_When_JSON_Storage" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services.ContentServiceTagsTests.Create_Tag_Data_Bulk_Publish_Operation" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Create_Tag_Data_Bulk_Publish_Operation" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services.ContentServiceTagsTests.Does_Not_Create_Tag_Data_For_Non_Published_Version" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Does_Not_Create_Tag_Data_For_Non_Published_Version" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services.ContentServiceTagsTests.Does_Not_Save_Multiple_Tags_As_One_When_CSV_Storage" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Does_Not_Save_Multiple_Tags_As_One_When_CSV_Storage" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services.ContentServiceTagsTests.TagsAreUpdatedWhenContentIsTrashedAndUnTrashed_All" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="TagsAreUpdatedWhenContentIsTrashedAndUnTrashed_All" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services.ContentServiceTagsTests.TagsAreUpdatedWhenContentIsTrashedAndUnTrashed_One" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="TagsAreUpdatedWhenContentIsTrashedAndUnTrashed_One" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services.ContentServiceTagsTests.TagsAreUpdatedWhenContentIsUnpublishedAndRePublished" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="TagsAreUpdatedWhenContentIsUnpublishedAndRePublished" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services.ContentServiceTagsTests.TagsCanBecomeInvariant" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="TagsCanBecomeInvariant" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services.ContentServiceTagsTests.TagsCanBecomeInvariant2" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="TagsCanBecomeInvariant2" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services.ContentServiceTagsTests.TagsCanBecomeInvariantByPropertyType" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="TagsCanBecomeInvariantByPropertyType" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services.ContentServiceTagsTests.TagsCanBecomeInvariantByPropertyTypeAndBackToVariant" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="TagsCanBecomeInvariantByPropertyTypeAndBackToVariant" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services.ContentServiceTagsTests.TagsCanBecomeVariant" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="TagsCanBecomeVariant" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services.ContentServiceTagsTests.TagsCanBeInvariant" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="TagsCanBeInvariant" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services.ContentServiceTagsTests.TagsCanBeVariant" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="TagsCanBeVariant" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="ContentVersionCleanupServiceTest" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services.ContentVersionCleanupServiceTest.PerformContentVersionCleanup_WithNoKeepPeriods_DeletesEverythingExceptActive" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="PerformContentVersionCleanup_WithNoKeepPeriods_DeletesEverythingExceptActive" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="EntityServiceTests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services.EntityServiceTests.EntityService_Can_Get_Key_For_Id_With_Unknown_Type" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="EntityService_Can_Get_Key_For_Id_With_Unknown_Type" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services.EntityServiceTests.EntityService_Can_Get_Paged_Content_Children" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="EntityService_Can_Get_Paged_Content_Children" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services.EntityServiceTests.EntityService_Can_Get_Paged_Document_Type_Children" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="EntityService_Can_Get_Paged_Document_Type_Children(&quot;nodeId&quot;)" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services.EntityServiceTests.EntityService_Siblings_RespectsOrdering" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="EntityService_Siblings_RespectsOrdering" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="MemberServiceTests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services.MemberServiceTests.Associate_Members_To_Roles_With_Member_Id" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Associate_Members_To_Roles_With_Member_Id" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services.MemberServiceTests.Associate_Members_To_Roles_With_Member_Id_Casing" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Associate_Members_To_Roles_With_Member_Id_Casing" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services.MemberServiceTests.Associate_Members_To_Roles_With_Member_Username" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Associate_Members_To_Roles_With_Member_Username" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services.MemberServiceTests.Associate_Members_To_Roles_With_Member_Username_Containing_At_Symbols" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Associate_Members_To_Roles_With_Member_Username_Containing_At_Symbols" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services.MemberServiceTests.Associate_Members_To_Roles_With_New_Role" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Associate_Members_To_Roles_With_New_Role" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services.MemberServiceTests.Can_Get_Members_In_Role" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Get_Members_In_Role" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services.MemberServiceTests.Get_By_Property_Date_Value_Exact" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Get_By_Property_Date_Value_Exact" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services.MemberServiceTests.Get_By_Property_Date_Value_Greater_Than" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Get_By_Property_Date_Value_Greater_Than" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services.MemberServiceTests.Get_By_Property_Date_Value_Greater_Than_Equal_To" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Get_By_Property_Date_Value_Greater_Than_Equal_To" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services.MemberServiceTests.Get_By_Property_Date_Value_Less_Than" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Get_By_Property_Date_Value_Less_Than" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services.MemberServiceTests.Get_By_Property_Date_Value_Less_Than_Or_Equal" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Get_By_Property_Date_Value_Less_Than_Or_Equal" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services.MemberServiceTests.Get_By_Property_Int_Value_Exact" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Get_By_Property_Int_Value_Exact" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services.MemberServiceTests.Get_By_Property_Int_Value_Greater_Than" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Get_By_Property_Int_Value_Greater_Than" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services.MemberServiceTests.Get_By_Property_Int_Value_Greater_Than_Equal_To" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Get_By_Property_Int_Value_Greater_Than_Equal_To" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services.MemberServiceTests.Get_By_Property_Int_Value_Less_Than" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Get_By_Property_Int_Value_Less_Than" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services.MemberServiceTests.Get_By_Property_Int_Value_Less_Than_Or_Equal" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Get_By_Property_Int_Value_Less_Than_Or_Equal" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services.MemberServiceTests.Get_By_Property_String_Value_Contains" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Get_By_Property_String_Value_Contains" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services.MemberServiceTests.Get_By_Property_String_Value_Ends_With" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Get_By_Property_String_Value_Ends_With" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services.MemberServiceTests.Get_By_Property_String_Value_Exact" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Get_By_Property_String_Value_Exact" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services.MemberServiceTests.Get_By_Property_String_Value_Starts_With" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Get_By_Property_String_Value_Starts_With" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services.MemberServiceTests.Remove_Members_From_Roles_With_Member_Id" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Remove_Members_From_Roles_With_Member_Id" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services.MemberServiceTests.Remove_Members_From_Roles_With_Member_Username" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Remove_Members_From_Roles_With_Member_Username" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services.MemberServiceTests.Throws_When_Deleting_Assigned_Role" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Throws_When_Deleting_Assigned_Role" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="TagServiceTests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services.TagServiceTests.TagApiConsistencyTest" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="TagApiConsistencyTest" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services.TagServiceTests.TagList_Contains_NodeCount" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="TagList_Contains_NodeCount" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+              </Rule>
+            </Rule>
+            <Rule Match="All">
+              <Property Name="Namespace" Value="Umbraco.Cms.Tests.Integration.Umbraco.Persistence.EFCore.DbContext" />
+              <Rule Match="Any">
+                <Rule Match="All">
+                  <Property Name="Class" Value="CustomDbContextUmbracoProviderTests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Persistence.EFCore.DbContext.CustomDbContextUmbracoProviderTests.Can_Register_Custom_DbContext_And_Resolve" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Register_Custom_DbContext_And_Resolve" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+              </Rule>
+            </Rule>
+            <Rule Match="All">
+              <Property Name="Namespace" Value="Umbraco.Cms.Tests.Integration.Umbraco.Persistence.EFCore.Scoping" />
+              <Rule Match="Any">
+                <Rule Match="All">
+                  <Property Name="Class" Value="EFCoreLockTests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Persistence.EFCore.Scoping.EFCoreLockTests.Can_Reacquire_Read_Lock" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Reacquire_Read_Lock" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Persistence.EFCore.Scoping.EFCoreLockTests.Can_Reacquire_Write_Lock" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Reacquire_Write_Lock" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Persistence.EFCore.Scoping.EFCoreLockTests.ConcurrentReadersTest" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="ConcurrentReadersTest" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Persistence.EFCore.Scoping.EFCoreLockTests.ConcurrentWritersTest" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="ConcurrentWritersTest" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Persistence.EFCore.Scoping.EFCoreLockTests.DeadLockTest" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="DeadLockTest" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Persistence.EFCore.Scoping.EFCoreLockTests.SingleEagerReadLockTest" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SingleEagerReadLockTest" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Persistence.EFCore.Scoping.EFCoreLockTests.SingleEagerWriteLockTest" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SingleEagerWriteLockTest" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="EFCoreScopeInfrastructureScopeLockTests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Persistence.EFCore.Scoping.EFCoreScopeInfrastructureScopeLockTests.ScopesCanShareEagerLocks" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="ScopesCanShareEagerLocks" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Persistence.EFCore.Scoping.EFCoreScopeInfrastructureScopeLockTests.ScopesCanShareNonEagerLocks" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="ScopesCanShareNonEagerLocks" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="EFCoreScopeInfrastructureScopeTests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Persistence.EFCore.Scoping.EFCoreScopeInfrastructureScopeTests.EFCoreAsParent_DontCompleteWhenChildScopeDoesNotComplete" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="EFCoreAsParent_DontCompleteWhenChildScopeDoesNotComplete" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Persistence.EFCore.Scoping.EFCoreScopeInfrastructureScopeTests.InfrastructureScopeAsParent_DontCompleteWhenChildScopeDoesNotComplete" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="InfrastructureScopeAsParent_DontCompleteWhenChildScopeDoesNotComplete" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Persistence.EFCore.Scoping.EFCoreScopeInfrastructureScopeTests.TransactionWithEfCoreScopeAsParent" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="TransactionWithEfCoreScopeAsParent" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Persistence.EFCore.Scoping.EFCoreScopeInfrastructureScopeTests.TransactionWithInfrastructureScopeAsParent" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="TransactionWithInfrastructureScopeAsParent" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="EFCoreScopeTest" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Persistence.EFCore.Scoping.EFCoreScopeTest.NestedTransactionComplete" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="NestedTransactionComplete" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Persistence.EFCore.Scoping.EFCoreScopeTest.NestedTransactionInnerFail" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="NestedTransactionInnerFail" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Persistence.EFCore.Scoping.EFCoreScopeTest.NestedTransactionOuterFail" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="NestedTransactionOuterFail" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Persistence.EFCore.Scoping.EFCoreScopeTest.Transaction" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Transaction" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+              </Rule>
+            </Rule>
+          </Rule>
+        </Rule>
+      </Rule>
+    </Rule>
+  </Rule>
+</Playlist>

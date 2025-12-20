@@ -24,8 +24,7 @@ namespace Our.Umbraco.PostgreSql.Services
             try
             {
                 var dataSourceBuilder = new NpgsqlDataSourceBuilder(connectionString);
-                dataSourceBuilder.UseNodaTime(); // Use NodaTime for date/time types
-
+                
                 using (NpgsqlDataSource dataSource = dataSourceBuilder.Build())
                 {
                     // Open a connection to the database to ensure the connection string is valid

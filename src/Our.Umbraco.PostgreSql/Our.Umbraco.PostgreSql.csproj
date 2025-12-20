@@ -35,7 +35,6 @@
 
   <ItemGroup>
     <PackageReference Include="Npgsql" />
-    <PackageReference Include="Npgsql.NodaTime" />
   </ItemGroup>
 
   <ItemGroup>
