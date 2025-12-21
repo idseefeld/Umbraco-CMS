@@ -33,6 +33,7 @@ internal sealed class CreateMissingTabsTest : UmbracoTestServerTestBase
     /// provided in https://github.com/umbraco/Umbraco-CMS/pull/20303.
     /// </summary>
     [Test]
+    [NUnit.Framework.Ignore("CreateMissingTabs class use raw sql method 'CHARINDEX((...)' which is not supported by PostgreSQL, but currently migrations are not supported at all!")]
     public async Task Can_Create_Missing_Tabs()
     {
         // Prepare a base and composed content type.

@@ -11,14 +11,10 @@ using Our.Umbraco.PostgreSql.Services;
 using Umbraco.Cms.Core.Configuration;
 using Umbraco.Cms.Core.Configuration.Models;
 using Umbraco.Cms.Core.Events;
-using Umbraco.Cms.Core.Notifications;
 using Umbraco.Cms.Infrastructure.Migrations.Install;
-using Umbraco.Cms.Infrastructure.Migrations.Notifications;
 using Umbraco.Cms.Infrastructure.Persistence;
 using Umbraco.Cms.Infrastructure.Persistence.Mappers;
-using Umbraco.Cms.Persistence.Sqlite.Mappers;
 using Umbraco.Cms.Tests.Common;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Umbraco.Cms.Tests.Integration.Testing
 {
@@ -26,8 +22,8 @@ namespace Umbraco.Cms.Tests.Integration.Testing
     {
         public const string DatabaseName = "UmbracoTests";
         private readonly TestDatabaseSettings _settings;
-        private readonly TestUmbracoDatabaseFactoryProvider _dbFactoryProvider;
 
+        #region Base methods like SqlServerBaseTestDatabase
 #pragma warning disable IDE1006 // Naming Styles
         protected PostgreSqlDatabase.CommandInfo[] _cachedDatabaseInitCommands = new PostgreSqlDatabase.CommandInfo[0];
 #pragma warning restore IDE1006 // Naming Styles
@@ -52,8 +48,8 @@ namespace Umbraco.Cms.Tests.Integration.Testing
 
         protected override void RebuildSchema(IDbCommand command, TestDbMeta meta)
         {
-            //using var connection = GetConnection(meta);
-            //connection.Open();
+            using var connection = GetConnection(meta);
+            connection.Open();
 
             lock (_cachedDatabaseInitCommands)
             {
@@ -64,12 +60,12 @@ namespace Umbraco.Cms.Tests.Integration.Testing
                 }
             }
 
-            //// Get NPoco to handle all the type mappings (e.g. dates) for us.
-            //var database = new Database(connection, DatabaseType.PostgreSQL);
-            //database.BeginTransaction();
+            // Get NPoco to handle all the type mappings (e.g. dates) for us.
+            var database = new Database(connection, DatabaseType.PostgreSQL);
+            database.BeginTransaction();
 
-            //database.Mappers.Add(new NullableDateMapper());
-            //database.Mappers.Add(new PostgreSqlPocoMapper());
+            database.Mappers.Add(new NullableDateMapper());
+            database.Mappers.Add(new PostgreSqlPocoMapper());
 
             foreach (var dbCommand in _cachedDatabaseInitCommands)
             {
@@ -84,7 +80,7 @@ namespace Umbraco.Cms.Tests.Integration.Testing
                 command.ExecuteNonQuery();
             }
 
-            //database.CompleteTransaction();
+            database.CompleteTransaction();
         }
 
         private void RebuildSchemaFirstTime(TestDbMeta meta)
@@ -95,22 +91,17 @@ namespace Umbraco.Cms.Tests.Integration.Testing
             {
                 database.LogCommands = true;
 
-                var isPostgreSqlDatabase = database is PostgreSqlDatabase;
-
                 using (var transaction = database.GetTransaction())
                 {
                     var options =
-                    new TestOptionsMonitor<InstallDefaultDataSettings>(
-                        new InstallDefaultDataSettings { InstallData = InstallDefaultDataOption.All });
-
-                    var logger = _loggerFactory.CreateLogger<DatabaseSchemaCreator>();
-                    var umbarcoVersion = new UmbracoVersion();
+                        new TestOptionsMonitor<InstallDefaultDataSettings>(
+                            new InstallDefaultDataSettings { InstallData = InstallDefaultDataOption.All });
 
                     var schemaCreator = new DatabaseSchemaCreator(
                         database,
-                        logger,
+                        _loggerFactory.CreateLogger<DatabaseSchemaCreator>(),
                         _loggerFactory,
-                        umbarcoVersion,
+                        new UmbracoVersion(),
                         Mock.Of<IEventAggregator>(),
                         options);
 
@@ -124,6 +115,7 @@ namespace Umbraco.Cms.Tests.Integration.Testing
                 }
             }
         }
+        #endregion
 
         public PostgreSqlTestDatabase(
             TestDatabaseSettings settings,
@@ -131,16 +123,19 @@ namespace Umbraco.Cms.Tests.Integration.Testing
             ILoggerFactory loggerFactory)
         {
             _loggerFactory = loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory));
-            _dbFactoryProvider = dbFactoryProvider;
             _databaseFactory = dbFactoryProvider.Create();
-            _settings = settings;
+
+            _settings = settings ?? throw new ArgumentNullException(nameof(settings));
+
             var counter = 0;
 
             // Build database metas with correct Npgsql provider and per-db connection strings
             var schema = Enumerable.Range(0, _settings.SchemaDatabaseCount)
                 .Select(_ => CreatePostgreSqlMeta($"{DatabaseName}-{++counter}", isEmpty: false));
+
             var empty = Enumerable.Range(0, _settings.EmptyDatabasesCount)
                 .Select(_ => CreatePostgreSqlMeta($"{DatabaseName}-{++counter}", isEmpty: true));
+
             _testDatabases = schema.Concat(empty).ToList();
         }
 

@@ -302,4 +302,8 @@
       <DependentUpon>ContentBlueprintEditingServiceTests.cs</DependentUpon>
     </Compile>
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="TestData\TestLogs\" />
+  </ItemGroup>
 </Project>
