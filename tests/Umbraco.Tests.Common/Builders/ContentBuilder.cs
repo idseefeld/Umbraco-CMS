@@ -453,7 +453,8 @@ public class ContentBuilder
         content.SetValue("multilineText", "Multiple lines \n in one box");
         content.SetValue("upload", "/media/1234/koala.jpg");
         content.SetValue("label", "Non-editable label");
-        content.SetValue("dateTime", DateTime.Now.AddDays(-20));
+        var dateTime = DateTime.UtcNow.AddDays(-20);
+        content.SetValue("dateTime", dateTime);
         content.SetValue("colorPicker", "black");
         content.SetValue("ddlMultiple", "1234,1235");
         content.SetValue("rbList", "random");

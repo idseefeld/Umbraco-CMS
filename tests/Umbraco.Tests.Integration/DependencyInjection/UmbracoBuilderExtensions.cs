@@ -106,6 +106,7 @@ public static class UmbracoBuilderExtensions
         builder.Services.AddUnique<IAmbientEFCoreScopeStack<TestUmbracoDbContext>, AmbientEFCoreScopeStack<TestUmbracoDbContext>>();
         builder.Services.AddUnique<IEFCoreScopeAccessor<TestUmbracoDbContext>, EFCoreScopeAccessor<TestUmbracoDbContext>>();
         builder.Services.AddUnique<IEFCoreScopeProvider<TestUmbracoDbContext>, EFCoreScopeProvider<TestUmbracoDbContext>>();
+
         builder.Services.AddSingleton<IDistributedLockingMechanism, SqliteEFCoreDistributedLockingMechanism<TestUmbracoDbContext>>();
         builder.Services.AddSingleton<IDistributedLockingMechanism, SqlServerEFCoreDistributedLockingMechanism<TestUmbracoDbContext>>();
         builder.Services.AddSingleton<IDistributedLockingMechanism, PostgreSqlEFCoreDistributedLockingMechanism<TestUmbracoDbContext>>();
