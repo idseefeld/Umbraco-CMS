@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NPoco;
 using NUnit.Framework;
+using Our.Umbraco.PostgreSql.Interceptors;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.DistributedLocking.Exceptions;
 using Umbraco.Cms.Infrastructure.Persistence.Dtos;
@@ -34,9 +35,13 @@ internal sealed class LocksTests : UmbracoIntegrationTest
         }
     }
 
-    protected override void ConfigureTestServices(IServiceCollection services) =>
+    protected override void ConfigureTestServices(IServiceCollection services)
+    {
         // SQLite + retry policy makes tests fail, we retry before throwing distributed locking timeout.
         services.RemoveAll(x => !x.IsKeyedService && x.ImplementationType == typeof(SqliteAddRetryPolicyInterceptor));
+
+        //services.RemoveAll(x => !x.IsKeyedService && x.ImplementationType == typeof(PostgreSqlAddRetryPolicyInterceptor));
+    }
 
     [Test]
     public void SingleReadLockTest()
@@ -288,7 +293,7 @@ internal sealed class LocksTests : UmbracoIntegrationTest
     [Test]
     public void DeadLockTest()
     {
-        if (BaseTestDatabase.IsSqlite())
+        if (BaseTestDatabase.IsSqlite() || BaseTestDatabase.IsPostgreSql())
         {
             Assert.Ignore("This test doesn't work with Microsoft.Data.Sqlite - SELECT * FROM sys.dm_tran_locks;");
             return;
@@ -381,7 +386,7 @@ internal sealed class LocksTests : UmbracoIntegrationTest
     [Test]
     public void NoDeadLockTest()
     {
-        if (BaseTestDatabase.IsSqlite())
+        if (BaseTestDatabase.IsSqlite() || BaseTestDatabase.IsPostgreSql())
         {
             Assert.Ignore("This test doesn't work with Microsoft.Data.Sqlite - SELECT * FROM sys.dm_tran_locks;");
             return;
@@ -417,7 +422,7 @@ internal sealed class LocksTests : UmbracoIntegrationTest
     [Test]
     public void Throws_When_Lock_Timeout_Is_Exceeded_Read()
     {
-        if (BaseTestDatabase.IsSqlite())
+        if (BaseTestDatabase.IsSqlite() || BaseTestDatabase.IsPostgreSql())
         {
             // Reader reads snapshot, isolated from the writer.
             Assert.Ignore("Doesn't apply to SQLite with journal_mode=wal");
@@ -531,7 +536,7 @@ internal sealed class LocksTests : UmbracoIntegrationTest
     [Test]
     public void Read_Lock_Waits_For_Write_Lock()
     {
-        if (BaseTestDatabase.IsSqlite())
+        if (BaseTestDatabase.IsSqlite() || BaseTestDatabase.IsPostgreSql())
         {
             // Reader reads snapshot, isolated from the writer.
             Assert.Ignore("Doesn't apply to SQLite with journal_mode=wal");

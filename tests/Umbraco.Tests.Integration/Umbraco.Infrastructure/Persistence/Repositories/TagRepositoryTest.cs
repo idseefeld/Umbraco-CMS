@@ -862,8 +862,9 @@ internal sealed class TagRepositoryTest : UmbracoIntegrationTest
 
             DocumentRepository.Delete(content1);
 
+            var syntax = ScopeAccessor.AmbientScope.SqlContext.SqlSyntax;
             Assert.AreEqual(0, ScopeAccessor.AmbientScope.Database.ExecuteScalar<int>(
-                "SELECT COUNT(*) FROM cmsTagRelationship WHERE nodeId=@nodeId AND propertyTypeId=@propTypeId",
+                $"SELECT COUNT(*) FROM {syntax.GetQuotedTableName("cmsTagRelationship")} WHERE {syntax.GetQuotedColumnName("nodeId")}=@nodeId AND {syntax.GetQuotedColumnName("propertyTypeId")}=@propTypeId",
                 new { nodeId = content1.Id, propTypeId = contentType.PropertyTypes.First().Id }));
         }
     }

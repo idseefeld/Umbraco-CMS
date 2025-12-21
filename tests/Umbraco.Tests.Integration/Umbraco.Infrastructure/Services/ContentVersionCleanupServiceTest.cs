@@ -76,13 +76,14 @@ internal class ContentVersionCleanupServiceTest : UmbracoIntegrationTest
     {
         using (var scope = ScopeProvider.CreateScope(autoComplete: true))
         {
+            var syntax = ScopeAccessor.AmbientScope.SqlContext.SqlSyntax;
             // SQL CE is fun!
             var contentVersions =
-                ScopeAccessor.AmbientScope.Database.Single<int>(@"select count(1) from umbracoContentVersion");
+                ScopeAccessor.AmbientScope.Database.Single<int>($"select count(1) from {syntax.GetQuotedTableName("umbracoContentVersion")}");
             var documentVersions =
-                ScopeAccessor.AmbientScope.Database.Single<int>(@"select count(1) from umbracoDocumentVersion");
+                ScopeAccessor.AmbientScope.Database.Single<int>($"select count(1) from {syntax.GetQuotedTableName("umbracoDocumentVersion")}");
             var propertyData =
-                ScopeAccessor.AmbientScope.Database.Single<int>(@"select count(1) from umbracoPropertyData");
+                ScopeAccessor.AmbientScope.Database.Single<int>($"select count(1) from {syntax.GetQuotedTableName("umbracoPropertyData")}");
 
             return new Report
             {

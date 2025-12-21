@@ -30,6 +30,7 @@ internal sealed class EFCoreScopeInfrastructureScopeLockTests : UmbracoIntegrati
     }
 
     [Test]
+    [Ignore("The raw SQL in this test does not respect SqlSyntax and uses unsupported database types e.g NAVARCHAR which is not supported by PostgreSql.")]
     public async Task ScopesCanShareNonEagerLocks()
     {
         using IEfCoreScope<TestUmbracoDbContext> parentScope = EfCoreScopeProvider.CreateScope();
@@ -52,6 +53,7 @@ internal sealed class EFCoreScopeInfrastructureScopeLockTests : UmbracoIntegrati
     }
 
     [Test]
+    [Ignore("The raw SQL in this test does not respect SqlSyntax and uses unsupported database types e.g NAVARCHAR which is not supported by PostgreSql.")]
     public async Task ScopesCanShareEagerLocks()
     {
         using IEfCoreScope<TestUmbracoDbContext> parentScope = EfCoreScopeProvider.CreateScope();
@@ -59,6 +61,50 @@ internal sealed class EFCoreScopeInfrastructureScopeLockTests : UmbracoIntegrati
         {
             parentScope.Locks.EagerWriteLock(parentScope.InstanceId, Constants.Locks.Servers);
             await database.Database.ExecuteSqlAsync($"CREATE TABLE tmp3 (id INT, name NVARCHAR(64))");
+            await database.Database.ExecuteSqlAsync($"INSERT INTO tmp3 (id, name) VALUES (1, 'a')");
+        });
+
+        using (var childScope = InfrastructureScopeProvider.CreateScope())
+        {
+            childScope.Locks.EagerWriteLock(childScope.InstanceId, Constants.Locks.Servers);
+            string n = childScope.Database.ExecuteScalar<string>("SELECT name FROM tmp3 WHERE id=1");
+            Assert.AreEqual("a", n);
+            childScope.Complete();
+        }
+
+        parentScope.Complete();
+    }
+
+    [Test]
+    public async Task ScopesCanShareNonEagerLocksPostgreSql()
+    {
+        using IEfCoreScope<TestUmbracoDbContext> parentScope = EfCoreScopeProvider.CreateScope();
+        await parentScope.ExecuteWithContextAsync<Task>(async database =>
+        {
+            parentScope.Locks.WriteLock(parentScope.InstanceId, Constants.Locks.Servers);
+            await database.Database.ExecuteSqlAsync($"CREATE TABLE tmp3 (id INT, name TEXT)");
+            await database.Database.ExecuteSqlAsync($"INSERT INTO tmp3 (id, name) VALUES (1, 'a')");
+        });
+
+        using (var childScope = InfrastructureScopeProvider.CreateScope())
+        {
+            childScope.Locks.WriteLock(childScope.InstanceId, Constants.Locks.Servers);
+            string n = childScope.Database.ExecuteScalar<string>("SELECT name FROM tmp3 WHERE id=1");
+            Assert.AreEqual("a", n);
+            childScope.Complete();
+        }
+
+        parentScope.Complete();
+    }
+
+    [Test]
+    public async Task ScopesCanShareEagerLocksPostgreSql()
+    {
+        using IEfCoreScope<TestUmbracoDbContext> parentScope = EfCoreScopeProvider.CreateScope();
+        await parentScope.ExecuteWithContextAsync<Task>(async database =>
+        {
+            parentScope.Locks.EagerWriteLock(parentScope.InstanceId, Constants.Locks.Servers);
+            await database.Database.ExecuteSqlAsync($"CREATE TABLE tmp3 (id INT, name TEXT)");
             await database.Database.ExecuteSqlAsync($"INSERT INTO tmp3 (id, name) VALUES (1, 'a')");
         });
 
