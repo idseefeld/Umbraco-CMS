@@ -18,7 +18,7 @@ internal sealed class ContentVersionCultureVariationDto
     public int Id { get; set; }
 
     [Column("versionId")]
-    [ForeignKey(typeof(ContentVersionDto))]
+    [ForeignKey(typeof(ContentVersionDto), Name = "FK_umbContentVersionCultureVariation_umbContentVersion_id")] // needs to be shorter than 64 chars for e.g. PostgreSQL
     [Index(IndexTypes.UniqueNonClustered, Name = "IX_" + TableName + "_VersionId", ForColumns = "versionId,languageId", IncludeColumns = "id,name,date,availableUserId")]
     public int VersionId { get; set; }
 
