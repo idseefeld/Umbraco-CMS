@@ -106,7 +106,18 @@ internal sealed class DatabaseDataCreator
     private readonly IUmbracoVersion _umbracoVersion;
     private readonly IPocoDataFactory _pocoDataFactory;
 
-    public DatabaseDataCreator(IDatabase database, ILogger<DatabaseDataCreator> logger, IUmbracoVersion umbracoVersion, IOptionsMonitor<InstallDefaultDataSettings> installDefaultDataSettings)
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="DatabaseDataCreator" /> class.
+    /// </summary>
+    /// <param name="database">The database.</param>
+    /// <param name="logger">The logger.</param>
+    /// <param name="umbracoVersion">The Umbraco version.</param>
+    /// <param name="installDefaultDataSettings">The install default data settings.</param>
+    public DatabaseDataCreator(
+        IDatabase database,
+        ILogger<DatabaseDataCreator> logger,
+        IUmbracoVersion umbracoVersion,
+        IOptionsMonitor<InstallDefaultDataSettings> installDefaultDataSettings)
     {
         _database = database;
         _logger = logger;
@@ -317,19 +328,45 @@ internal sealed class DatabaseDataCreator
                 CreateDate = DateTime.UtcNow,
             });
 
-        InsertDataTypeNodeDto(Constants.DataTypes.LabelString, 35, Constants.DataTypes.Guids.LabelString,
+        InsertDataTypeNodeDto(
+            Constants.DataTypes.LabelString,
+            35,
+            Constants.DataTypes.Guids.LabelString,
             "Label (string)");
-        InsertDataTypeNodeDto(Constants.DataTypes.LabelInt, 36, Constants.DataTypes.Guids.LabelInt, "Label (integer)");
-        InsertDataTypeNodeDto(Constants.DataTypes.LabelBigint, 36, Constants.DataTypes.Guids.LabelBigInt,
+        InsertDataTypeNodeDto(
+            Constants.DataTypes.LabelInt,
+            36,
+            Constants.DataTypes.Guids.LabelInt,
+            "Label (integer)");
+        InsertDataTypeNodeDto(
+            Constants.DataTypes.LabelBigint,
+            36,
+            Constants.DataTypes.Guids.LabelBigInt,
             "Label (bigint)");
-        InsertDataTypeNodeDto(Constants.DataTypes.LabelDateTime, 37, Constants.DataTypes.Guids.LabelDateTime,
+        InsertDataTypeNodeDto(
+            Constants.DataTypes.LabelDateTime,
+            37,
+            Constants.DataTypes.Guids.LabelDateTime,
             "Label (datetime)");
-        InsertDataTypeNodeDto(Constants.DataTypes.LabelTime, 38, Constants.DataTypes.Guids.LabelTime, "Label (time)");
-        InsertDataTypeNodeDto(Constants.DataTypes.LabelDecimal, 39, Constants.DataTypes.Guids.LabelDecimal,
+        InsertDataTypeNodeDto(
+            Constants.DataTypes.LabelTime,
+            38,
+            Constants.DataTypes.Guids.LabelTime,
+            "Label (time)");
+        InsertDataTypeNodeDto(
+            Constants.DataTypes.LabelDecimal,
+            39,
+            Constants.DataTypes.Guids.LabelDecimal,
             "Label (decimal)");
-        InsertDataTypeNodeDto(Constants.DataTypes.LabelBytes, 40, Constants.DataTypes.Guids.LabelBytes,
+        InsertDataTypeNodeDto(
+            Constants.DataTypes.LabelBytes,
+            40,
+            Constants.DataTypes.Guids.LabelBytes,
             "Label (bytes)");
-        InsertDataTypeNodeDto(Constants.DataTypes.LabelPixels, 41, Constants.DataTypes.Guids.LabelPixels,
+        InsertDataTypeNodeDto(
+            Constants.DataTypes.LabelPixels,
+            41,
+            Constants.DataTypes.Guids.LabelPixels,
             "Label (pixels)");
 
         ConditionalInsert(
@@ -2209,26 +2246,65 @@ internal sealed class DatabaseDataCreator
 
     private void CreateRelationTypeData()
     {
-        CreateRelationTypeData(1, Constants.Conventions.RelationTypes.RelateDocumentOnCopyAlias,
-            Constants.Conventions.RelationTypes.RelateDocumentOnCopyName, Constants.ObjectTypes.Document,
-            Constants.ObjectTypes.Document, true, false);
-        CreateRelationTypeData(2, Constants.Conventions.RelationTypes.RelateParentDocumentOnDeleteAlias,
-            Constants.Conventions.RelationTypes.RelateParentDocumentOnDeleteName, Constants.ObjectTypes.Document,
-            Constants.ObjectTypes.Document, false, false);
-        CreateRelationTypeData(3, Constants.Conventions.RelationTypes.RelateParentMediaFolderOnDeleteAlias,
-            Constants.Conventions.RelationTypes.RelateParentMediaFolderOnDeleteName, Constants.ObjectTypes.Media,
-            Constants.ObjectTypes.Media, false, false);
-        CreateRelationTypeData(4, Constants.Conventions.RelationTypes.RelatedMediaAlias,
-            Constants.Conventions.RelationTypes.RelatedMediaName, null, null, false, true);
-        CreateRelationTypeData(5, Constants.Conventions.RelationTypes.RelatedDocumentAlias,
-            Constants.Conventions.RelationTypes.RelatedDocumentName, null, null, false, true);
-        CreateRelationTypeData(6, Constants.Conventions.RelationTypes.RelatedMemberAlias,
-            Constants.Conventions.RelationTypes.RelatedMemberName, null, null, false, true);
+        CreateRelationTypeData(
+            1,
+            Constants.Conventions.RelationTypes.RelateDocumentOnCopyAlias,
+            Constants.Conventions.RelationTypes.RelateDocumentOnCopyName,
+            Constants.ObjectTypes.Document,
+            Constants.ObjectTypes.Document,
+            true,
+            false);
+        CreateRelationTypeData(
+            2,
+            Constants.Conventions.RelationTypes.RelateParentDocumentOnDeleteAlias,
+            Constants.Conventions.RelationTypes.RelateParentDocumentOnDeleteName,
+            Constants.ObjectTypes.Document,
+            Constants.ObjectTypes.Document,
+            false,
+            false);
+        CreateRelationTypeData(
+            3,
+            Constants.Conventions.RelationTypes.RelateParentMediaFolderOnDeleteAlias,
+            Constants.Conventions.RelationTypes.RelateParentMediaFolderOnDeleteName,
+            Constants.ObjectTypes.Media,
+            Constants.ObjectTypes.Media,
+            false,
+            false);
+        CreateRelationTypeData(
+            4,
+            Constants.Conventions.RelationTypes.RelatedMediaAlias,
+            Constants.Conventions.RelationTypes.RelatedMediaName,
+            null,
+            null,
+            false,
+            true);
+        CreateRelationTypeData(
+            5,
+            Constants.Conventions.RelationTypes.RelatedDocumentAlias,
+            Constants.Conventions.RelationTypes.RelatedDocumentName,
+            null,
+            null,
+            false,
+            true);
+        CreateRelationTypeData(
+            6,
+            Constants.Conventions.RelationTypes.RelatedMemberAlias,
+            Constants.Conventions.RelationTypes.RelatedMemberName,
+            null,
+            null,
+            false,
+            true);
 
     }
 
-    private void CreateRelationTypeData(int id, string alias, string name, Guid? parentObjectType,
-        Guid? childObjectType, bool dual, bool isDependency)
+    private void CreateRelationTypeData(
+        int id,
+        string alias,
+        string name,
+        Guid? parentObjectType,
+        Guid? childObjectType,
+        bool dual,
+        bool isDependency)
     {
         Insert(
             new RelationTypeDto
