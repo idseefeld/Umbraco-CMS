@@ -392,16 +392,50 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
     {
         const string sql = @"
             SELECT
-                table_name AS ""TableName"",
-                column_name AS ""ColumnName"",
-                ordinal_position AS ""Ordinal"",
-                column_default AS ""ColumnDefault"",
-                is_nullable = 'YES' AS ""IsNullable"",
-                data_type AS ""DataType""
+                table_name,
+                column_name,
+                ordinal_position,
+                column_default,
+                is_nullable,
+                data_type
               FROM information_schema.columns
               WHERE table_schema = 'public'";
 
-        return db.Fetch<ColumnInfo>(sql);
+        IEnumerable<ColumnInfo> result;
+        try
+        {
+            List<ColumnInSchemaDto>? items = db.Fetch<ColumnInSchemaDto>(sql);
+            result = items.Select(
+                item =>
+                    new ColumnInfo(item.TableName, item.ColumnName, item.OrdinalPosition, item.ColumnDefault, item.IsNullable, item.DataType));
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+
+        return result;
+    }
+
+    internal sealed class ColumnInSchemaDto
+    {
+        [Column("table_name")]
+        public string TableName { get; set; } = null!;
+
+        [Column("column_name")]
+        public string ColumnName { get; set; } = null!;
+
+        [Column("ordinal_position")]
+        public int OrdinalPosition { get; set; }
+
+        [Column("column_default")]
+        public string ColumnDefault { get; set; } = null!;
+
+        [Column("is_nullable")]
+        public string IsNullable { get; set; } = null!;
+
+        [Column("data_type")]
+        public string DataType { get; set; } = null!;
     }
 
     /// <inheritdoc />
@@ -535,9 +569,6 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
     /// <inheritdoc />
     public override string Format(ForeignKeyDefinition foreignKey)
     {
-        //var constraintName = string.IsNullOrEmpty(foreignKey.Name)
-        //    ? $"FK_{foreignKey.ForeignTable}_{foreignKey.PrimaryTable}_{foreignKey.PrimaryColumns.First()}"
-        //    : foreignKey.Name;
         var constraintName = string.IsNullOrEmpty(foreignKey.Name)
             ? BuildForeignKeyConstraintName(foreignKey)
             : TruncateToMaxIdentifierLength(foreignKey.Name);

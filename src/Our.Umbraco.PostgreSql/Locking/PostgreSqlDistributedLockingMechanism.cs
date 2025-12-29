@@ -103,7 +103,7 @@ namespace Our.Umbraco.PostgreSql.Locking
                             throw new ArgumentOutOfRangeException(nameof(lockType), lockType, @"Unsupported lockType");
                     }
                 }
-                catch (Npgsql.PostgresException ex) when (ex.SqlState == "")
+                catch (Npgsql.PostgresException ex) when (ex.SqlState == "55P03")
                 {
                     if (LockType == DistributedLockType.ReadLock)
                     {
