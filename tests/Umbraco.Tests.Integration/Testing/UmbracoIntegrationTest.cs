@@ -4,6 +4,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
+using NPoco.DatabaseTypes;
 using NUnit.Framework;
 using Our.Umbraco.PostgreSql;
 using Our.Umbraco.PostgreSql.EFCore;
@@ -71,6 +72,11 @@ public abstract class UmbracoIntegrationTest : UmbracoIntegrationTestBase
     protected UserBuilder UserBuilderInstance { get; } = new();
 
     protected UserGroupBuilder UserGroupBuilderInstance { get; } = new();
+
+    protected string GetDBTypeNameForTextColumn(IScope scope, int size = 64)
+    {
+        return scope.Database.DatabaseType is PostgreSQLDatabaseType ? "TEXT" : $"NVARCHAR({size})";
+    }
 
     [SetUp]
     public void Setup()
@@ -182,7 +188,7 @@ public abstract class UmbracoIntegrationTest : UmbracoIntegrationTestBase
                 .AddCoreMappingProfiles();
         }
 
-        services.RemoveAll(x=>x.ImplementationType == typeof(DocumentUrlServiceInitializerNotificationHandler));
+        services.RemoveAll(x => x.ImplementationType == typeof(DocumentUrlServiceInitializerNotificationHandler));
         services.AddSignalR();
         services.AddMvc();
 
