@@ -5,6 +5,7 @@ using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
+using NPoco.DatabaseTypes;
 using NUnit.Framework;
 using Umbraco.Cms.Core.Cache;
 using Umbraco.Cms.Core.Configuration;
@@ -321,12 +322,17 @@ internal sealed class AdvancedMigrationTests : UmbracoIntegrationTest
 
     public class AddColumnMigration : MigrationBase
     {
+        private readonly IMigrationContext _context;
         public AddColumnMigration(IMigrationContext context)
             : base(context)
         {
+            _context = context;
         }
 
-        protected override void Migrate() =>
-            Database.Execute($"ALTER TABLE {SqlSyntax.GetQuotedTableName("umbracoUser")} ADD Foo nvarchar(255)");
+        protected override void Migrate()
+        {
+            var sql = _context.Database.DatabaseType is PostgreSQLDatabaseType ? "TEXT" : "nvarchar(255)";
+            Database.Execute($"ALTER TABLE {SqlSyntax.GetQuotedTableName("umbracoUser")} ADD Foo {sql}");
+        }
     }
 }
