@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
+using NPoco.DatabaseTypes;
 using NUnit.Framework;
 using Umbraco.Cms.Core.Cache;
 using Umbraco.Cms.Core.Scoping;
@@ -342,7 +343,7 @@ namespace Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Scoping
 
             using (IScope scope = scopeProvider.CreateScope())
             {
-                ScopeAccessor.AmbientScope.Database.Execute("CREATE TABLE tmp3 (id INT, name NVARCHAR(64))");
+                ScopeAccessor.AmbientScope.Database.Execute($"CREATE TABLE tmp3 (id INT, name {GetDBTypeNameForTextColumn(scope)})");
                 scope.Complete();
             }
 
@@ -379,7 +380,7 @@ namespace Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Scoping
 
             using (IScope scope = scopeProvider.CreateScope())
             {
-                ScopeAccessor.AmbientScope.Database.Execute($"CREATE TABLE tmp1 (id INT, name NVARCHAR(64))");
+                ScopeAccessor.AmbientScope.Database.Execute($"CREATE TABLE tmp1 (id INT, name {GetDBTypeNameForTextColumn(scope)})");
                 scope.Complete();
             }
 
@@ -418,7 +419,7 @@ namespace Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Scoping
 
             using (IScope scope = scopeProvider.CreateScope())
             {
-                ScopeAccessor.AmbientScope.Database.Execute("CREATE TABLE tmp2 (id INT, name NVARCHAR(64))");
+                ScopeAccessor.AmbientScope.Database.Execute($"CREATE TABLE tmp2 (id INT, name {GetDBTypeNameForTextColumn(scope)})");
                 scope.Complete();
             }
 
@@ -456,7 +457,7 @@ namespace Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Scoping
 
             using (IScope scope = scopeProvider.CreateScope())
             {
-                ScopeAccessor.AmbientScope.Database.Execute("CREATE TABLE tmp (id INT, name NVARCHAR(64))");
+                ScopeAccessor.AmbientScope.Database.Execute($"CREATE TABLE tmp (id INT, name {GetDBTypeNameForTextColumn(scope)})");
                 scope.Complete();
             }
 
@@ -571,8 +572,8 @@ namespace Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Scoping
         public void ScopeReference()
         {
             ScopeProvider scopeProvider = ScopeProvider;
-            Scope scope = (Scope) scopeProvider.CreateScope();
-            Scope nested = (Scope) scopeProvider.CreateScope();
+            Scope scope = (Scope)scopeProvider.CreateScope();
+            Scope nested = (Scope)scopeProvider.CreateScope();
 
             Assert.IsNotNull(scopeProvider.AmbientScope);
 
