@@ -233,14 +233,16 @@ internal sealed class AdvancedMigrationTests : UmbracoIntegrationTest
 
             var db = ScopeAccessor.AmbientScope.Database;
 
-            var columnInfo = ScopeAccessor.AmbientScope.SqlContext.SqlSyntax.GetColumnsInSchema(db)
-                .Where(x => x.TableName == "umbracoUser")
-                .FirstOrDefault(x => x.ColumnName == "Foo");
+            var columnInfos = ScopeAccessor.AmbientScope.SqlContext.SqlSyntax.GetColumnsInSchema(db)
+                .Where(x => x.TableName == "umbracoUser");
+            var columnInfo = columnInfos
+                .FirstOrDefault(x => x.ColumnName.InvariantEquals("foo"));
 
+            var columnDataType = db.DatabaseType is PostgreSQLDatabaseType ? "text" : "nvarchar";
             Assert.Multiple(() =>
             {
                 Assert.NotNull(columnInfo);
-                Assert.IsTrue(columnInfo.DataType.Contains("nvarchar"));
+                Assert.IsTrue(columnInfo.DataType.Contains(columnDataType));
             });
         }
     }
