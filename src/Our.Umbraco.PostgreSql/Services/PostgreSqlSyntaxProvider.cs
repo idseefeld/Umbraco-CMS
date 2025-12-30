@@ -284,52 +284,6 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
         }
     }
 
-    private void old_HandleCreateTable(IDatabase database, TableDefinition tableDefinition, bool skipKeysAndIndexes = false)
-    {
-        // Format columns, primary key, and foreign keys
-        var columns = Format(tableDefinition.Columns);
-        var primaryKey = FormatPrimaryKey(tableDefinition);
-
-        var sb = new System.Text.StringBuilder();
-        _ = sb.AppendLine($"CREATE TABLE {GetQuotedTableName(tableDefinition.Name)}")
-            .AppendLine("(")
-            .Append(columns);
-
-        // Add primary key if present and not skipping keys
-        if (!string.IsNullOrEmpty(primaryKey) && !skipKeysAndIndexes)
-        {
-            _ = sb.AppendLine($",\n {primaryKey}");
-        }
-
-        var createSql = sb
-            .AppendLine(")")
-            .ToString();
-
-        _logger.LogInformation("Create table:\n {Sql}", createSql);
-        _ = database.Execute(new Sql(createSql));
-
-        if (skipKeysAndIndexes)
-        {
-            return;
-        }
-
-        // Create indexes
-        List<string> indexSql = Format(tableDefinition.Indexes);
-        foreach (var sql in indexSql)
-        {
-            _logger.LogDebug("Create Index:\n {Sql}", sql);
-            _ = database.Execute(new Sql(sql));
-        }
-
-        // Create foreign keys
-        List<string> foreignKeysSql = Format(tableDefinition.ForeignKeys);
-        foreach (var sql in foreignKeysSql)
-        {
-            _logger.LogDebug("Create Index:\n {Sql}", sql);
-            _ = database.Execute(new Sql(sql));
-        }
-    }
-
     /// <inheritdoc />
     public override string OrderByGuid(string tableName, string columnName) => $"UPPER({GetQuotedColumn(tableName, columnName)}::text)";
 
