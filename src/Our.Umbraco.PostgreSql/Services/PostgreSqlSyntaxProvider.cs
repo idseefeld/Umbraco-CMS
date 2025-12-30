@@ -785,7 +785,7 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
     public override string TruncateTable => "TRUNCATE TABLE {0} CASCADE";
 
     /// <inheritdoc />
-    public override string CreateConstraint => "CONSTRAINT {1} {2} ({3})"; // "ALTER TABLE {0} ADD CONSTRAINT {1} {2} ({3})";
+    public override string CreateConstraint => "ALTER TABLE {0} ADD CONSTRAINT {1} {2} ({3})";
 
     /// <inheritdoc />
     public override string DeleteConstraint => "ALTER TABLE {0} DROP CONSTRAINT {1} CASCADE";
