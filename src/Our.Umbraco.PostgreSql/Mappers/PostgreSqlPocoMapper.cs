@@ -1,6 +1,7 @@
 using System.Data.Common;
 using System.Reflection;
 using NPoco;
+using Umbraco.Cms.Core.Mapping;
 using Umbraco.Extensions;
 
 namespace Our.Umbraco.PostgreSql.Mappers
@@ -14,6 +15,7 @@ namespace Our.Umbraco.PostgreSql.Mappers
 
             return base.GetFromDbConverter(destMemberInfo, sourceType);
         }
+
         public override Func<object, object?> GetFromDbConverter(Type destType, Type sourceType)
         {
             var destName = destType.Name;
@@ -50,7 +52,88 @@ namespace Our.Umbraco.PostgreSql.Mappers
                 };
             }
 
+
+            if (IsDateOnlyType(destType))
+            {
+                return value => ConvertToDateOnly(value, IsNullableType(destType));
+            }
+
+            if (IsTimeOnlyType(destType))
+            {
+                return value => ConvertToTimeOnly(value, IsNullableType(destType));
+            }
+
+            if (destType == typeof(DateTime))
+            {
+                return value =>
+                {
+                    if (value is DateTime result)
+                    {
+                        return result;
+                    }
+
+                    return default(DateTime);
+                };
+            }
+
+            if (destType == typeof(DateTime?))
+            {
+                return value =>
+                {
+                    if (value == null)
+                    {
+                        return default(DateTime?);
+                    }
+
+                    if (value is DateTime result)
+                    {
+                        return result;
+                    }
+
+                    return value;
+                };
+            }
+
             return base.GetFromDbConverter(destType, sourceType);
+        }
+
+        private static bool IsDateOnlyType(Type type) =>
+            type == typeof(DateOnly) || type == typeof(DateOnly?);
+
+        private static bool IsTimeOnlyType(Type type) =>
+            type == typeof(TimeOnly) || type == typeof(TimeOnly?);
+
+        private static bool IsNullableType(Type type) =>
+            Nullable.GetUnderlyingType(type) != null;
+
+        private static object? ConvertToDateOnly(object? value, bool isNullable)
+        {
+            if (value is null)
+            {
+                return isNullable ? null : default(DateOnly);
+            }
+
+            if (value is DateTime dt)
+            {
+                return DateOnly.FromDateTime(dt);
+            }
+
+            return DateOnly.Parse(value.ToString()!);
+        }
+
+        private static object? ConvertToTimeOnly(object? value, bool isNullable)
+        {
+            if (value is null)
+            {
+                return isNullable ? null : default(TimeOnly);
+            }
+
+            if (value is DateTime dt)
+            {
+                return TimeOnly.FromDateTime(dt);
+            }
+
+            return TimeOnly.Parse(value.ToString()!);
         }
 
         public override Func<object, object> GetToDbConverter(Type destType, MemberInfo sourceMemberInfo)

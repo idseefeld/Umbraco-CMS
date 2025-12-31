@@ -4,6 +4,7 @@
 using System.Diagnostics;
 using Microsoft.Extensions.Options;
 using Moq;
+using NPoco.DatabaseTypes;
 using NUnit.Framework;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Cache;
@@ -2763,12 +2764,11 @@ internal sealed class ContentServiceTests : UmbracoIntegrationTestWithContent
         var resultDate = sut.GetValue<DateTime>("date");
 
         Assert.That(resultDateTime.ToString("G"), Is.EqualTo(expectedDateTime.ToString("G")));
+        Assert.That(resultDate.ToString("G"), Is.EqualTo(expectedDate.ToString("G")));
 
         Assert.That(sut.GetValue<string>("colorPicker"), Is.EqualTo("black"));
         Assert.That(sut.GetValue<string>("ddlMultiple"), Is.EqualTo("1234,1235"));
         Assert.That(sut.GetValue<string>("rbList"), Is.EqualTo("random"));
-
-        Assert.That(resultDate.ToString("G"), Is.EqualTo(expectedDate.ToString("G")));
 
         Assert.That(sut.GetValue<string>("ddl"), Is.EqualTo("1234"));
         Assert.That(sut.GetValue<string>("chklist"), Is.EqualTo("randomc"));
