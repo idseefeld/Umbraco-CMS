@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text.RegularExpressions;
+using NPoco.DatabaseTypes;
 using NUnit.Framework;
 using Umbraco.Cms.Core.Logging;
 using Umbraco.Cms.Infrastructure.Persistence.Dtos;
@@ -161,18 +162,21 @@ internal sealed class NPocoBulkInsertTests : UmbracoIntegrationTest
             });
         }
 
+        var isPostgreSql = false;
         IDbCommand[] commands;
         using (var scope = ScopeProvider.CreateScope())
         {
+            isPostgreSql = ScopeAccessor.AmbientScope.Database.DatabaseType is PostgreSQLDatabaseType;
             commands = ScopeAccessor.AmbientScope.Database.GenerateBulkInsertCommands(servers.ToArray());
             scope.Complete();
         }
 
         // Assert
-        Assert.That(
-            commands[0].CommandText,
-            Is.EqualTo(
-                "INSERT INTO [umbracoServer] ([umbracoServer].[address], [umbracoServer].[computerName], [umbracoServer].[registeredDate], [umbracoServer].[lastNotifiedDate], [umbracoServer].[isActive], [umbracoServer].[isSchedulingPublisher]) VALUES (@0,@1,@2,@3,@4,@5), (@6,@7,@8,@9,@10,@11)"));
+        var defaultSqlText = isPostgreSql
+            ? "INSERT INTO \"umbracoServer\" (\"umbracoServer\".\"address\", \"umbracoServer\".\"computerName\", \"umbracoServer\".\"registeredDate\", \"umbracoServer\".\"lastNotifiedDate\", \"umbracoServer\".\"isActive\", \"umbracoServer\".\"isSchedulingPublisher\") VALUES (@p0,@p1,@p2,@p3,@p4,@p5), (@p6,@p7,@p8,@p9,@p10,@p11)"
+            : "INSERT INTO [umbracoServer] ([umbracoServer].[address], [umbracoServer].[computerName], [umbracoServer].[registeredDate], [umbracoServer].[lastNotifiedDate], [umbracoServer].[isActive], [umbracoServer].[isSchedulingPublisher]) VALUES (@0,@1,@2,@3,@4,@5), (@6,@7,@8,@9,@10,@11)";
+
+        Assert.That(commands[0].CommandText, Is.EqualTo(defaultSqlText));
     }
 
     [Test]

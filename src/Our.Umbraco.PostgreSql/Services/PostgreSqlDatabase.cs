@@ -67,11 +67,18 @@ namespace Our.Umbraco.PostgreSql.Services
         {
             if (!sql.InvariantContains("NOT NULL ") && sql.InvariantContains("NULL "))
             {
-                sql = Regex.Replace(sql, @"\s*NULL ", " NULL::int ", RegexOptions.IgnoreCase);
+                sql = Regex.Replace(sql, @"\s*NULL ", " NULL::int = 0 ", RegexOptions.IgnoreCase);
             }
 
-            var convertedArgs = args.Select(arg => arg is DateTime uct ? uct.ToUniversalTime() : arg).ToArray();
-            return base.CreateCommand(connection,commandType, sql, convertedArgs);
+            foreach (var arg in args)
+            {
+                if (arg is DateTime dt && dt.Kind == DateTimeKind.Unspecified)
+                {
+                    args.Replace(arg, dt.ToLocalTime().ToUniversalTime());
+                }
+            }
+
+            return base.CreateCommand(connection, commandType, sql, args);
         }
 
         private static string? FixPrimaryKey(string primaryKeyName)
