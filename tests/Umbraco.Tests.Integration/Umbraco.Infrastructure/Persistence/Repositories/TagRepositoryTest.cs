@@ -9,6 +9,7 @@ using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Persistence.Repositories;
 using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Services;
+using Umbraco.Cms.Infrastructure.Persistence.Dtos;
 using Umbraco.Cms.Infrastructure.Persistence.Repositories.Implement;
 using Umbraco.Cms.Infrastructure.Scoping;
 using Umbraco.Cms.Tests.Common.Builders;
@@ -1076,8 +1077,11 @@ internal sealed class TagRepositoryTest : UmbracoIntegrationTest
                 false);
 
             // Only one tag should have been saved.
-            var tagCount = scope.Database.ExecuteScalar<int>(
-                "SELECT COUNT(*) FROM cmsTags WHERE [group] = 'test'");
+            var sql = scope.SqlContext.Sql()
+                .SelectCount()
+                .From<TagDto>()
+                .Where<TagDto>(x => x.Group == "test");
+            var tagCount = scope.Database.ExecuteScalar<int>(sql);
             Assert.AreEqual(1, tagCount);
 
             // Both content items should be found as tagged by the tag, even though one was assigned with the tag differing in case.
@@ -1092,6 +1096,7 @@ internal sealed class TagRepositoryTest : UmbracoIntegrationTest
         using (var scope = ScopeProvider.CreateScope())
         {
             (IContentType contentType, IContent content1, IContent content2) = CreateContentForCreateTagTests();
+            var propertyTypeId = contentType.PropertyTypes.First().Id;
 
             var repository = CreateRepository(provider);
 
@@ -1099,7 +1104,7 @@ internal sealed class TagRepositoryTest : UmbracoIntegrationTest
             Tag[] tags1 = { new() { Text = "tag1", Group = "group1" }, new() { Text = "tag1", Group = "Group1" } };
             repository.Assign(
                 content1.Id,
-                contentType.PropertyTypes.First().Id,
+                propertyTypeId,
                 tags1,
                 false);
 
@@ -1107,17 +1112,23 @@ internal sealed class TagRepositoryTest : UmbracoIntegrationTest
             Tag[] tags2 = { new() { Text = "tag1", Group = "GROUP1" } };
             repository.Assign(
                 content2.Id,
-                contentType.PropertyTypes.First().Id,
+                propertyTypeId,
                 tags2,
                 false);
 
             // Only one tag/group should have been saved.
-            var tagCount = scope.Database.ExecuteScalar<int>(
-                "SELECT COUNT(*) FROM cmsTags WHERE [tag] = 'tag1'");
+            var tagSql = scope.SqlContext.Sql()
+                .SelectCount()
+                .From<TagDto>()
+                .Where<TagDto>(x => x.Text == "tag1");
+            var tagCount = scope.Database.ExecuteScalar<int>(tagSql);
             Assert.AreEqual(1, tagCount);
 
-            var groupCount = scope.Database.ExecuteScalar<int>(
-                "SELECT COUNT(*) FROM cmsTags WHERE [group] = 'group1'");
+            var groupSql = scope.SqlContext.Sql()
+                .SelectCount()
+                .From<TagDto>()
+                .Where<TagDto>(x => x.Group == "group1");
+            var groupCount = scope.Database.ExecuteScalar<int>(groupSql);
             Assert.AreEqual(1, groupCount);
 
             // Both content items should be found as tagged by the tag, even though one was assigned with the group differing in case.

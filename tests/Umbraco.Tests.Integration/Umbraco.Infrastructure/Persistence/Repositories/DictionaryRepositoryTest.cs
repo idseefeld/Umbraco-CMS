@@ -9,6 +9,7 @@ using Umbraco.Cms.Core.Cache;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Persistence.Repositories;
 using Umbraco.Cms.Core.Services;
+using Umbraco.Cms.Infrastructure.Persistence.Dtos;
 using Umbraco.Cms.Infrastructure.Persistence.Repositories.Implement;
 using Umbraco.Cms.Infrastructure.Scoping;
 using Umbraco.Cms.Tests.Common.Testing;
@@ -428,7 +429,12 @@ internal sealed class DictionaryRepositoryTest : UmbracoIntegrationTest
         // is working as expected we should get the same value as above.
         using (var scope = ScopeProvider.CreateScope())
         {
-            scope.Database.Execute("UPDATE cmsLanguageText SET value = 'Read More (updated)' WHERE value = 'Read More' and LanguageId = 1");
+            var sql = scope.Database.SqlContext.Sql()
+                .Update<LanguageTextDto>(u => u.Set(c => c.Value, "Read More (updated)"))
+                .Where<LanguageTextDto>(c => c.LanguageId == 1 && c.Value == "Read More");
+
+            scope.Database.Execute(sql);
+
             scope.Complete();
         }
 
@@ -465,7 +471,12 @@ internal sealed class DictionaryRepositoryTest : UmbracoIntegrationTest
         // is working as expected we should get the same null value as above.
         using (var scope = ScopeProvider.CreateScope())
         {
-            scope.Database.Execute("UPDATE cmsDictionary SET [key] = 'Read More Updated' WHERE [key] = 'Read More'");
+            var sql = scope.Database.SqlContext.Sql()
+                .Update<DictionaryDto>(u => u.Set(c => c.Key, "Read More Updated"))
+                .Where<DictionaryDto>(c => c.Key == "Read More");
+
+            scope.Database.Execute(sql);
+
             scope.Complete();
         }
 
@@ -500,7 +511,12 @@ internal sealed class DictionaryRepositoryTest : UmbracoIntegrationTest
         // Modify the value directly in the database. As we don't have caching enabled on the repository we should get the new value.
         using (var scope = ScopeProvider.CreateScope())
         {
-            scope.Database.Execute("UPDATE cmsLanguageText SET value = 'Read More (updated)' WHERE value = 'Read More' and LanguageId = 1");
+            var sql = scope.Database.SqlContext.Sql()
+                .Update<LanguageTextDto>(u => u.Set(c => c.Value, "Read More (updated)"))
+                .Where<LanguageTextDto>(c => c.LanguageId == 1 && c.Value == "Read More");
+
+            scope.Database.Execute(sql);
+
             scope.Complete();
         }
 
@@ -527,7 +543,12 @@ internal sealed class DictionaryRepositoryTest : UmbracoIntegrationTest
         // Modify the value directly in the database such that it now exists. As we don't have caching enabled on the repository we should get the new value.
         using (var scope = ScopeProvider.CreateScope())
         {
-            scope.Database.Execute("UPDATE cmsDictionary SET [key] = 'Read More Updated' WHERE [key] = 'Read More'");
+            var sql = scope.Database.SqlContext.Sql()
+                .Update<DictionaryDto>(u => u.Set(c => c.Key, "Read More Updated"))
+                .Where<DictionaryDto>(c => c.Key == "Read More");
+
+            scope.Database.Execute(sql);
+
             scope.Complete();
         }
 

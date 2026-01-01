@@ -4,6 +4,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
+using NPoco;
 using NUnit.Framework;
 using Umbraco.Cms.Api.Management.Mapping.Permissions;
 using Umbraco.Cms.Core;
@@ -17,6 +18,8 @@ using Umbraco.Cms.Core.Models.Membership.Permissions;
 using Umbraco.Cms.Core.Persistence;
 using Umbraco.Cms.Core.Persistence.Repositories;
 using Umbraco.Cms.Core.Services;
+using Umbraco.Cms.Infrastructure.Persistence;
+using Umbraco.Cms.Infrastructure.Persistence.Dtos;
 using Umbraco.Cms.Infrastructure.Persistence.Repositories.Implement;
 using Umbraco.Cms.Infrastructure.Scoping;
 using Umbraco.Cms.Tests.Common.Attributes;
@@ -485,10 +488,7 @@ internal sealed class ContentTypeRepositoryTest : UmbracoIntegrationTest
 
             // Act
             var contentTypes = repository.GetMany().ToArray();
-            var count =
-                ScopeAccessor.AmbientScope.Database.ExecuteScalar<int>(
-                    "SELECT COUNT(*) FROM umbracoNode WHERE nodeObjectType = @NodeObjectType",
-                    new { NodeObjectType = Constants.ObjectTypes.DocumentType });
+            var count = CountUmbracoNodesOfType(Constants.ObjectTypes.DocumentType);
 
             // Assert
             Assert.That(contentTypes.Any(), Is.True);
@@ -508,10 +508,7 @@ internal sealed class ContentTypeRepositoryTest : UmbracoIntegrationTest
 
             // Act
             var contentTypes = ((IReadRepository<Guid, IContentType>)repository).GetMany(allGuidIds).ToArray();
-            var count =
-                ScopeAccessor.AmbientScope.Database.ExecuteScalar<int>(
-                    "SELECT COUNT(*) FROM umbracoNode WHERE nodeObjectType = @NodeObjectType",
-                    new { NodeObjectType = Constants.ObjectTypes.DocumentType });
+            var count = CountUmbracoNodesOfType(Constants.ObjectTypes.DocumentType);
 
             // Assert
             Assert.That(contentTypes.Any(), Is.True);

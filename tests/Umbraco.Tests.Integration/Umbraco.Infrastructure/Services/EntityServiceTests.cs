@@ -146,7 +146,7 @@ internal sealed class EntityServiceTests : UmbracoIntegrationTest
             0,
             6,
             out total,
-            ordering: Ordering.By("SortOrder", Direction.Descending)).ToArray();
+            ordering: Ordering.By("sortOrder", Direction.Descending)).ToArray();
         Assert.That(entities.Length, Is.EqualTo(6));
         Assert.That(total, Is.EqualTo(10));
         Assert.AreEqual(ids[^1], entities[0].Id);
@@ -157,7 +157,7 @@ internal sealed class EntityServiceTests : UmbracoIntegrationTest
             1,
             6,
             out total,
-            ordering: Ordering.By("SortOrder", Direction.Descending)).ToArray();
+            ordering: Ordering.By("sortOrder", Direction.Descending)).ToArray();
         Assert.That(entities.Length, Is.EqualTo(4));
         Assert.That(total, Is.EqualTo(10));
         Assert.AreEqual(ids[ids.Count - 1 - 6], entities[0].Id);
@@ -1044,7 +1044,7 @@ internal sealed class EntityServiceTests : UmbracoIntegrationTest
         children = children.OrderBy(x => x.Name).ToList();
 
         var target = children[1];
-        var result = EntityService.GetSiblings(target.Key, [UmbracoObjectTypes.Document], 1, 1, out long totalBefore, out long totalAfter, ordering: Ordering.By(nameof(NodeDto.Text))).ToArray();
+        var result = EntityService.GetSiblings(target.Key, [UmbracoObjectTypes.Document], 1, 1, out long totalBefore, out long totalAfter, ordering: Ordering.By("text")).ToArray();
         Assert.AreEqual(0, totalBefore);
         Assert.AreEqual(7, totalAfter);
         Assert.AreEqual(3, result.Length);

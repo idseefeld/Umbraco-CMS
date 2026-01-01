@@ -82,7 +82,11 @@ internal sealed class DocumentVersionRepositoryTest : UmbracoIntegrationTest
 
         using (var scope = ScopeProvider.CreateScope())
         {
-            ScopeAccessor.AmbientScope.Database.Update<ContentVersionDto>("set preventCleanup = 1 where id in (1,3)");
+            int[] values = [1, 3];
+            var sql = scope.SqlContext.Sql()
+                .Update<ContentVersionDto>(u => u.Set(c => c.PreventCleanup, true))
+                .WhereIn<ContentVersionDto>(c => c.Id, values);
+            scope.Database.Execute(sql);
 
             var sut = new DocumentVersionRepository(ScopeAccessor);
             var results = sut.GetDocumentVersionsEligibleForCleanup();

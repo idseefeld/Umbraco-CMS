@@ -4,6 +4,7 @@
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using Moq;
+using NPoco;
 using NUnit.Framework;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Cache;
@@ -11,6 +12,8 @@ using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Persistence;
 using Umbraco.Cms.Core.Persistence.Repositories;
 using Umbraco.Cms.Core.Services;
+using Umbraco.Cms.Infrastructure.Persistence;
+using Umbraco.Cms.Infrastructure.Persistence.Dtos;
 using Umbraco.Cms.Infrastructure.Persistence.Repositories.Implement;
 using Umbraco.Cms.Infrastructure.Scoping;
 using Umbraco.Cms.Tests.Common.Builders;
@@ -293,10 +296,7 @@ internal sealed class MediaTypeRepositoryTest : UmbracoIntegrationTest
 
             // Act
             var mediaTypes = repository.GetMany();
-            var count =
-                ScopeAccessor.AmbientScope.Database.ExecuteScalar<int>(
-                    "SELECT COUNT(*) FROM umbracoNode WHERE nodeObjectType = @NodeObjectType",
-                    new { NodeObjectType = Constants.ObjectTypes.MediaType });
+            var count = CountUmbracoNodesOfType(Constants.ObjectTypes.MediaType);
 
             // Assert
             Assert.That(mediaTypes.Any(), Is.True);
@@ -318,10 +318,7 @@ internal sealed class MediaTypeRepositoryTest : UmbracoIntegrationTest
             // Act
             var mediaTypes = ((IReadRepository<Guid, IMediaType>)repository).GetMany(allGuidIds);
 
-            var count =
-                ScopeAccessor.AmbientScope.Database.ExecuteScalar<int>(
-                    "SELECT COUNT(*) FROM umbracoNode WHERE nodeObjectType = @NodeObjectType",
-                    new { NodeObjectType = Constants.ObjectTypes.MediaType });
+            var count = CountUmbracoNodesOfType(Constants.ObjectTypes.MediaType);
 
             // Assert
             Assert.That(mediaTypes.Any(), Is.True);
