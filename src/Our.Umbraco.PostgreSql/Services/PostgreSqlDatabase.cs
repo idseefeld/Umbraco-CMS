@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using NPoco;
 using Umbraco.Cms.Infrastructure.Migrations.Install;
 using Umbraco.Cms.Infrastructure.Persistence;
+using Umbraco.Extensions;
 
 namespace Our.Umbraco.PostgreSql.Services
 {
@@ -66,7 +67,7 @@ namespace Our.Umbraco.PostgreSql.Services
         {
             if (!sql.InvariantContains("NOT NULL ") && sql.InvariantContains("NULL "))
             {
-                sql = Regex.Replace(sql, @"\s*NULL ", " NULL::int = 0 ", RegexOptions.IgnoreCase);
+                sql = Regex.Replace(sql, @"\s*NULL ", " NULL::int ", RegexOptions.IgnoreCase);
             }
 
             foreach (var arg in args)
