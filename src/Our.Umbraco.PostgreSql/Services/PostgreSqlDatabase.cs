@@ -88,9 +88,16 @@ namespace Our.Umbraco.PostgreSql.Services
 
             foreach (var arg in args)
             {
-                if (arg is DateTime dt && dt.Kind == DateTimeKind.Unspecified)
+                if (arg is DateTime dt)
                 {
-                    args.Replace(arg, dt.ToLocalTime().ToUniversalTime());
+                    if (dt.Kind == DateTimeKind.Unspecified)
+                    {
+                        args.Replace(arg, dt.ToLocalTime().ToUniversalTime());
+                    }
+                    else if (dt.Kind == DateTimeKind.Local)
+                    {
+                        args.Replace(arg, dt.ToUniversalTime());
+                    }
                 }
             }
 
