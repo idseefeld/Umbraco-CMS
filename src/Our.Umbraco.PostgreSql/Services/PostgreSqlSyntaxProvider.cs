@@ -1,4 +1,5 @@
 using System.Data;
+using System.Data.SqlTypes;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq.Expressions;
@@ -327,6 +328,29 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
 
     /// <inheritdoc />
     public override string GetQuotedValue(string value) => $"'{value.Replace("'", "''")}'";
+
+    /// <inheritdoc />
+    public override string GetNULL<T>()
+    {
+        if (typeof(T) == typeof(SqlGuid) || typeof(T) == typeof(Guid?))
+        {
+            return "NULL::uuid";
+        }
+        else if (typeof(T) == typeof(SqlDateTime) || typeof(T) == typeof(DateTime?))
+        {
+            return "NULL::timestamptz";
+        }
+        else if (typeof(T) == typeof(long?) || typeof(T) == typeof(long))
+        {
+            return "NULL::bigint";
+        }
+        else if (typeof(T) == typeof(int?) || typeof(T) == typeof(int))
+        {
+            return "NULL::int";
+        }
+
+        return base.GetNULL<T>();
+    }
 
     /// <inheritdoc />
     public override string GetIndexType(IndexTypes indexTypes)

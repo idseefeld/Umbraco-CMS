@@ -63,11 +63,27 @@ namespace Our.Umbraco.PostgreSql.Services
             return await base.InsertAsync<T>(tableName, FixPrimaryKey(primaryKeyName), autoIncrement, poco, cancellationToken);
         }
 
+        
+
         public override DbCommand CreateCommand(DbConnection connection, CommandType commandType, string sql, params object[] args)
         {
-            if (!sql.InvariantContains("NOT NULL ") && sql.InvariantContains("NULL "))
+            var createStatementRegex = new Regex(@"^\s*CREATE\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+            if (createStatementRegex.IsMatch(sql))
             {
                 sql = Regex.Replace(sql, @"\s*NULL ", " NULL::int ", RegexOptions.IgnoreCase);
+
+                /*
+                var nullabilityTokenRegex = new Regex(@"\bNOT\s+NULL\b|(?<!\bNOT\s)\bNULL\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+                MatchCollection matches = nullabilityTokenRegex.Matches(sql);
+
+                // matches enthält jetzt *alle* Vorkommen (inkl. Index/Length)
+                // z.B. iterieren:
+                foreach (Match m in matches)
+                {
+                    // m.Value: "NULL" oder "NOT NULL"
+                    // m.Index / m.Length: Position im string
+                }
+                */
             }
 
             foreach (var arg in args)
