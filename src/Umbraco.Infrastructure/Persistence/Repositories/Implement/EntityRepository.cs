@@ -972,7 +972,7 @@ internal sealed class EntityRepository : RepositoryBase, IEntityRepositoryExtend
                     orderBy = SqlSyntax.GetQuotedColumn(NodeDto.TableName, "path");
                     break;
                 case "NODEID":
-                    orderBy = runner.OrderBy;
+                    orderBy = SqlSyntax.GetQuotedColumn(NodeDto.TableName, "id");
                     orderingIncludesNodeId = true;
                     break;
                 default:

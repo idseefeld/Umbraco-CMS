@@ -94,6 +94,15 @@ namespace Umbraco.Extensions
         public static Sql<ISqlContext> WhereIn<TDto>(this Sql<ISqlContext> sql, Expression<Func<TDto, object?>> field, IEnumerable? values)
         {
             var fieldName = sql.SqlContext.SqlSyntax.GetFieldName(field);
+
+            Attempt<string[]> attempt = values.TryConvertTo<string[]>();
+            if (attempt.Success)
+            {
+                values = attempt.Result?.Select(v => v?.ToLower());
+                sql.Where($"LOWER({fieldName}) IN (@values)", new { values });
+                return sql;
+            }
+
             sql.Where($"{fieldName} IN (@values)", new { values });
             return sql;
         }
