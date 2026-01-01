@@ -256,7 +256,7 @@ ON (tagset.tag = {cmsTags}.tag AND tagset.{group} = {cmsTags}.{group} AND COALES
             }
             else
             {
-                sql.Append("NULL");
+                sql.Append(SqlSyntax.GetNULL<int?>());
             }
             sql.Append(" AS languageid");
         }
@@ -452,7 +452,8 @@ ON (tagset.tag = {cmsTags}.tag AND tagset.{group} = {cmsTags}.{group} AND COALES
         }
 
         sql = sql
-            .GroupBy<TagDto>(x => x.Id, x => x.Text, x => x.Group, x => x.LanguageId);
+            .GroupBy<TagDto>(x => x.Id, x => x.Text, x => x.Group, x => x.LanguageId)
+            .OrderBy<TagDto>(o => o.Text);
 
         return ExecuteTagsQuery(sql);
     }
@@ -472,6 +473,9 @@ ON (tagset.tag = {cmsTags}.tag AND tagset.{group} = {cmsTags}.{group} AND COALES
             sql = sql
                 .Where<TagDto>(dto => dto.Group == group);
         }
+
+        sql = sql
+            .OrderBy<TagDto>(o => o.Text);
 
         return ExecuteTagsQuery(sql);
     }

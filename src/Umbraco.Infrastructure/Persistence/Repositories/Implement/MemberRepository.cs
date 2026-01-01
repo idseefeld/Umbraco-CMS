@@ -224,13 +224,15 @@ public class MemberRepository : ContentRepositoryBase<int, IMember, MemberReposi
             return Enumerable.Empty<IMember>();
         }
 
-        Sql<ISqlContext> subQuery = Sql().Select("Member").From<Member2MemberGroupDto>()
+        Sql<ISqlContext> subQuery = Sql()
+            .Select<Member2MemberGroupDto>(c => c.Member)
+            .From<Member2MemberGroupDto>()
             .Where<Member2MemberGroupDto>(dto => dto.MemberGroup == memberGroup.Id);
 
         Sql<ISqlContext> sql = GetBaseQuery(false)
             // TODO: An inner join would be better, though I've read that the query optimizer will always turn a
             // subquery with an IN clause into an inner join anyways.
-            .Append("WHERE umbracoNode.id IN (" + subQuery.SQL + ")", subQuery.Arguments)
+            .Append($"WHERE {QuoteTableName("umbracoNode")}.id IN (" + subQuery.SQL + ")", subQuery.Arguments)
             .OrderByDescending<ContentVersionDto>(x => x.VersionDate)
             .OrderBy<NodeDto>(x => x.SortOrder);
 
@@ -255,7 +257,7 @@ public class MemberRepository : ContentRepositoryBase<int, IMember, MemberReposi
 
         //get the COUNT base query
         Sql<ISqlContext> fullSql = GetBaseQuery(true)
-            .Append(new Sql($"WHERE {SqlSyntax.GetQuotedTableName("umbracoNode")}.id IN ({sql.SQL})", sql.Arguments));
+            .Append(new Sql($"WHERE {QuoteTableName("umbracoNode")}.id IN ({sql.SQL})", sql.Arguments));
 
         return Database.ExecuteScalar<int>(fullSql);
     }
@@ -394,16 +396,12 @@ public class MemberRepository : ContentRepositoryBase<int, IMember, MemberReposi
         Guid memberObjectType = Constants.ObjectTypes.Member;
 
         Sql<ISqlContext> memberSql = Sql()
-            .Select("umbracoNode.id")
+            .Select<NodeDto>(n => n.NodeId)
             .From<NodeDto>()
             .InnerJoin<MemberDto>()
             .On<NodeDto, MemberDto>(dto => dto.NodeId, dto => dto.NodeId)
             .Where<NodeDto>(x => x.NodeObjectType == memberObjectType)
-            .Where("cmsMember.LoginName in (@usernames)", new
-            {
-                /*usernames =*/
-                usernames
-            });
+            .WhereIn<MemberDto>(m => m.LoginName, usernames);
         return Database.Fetch<int>(memberSql).ToArray();
     }
 
@@ -601,7 +599,7 @@ public class MemberRepository : ContentRepositoryBase<int, IMember, MemberReposi
             var translator = new SqlTranslator<IMember>(sqlWithProps, query);
             Sql<ISqlContext> sql = translator.Translate();
 
-            baseQuery.Append("WHERE umbracoNode.id IN (" + sql.SQL + ")", sql.Arguments)
+            baseQuery.Append($"WHERE {QuoteTableName("umbracoNode")}.id IN (" + sql.SQL + ")", sql.Arguments)
                 .OrderBy<NodeDto>(x => x.SortOrder);
 
             return MapDtosToContent(Database.Fetch<MemberDto>(baseQuery));

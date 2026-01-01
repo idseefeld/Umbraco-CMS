@@ -298,6 +298,7 @@ internal sealed class NPocoFetchTests : UmbracoIntegrationTest
         // with an n-to-n intermediate table.
         using (var scope = ScopeProvider.CreateScope())
         {
+            var syntax = ScopeAccessor.AmbientScope.SqlContext.SqlSyntax;
             // This is the raw SQL, but it's better to use expressions and no magic strings!
             // var sql = @"
             //    SELECT zbThing1.id, zbThing1.name, COUNT(zbThing2Group.groupId) as groupCount
@@ -306,7 +307,7 @@ internal sealed class NPocoFetchTests : UmbracoIntegrationTest
             //    GROUP BY zbThing1.id, zbThing1.name";
             var sql = ScopeAccessor.AmbientScope.SqlContext.Sql()
                 .Select<Thing1Dto>()
-                .Append(", COUNT(zbThing2Group.groupId) AS groupCount")
+                .Append($", COUNT({syntax.GetQuotedTableName("zbThing2Group")}.{syntax.GetQuotedColumnName("groupId")}) AS {syntax.GetQuotedName("groupCount")}")
                 .From<Thing1Dto>()
                 .InnerJoin<Thing2GroupDto>().On<Thing1Dto, Thing2GroupDto>((t, t2g) => t.Id == t2g.ThingId)
                 .GroupBy<Thing1Dto>(x => x.Id, x => x.Name);

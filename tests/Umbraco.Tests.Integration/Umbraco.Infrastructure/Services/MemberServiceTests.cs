@@ -418,8 +418,9 @@ internal sealed class MemberServiceTests : UmbracoIntegrationTest
         int roleId;
         using (var scope = ScopeProvider.CreateScope())
         {
+            var syntax = ScopeAccessor.AmbientScope.Database.SqlContext.SqlSyntax;
             roleId = ScopeAccessor.AmbientScope.Database.ExecuteScalar<int>(
-                "SELECT id from umbracoNode where [text] = 'MyTestRole1'");
+                $"SELECT id from {syntax.GetQuotedTableName("umbracoNode")} where {syntax.GetQuotedColumnName("text")} = 'MyTestRole1'");
             scope.Complete();
         }
 

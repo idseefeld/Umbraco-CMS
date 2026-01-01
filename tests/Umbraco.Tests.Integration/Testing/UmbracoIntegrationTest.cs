@@ -17,6 +17,8 @@ using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.Strings;
 using Umbraco.Cms.Core.Web;
 using Umbraco.Cms.Infrastructure.DependencyInjection;
+using Umbraco.Cms.Infrastructure.Persistence;
+using Umbraco.Cms.Infrastructure.Persistence.Dtos;
 using Umbraco.Cms.Infrastructure.Persistence.Mappers;
 using Umbraco.Cms.Infrastructure.Scoping;
 using Umbraco.Cms.Persistence.Sqlite;
@@ -281,5 +283,15 @@ public abstract class UmbracoIntegrationTest : UmbracoIntegrationTestBase
         {
             viewFileSystem.DeleteFile(file);
         }
+    }
+
+    protected int CountUmbracoNodesOfType(Guid objectType)
+    {
+        var db = ScopeAccessor.AmbientScope.Database;
+        var sql = db.SqlContext.Sql()
+            .SelectCount("*")
+            .From<NodeDto>()
+            .Where<NodeDto>(x => x.NodeObjectType == objectType);
+        return db.ExecuteScalar<int>(sql);
     }
 }
