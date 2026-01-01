@@ -1,4 +1,5 @@
 using System.Data;
+using System.Data.SqlTypes;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
@@ -114,6 +115,17 @@ public interface ISqlSyntaxProvider
     string OrderByGuid(string tableName, string columnName);
 
     string GetQuotedName(string? name);
+
+    /// <summary>
+    /// Returns a string representation of the null value for the specified type, formatted for use in SQL statements.
+    /// </summary>
+    /// <remarks>This method is useful when generating SQL queries that require explicit type casting of NULL
+    /// values, such as in PostgreSQL. The returned string can be used directly in SQL statements for type-safe
+    /// comparisons or assignments.</remarks>
+    /// <param name="type">The nullable type for which to generate the null value expression. If null, a generic SQL NULL is returned.</param>
+    /// <returns>A string containing the SQL representation of a null value for the specified type. For example, "NULL::int" for
+    /// an integer type, or "NULL" if no type is specified.</returns>
+    string GetNULL<T>();
 
     bool DoesTableExist(IDatabase db, string tableName);
 
