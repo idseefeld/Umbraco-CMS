@@ -117,15 +117,15 @@ public interface ISqlSyntaxProvider
     string GetQuotedName(string? name);
 
     /// <summary>
-    /// Returns a string representation of the null value for the specified type, formatted for use in SQL statements.
+    /// Gets the file extension associated with a null value for the specified type parameter.
     /// </summary>
     /// <remarks>This method is useful when generating SQL queries that require explicit type casting of NULL
     /// values, such as in PostgreSQL. The returned string can be used directly in SQL statements for type-safe
     /// comparisons or assignments.</remarks>
-    /// <param name="type">The nullable type for which to generate the null value expression. If null, a generic SQL NULL is returned.</param>
-    /// <returns>A string containing the SQL representation of a null value for the specified type. For example, "NULL::int" for
-    /// an integer type, or "NULL" if no type is specified.</returns>
-    string GetNULL<T>();
+    /// <typeparam name="T">The type for which to retrieve the null value file extension.</typeparam>
+    /// <returns>A string containing the file extension that represents a null value for type T, or an empty string if no
+    /// extension is defined.</returns>
+    string GetNullExtension<T>();
 
     bool DoesTableExist(IDatabase db, string tableName);
 

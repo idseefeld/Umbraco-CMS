@@ -28,8 +28,6 @@ internal sealed class NPocoFetchTests : UmbracoIntegrationTest
     {
         using (var scope = ScopeProvider.CreateScope())
         {
-            // InsertData(scope.Database);
-
             var databaseSchemaCreator = new DatabaseSchemaCreator(
                 scope.Database,
                 Mock.Of<ILogger<DatabaseSchemaCreator>>(),
@@ -73,83 +71,6 @@ internal sealed class NPocoFetchTests : UmbracoIntegrationTest
         database.Insert(new Thing2GroupDto { ThingId = 1, GroupId = 2 });
         database.Insert(new Thing2GroupDto { ThingId = 2, GroupId = 2 });
         database.Insert(new Thing2GroupDto { ThingId = 3, GroupId = 3 });
-    }
-
-    private static void _InsertData(IUmbracoDatabase database)
-    {
-        database.Execute(@"
-                CREATE TABLE zbThing1 (
-                    id int PRIMARY KEY NOT NULL,
-                    name NVARCHAR(255) NULL
-                );");
-
-        database.Insert(new Thing1Dto { Id = 1, Name = "one" });
-
-        database.Insert(new Thing1Dto { Id = 2, Name = "two" });
-
-        database.Execute(@"
-                CREATE TABLE zbThing2 (
-                    id int PRIMARY KEY NOT NULL,
-                    name NVARCHAR(255) NULL,
-                    thingId int NULL
-                );");
-
-        database.Insert(new Thing2Dto { Id = 1, Name = "uno", ThingId = 1 });
-
-        database.Insert(new Thing2Dto { Id = 2, Name = "due", ThingId = 2 });
-
-        database.Insert(new Thing2Dto { Id = 3, Name = "tri", ThingId = 1 });
-
-        database.Execute(@"
-                CREATE TABLE zbThingGroup (
-                    id int PRIMARY KEY NOT NULL,
-                    name NVARCHAR(255) NULL
-                );");
-
-        database.Insert(new ThingGroupDto { Id = 1, Name = "g-one" });
-
-        database.Insert(new ThingGroupDto { Id = 2, Name = "g-two" });
-
-        database.Insert(new ThingGroupDto { Id = 3, Name = "g-three" });
-
-        database.Execute(@"
-                CREATE TABLE zbThing2Group (
-                    thingId int NOT NULL,
-                    groupId int NOT NULL
-                );");
-
-        database.Insert(new Thing2GroupDto { ThingId = 1, GroupId = 1 });
-
-        database.Insert(new Thing2GroupDto { ThingId = 1, GroupId = 2 });
-
-        database.Insert(new Thing2GroupDto { ThingId = 2, GroupId = 2 });
-
-        database.Insert(new Thing2GroupDto { ThingId = 3, GroupId = 3 });
-
-        database.Execute(@"
-                CREATE TABLE zbThingA1 (
-                    id int PRIMARY KEY NOT NULL,
-                    name NVARCHAR(255) NULL
-                );");
-
-        database.Execute(@"
-                CREATE TABLE zbThingA2 (
-                    id int PRIMARY KEY NOT NULL,
-                    name NVARCHAR(255) NULL
-                );");
-
-        database.Execute(@"
-                CREATE TABLE zbThingA3 (
-                    id int PRIMARY KEY NOT NULL,
-                    name NVARCHAR(255) NULL
-                );");
-
-        database.Execute(@"
-                CREATE TABLE zbThingA12 (
-                    thing1id int NOT NULL,
-                    thing2id int NOT NULL,
-                    name NVARCHAR(255) NOT NULL
-                );");
     }
 
     [Test]

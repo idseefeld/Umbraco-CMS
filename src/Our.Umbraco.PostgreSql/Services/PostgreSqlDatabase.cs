@@ -63,12 +63,12 @@ namespace Our.Umbraco.PostgreSql.Services
             return await base.InsertAsync<T>(tableName, FixPrimaryKey(primaryKeyName), autoIncrement, poco, cancellationToken);
         }
 
-        
+
 
         public override DbCommand CreateCommand(DbConnection connection, CommandType commandType, string sql, params object[] args)
         {
             var createStatementRegex = new Regex(@"^\s*CREATE\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-            if (createStatementRegex.IsMatch(sql))
+            if (!createStatementRegex.IsMatch(sql))
             {
                 sql = Regex.Replace(sql, @"\s*NULL ", " NULL::int ", RegexOptions.IgnoreCase);
 

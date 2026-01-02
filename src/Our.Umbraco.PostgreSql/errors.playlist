@@ -7,91 +7,22 @@
           <Property Name="Project" Value="Umbraco.Tests.Integration" />
           <Rule Match="Any">
             <Rule Match="All">
-              <Property Name="Namespace" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.NPocoTests" />
+              <Property Name="Namespace" Value="Umbraco.Cms.Tests.Integration.Umbraco.Core.Services" />
               <Rule Match="Any">
                 <Rule Match="All">
-                  <Property Name="Class" Value="NPocoBulkInsertTests" />
+                  <Property Name="Class" Value="UserServiceCrudTests" />
                   <Rule Match="Any">
                     <Rule Match="All">
-                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoBulkInsertTests.Can_Bulk_Insert_Native_Sql_Bulk_Inserts" />
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Core.Services.UserServiceCrudTests.Cannot_See_Disabled_When_HideDisabled_Is_True" />
                       <Rule Match="Any">
-                        <Property Name="DisplayName" Value="Can_Bulk_Insert_Native_Sql_Bulk_Inserts" />
+                        <Property Name="DisplayName" Value="Cannot_See_Disabled_When_HideDisabled_Is_True" />
                       </Rule>
                     </Rule>
                     <Rule Match="All">
-                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoBulkInsertTests.Can_Bulk_Insert_Native_Sql_Bulk_Inserts_Transaction_Rollback" />
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Core.Services.UserServiceCrudTests.Cannot_Request_Disabled_If_Hidden" />
                       <Rule Match="Any">
-                        <Property Name="DisplayName" Value="Can_Bulk_Insert_Native_Sql_Bulk_Inserts_Transaction_Rollback" />
-                      </Rule>
-                    </Rule>
-                  </Rule>
-                </Rule>
-                <Rule Match="All">
-                  <Property Name="Class" Value="NPocoFetchTests" />
-                  <Rule Match="Any">
-                    <Rule Match="All">
-                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoFetchTests.TestCalculated" />
-                      <Rule Match="Any">
-                        <Property Name="DisplayName" Value="TestCalculated" />
-                      </Rule>
-                    </Rule>
-                    <Rule Match="All">
-                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoFetchTests.TestManyToMany" />
-                      <Rule Match="Any">
-                        <Property Name="DisplayName" Value="TestManyToMany" />
-                      </Rule>
-                    </Rule>
-                    <Rule Match="All">
-                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoFetchTests.TestMultipleOneToOne" />
-                      <Rule Match="Any">
-                        <Property Name="DisplayName" Value="TestMultipleOneToOne" />
-                      </Rule>
-                    </Rule>
-                    <Rule Match="All">
-                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoFetchTests.TestOneToManyOnMany" />
-                      <Rule Match="Any">
-                        <Property Name="DisplayName" Value="TestOneToManyOnMany" />
-                      </Rule>
-                    </Rule>
-                    <Rule Match="All">
-                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoFetchTests.TestOneToManyOnManyTemplate" />
-                      <Rule Match="Any">
-                        <Property Name="DisplayName" Value="TestOneToManyOnManyTemplate" />
-                      </Rule>
-                    </Rule>
-                    <Rule Match="All">
-                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoFetchTests.TestOneToManyOnOne" />
-                      <Rule Match="Any">
-                        <Property Name="DisplayName" Value="TestOneToManyOnOne" />
-                      </Rule>
-                    </Rule>
-                    <Rule Match="All">
-                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoFetchTests.TestOneToOne" />
-                      <Rule Match="Any">
-                        <Property Name="DisplayName" Value="TestOneToOne" />
-                      </Rule>
-                    </Rule>
-                    <Rule Match="All">
-                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoFetchTests.TestSimple" />
-                      <Rule Match="Any">
-                        <Property Name="DisplayName" Value="TestSimple" />
-                      </Rule>
-                    </Rule>
-                    <Rule Match="All">
-                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoFetchTests.TestSql" />
-                      <Rule Match="Any">
-                        <Property Name="DisplayName" Value="TestSql" />
-                      </Rule>
-                    </Rule>
-                  </Rule>
-                </Rule>
-                <Rule Match="All">
-                  <Property Name="Class" Value="NPocoUpdateBatchTests" />
-                  <Rule Match="Any">
-                    <Rule Match="All">
-                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoUpdateBatchTests.Can_Update_Batch" />
-                      <Rule Match="Any">
-                        <Property Name="DisplayName" Value="Can_Update_Batch" />
+                        <Property Name="DisplayName" Value="Cannot_Request_Disabled_If_Hidden(All,1)" />
+                        <Property Name="DisplayName" Value="Cannot_Request_Disabled_If_Hidden(null,1)" />
                       </Rule>
                     </Rule>
                   </Rule>
@@ -102,12 +33,12 @@
               <Property Name="Namespace" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.Repositories" />
               <Rule Match="Any">
                 <Rule Match="All">
-                  <Property Name="Class" Value="MediaRepositoryTest" />
+                  <Property Name="Class" Value="DocumentRepositoryTest" />
                   <Rule Match="Any">
                     <Rule Match="All">
-                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.Repositories.MediaRepositoryTest.DeleteVersions" />
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.Repositories.DocumentRepositoryTest.GetPagedResultsByQuery_CustomPropertySort" />
                       <Rule Match="Any">
-                        <Property Name="DisplayName" Value="DeleteVersions" />
+                        <Property Name="DisplayName" Value="GetPagedResultsByQuery_CustomPropertySort" />
                       </Rule>
                     </Rule>
                   </Rule>
@@ -115,50 +46,15 @@
               </Rule>
             </Rule>
             <Rule Match="All">
-              <Property Name="Namespace" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Sync" />
+              <Property Name="Namespace" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services" />
               <Rule Match="Any">
                 <Rule Match="All">
-                  <Property Name="Class" Value="LastSyncedManagerTest" />
+                  <Property Name="Class" Value="ContentListViewServiceTests" />
                   <Rule Match="Any">
                     <Rule Match="All">
-                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Sync.LastSyncedManagerTest.Delete_Old_Synced_External_Id" />
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services.ContentListViewServiceTests.Can_Order_List_View_Items_By_Custom_List_View_Field" />
                       <Rule Match="Any">
-                        <Property Name="DisplayName" Value="Delete_Old_Synced_External_Id" />
-                      </Rule>
-                    </Rule>
-                    <Rule Match="All">
-                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Sync.LastSyncedManagerTest.Delete_Old_Synced_Internal_Id" />
-                      <Rule Match="Any">
-                        <Property Name="DisplayName" Value="Delete_Old_Synced_Internal_Id" />
-                      </Rule>
-                    </Rule>
-                    <Rule Match="All">
-                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Sync.LastSyncedManagerTest.Delete_Out_Of_Sync_Id" />
-                      <Rule Match="Any">
-                        <Property Name="DisplayName" Value="Delete_Out_Of_Sync_Id" />
-                      </Rule>
-                    </Rule>
-                    <Rule Match="All">
-                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Sync.LastSyncedManagerTest.Save_Last_Synced_External_Id" />
-                      <Rule Match="Any">
-                        <Property Name="DisplayName" Value="Save_Last_Synced_External_Id" />
-                      </Rule>
-                    </Rule>
-                    <Rule Match="All">
-                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Sync.LastSyncedManagerTest.Save_Last_Synced_Internal_Id" />
-                      <Rule Match="Any">
-                        <Property Name="DisplayName" Value="Save_Last_Synced_Internal_Id" />
-                      </Rule>
-                    </Rule>
-                  </Rule>
-                </Rule>
-                <Rule Match="All">
-                  <Property Name="Class" Value="SyncBootStateAccessorTest" />
-                  <Rule Match="Any">
-                    <Rule Match="All">
-                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Sync.SyncBootStateAccessorTest.Returns_WarmBoot_When_Last_Synced_Id_Exists" />
-                      <Rule Match="Any">
-                        <Property Name="DisplayName" Value="Returns_WarmBoot_When_Last_Synced_Id_Exists" />
+                        <Property Name="DisplayName" Value="Can_Order_List_View_Items_By_Custom_List_View_Field" />
                       </Rule>
                     </Rule>
                   </Rule>
