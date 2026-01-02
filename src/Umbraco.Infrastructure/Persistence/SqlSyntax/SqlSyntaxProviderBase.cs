@@ -160,7 +160,7 @@ public abstract class SqlSyntaxProviderBase<TSyntax> : ISqlSyntaxProvider
     public virtual string GetQuotedValue(string value) => $"'{value}'";
 
     /// <inheritdoc />
-    public virtual string GetNULL<T>() => "NULL";
+    public virtual string GetNullExtension<T>() => string.Empty;
 
     public virtual string GetIndexType(IndexTypes indexTypes)
     {
