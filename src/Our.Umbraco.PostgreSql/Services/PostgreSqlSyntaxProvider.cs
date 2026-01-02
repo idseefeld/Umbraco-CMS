@@ -330,26 +330,26 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
     public override string GetQuotedValue(string value) => $"'{value.Replace("'", "''")}'";
 
     /// <inheritdoc />
-    public override string GetNULL<T>()
+    public override string GetNullExtension<T>()
     {
         if (typeof(T) == typeof(SqlGuid) || typeof(T) == typeof(Guid?))
         {
-            return "NULL::uuid";
+            return "::uuid";
         }
         else if (typeof(T) == typeof(SqlDateTime) || typeof(T) == typeof(DateTime?))
         {
-            return "NULL::timestamptz";
+            return "::timestamptz";
         }
         else if (typeof(T) == typeof(long?) || typeof(T) == typeof(long))
         {
-            return "NULL::bigint";
+            return "::bigint";
         }
         else if (typeof(T) == typeof(int?) || typeof(T) == typeof(int))
         {
-            return "NULL::int";
+            return "::int";
         }
 
-        return base.GetNULL<T>();
+        return string.Empty;
     }
 
     /// <inheritdoc />
