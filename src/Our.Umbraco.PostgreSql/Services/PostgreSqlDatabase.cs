@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Diagnostics;
 using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Text;
@@ -63,29 +64,9 @@ namespace Our.Umbraco.PostgreSql.Services
             return await base.InsertAsync<T>(tableName, FixPrimaryKey(primaryKeyName), autoIncrement, poco, cancellationToken);
         }
 
-
-
+        /// <inheritdoc />
         public override DbCommand CreateCommand(DbConnection connection, CommandType commandType, string sql, params object[] args)
         {
-            var createStatementRegex = new Regex(@"^\s*CREATE\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-            if (!createStatementRegex.IsMatch(sql))
-            {
-                sql = Regex.Replace(sql, @"\s*NULL ", " NULL::int ", RegexOptions.IgnoreCase);
-
-                /*
-                var nullabilityTokenRegex = new Regex(@"\bNOT\s+NULL\b|(?<!\bNOT\s)\bNULL\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-                MatchCollection matches = nullabilityTokenRegex.Matches(sql);
-
-                // matches enthält jetzt *alle* Vorkommen (inkl. Index/Length)
-                // z.B. iterieren:
-                foreach (Match m in matches)
-                {
-                    // m.Value: "NULL" oder "NOT NULL"
-                    // m.Index / m.Length: Position im string
-                }
-                */
-            }
-
             foreach (var arg in args)
             {
                 if (arg is DateTime dt)
