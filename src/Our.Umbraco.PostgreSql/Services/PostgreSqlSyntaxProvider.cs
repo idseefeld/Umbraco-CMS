@@ -12,6 +12,7 @@ using NPoco;
 using Our.Umbraco.PostgreSql.Mappers;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Persistence;
+using Umbraco.Cms.Core.Semver;
 using Umbraco.Cms.Infrastructure.Persistence;
 using Umbraco.Cms.Infrastructure.Persistence.DatabaseAnnotations;
 using Umbraco.Cms.Infrastructure.Persistence.DatabaseModelDefinitions;
@@ -466,10 +467,20 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
         return rVal;
     }
 
+    private SemVersion? GetDatabaseVersion(IDatabase db)
+    {
+        SemVersion.TryParse(db.ExecuteScalar<string>("SHOW server_version"), out SemVersion? semver);
+        return semver;
+    }
+
     /// <inheritdoc />
     public override IEnumerable<Tuple<string, string, string>> GetConstraintsPerColumn(IDatabase db)
     {
-        const string sql = @"
+        var version = GetDatabaseVersion(db);
+        // version = "17.5"
+        // version = "18.1"
+
+        const string sql175 = @"
         SELECT
             tc.table_name AS ""TableName"",
             kcu.column_name AS ""ColumnName"",
@@ -496,6 +507,34 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
             AND tc.constraint_type = 'CHECK'
     ";
 
+        const string sql18 = @"
+        SELECT
+            tc.table_name AS ""TableName"",
+            kcu.column_name AS ""ColumnName"",
+            tc.constraint_name AS ""ConstraintName""
+        FROM
+            information_schema.table_constraints AS tc
+            JOIN information_schema.key_column_usage AS kcu
+                ON tc.constraint_name = kcu.constraint_name
+                AND tc.table_schema = kcu.table_schema
+        WHERE
+            tc.table_schema = 'public'
+        UNION
+        SELECT
+            tc.table_name AS ""TableName"",
+            ccu.column_name AS ""ColumnName"",
+            tc.constraint_name AS ""ConstraintName""
+        FROM
+            information_schema.table_constraints AS tc
+            JOIN information_schema.constraint_column_usage AS ccu
+                ON tc.constraint_name = ccu.constraint_name
+                AND tc.table_schema = ccu.table_schema
+        WHERE
+            tc.table_schema = 'public'
+            AND tc.constraint_type = 'CHECK'
+    ";
+
+        var sql = sql18;// version is { Major: >= 18 } ? sql18 : sql175;
         List<ConstraintsPerColumn> temp = db.Fetch<ConstraintsPerColumn>(sql);
         var rVal = temp.Select(x => new Tuple<string, string, string>(x.TableName, x.ColumnName, x.ConstraintName)).ToList();
         return rVal;
