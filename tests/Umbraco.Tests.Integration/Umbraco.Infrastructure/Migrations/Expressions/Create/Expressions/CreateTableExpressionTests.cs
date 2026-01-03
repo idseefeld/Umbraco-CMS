@@ -41,7 +41,9 @@ namespace Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Migrations.Expres
                 .Do();
 
             // (TableName, ColumnName, ConstraintName)
-            var constraint = database.SqlContext.SqlSyntax.GetConstraintsPerColumn(database).Single();
+            var constraint = database.SqlContext.SqlSyntax
+                .GetConstraintsPerColumn(database)
+                .Single(x => x.Item1 == "foo" && x.Item2 == "bar" && x.Item3.StartsWith("PK_"));
 
             Assert.Multiple(() =>
             {
