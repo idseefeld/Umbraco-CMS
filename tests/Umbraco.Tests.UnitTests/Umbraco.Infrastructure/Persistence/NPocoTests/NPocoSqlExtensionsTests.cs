@@ -120,8 +120,6 @@ public class NPocoSqlExtensionsTests : BaseUsingSqlSyntax
     [Test]
     public void WhereInObjectFieldTest()
     {
-        // this test used to fail because x => x.Text was evaluated as a lambda
-        // and returned "[umbracoNode].[text] = @0"... had to fix WhereIn.
         var sql = new Sql<ISqlContext>(SqlContext)
             .Select("*")
             .From<NodeDto>()
