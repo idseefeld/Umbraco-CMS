@@ -12,15 +12,15 @@ using Umbraco.Cms.Persistence.EFCore;
 namespace Our.Umbraco.PostgreSql.EFCore.Migrations
 {
     [DbContext(typeof(UmbracoDbContext))]
-    [Migration("20250801185238_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260104173355_AddOpenIdDict")]
+    partial class AddOpenIdDict
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.7")
+                .HasAnnotation("ProductVersion", "10.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -218,8 +218,8 @@ namespace Our.Umbraco.PostgreSql.EFCore.Migrations
                         .HasColumnType("character varying(400)");
 
                     b.Property<string>("Type")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
 
                     b.HasKey("Id");
 
