@@ -8,12 +8,12 @@ namespace Our.Umbraco.PostgreSql.EFCore
         /// <summary>
         ///     PostgreSQL provider name.
         /// </summary>
-        public const string ProviderName = "Npgsql";
+        public const string ProviderName = "Npgsql2";
 
         /// <summary>
         ///     PostgreSQL dbprovider name.
         /// </summary>
-        public const string DbProvider = "Npgsql";
+        public const string DbProvider = "Npgsql2";
         /// <summary>
         /// PostgreSQL name
         /// </summary>

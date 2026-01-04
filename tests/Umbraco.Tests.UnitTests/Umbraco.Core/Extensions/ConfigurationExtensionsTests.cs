@@ -23,7 +23,7 @@ public class ConfigurationExtensionsTests
         var connectionString = mockedConfig.Object.GetUmbracoConnectionString(out var providerName);
         AssertResults(
             ConfiguredConnectionString,
-            "Npgsql",
+            "Npgsql2",
             connectionString,
             providerName);
     }
@@ -36,7 +36,7 @@ public class ConfigurationExtensionsTests
         var connectionString = mockedConfig.Object.GetUmbracoConnectionString(out var providerName);
         AssertResults(
             ConfiguredConnectionString,
-            "Npgsql",
+            "Npgsql2",
             connectionString,
             providerName);
     }
