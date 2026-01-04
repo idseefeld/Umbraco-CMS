@@ -561,7 +561,7 @@ public class EntityService : RepositoryService, IEntityService
         Ordering? ordering = null)
     {
         // Ensure deterministic results. Descendants are expected to be ordered by Path by default.
-        ordering ??= Ordering.By("Path");
+        ordering ??= Ordering.By("path");
 
         using (ScopeProvider.CreateCoreScope(autoComplete: true))
         {
