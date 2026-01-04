@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Our.Umbraco.PostgreSql.EFCore.Locking;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Core.DistributedLocking;
@@ -21,13 +17,10 @@ public static class UmbracoBuilderExtensions
     /// </summary>
     public static IUmbracoBuilder AddUmbracoPostgreSqlEFCoreSupport(this IUmbracoBuilder builder)
     {
-        builder.Services.TryAddEnumerable(ServiceDescriptor
-            .Singleton<IMigrationProvider, PostgreSqlMigrationProvider>());
-        builder.Services.TryAddEnumerable(ServiceDescriptor
-            .Singleton<IMigrationProviderSetup, PostgreSqlMigrationProviderSetup>());
+        builder.Services.AddSingleton<IMigrationProvider, PostgreSqlMigrationProvider>();
+        builder.Services.AddSingleton<IMigrationProviderSetup, PostgreSqlMigrationProviderSetup>();
 
-        builder.Services.TryAddEnumerable(ServiceDescriptor
-            .Singleton<IDistributedLockingMechanism, PostgreSqlEFCoreDistributedLockingMechanism<UmbracoDbContext>>());
+        builder.Services.AddSingleton<IDistributedLockingMechanism, PostgreSqlEFCoreDistributedLockingMechanism<UmbracoDbContext>>();
 
         return builder;
     }
