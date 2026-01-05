@@ -17,7 +17,7 @@ public class MediaMapperTest
     {
         var column =
             new MediaMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map(nameof(MediaModel.Id));
-        Assert.That(column, Is.EqualTo($"[{Constants.DatabaseSchema.Tables.Node}].[id]"));
+        Assert.That(column, Is.EqualTo($"\"{Constants.DatabaseSchema.Tables.Node}\".\"id\""));
     }
 
     [Test]
@@ -25,7 +25,7 @@ public class MediaMapperTest
     {
         var column =
             new MediaMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map(nameof(MediaModel.Trashed));
-        Assert.That(column, Is.EqualTo($"[{Constants.DatabaseSchema.Tables.Node}].[trashed]"));
+        Assert.That(column, Is.EqualTo($"\"{Constants.DatabaseSchema.Tables.Node}\".\"trashed\""));
     }
 
     [Test]
@@ -33,7 +33,7 @@ public class MediaMapperTest
     {
         var column =
             new MediaMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map(nameof(MediaModel.UpdateDate));
-        Assert.That(column, Is.EqualTo($"[{Constants.DatabaseSchema.Tables.ContentVersion}].[versionDate]"));
+        Assert.That(column, Is.EqualTo($"\"{Constants.DatabaseSchema.Tables.ContentVersion}\".\"versionDate\""));
     }
 
     [Test]
@@ -41,6 +41,6 @@ public class MediaMapperTest
     {
         var column =
             new MediaMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map(nameof(MediaModel.VersionId));
-        Assert.That(column, Is.EqualTo($"[{Constants.DatabaseSchema.Tables.ContentVersion}].[id]"));
+        Assert.That(column, Is.EqualTo($"\"{Constants.DatabaseSchema.Tables.ContentVersion}\".\"id\""));
     }
 }

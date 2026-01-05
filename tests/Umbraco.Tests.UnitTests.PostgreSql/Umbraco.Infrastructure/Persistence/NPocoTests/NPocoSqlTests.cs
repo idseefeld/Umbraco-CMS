@@ -23,7 +23,7 @@ public class NPocoSqlTests : BaseUsingPostgreSqlSyntax
             .Where<NodeDto>(x => x.Path.SqlStartsWith(content.Path, TextColumnType.NVarchar));
 
         Assert.AreEqual(
-            "SELECT * FROM [umbracoNode] WHERE (upper([umbracoNode].[path]) LIKE upper(@0))",
+            "SELECT * FROM \"umbracoNode\" WHERE (UPPER(\"umbracoNode\".\"path\"::text) LIKE UPPER(@0))",
             sql.SQL.Replace("\n", " "));
         Assert.AreEqual(1, sql.Arguments.Length);
         Assert.AreEqual(content.Path + "%", sql.Arguments[0]);
@@ -37,7 +37,7 @@ public class NPocoSqlTests : BaseUsingPostgreSqlSyntax
             .Where<NodeDto>(x => x.Path.StartsWith(content.Path) && x.NodeId != content.NodeId);
 
         Assert.AreEqual(
-            "SELECT * FROM [umbracoNode] WHERE ((upper([umbracoNode].[path]) LIKE upper(@0) AND ([umbracoNode].[id] <> @1)))",
+            "SELECT * FROM \"umbracoNode\" WHERE ((UPPER(\"umbracoNode\".\"path\"::text) LIKE UPPER(@0) AND (\"umbracoNode\".\"id\" <> @1)))",
             sql.SQL.Replace("\n", " "));
         Assert.AreEqual(2, sql.Arguments.Length);
         Assert.AreEqual(content.Path + "%", sql.Arguments[0]);
@@ -52,7 +52,7 @@ public class NPocoSqlTests : BaseUsingPostgreSqlSyntax
             .Where<NodeDto>(x => x.Level == level && !x.Path.StartsWith("-20"));
 
         Assert.AreEqual(
-            "SELECT * FROM [umbracoNode] WHERE ((([umbracoNode].[level] = @0) AND NOT (upper([umbracoNode].[path]) LIKE upper(@1))))",
+            "SELECT * FROM \"umbracoNode\" WHERE (((\"umbracoNode\".\"level\" = @0) AND NOT (UPPER(\"umbracoNode\".\"path\"::text) LIKE UPPER(@1))))",
             sql.SQL.Replace("\n", " "));
         Assert.AreEqual(2, sql.Arguments.Length);
         Assert.AreEqual(level, sql.Arguments[0]);
@@ -67,7 +67,7 @@ public class NPocoSqlTests : BaseUsingPostgreSqlSyntax
             .Where<NodeDto>(x => x.Level == level && x.Path.StartsWith("-20") == false);
 
         Assert.AreEqual(
-            "SELECT * FROM [umbracoNode] WHERE ((([umbracoNode].[level] = @0) AND NOT (upper([umbracoNode].[path]) LIKE upper(@1))))",
+            "SELECT * FROM \"umbracoNode\" WHERE (((\"umbracoNode\".\"level\" = @0) AND NOT (UPPER(\"umbracoNode\".\"path\"::text) LIKE UPPER(@1))))",
             sql.SQL.Replace("\n", " "));
         Assert.AreEqual(2, sql.Arguments.Length);
         Assert.AreEqual(level, sql.Arguments[0]);
@@ -81,7 +81,7 @@ public class NPocoSqlTests : BaseUsingPostgreSqlSyntax
             .Where<NodeDto>(x => x.Text.Equals("Hello@world.com"));
 
         Assert.AreEqual(
-            "SELECT * FROM [umbracoNode] WHERE (upper([umbracoNode].[text]) = upper(@0))",
+            "SELECT * FROM \"umbracoNode\" WHERE (UPPER(\"umbracoNode\".\"text\"::text) = UPPER(@0))",
             sql.SQL.Replace("\n", " "));
         Assert.AreEqual(1, sql.Arguments.Length);
         Assert.AreEqual("Hello@world.com", sql.Arguments[0]);
@@ -93,7 +93,7 @@ public class NPocoSqlTests : BaseUsingPostgreSqlSyntax
         var sql = Sql().SelectAll().From<NodeDto>()
             .Where<NodeDto>(x => x.Trashed == false);
 
-        Assert.AreEqual("SELECT * FROM [umbracoNode] WHERE ([umbracoNode].[trashed] = @0)", sql.SQL.Replace("\n", " "));
+        Assert.AreEqual("SELECT * FROM \"umbracoNode\" WHERE (\"umbracoNode\".\"trashed\" = @0)", sql.SQL.Replace("\n", " "));
         Assert.AreEqual(1, sql.Arguments.Length);
         Assert.AreEqual(false, sql.Arguments[0]);
     }
@@ -103,7 +103,7 @@ public class NPocoSqlTests : BaseUsingPostgreSqlSyntax
     {
         var sql = Sql().SelectAll().From<NodeDto>().Where<NodeDto>(x => x.Trashed == false);
 
-        Assert.AreEqual("SELECT * FROM [umbracoNode] WHERE ([umbracoNode].[trashed] = @0)", sql.SQL.Replace("\n", " "));
+        Assert.AreEqual("SELECT * FROM \"umbracoNode\" WHERE (\"umbracoNode\".\"trashed\" = @0)", sql.SQL.Replace("\n", " "));
         Assert.AreEqual(1, sql.Arguments.Length);
         Assert.AreEqual(false, sql.Arguments[0]);
     }
@@ -114,7 +114,7 @@ public class NPocoSqlTests : BaseUsingPostgreSqlSyntax
         var sql = Sql().SelectAll().From<NodeDto>()
             .Where<NodeDto>(x => x.Trashed);
 
-        Assert.AreEqual("SELECT * FROM [umbracoNode] WHERE ([umbracoNode].[trashed] = @0)", sql.SQL.Replace("\n", " "));
+        Assert.AreEqual("SELECT * FROM \"umbracoNode\" WHERE (\"umbracoNode\".\"trashed\" = @0)", sql.SQL.Replace("\n", " "));
         Assert.AreEqual(1, sql.Arguments.Length);
         Assert.AreEqual(true, sql.Arguments[0]);
     }
@@ -125,8 +125,9 @@ public class NPocoSqlTests : BaseUsingPostgreSqlSyntax
         var sql = Sql().SelectAll().From<NodeDto>()
             .Where<NodeDto>(x => x.Text.ToUpper() == "hello".ToUpper());
 
+        // NPoco translates ToUpper to upper() in SQL
         Assert.AreEqual(
-            "SELECT * FROM [umbracoNode] WHERE ((upper([umbracoNode].[text]) = upper(@0)))",
+            "SELECT * FROM \"umbracoNode\" WHERE ((upper(\"umbracoNode\".\"text\") = upper(@0)))",
             sql.SQL.Replace("\n", " "));
         Assert.AreEqual(1, sql.Arguments.Length);
         Assert.AreEqual("hello", sql.Arguments[0]);
@@ -138,7 +139,7 @@ public class NPocoSqlTests : BaseUsingPostgreSqlSyntax
         var sql = Sql().SelectAll().From<NodeDto>()
             .Where<NodeDto>(x => x.Text == 1.ToString());
 
-        Assert.AreEqual("SELECT * FROM [umbracoNode] WHERE (([umbracoNode].[text] = @0))", sql.SQL.Replace("\n", " "));
+        Assert.AreEqual("SELECT * FROM \"umbracoNode\" WHERE ((\"umbracoNode\".\"text\" = @0))", sql.SQL.Replace("\n", " "));
         Assert.AreEqual(1, sql.Arguments.Length);
         Assert.AreEqual("1", sql.Arguments[0]);
     }
@@ -150,7 +151,7 @@ public class NPocoSqlTests : BaseUsingPostgreSqlSyntax
             .Where<NodeDto>(x => x.Text.StartsWith("D"));
 
         Assert.AreEqual(
-            "SELECT * FROM [umbracoNode] WHERE (upper([umbracoNode].[text]) LIKE upper(@0))",
+            "SELECT * FROM \"umbracoNode\" WHERE (UPPER(\"umbracoNode\".\"text\"::text) LIKE UPPER(@0))",
             sql.SQL.Replace("\n", " "));
         Assert.AreEqual(1, sql.Arguments.Length);
         Assert.AreEqual("D%", sql.Arguments[0]);
@@ -162,7 +163,7 @@ public class NPocoSqlTests : BaseUsingPostgreSqlSyntax
         var sql = Sql().SelectAll().From<NodeDto>()
             .Where<NodeDto>(x => x.NodeId == 2);
 
-        Assert.AreEqual("SELECT * FROM [umbracoNode] WHERE (([umbracoNode].[id] = @0))", sql.SQL.Replace("\n", " "));
+        Assert.AreEqual("SELECT * FROM \"umbracoNode\" WHERE ((\"umbracoNode\".\"id\" = @0))", sql.SQL.Replace("\n", " "));
         Assert.AreEqual(1, sql.Arguments.Length);
         Assert.AreEqual(2, sql.Arguments[0]);
     }
@@ -174,7 +175,7 @@ public class NPocoSqlTests : BaseUsingPostgreSqlSyntax
             .Where<NodeDto>(x => x.NodeId != 2 && x.NodeId != 3);
 
         Assert.AreEqual(
-            "SELECT * FROM [umbracoNode] WHERE ((([umbracoNode].[id] <> @0) AND ([umbracoNode].[id] <> @1)))",
+            "SELECT * FROM \"umbracoNode\" WHERE (((\"umbracoNode\".\"id\" <> @0) AND (\"umbracoNode\".\"id\" <> @1)))",
             sql.SQL.Replace("\n", " "));
         Assert.AreEqual(2, sql.Arguments.Length);
         Assert.AreEqual(2, sql.Arguments[0]);
@@ -188,7 +189,7 @@ public class NPocoSqlTests : BaseUsingPostgreSqlSyntax
             .Where<NodeDto>(x => x.Text == "hello" || x.NodeId == 3);
 
         Assert.AreEqual(
-            "SELECT * FROM [umbracoNode] WHERE ((([umbracoNode].[text] = @0) OR ([umbracoNode].[id] = @1)))",
+            "SELECT * FROM \"umbracoNode\" WHERE (((\"umbracoNode\".\"text\" = @0) OR (\"umbracoNode\".\"id\" = @1)))",
             sql.SQL.Replace("\n", " "));
         Assert.AreEqual(2, sql.Arguments.Length);
         Assert.AreEqual("hello", sql.Arguments[0]);
@@ -199,7 +200,7 @@ public class NPocoSqlTests : BaseUsingPostgreSqlSyntax
     public void Where_Null()
     {
         var sql = Sql().SelectAll().From<NodeDto>().WhereNull<NodeDto>(x => x.NodeId);
-        Assert.AreEqual("SELECT * FROM [umbracoNode] WHERE (([umbracoNode].[id] IS NULL))", sql.SQL.Replace("\n", " "));
+        Assert.AreEqual("SELECT * FROM \"umbracoNode\" WHERE ((\"umbracoNode\".\"id\" IS NULL))", sql.SQL.Replace("\n", " "));
     }
 
     [Test]
@@ -207,7 +208,7 @@ public class NPocoSqlTests : BaseUsingPostgreSqlSyntax
     {
         var sql = Sql().SelectAll().From<NodeDto>().WhereNotNull<NodeDto>(x => x.NodeId);
         Assert.AreEqual(
-            "SELECT * FROM [umbracoNode] WHERE (([umbracoNode].[id] IS NOT NULL))",
+            "SELECT * FROM \"umbracoNode\" WHERE ((\"umbracoNode\".\"id\" IS NOT NULL))",
             sql.SQL.Replace("\n", " "));
     }
 
@@ -219,7 +220,7 @@ public class NPocoSqlTests : BaseUsingPostgreSqlSyntax
             s => s.Where<NodeDto>(x => x.NodeId == 2));
 
         Assert.AreEqual(
-            "SELECT * FROM [umbracoNode] WHERE (( (([umbracoNode].[id] = @0)) ) OR ( (([umbracoNode].[id] = @1)) ))",
+            "SELECT * FROM \"umbracoNode\" WHERE (( ((\"umbracoNode\".\"id\" = @0)) ) OR ( ((\"umbracoNode\".\"id\" = @1)) ))",
             sql.SQL.Replace("\n", " "));
     }
 
@@ -227,7 +228,7 @@ public class NPocoSqlTests : BaseUsingPostgreSqlSyntax
     public void Can_Select_From_With_Type()
     {
         var expected = Sql();
-        expected.SelectAll().From($"[{Constants.DatabaseSchema.Tables.Content}]");
+        expected.SelectAll().From($"\"{Constants.DatabaseSchema.Tables.Content}\"");
 
         var sql = Sql();
         sql.SelectAll().From<ContentDto>();
@@ -242,10 +243,10 @@ public class NPocoSqlTests : BaseUsingPostgreSqlSyntax
     {
         var expected = Sql();
         expected.SelectAll()
-            .From($"[{Constants.DatabaseSchema.Tables.DocumentVersion}]")
-            .InnerJoin($"[{Constants.DatabaseSchema.Tables.ContentVersion}]")
+            .From($"\"{Constants.DatabaseSchema.Tables.DocumentVersion}\"")
+            .InnerJoin($"\"{Constants.DatabaseSchema.Tables.ContentVersion}\"")
             .On(
-                $"[{Constants.DatabaseSchema.Tables.DocumentVersion}].[id] = [{Constants.DatabaseSchema.Tables.ContentVersion}].[id]");
+                $"\"{Constants.DatabaseSchema.Tables.DocumentVersion}\".\"id\" = \"{Constants.DatabaseSchema.Tables.ContentVersion}\".\"id\"");
 
         var sql = Sql();
         sql.SelectAll().From<DocumentVersionDto>()
@@ -261,8 +262,8 @@ public class NPocoSqlTests : BaseUsingPostgreSqlSyntax
     public void Can_OrderBy_With_Type()
     {
         var expected = Sql();
-        expected.SelectAll().From($"[{Constants.DatabaseSchema.Tables.Content}]")
-            .OrderBy($"([{Constants.DatabaseSchema.Tables.Content}].[contentTypeId])");
+        expected.SelectAll().From($"\"{Constants.DatabaseSchema.Tables.Content}\"")
+            .OrderBy($"(\"{Constants.DatabaseSchema.Tables.Content}\".\"contentTypeId\")");
 
         var sql = Sql();
         sql.SelectAll().From<ContentDto>().OrderBy<ContentDto>(x => x.ContentTypeId);
@@ -276,8 +277,8 @@ public class NPocoSqlTests : BaseUsingPostgreSqlSyntax
     public void Can_GroupBy_With_Type()
     {
         var expected = Sql();
-        expected.SelectAll().From($"[{Constants.DatabaseSchema.Tables.Content}]")
-            .GroupBy($"[{Constants.DatabaseSchema.Tables.Content}].[contentTypeId]");
+        expected.SelectAll().From($"\"{Constants.DatabaseSchema.Tables.Content}\"")
+            .GroupBy($"\"{Constants.DatabaseSchema.Tables.Content}\".\"contentTypeId\"");
 
         var sql = Sql();
         sql.SelectAll().From<ContentDto>().GroupBy<ContentDto>(x => x.ContentTypeId);
@@ -291,8 +292,8 @@ public class NPocoSqlTests : BaseUsingPostgreSqlSyntax
     public void Can_Use_Where_Predicate()
     {
         var expected = Sql();
-        expected.SelectAll().From($"[{Constants.DatabaseSchema.Tables.Content}]")
-            .Where($"([{Constants.DatabaseSchema.Tables.Content}].[nodeId] = @0)", 1045);
+        expected.SelectAll().From($"\"{Constants.DatabaseSchema.Tables.Content}\"")
+            .Where($"(\"{Constants.DatabaseSchema.Tables.Content}\".\"nodeId\" = @0)", 1045);
 
         var sql = Sql();
         sql.SelectAll().From<ContentDto>().Where<ContentDto>(x => x.NodeId == 1045);
@@ -307,9 +308,9 @@ public class NPocoSqlTests : BaseUsingPostgreSqlSyntax
     {
         var expected = Sql();
         expected.SelectAll()
-            .From($"[{Constants.DatabaseSchema.Tables.Content}]")
-            .Where($"([{Constants.DatabaseSchema.Tables.Content}].[nodeId] = @0)", 1045)
-            .Where($"([{Constants.DatabaseSchema.Tables.Content}].[contentTypeId] = @0)", 1050);
+            .From($"\"{Constants.DatabaseSchema.Tables.Content}\"")
+            .Where($"(\"{Constants.DatabaseSchema.Tables.Content}\".\"nodeId\" = @0)", 1045)
+            .Where($"(\"{Constants.DatabaseSchema.Tables.Content}\".\"contentTypeId\" = @0)", 1050);
 
         var sql = Sql();
         sql.SelectAll()
@@ -333,13 +334,13 @@ public class NPocoSqlTests : BaseUsingPostgreSqlSyntax
             .Where<UserLoginDto>(x => x.SessionId == sessionId);
 
         Assert.AreEqual(
-            "SELECT * FROM [umbracoUserLogin] WHERE (([umbracoUserLogin].[sessionId] = @0))",
+            "SELECT * FROM \"umbracoUserLogin\" WHERE ((\"umbracoUserLogin\".\"sessionId\" = @0))",
             sql.SQL.NoCrLf());
 
         sql = sql.ForUpdate();
 
         Assert.AreEqual(
-            "SELECT * FROM [umbracoUserLogin] WITH (UPDLOCK) WHERE (([umbracoUserLogin].[sessionId] = @0))",
+            "SELECT * FROM \"umbracoUserLogin\" WHERE ((\"umbracoUserLogin\".\"sessionId\" = @0))",
             sql.SQL.NoCrLf());
     }
 }

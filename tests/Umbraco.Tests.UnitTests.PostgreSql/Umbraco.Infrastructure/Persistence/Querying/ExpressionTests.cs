@@ -34,7 +34,7 @@ public class ExpressionTests : BaseUsingPostgreSqlSyntax
 
         Debug.Print("Model to Sql ExpressionHelper: \n" + result);
 
-        Assert.AreEqual("([cmsPropertyType].[dataTypeId] = @0)", result);
+        Assert.AreEqual("(\"cmsPropertyType\".\"dataTypeId\" = @0)", result);
         Assert.AreEqual(12345, modelToSqlExpressionHelper.GetSqlParameters()[0]);
     }
 
@@ -48,7 +48,7 @@ public class ExpressionTests : BaseUsingPostgreSqlSyntax
 
         Debug.Print("Model to Sql ExpressionHelper: \n" + result);
 
-        Assert.AreEqual("([cmsContentType].[alias] = @0)", result);
+        Assert.AreEqual("(\"cmsContentType\".\"alias\" = @0)", result);
         Assert.AreEqual("Test", modelToSqlExpressionHelper.GetSqlParameters()[0]);
     }
 
@@ -63,7 +63,7 @@ public class ExpressionTests : BaseUsingPostgreSqlSyntax
 
         Debug.Print("Model to Sql ExpressionHelper: \n" + result);
 
-        Assert.AreEqual("[cmsContentType].[alias] IN (@1,@2)", result);
+        Assert.AreEqual("\"cmsContentType\".\"alias\" IN (@1,@2)", result);
         Assert.AreEqual("Test1", modelToSqlExpressionHelper.GetSqlParameters()[1]);
         Assert.AreEqual("Test2", modelToSqlExpressionHelper.GetSqlParameters()[2]);
     }
@@ -79,7 +79,7 @@ public class ExpressionTests : BaseUsingPostgreSqlSyntax
 
         Debug.Print("Model to Sql ExpressionHelper: \n" + result);
 
-        Assert.AreEqual("[cmsContentType].[alias] IN (@1,@2)", result);
+        Assert.AreEqual("\"cmsContentType\".\"alias\" IN (@1,@2)", result);
         Assert.AreEqual("Test1", modelToSqlExpressionHelper.GetSqlParameters()[1]);
         Assert.AreEqual("Test2", modelToSqlExpressionHelper.GetSqlParameters()[2]);
     }
@@ -97,14 +97,14 @@ public class ExpressionTests : BaseUsingPostgreSqlSyntax
         cachedExpression.Wrap(predicate1);
         var modelToSqlExpressionHelper1 = new ModelToSqlExpressionVisitor<IContent>(SqlContext.SqlSyntax, Mappers);
         var result1 = modelToSqlExpressionHelper1.Visit(cachedExpression);
-        Assert.AreEqual("upper([umbracoNode].[path]) LIKE upper(@0)", result1);
+        Assert.AreEqual("UPPER(\"umbracoNode\".\"path\"::text) LIKE UPPER(@0)", result1);
         Assert.AreEqual("-1%", modelToSqlExpressionHelper1.GetSqlParameters()[0]);
 
         Expression<Func<IContent, bool>> predicate2 = content => content.Path.StartsWith("-1,123,97");
         cachedExpression.Wrap(predicate2);
         var modelToSqlExpressionHelper2 = new ModelToSqlExpressionVisitor<IContent>(SqlContext.SqlSyntax, Mappers);
         var result2 = modelToSqlExpressionHelper2.Visit(cachedExpression);
-        Assert.AreEqual("upper([umbracoNode].[path]) LIKE upper(@0)", result2);
+        Assert.AreEqual("UPPER(\"umbracoNode\".\"path\"::text) LIKE UPPER(@0)", result2);
         Assert.AreEqual("-1,123,97%", modelToSqlExpressionHelper2.GetSqlParameters()[0]);
     }
 
@@ -116,7 +116,7 @@ public class ExpressionTests : BaseUsingPostgreSqlSyntax
         var modelToSqlExpressionHelper = new ModelToSqlExpressionVisitor<IContent>(SqlContext.SqlSyntax, Mappers);
         var result = modelToSqlExpressionHelper.Visit(predicate);
 
-        Assert.AreEqual("upper([umbracoNode].[path]) LIKE upper(@0)", result);
+        Assert.AreEqual("UPPER(\"umbracoNode\".\"path\"::text) LIKE UPPER(@0)", result);
         Assert.AreEqual("-1%", modelToSqlExpressionHelper.GetSqlParameters()[0]);
     }
 
@@ -130,7 +130,7 @@ public class ExpressionTests : BaseUsingPostgreSqlSyntax
 
         Debug.Print("Model to Sql ExpressionHelper: \n" + result);
 
-        Assert.AreEqual("([umbracoNode].[parentId] = @0)", result);
+        Assert.AreEqual("(\"umbracoNode\".\"parentId\" = @0)", result);
         Assert.AreEqual(-1, modelToSqlExpressionHelper.GetSqlParameters()[0]);
     }
 
@@ -143,7 +143,7 @@ public class ExpressionTests : BaseUsingPostgreSqlSyntax
 
         Debug.Print("Model to Sql ExpressionHelper: \n" + result);
 
-        Assert.AreEqual("([umbracoUser].[userLogin] = @0)", result);
+        Assert.AreEqual("(\"umbracoUser\".\"userLogin\" = @0)", result);
         Assert.AreEqual("hello@world.com", modelToSqlExpressionHelper.GetSqlParameters()[0]);
     }
 
@@ -156,7 +156,7 @@ public class ExpressionTests : BaseUsingPostgreSqlSyntax
 
         Debug.Print("Model to Sql ExpressionHelper: \n" + result);
 
-        Assert.AreEqual("upper([umbracoUser].[userLogin]) = upper(@0)", result);
+        Assert.AreEqual("UPPER(\"umbracoUser\".\"userLogin\"::text) = UPPER(@0)", result);
         Assert.AreEqual("hello@world.com", modelToSqlExpressionHelper.GetSqlParameters()[0]);
     }
 
@@ -169,7 +169,7 @@ public class ExpressionTests : BaseUsingPostgreSqlSyntax
 
         Debug.Print("Model to Sql ExpressionHelper: \n" + result);
 
-        Assert.AreEqual("(replace([umbracoUser].[userLogin], @1, @2) = @0)", result);
+        Assert.AreEqual("(replace(\"umbracoUser\".\"userLogin\", @1, @2) = @0)", result);
         Assert.AreEqual("hello@test.com", modelToSqlExpressionHelper.GetSqlParameters()[0]);
         Assert.AreEqual("@world", modelToSqlExpressionHelper.GetSqlParameters()[1]);
         Assert.AreEqual("@test", modelToSqlExpressionHelper.GetSqlParameters()[2]);
@@ -193,7 +193,7 @@ public class ExpressionTests : BaseUsingPostgreSqlSyntax
 
         Debug.Print("Model to Sql ExpressionHelper: \n" + result);
 
-        Assert.AreEqual("[umbracoUser].[userLogin] IN (@1,@2)", result);
+        Assert.AreEqual("\"umbracoUser\".\"userLogin\" IN (@1,@2)", result);
         Assert.AreEqual("hello@world.com", modelToSqlExpressionHelper.GetSqlParameters()[1]);
         Assert.AreEqual("blah@blah.com", modelToSqlExpressionHelper.GetSqlParameters()[2]);
     }
@@ -213,21 +213,21 @@ public class ExpressionTests : BaseUsingPostgreSqlSyntax
         var result = modelToSqlExpressionHelper.Visit(predicate);
 
         Console.WriteLine(result);
-        Assert.AreEqual("upper([umbracoUser].[userLogin]) LIKE upper(@0)", result);
+        Assert.AreEqual("UPPER(\"umbracoUser\".\"userLogin\"::text) LIKE UPPER(@0)", result);
 
         predicate = user => user.Login.StartsWith(GetSomeValue("aaaaa"));
         modelToSqlExpressionHelper = new PocoToSqlExpressionVisitor<UserDto>(SqlContext, null);
         result = modelToSqlExpressionHelper.Visit(predicate);
 
         Console.WriteLine(result);
-        Assert.AreEqual("upper([umbracoUser].[userLogin]) LIKE upper(@0)", result);
+        Assert.AreEqual("UPPER(\"umbracoUser\".\"userLogin\"::text) LIKE UPPER(@0)", result);
 
         predicate = user => user.Login.StartsWith(GetSomeValue("aaaaa"));
         modelToSqlExpressionHelper = new PocoToSqlExpressionVisitor<UserDto>(SqlContext, null);
         result = modelToSqlExpressionHelper.Visit(predicate);
 
         Console.WriteLine(result);
-        Assert.AreEqual("upper([umbracoUser].[userLogin]) LIKE upper(@0)", result);
+        Assert.AreEqual("UPPER(\"umbracoUser\".\"userLogin\"::text) LIKE UPPER(@0)", result);
 
         var foo = new Foo { Value = "aaaaa" };
         predicate = user => user.Login.StartsWith(foo.Value);
@@ -235,10 +235,10 @@ public class ExpressionTests : BaseUsingPostgreSqlSyntax
         result = modelToSqlExpressionHelper.Visit(predicate);
 
         Console.WriteLine(result);
-        Assert.AreEqual("upper([umbracoUser].[userLogin]) LIKE upper(@0)", result);
+        Assert.AreEqual("UPPER(\"umbracoUser\".\"userLogin\"::text) LIKE UPPER(@0)", result);
 
         // below does not work, we want to output
-        // LIKE concat([group].[name], ',%')
+        // LIKE concat(\"group].\"name], ',%')
         // and how would we get the comma there? we'd have to parse .StartsWith(group.Name + ',')
         // which is going to be quite complicated => no
 

@@ -18,7 +18,7 @@ public class DictionaryTranslationMapperTest
             new DictionaryTranslationMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("Key");
 
         // Assert
-        Assert.That(column, Is.EqualTo("[cmsLanguageText].[uniqueId]"));
+        Assert.That(column, Is.EqualTo("\"cmsLanguageText\".\"uniqueId\""));
     }
 
     [Test]
@@ -29,6 +29,6 @@ public class DictionaryTranslationMapperTest
             new DictionaryTranslationMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("Value");
 
         // Assert
-        Assert.That(column, Is.EqualTo("[cmsLanguageText].[value]"));
+        Assert.That(column, Is.EqualTo("\"cmsLanguageText\".\"value\""));
     }
 }

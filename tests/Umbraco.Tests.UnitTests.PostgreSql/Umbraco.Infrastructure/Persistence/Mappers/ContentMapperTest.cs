@@ -16,7 +16,7 @@ public class ContentMapperTest
     public void Can_Map_Id_Property()
     {
         var column = new ContentMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map(nameof(Content.Id));
-        Assert.That(column, Is.EqualTo($"[{Constants.DatabaseSchema.Tables.Node}].[id]"));
+        Assert.That(column, Is.EqualTo($"\"{Constants.DatabaseSchema.Tables.Node}\".\"id\""));
     }
 
     [Test]
@@ -24,7 +24,7 @@ public class ContentMapperTest
     {
         var column =
             new ContentMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map(nameof(Content.Trashed));
-        Assert.That(column, Is.EqualTo($"[{Constants.DatabaseSchema.Tables.Node}].[trashed]"));
+        Assert.That(column, Is.EqualTo($"\"{Constants.DatabaseSchema.Tables.Node}\".\"trashed\""));
     }
 
     [Test]
@@ -32,7 +32,7 @@ public class ContentMapperTest
     {
         var column =
             new ContentMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map(nameof(Content.Published));
-        Assert.That(column, Is.EqualTo($"[{Constants.DatabaseSchema.Tables.Document}].[published]"));
+        Assert.That(column, Is.EqualTo($"\"{Constants.DatabaseSchema.Tables.Document}\".\"published\""));
     }
 
     [Test]
@@ -40,6 +40,6 @@ public class ContentMapperTest
     {
         var column =
             new ContentMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map(nameof(Content.VersionId));
-        Assert.That(column, Is.EqualTo($"[{Constants.DatabaseSchema.Tables.ContentVersion}].[id]"));
+        Assert.That(column, Is.EqualTo($"\"{Constants.DatabaseSchema.Tables.ContentVersion}\".\"id\""));
     }
 }

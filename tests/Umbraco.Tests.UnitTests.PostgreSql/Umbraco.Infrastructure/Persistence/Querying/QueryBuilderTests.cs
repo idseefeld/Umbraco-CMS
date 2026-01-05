@@ -29,7 +29,7 @@ public class QueryBuilderTests : BaseUsingPostgreSqlSyntax
         var result = translator.Translate();
         var strResult = result.SQL;
 
-        var expectedResult = "SELECT *\nFROM umbracoNode\nWHERE (upper([umbracoNode].[path]) LIKE upper(@0))";
+        var expectedResult = "SELECT *\nFROM umbracoNode\nWHERE (UPPER(\"umbracoNode\".\"path\"::text) LIKE UPPER(@0))";
 
         // Assert
         Assert.That(strResult, Is.Not.Empty);
@@ -56,7 +56,7 @@ public class QueryBuilderTests : BaseUsingPostgreSqlSyntax
         var result = translator.Translate();
         var strResult = result.SQL;
 
-        var expectedResult = "SELECT *\nFROM umbracoNode\nWHERE (([umbracoNode].[parentId] = @0))";
+        var expectedResult = "SELECT *\nFROM umbracoNode\nWHERE ((\"umbracoNode\".\"parentId\" = @0))";
 
         // Assert
         Assert.That(strResult, Is.Not.Empty);
@@ -83,7 +83,7 @@ public class QueryBuilderTests : BaseUsingPostgreSqlSyntax
         var result = translator.Translate();
         var strResult = result.SQL;
 
-        var expectedResult = "SELECT *\nFROM umbracoNode\nWHERE (([cmsContentType].[alias] = @0))";
+        var expectedResult = "SELECT *\nFROM umbracoNode\nWHERE ((\"cmsContentType\".\"alias\" = @0))";
 
         // Assert
         Assert.That(strResult, Is.Not.Empty);

@@ -17,7 +17,7 @@ public class PropertyGroupMapperTest
         var column = new PropertyGroupMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("Id");
 
         // Assert
-        Assert.That(column, Is.EqualTo("[cmsPropertyTypeGroup].[id]"));
+        Assert.That(column, Is.EqualTo("\"cmsPropertyTypeGroup\".\"id\""));
     }
 
     [Test]
@@ -27,7 +27,7 @@ public class PropertyGroupMapperTest
         var column = new PropertyGroupMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("SortOrder");
 
         // Assert
-        Assert.That(column, Is.EqualTo("[cmsPropertyTypeGroup].[sortorder]"));
+        Assert.That(column, Is.EqualTo("\"cmsPropertyTypeGroup\".\"sortorder\""));
     }
 
     [Test]
@@ -37,6 +37,6 @@ public class PropertyGroupMapperTest
         var column = new PropertyGroupMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("Name");
 
         // Assert
-        Assert.That(column, Is.EqualTo("[cmsPropertyTypeGroup].[text]"));
+        Assert.That(column, Is.EqualTo("\"cmsPropertyTypeGroup\".\"text\""));
     }
 }

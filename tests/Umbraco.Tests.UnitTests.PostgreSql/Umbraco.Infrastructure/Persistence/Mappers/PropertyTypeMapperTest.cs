@@ -18,7 +18,7 @@ public class PropertyTypeMapperTest
         var column = new PropertyTypeMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("Id");
 
         // Assert
-        Assert.That(column, Is.EqualTo("[cmsPropertyType].[id]"));
+        Assert.That(column, Is.EqualTo("\"cmsPropertyType\".\"id\""));
     }
 
     [Test]
@@ -28,7 +28,7 @@ public class PropertyTypeMapperTest
         var column = new PropertyTypeMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("Alias");
 
         // Assert
-        Assert.That(column, Is.EqualTo("[cmsPropertyType].[Alias]"));
+        Assert.That(column, Is.EqualTo("\"cmsPropertyType\".\"Alias\""));
     }
 
     [Test]
@@ -38,7 +38,7 @@ public class PropertyTypeMapperTest
         var column = new PropertyTypeMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("DataTypeId");
 
         // Assert
-        Assert.That(column, Is.EqualTo("[cmsPropertyType].[dataTypeId]"));
+        Assert.That(column, Is.EqualTo("\"cmsPropertyType\".\"dataTypeId\""));
     }
 
     [Test]
@@ -48,7 +48,7 @@ public class PropertyTypeMapperTest
         var column = new PropertyTypeMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("SortOrder");
 
         // Assert
-        Assert.That(column, Is.EqualTo("[cmsPropertyType].[sortOrder]"));
+        Assert.That(column, Is.EqualTo("\"cmsPropertyType\".\"sortOrder\""));
     }
 
     [Test]
@@ -59,7 +59,7 @@ public class PropertyTypeMapperTest
             new PropertyTypeMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("PropertyEditorAlias");
 
         // Assert
-        Assert.That(column, Is.EqualTo($"[{Constants.DatabaseSchema.Tables.DataType}].[propertyEditorAlias]"));
+        Assert.That(column, Is.EqualTo($"\"{Constants.DatabaseSchema.Tables.DataType}\".\"propertyEditorAlias\""));
     }
 
     [Test]
@@ -70,6 +70,6 @@ public class PropertyTypeMapperTest
             new PropertyTypeMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("ValueStorageType");
 
         // Assert
-        Assert.That(column, Is.EqualTo($"[{Constants.DatabaseSchema.Tables.DataType}].[dbType]"));
+        Assert.That(column, Is.EqualTo($"\"{Constants.DatabaseSchema.Tables.DataType}\".\"dbType\""));
     }
 }

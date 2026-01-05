@@ -17,7 +17,7 @@ public class ContentTypeMapperTest
         var column = new ContentTypeMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("Id");
 
         // Assert
-        Assert.That(column, Is.EqualTo("[umbracoNode].[id]"));
+        Assert.That(column, Is.EqualTo("\"umbracoNode\".\"id\""));
     }
 
     [Test]
@@ -27,7 +27,7 @@ public class ContentTypeMapperTest
         var column = new ContentTypeMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("Name");
 
         // Assert
-        Assert.That(column, Is.EqualTo("[umbracoNode].[text]"));
+        Assert.That(column, Is.EqualTo("\"umbracoNode\".\"text\""));
     }
 
     [Test]
@@ -37,7 +37,7 @@ public class ContentTypeMapperTest
         var column = new ContentTypeMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("Thumbnail");
 
         // Assert
-        Assert.That(column, Is.EqualTo("[cmsContentType].[thumbnail]"));
+        Assert.That(column, Is.EqualTo("\"cmsContentType\".\"thumbnail\""));
     }
 
     [Test]
@@ -47,6 +47,6 @@ public class ContentTypeMapperTest
         var column = new ContentTypeMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("Description");
 
         // Assert
-        Assert.That(column, Is.EqualTo("[cmsContentType].[description]"));
+        Assert.That(column, Is.EqualTo("\"cmsContentType\".\"description\""));
     }
 }

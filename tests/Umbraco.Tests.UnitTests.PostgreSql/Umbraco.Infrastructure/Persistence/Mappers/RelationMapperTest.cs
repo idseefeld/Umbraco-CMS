@@ -17,7 +17,7 @@ public class RelationMapperTest
         var column = new RelationMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("Id");
 
         // Assert
-        Assert.That(column, Is.EqualTo("[umbracoRelation].[id]"));
+        Assert.That(column, Is.EqualTo("\"umbracoRelation\".\"id\""));
     }
 
     [Test]
@@ -27,7 +27,7 @@ public class RelationMapperTest
         var column = new RelationMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("ChildId");
 
         // Assert
-        Assert.That(column, Is.EqualTo("[umbracoRelation].[childId]"));
+        Assert.That(column, Is.EqualTo("\"umbracoRelation\".\"childId\""));
     }
 
     [Test]
@@ -37,7 +37,7 @@ public class RelationMapperTest
         var column = new RelationMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("CreateDate");
 
         // Assert
-        Assert.That(column, Is.EqualTo("[umbracoRelation].[datetime]"));
+        Assert.That(column, Is.EqualTo("\"umbracoRelation\".\"datetime\""));
     }
 
     [Test]
@@ -47,7 +47,7 @@ public class RelationMapperTest
         var column = new RelationMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("Comment");
 
         // Assert
-        Assert.That(column, Is.EqualTo("[umbracoRelation].[comment]"));
+        Assert.That(column, Is.EqualTo("\"umbracoRelation\".\"comment\""));
     }
 
     [Test]
@@ -57,6 +57,6 @@ public class RelationMapperTest
         var column = new RelationMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("RelationTypeId");
 
         // Assert
-        Assert.That(column, Is.EqualTo("[umbracoRelation].[relType]"));
+        Assert.That(column, Is.EqualTo("\"umbracoRelation\".\"relType\""));
     }
 }

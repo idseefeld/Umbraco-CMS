@@ -295,7 +295,7 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
     /// <inheritdoc />
     public override string GetStringColumnEqualComparison(string column, int paramIndex, TextColumnType columnType)
     {
-        return $"UPPER({column}::text) = UPPER(@{paramIndex})";
+        return $"UPPER({column}::text) = UPPER(@{paramIndex})"; // ::text to ensure comparison as text is not necessary as NULL defaults to text in Postgres
     }
 
     /// <inheritdoc />

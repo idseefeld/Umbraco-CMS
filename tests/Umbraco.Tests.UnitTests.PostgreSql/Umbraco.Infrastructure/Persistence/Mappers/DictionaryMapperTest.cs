@@ -17,7 +17,7 @@ public class DictionaryMapperTest
         var column = new DictionaryMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("Id");
 
         // Assert
-        Assert.That(column, Is.EqualTo("[cmsDictionary].[pk]"));
+        Assert.That(column, Is.EqualTo("\"cmsDictionary\".\"pk\""));
     }
 
     [Test]
@@ -27,7 +27,7 @@ public class DictionaryMapperTest
         var column = new DictionaryMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("Key");
 
         // Assert
-        Assert.That(column, Is.EqualTo("[cmsDictionary].[id]"));
+        Assert.That(column, Is.EqualTo("\"cmsDictionary\".\"id\""));
     }
 
     [Test]
@@ -37,6 +37,6 @@ public class DictionaryMapperTest
         var column = new DictionaryMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("ItemKey");
 
         // Assert
-        Assert.That(column, Is.EqualTo("[cmsDictionary].[key]"));
+        Assert.That(column, Is.EqualTo("\"cmsDictionary\".\"key\""));
     }
 }

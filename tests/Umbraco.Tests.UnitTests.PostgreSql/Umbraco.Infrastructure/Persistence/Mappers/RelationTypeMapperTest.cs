@@ -17,7 +17,7 @@ public class RelationTypeMapperTest
         var column = new RelationTypeMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("Id");
 
         // Assert
-        Assert.That(column, Is.EqualTo("[umbracoRelationType].[id]"));
+        Assert.That(column, Is.EqualTo("\"umbracoRelationType\".\"id\""));
     }
 
     [Test]
@@ -27,7 +27,7 @@ public class RelationTypeMapperTest
         var column = new RelationTypeMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("Alias");
 
         // Assert
-        Assert.That(column, Is.EqualTo("[umbracoRelationType].[alias]"));
+        Assert.That(column, Is.EqualTo("\"umbracoRelationType\".\"alias\""));
     }
 
     [Test]
@@ -38,7 +38,7 @@ public class RelationTypeMapperTest
             new RelationTypeMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("ChildObjectType");
 
         // Assert
-        Assert.That(column, Is.EqualTo("[umbracoRelationType].[childObjectType]"));
+        Assert.That(column, Is.EqualTo("\"umbracoRelationType\".\"childObjectType\""));
     }
 
     [Test]
@@ -49,6 +49,6 @@ public class RelationTypeMapperTest
             new RelationTypeMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("IsBidirectional");
 
         // Assert
-        Assert.That(column, Is.EqualTo("[umbracoRelationType].[dual]"));
+        Assert.That(column, Is.EqualTo("\"umbracoRelationType\".\"dual\""));
     }
 }

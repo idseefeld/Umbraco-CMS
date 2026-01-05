@@ -18,7 +18,7 @@ public class DataTypeMapperTest
         var column = new DataTypeMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("Id");
 
         // Assert
-        Assert.That(column, Is.EqualTo("[umbracoNode].[id]"));
+        Assert.That(column, Is.EqualTo("\"umbracoNode\".\"id\""));
     }
 
     [Test]
@@ -28,7 +28,7 @@ public class DataTypeMapperTest
         var column = new DataTypeMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("Key");
 
         // Assert
-        Assert.That(column, Is.EqualTo("[umbracoNode].[uniqueId]"));
+        Assert.That(column, Is.EqualTo("\"umbracoNode\".\"uniqueId\""));
     }
 
     [Test]
@@ -38,7 +38,7 @@ public class DataTypeMapperTest
         var column = new DataTypeMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("DatabaseType");
 
         // Assert
-        Assert.That(column, Is.EqualTo($"[{Constants.DatabaseSchema.Tables.DataType}].[dbType]"));
+        Assert.That(column, Is.EqualTo($"\"{Constants.DatabaseSchema.Tables.DataType}\".\"dbType\""));
     }
 
     [Test]
@@ -48,6 +48,6 @@ public class DataTypeMapperTest
         var column = new DataTypeMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("EditorAlias");
 
         // Assert
-        Assert.That(column, Is.EqualTo($"[{Constants.DatabaseSchema.Tables.DataType}].[propertyEditorAlias]"));
+        Assert.That(column, Is.EqualTo($"\"{Constants.DatabaseSchema.Tables.DataType}\".\"propertyEditorAlias\""));
     }
 }

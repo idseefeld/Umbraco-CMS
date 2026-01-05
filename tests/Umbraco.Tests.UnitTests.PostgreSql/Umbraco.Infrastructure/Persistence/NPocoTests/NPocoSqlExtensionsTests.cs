@@ -25,7 +25,7 @@ public class NPocoSqlExtensionsTests : BaseUsingPostgreSqlSyntax
             .From<PropertyDataDto>()
             .Where<PropertyDataDto>(x => x.LanguageId == null);
         Assert.AreEqual(
-            "SELECT *\nFROM [umbracoPropertyData]\nWHERE (([umbracoPropertyData].[languageId] is null))",
+            "SELECT *\nFROM \"umbracoPropertyData\"\nWHERE ((\"umbracoPropertyData\".\"languageId\" is null))",
             sql.SQL,
             sql.SQL);
 
@@ -34,7 +34,7 @@ public class NPocoSqlExtensionsTests : BaseUsingPostgreSqlSyntax
             .From<PropertyDataDto>()
             .Where<PropertyDataDto>(x => x.LanguageId == 123);
         Assert.AreEqual(
-            "SELECT *\nFROM [umbracoPropertyData]\nWHERE (([umbracoPropertyData].[languageId] = @0))",
+            "SELECT *\nFROM \"umbracoPropertyData\"\nWHERE ((\"umbracoPropertyData\".\"languageId\" = @0))",
             sql.SQL,
             sql.SQL);
 
@@ -45,7 +45,7 @@ public class NPocoSqlExtensionsTests : BaseUsingPostgreSqlSyntax
             .From<PropertyDataDto>()
             .Where<PropertyDataDto>(x => x.LanguageId == id);
         Assert.AreEqual(
-            "SELECT *\nFROM [umbracoPropertyData]\nWHERE (([umbracoPropertyData].[languageId] = @0))",
+            "SELECT *\nFROM \"umbracoPropertyData\"\nWHERE ((\"umbracoPropertyData\".\"languageId\" = @0))",
             sql.SQL,
             sql.SQL);
 
@@ -56,7 +56,7 @@ public class NPocoSqlExtensionsTests : BaseUsingPostgreSqlSyntax
             .From<PropertyDataDto>()
             .Where<PropertyDataDto>(x => x.LanguageId == nid);
         Assert.AreEqual(
-            "SELECT *\nFROM [umbracoPropertyData]\nWHERE (([umbracoPropertyData].[languageId] = @0))",
+            "SELECT *\nFROM \"umbracoPropertyData\"\nWHERE ((\"umbracoPropertyData\".\"languageId\" = @0))",
             sql.SQL,
             sql.SQL);
 
@@ -67,7 +67,7 @@ public class NPocoSqlExtensionsTests : BaseUsingPostgreSqlSyntax
             .From<PropertyDataDto>()
             .Where<PropertyDataDto>(x => (nid == null && x.LanguageId == null) || (nid != null && x.LanguageId == nid));
         Assert.AreEqual(
-            "SELECT *\nFROM [umbracoPropertyData]\nWHERE ((((@0 is null) AND ([umbracoPropertyData].[languageId] is null)) OR ((@1 is not null) AND ([umbracoPropertyData].[languageId] = @2))))",
+            "SELECT *\nFROM \"umbracoPropertyData\"\nWHERE ((((@0 is null) AND (\"umbracoPropertyData\".\"languageId\" is null)) OR ((@1 is not null) AND (\"umbracoPropertyData\".\"languageId\" = @2))))",
             sql.SQL,
             sql.SQL);
 
@@ -79,7 +79,7 @@ public class NPocoSqlExtensionsTests : BaseUsingPostgreSqlSyntax
         //    .Select("*")
         //    .From<PropertyDataDto>()
         //    .Where<PropertyDataDto>(x => x.LanguageId.SqlNullableEquals(nid));
-        // Assert.AreEqual("SELECT *\nFROM [umbracoPropertyData]\nWHERE ((((@0 is null) AND ([umbracoPropertyData].[languageId] is null)) OR ((@0 is not null) AND ([umbracoPropertyData].[languageId] = @0))))", sql.SQL, sql.SQL);
+        // Assert.AreEqual("SELECT *\nFROM \"umbracoPropertyData\"\nWHERE ((((@0 is null) AND (\"umbracoPropertyData\".\"languageId\" is null)) OR ((@0 is not null) AND (\"umbracoPropertyData\".\"languageId\" = @0))))", sql.SQL, sql.SQL);
 
         // but, the expression above fails with SQL CE, 'specified argument for the function is not valid' in 'isnull' function
         // so... compare with fallback values
@@ -88,7 +88,7 @@ public class NPocoSqlExtensionsTests : BaseUsingPostgreSqlSyntax
             .From<PropertyDataDto>()
             .Where<PropertyDataDto>(x => x.LanguageId.SqlNullableEquals(nid, -1));
         Assert.AreEqual(
-            "SELECT *\nFROM [umbracoPropertyData]\nWHERE ((COALESCE([umbracoPropertyData].[languageId],@0) = COALESCE(@1,@0)))",
+            "SELECT *\nFROM \"umbracoPropertyData\"\nWHERE ((COALESCE(\"umbracoPropertyData\".\"languageId\",@0) = COALESCE(@1,@0)))",
             sql.SQL,
             sql.SQL);
     }
@@ -114,7 +114,7 @@ public class NPocoSqlExtensionsTests : BaseUsingPostgreSqlSyntax
             .Select("*")
             .From<NodeDto>()
             .WhereIn<NodeDto>(x => x.NodeId, new[] { 1, 2, 3 });
-        Assert.AreEqual("SELECT *\nFROM [umbracoNode]\nWHERE ([umbracoNode].[id] IN (@0,@1,@2))", sql.SQL);
+        Assert.AreEqual("SELECT *\nFROM \"umbracoNode\"\nWHERE (\"umbracoNode\".\"id\" IN (@0,@1,@2))", sql.SQL);
     }
 
     [Test]
@@ -124,7 +124,7 @@ public class NPocoSqlExtensionsTests : BaseUsingPostgreSqlSyntax
             .Select("*")
             .From<NodeDto>()
             .WhereIn<NodeDto>(x => x.Text, new[] { "a", "b", "c" });
-        Assert.AreEqual("SELECT *\nFROM [umbracoNode]\nWHERE (LOWER([umbracoNode].[text]) IN (@0,@1,@2))", sql.SQL);
+        Assert.AreEqual("SELECT *\nFROM \"umbracoNode\"\nWHERE (LOWER(\"umbracoNode\".\"text\") IN (@0,@1,@2))", sql.SQL);
     }
 
     [Test]
@@ -135,20 +135,20 @@ public class NPocoSqlExtensionsTests : BaseUsingPostgreSqlSyntax
             .Select<Dto1>()
             .From<Dto1>();
         Assert.AreEqual(
-            "SELECT [dto1].[id] AS [Id], [dto1].[name] AS [Name], [dto1].[value] AS [Value] FROM [dto1]",
+            "SELECT \"dto1\".\"id\" AS \"Id\", \"dto1\".\"name\" AS \"Name\", \"dto1\".\"value\" AS \"Value\" FROM \"dto1\"",
             sql.SQL.NoCrLf());
 
         // select only 1 field
         sql = Sql()
             .Select<Dto1>(x => x.Id)
             .From<Dto1>();
-        Assert.AreEqual("SELECT [dto1].[id] AS [Id] FROM [dto1]", sql.SQL.NoCrLf());
+        Assert.AreEqual("SELECT \"dto1\".\"id\" AS \"Id\" FROM \"dto1\"", sql.SQL.NoCrLf());
 
         // select 2 fields
         sql = Sql()
             .Select<Dto1>(x => x.Id, x => x.Name)
             .From<Dto1>();
-        Assert.AreEqual("SELECT [dto1].[id] AS [Id], [dto1].[name] AS [Name] FROM [dto1]", sql.SQL.NoCrLf());
+        Assert.AreEqual("SELECT \"dto1\".\"id\" AS \"Id\", \"dto1\".\"name\" AS \"Name\" FROM \"dto1\"", sql.SQL.NoCrLf());
 
         // select the whole DTO and a referenced DTO
         sql = Sql()
@@ -156,10 +156,7 @@ public class NPocoSqlExtensionsTests : BaseUsingPostgreSqlSyntax
             .From<Dto1>()
             .InnerJoin<Dto2>().On<Dto1, Dto2>(left => left.Id, right => right.Dto1Id);
         Assert.AreEqual(
-            @"SELECT [dto1].[id] AS [Id], [dto1].[name] AS [Name], [dto1].[value] AS [Value]
-, [dto2].[id] AS [Dto2__Id], [dto2].[dto1id] AS [Dto2__Dto1Id], [dto2].[name] AS [Dto2__Name]
-FROM [dto1]
-INNER JOIN [dto2] ON [dto1].[id] = [dto2].[dto1id]".NoCrLf(),
+            "SELECT \"dto1\".\"id\" AS \"Id\", \"dto1\".\"name\" AS \"Name\", \"dto1\".\"value\" AS \"Value\" , \"dto2\".\"id\" AS \"Dto2__Id\", \"dto2\".\"dto1id\" AS \"Dto2__Dto1Id\", \"dto2\".\"name\" AS \"Dto2__Name\" FROM \"dto1\" INNER JOIN \"dto2\" ON \"dto1\".\"id\" = \"dto2\".\"dto1id\"".NoCrLf(),
             sql.SQL.NoCrLf(),
             sql.SQL);
 
@@ -170,12 +167,7 @@ INNER JOIN [dto2] ON [dto1].[id] = [dto2].[dto1id]".NoCrLf(),
             .InnerJoin<Dto2>().On<Dto1, Dto2>(left => left.Id, right => right.Dto1Id)
             .InnerJoin<Dto3>().On<Dto2, Dto3>(left => left.Id, right => right.Dto2Id);
         Assert.AreEqual(
-            @"SELECT [dto1].[id] AS [Id], [dto1].[name] AS [Name], [dto1].[value] AS [Value]
-, [dto2].[id] AS [Dto2__Id], [dto2].[dto1id] AS [Dto2__Dto1Id], [dto2].[name] AS [Dto2__Name]
-, [dto3].[id] AS [Dto2__Dto3__Id], [dto3].[dto2id] AS [Dto2__Dto3__Dto2Id], [dto3].[name] AS [Dto2__Dto3__Name]
-FROM [dto1]
-INNER JOIN [dto2] ON [dto1].[id] = [dto2].[dto1id]
-INNER JOIN [dto3] ON [dto2].[id] = [dto3].[dto2id]".NoCrLf(),
+            "SELECT \"dto1\".\"id\" AS \"Id\", \"dto1\".\"name\" AS \"Name\", \"dto1\".\"value\" AS \"Value\" , \"dto2\".\"id\" AS \"Dto2__Id\", \"dto2\".\"dto1id\" AS \"Dto2__Dto1Id\", \"dto2\".\"name\" AS \"Dto2__Name\" , \"dto3\".\"id\" AS \"Dto2__Dto3__Id\", \"dto3\".\"dto2id\" AS \"Dto2__Dto3__Dto2Id\", \"dto3\".\"name\" AS \"Dto2__Dto3__Name\" FROM \"dto1\" INNER JOIN \"dto2\" ON \"dto1\".\"id\" = \"dto2\".\"dto1id\" INNER JOIN \"dto3\" ON \"dto2\".\"id\" = \"dto3\".\"dto2id\"".NoCrLf(),
             sql.SQL.NoCrLf());
 
         // select the whole DTO and referenced DTOs
@@ -184,10 +176,7 @@ INNER JOIN [dto3] ON [dto2].[id] = [dto3].[dto2id]".NoCrLf(),
             .From<Dto1>()
             .InnerJoin<Dto2>().On<Dto1, Dto2>(left => left.Id, right => right.Dto1Id);
         Assert.AreEqual(
-            @"SELECT [dto1].[id] AS [Id], [dto1].[name] AS [Name], [dto1].[value] AS [Value]
-, [dto2].[id] AS [Dto2s__Id], [dto2].[dto1id] AS [Dto2s__Dto1Id], [dto2].[name] AS [Dto2s__Name]
-FROM [dto1]
-INNER JOIN [dto2] ON [dto1].[id] = [dto2].[dto1id]".NoCrLf(),
+            "SELECT \"dto1\".\"id\" AS \"Id\", \"dto1\".\"name\" AS \"Name\", \"dto1\".\"value\" AS \"Value\" , \"dto2\".\"id\" AS \"Dto2s__Id\", \"dto2\".\"dto1id\" AS \"Dto2s__Dto1Id\", \"dto2\".\"name\" AS \"Dto2s__Name\" FROM \"dto1\" INNER JOIN \"dto2\" ON \"dto1\".\"id\" = \"dto2\".\"dto1id\"".NoCrLf(),
             sql.SQL.NoCrLf());
     }
 
@@ -198,19 +187,19 @@ INNER JOIN [dto2] ON [dto1].[id] = [dto2].[dto1id]".NoCrLf(),
         var sql = Sql()
             .Select<Dto1>(x => x.Id)
             .Select<Dto2>(x => x.Id);
-        Assert.AreEqual("SELECT [dto1].[id] AS [Id] SELECT [dto2].[id] AS [Id]".NoCrLf(), sql.SQL.NoCrLf());
+        Assert.AreEqual("SELECT \"dto1\".\"id\" AS \"Id\" SELECT \"dto2\".\"id\" AS \"Id\"".NoCrLf(), sql.SQL.NoCrLf());
 
         // and select - good
         sql = Sql()
             .Select<Dto1>(x => x.Id)
             .AndSelect<Dto2>(x => x.Id);
-        Assert.AreEqual("SELECT [dto1].[id] AS [Id] , [dto2].[id] AS [Id]".NoCrLf(), sql.SQL.NoCrLf());
+        Assert.AreEqual("SELECT \"dto1\".\"id\" AS \"Id\" , \"dto2\".\"id\" AS \"Id\"".NoCrLf(), sql.SQL.NoCrLf());
 
         // and select + alias
         sql = Sql()
             .Select<Dto1>(x => x.Id)
             .AndSelect<Dto2>(x => Alias(x.Id, "id2"));
-        Assert.AreEqual("SELECT [dto1].[id] AS [Id] , [dto2].[id] AS [id2]".NoCrLf(), sql.SQL.NoCrLf());
+        Assert.AreEqual("SELECT \"dto1\".\"id\" AS \"Id\" , \"dto2\".\"id\" AS \"id2\"".NoCrLf(), sql.SQL.NoCrLf());
     }
 
     [Test]

@@ -17,7 +17,7 @@ public class LanguageMapperTest
         var column = new LanguageMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("Id");
 
         // Assert
-        Assert.That(column, Is.EqualTo("[umbracoLanguage].[id]"));
+        Assert.That(column, Is.EqualTo("\"umbracoLanguage\".\"id\""));
     }
 
     [Test]
@@ -27,7 +27,7 @@ public class LanguageMapperTest
         var column = new LanguageMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("IsoCode");
 
         // Assert
-        Assert.That(column, Is.EqualTo("[umbracoLanguage].[languageISOCode]"));
+        Assert.That(column, Is.EqualTo("\"umbracoLanguage\".\"languageISOCode\""));
     }
 
     [Test]
@@ -37,6 +37,6 @@ public class LanguageMapperTest
         var column = new LanguageMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("CultureName");
 
         // Assert
-        Assert.That(column, Is.EqualTo("[umbracoLanguage].[languageCultureName]"));
+        Assert.That(column, Is.EqualTo("\"umbracoLanguage\".\"languageCultureName\""));
     }
 }

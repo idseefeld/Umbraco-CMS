@@ -1,0 +1,382 @@
+<Playlist Version="2.0">
+  <Rule Name="Includes" Match="Any">
+    <Rule Match="All">
+      <Property Name="Solution" />
+      <Rule Match="Any">
+        <Rule Match="All">
+          <Property Name="Project" Value="Umbraco.Tests.UnitTests.PostgreSql" />
+          <Rule Match="Any">
+            <Rule Match="All">
+              <Property Name="Namespace" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.NPocoTests" />
+              <Rule Match="Any">
+                <Rule Match="All">
+                  <Property Name="Class" Value="NPocoSqlExtensionsTests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoSqlExtensionsTests.SelectAliasTests" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SelectAliasTests" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoSqlExtensionsTests.SelectTests" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="SelectTests" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoSqlExtensionsTests.WhereInObjectFieldTest" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="WhereInObjectFieldTest" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoSqlExtensionsTests.WhereInValueFieldTest" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="WhereInValueFieldTest" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoSqlExtensionsTests.WhereTest" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="WhereTest" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="NPocoSqlTests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoSqlTests.Can_GroupBy_With_Type" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_GroupBy_With_Type" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoSqlTests.Can_InnerJoin_With_Types" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_InnerJoin_With_Types" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoSqlTests.Can_OrderBy_With_Type" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_OrderBy_With_Type" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoSqlTests.Can_Select_From_With_Type" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Select_From_With_Type" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoSqlTests.Can_Use_Where_And_Predicate" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Use_Where_And_Predicate" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoSqlTests.Can_Use_Where_Predicate" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Use_Where_Predicate" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoSqlTests.ForUpdate" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="ForUpdate" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoSqlTests.Where_Any" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Where_Any" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoSqlTests.Where_Clause_And_Constant" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Where_Clause_And_Constant" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoSqlTests.Where_Clause_Or_Constant" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Where_Clause_Or_Constant" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoSqlTests.Where_Clause_Single_Constant" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Where_Clause_Single_Constant" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoSqlTests.Where_Clause_With_Boolean" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Where_Clause_With_Boolean" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoSqlTests.Where_Clause_With_Equals_Clause" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Where_Clause_With_Equals_Clause" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoSqlTests.Where_Clause_With_EqualsFalse_Boolean" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Where_Clause_With_EqualsFalse_Boolean" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoSqlTests.Where_Clause_With_EqualsFalse_Starts_With" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Where_Clause_With_EqualsFalse_Starts_With" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoSqlTests.Where_Clause_With_False_Boolean" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Where_Clause_With_False_Boolean" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoSqlTests.Where_Clause_With_Not_Starts_With" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Where_Clause_With_Not_Starts_With" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoSqlTests.Where_Clause_With_Starts_With_Additional_Parameters" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Where_Clause_With_Starts_With_Additional_Parameters" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoSqlTests.Where_Clause_With_Starts_With_By_Variable" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Where_Clause_With_Starts_With_By_Variable" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoSqlTests.Where_Clause_With_ToString" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Where_Clause_With_ToString" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoSqlTests.Where_Clause_With_ToUpper" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Where_Clause_With_ToUpper" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoSqlTests.Where_Clause_With_Wildcard" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Where_Clause_With_Wildcard" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoSqlTests.Where_Not_Null" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Where_Not_Null" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoSqlTests.Where_Null" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Where_Null" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+              </Rule>
+            </Rule>
+            <Rule Match="All">
+              <Property Name="Namespace" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.Querying" />
+              <Rule Match="Any">
+                <Rule Match="All">
+                  <Property Name="Class" Value="ContentTypeRepositorySqlClausesTest" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.Querying.ContentTypeRepositorySqlClausesTest.Can_Verify_AllowedContentTypeIds_Clause" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Verify_AllowedContentTypeIds_Clause" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.Querying.ContentTypeRepositorySqlClausesTest.Can_Verify_Base_Clause" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Verify_Base_Clause" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.Querying.ContentTypeRepositorySqlClausesTest.Can_Verify_Base_Where_Clause" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Verify_Base_Where_Clause" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.Querying.ContentTypeRepositorySqlClausesTest.Can_Verify_PerformQuery_Clause" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Verify_PerformQuery_Clause" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.Querying.ContentTypeRepositorySqlClausesTest.Can_Verify_PropertyGroupCollection_Clause" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Verify_PropertyGroupCollection_Clause" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.Querying.ContentTypeRepositorySqlClausesTest.Can_Verify_WhereLike_Clause" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Verify_WhereLike_Clause" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="DataTypeDefinitionRepositorySqlClausesTest" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.Querying.DataTypeDefinitionRepositorySqlClausesTest.Can_Verify_Base_Clause" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Verify_Base_Clause" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="ExpressionTests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.Querying.ExpressionTests.CachedExpression_Can_Verify_Path_StartsWith_Predicate_In_Same_Result" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="CachedExpression_Can_Verify_Path_StartsWith_Predicate_In_Same_Result" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.Querying.ExpressionTests.Can_Query_With_Content_Type_Alias" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Query_With_Content_Type_Alias" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.Querying.ExpressionTests.Can_Query_With_Content_Type_Aliases_IEnumerable" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Query_With_Content_Type_Aliases_IEnumerable" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.Querying.ExpressionTests.Can_Query_With_Content_Type_Aliases_List" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Query_With_Content_Type_Aliases_List" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.Querying.ExpressionTests.Can_Verify_ParentId_StartsWith_Predicate_In_Same_Result" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Verify_ParentId_StartsWith_Predicate_In_Same_Result" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.Querying.ExpressionTests.Can_Verify_Path_StartsWith_Predicate_In_Same_Result" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Verify_Path_StartsWith_Predicate_In_Same_Result" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.Querying.ExpressionTests.Equals_Claus_With_Two_Entity_Values" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Equals_Claus_With_Two_Entity_Values" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.Querying.ExpressionTests.Equals_Method_For_Value_Gets_Escaped" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Equals_Method_For_Value_Gets_Escaped" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.Querying.ExpressionTests.Equals_Operator_For_Value_Gets_Escaped" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Equals_Operator_For_Value_Gets_Escaped" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.Querying.ExpressionTests.Sql_In" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Sql_In" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.Querying.ExpressionTests.Sql_Replace_Mapped" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Sql_Replace_Mapped" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.Querying.ExpressionTests.StartsWith" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="StartsWith" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="MediaRepositorySqlClausesTest" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.Querying.MediaRepositorySqlClausesTest.Can_Verify_Base_Clause" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Verify_Base_Clause" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="MediaTypeRepositorySqlClausesTest" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.Querying.MediaTypeRepositorySqlClausesTest.Can_Verify_Base_Clause" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Verify_Base_Clause" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="QueryBuilderTests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.Querying.QueryBuilderTests.Can_Build_ContentTypeAlias_Query_For_IContentType" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Build_ContentTypeAlias_Query_For_IContentType" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.Querying.QueryBuilderTests.Can_Build_ParentId_Query_For_IContent" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Build_ParentId_Query_For_IContent" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.Querying.QueryBuilderTests.Can_Build_StartsWith_Query_For_IContent" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Build_StartsWith_Query_For_IContent" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+              </Rule>
+            </Rule>
+          </Rule>
+        </Rule>
+      </Rule>
+    </Rule>
+  </Rule>
+</Playlist>

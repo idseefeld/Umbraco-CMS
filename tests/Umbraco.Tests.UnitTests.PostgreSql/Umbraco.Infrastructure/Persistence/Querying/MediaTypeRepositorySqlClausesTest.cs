@@ -21,9 +21,9 @@ public class MediaTypeRepositorySqlClausesTest : BaseUsingPostgreSqlSyntax
 
         var expected = new Sql();
         expected.Select("*")
-            .From("[cmsContentType]")
-            .InnerJoin("[umbracoNode]").On("[cmsContentType].[nodeId] = [umbracoNode].[id]")
-            .Where("([umbracoNode].[nodeObjectType] = @0)", new Guid("4ea4382b-2f5a-4c2b-9587-ae9b3cf3602e"));
+            .From("\"cmsContentType\"")
+            .InnerJoin("\"umbracoNode\"").On("\"cmsContentType\".\"nodeId\" = \"umbracoNode\".\"id\"")
+            .Where("(\"umbracoNode\".\"nodeObjectType\" = @0)", new Guid("4ea4382b-2f5a-4c2b-9587-ae9b3cf3602e"));
 
         var sql = Sql();
         sql.SelectAll()

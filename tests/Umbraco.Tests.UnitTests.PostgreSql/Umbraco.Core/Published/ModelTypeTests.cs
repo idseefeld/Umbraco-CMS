@@ -59,16 +59,16 @@ public class ModelTypeTests
         };
 
         Assert.AreEqual(
-            "Umbraco.Cms.Tests.Common.Published.PublishedSnapshotTestObjects+TestElementModel1",
+            "Umbraco.Cms.Tests.Common.PostgreSql.Published.PublishedSnapshotTestObjects+TestElementModel1",
             ModelType.Map(ModelType.For("alias1"), map).ToString());
         Assert.AreEqual(
-            "Umbraco.Cms.Tests.Common.Published.PublishedSnapshotTestObjects+TestElementModel1[]",
+            "Umbraco.Cms.Tests.Common.PostgreSql.Published.PublishedSnapshotTestObjects+TestElementModel1[]",
             ModelType.Map(ModelType.For("alias1").MakeArrayType(), map).ToString());
         Assert.AreEqual(
-            "System.Collections.Generic.IEnumerable`1[Umbraco.Cms.Tests.Common.Published.PublishedSnapshotTestObjects+TestElementModel1]",
+            "System.Collections.Generic.IEnumerable`1[Umbraco.Cms.Tests.Common.PostgreSql.Published.PublishedSnapshotTestObjects+TestElementModel1]",
             ModelType.Map(typeof(IEnumerable<>).MakeGenericType(ModelType.For("alias1")), map).ToString());
         Assert.AreEqual(
-            "System.Collections.Generic.IEnumerable`1[Umbraco.Cms.Tests.Common.Published.PublishedSnapshotTestObjects+TestElementModel1[]]",
+            "System.Collections.Generic.IEnumerable`1[Umbraco.Cms.Tests.Common.PostgreSql.Published.PublishedSnapshotTestObjects+TestElementModel1[]]",
             ModelType.Map(typeof(IEnumerable<>).MakeGenericType(ModelType.For("alias1").MakeArrayType()), map)
                 .ToString());
     }
