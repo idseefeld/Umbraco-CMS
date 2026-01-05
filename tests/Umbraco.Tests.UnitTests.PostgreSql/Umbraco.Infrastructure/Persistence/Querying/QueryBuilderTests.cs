@@ -12,7 +12,7 @@ using Umbraco.Extensions;
 namespace Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.Querying;
 
 [TestFixture]
-public class QueryBuilderTests : BaseUsingSqlSyntax
+public class QueryBuilderTests : BaseUsingPostgreSqlSyntax
 {
     [Test]
     public void Can_Build_StartsWith_Query_For_IContent()

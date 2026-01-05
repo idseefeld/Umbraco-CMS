@@ -1,5 +1,4 @@
 using System.Data;
-using System.Data.Common;
 using System.Data.SqlTypes;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -7,7 +6,6 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NPoco;
@@ -81,6 +79,9 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
     };
 
     private static SemVersion? _databseEngineVersion;
+
+    public PostgreSqlSyntaxProvider(IOptions<PostgreSqlOptions> globalSettings)
+        : this(globalSettings, StaticApplicationLogging.CreateLogger<PostgreSqlSyntaxProvider>()) { }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PostgreSqlSyntaxProvider"/> class.

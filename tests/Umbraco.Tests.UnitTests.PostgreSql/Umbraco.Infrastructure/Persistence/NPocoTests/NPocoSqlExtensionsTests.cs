@@ -15,7 +15,7 @@ using static Umbraco.Cms.Core.Persistence.SqlExtensionsStatics;
 namespace Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.NPocoTests;
 
 [TestFixture]
-public class NPocoSqlExtensionsTests : BaseUsingSqlSyntax
+public class NPocoSqlExtensionsTests : BaseUsingPostgreSqlSyntax
 {
     [Test]
     public void WhereTest()

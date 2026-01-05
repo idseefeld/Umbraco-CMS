@@ -1,16 +1,15 @@
 // Copyright (c) Umbraco.
 // See LICENSE for more details.
 
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Moq;
 using NPoco;
 using NUnit.Framework;
+using Our.Umbraco.PostgreSql;
+using Our.Umbraco.PostgreSql.Services;
 using Umbraco.Cms.Core.Cache;
-using Umbraco.Cms.Core.Configuration.Models;
 using Umbraco.Cms.Core.Events;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.PublishedCache;
@@ -20,7 +19,6 @@ using Umbraco.Cms.Infrastructure.Migrations;
 using Umbraco.Cms.Infrastructure.Migrations.Upgrade;
 using Umbraco.Cms.Infrastructure.Persistence;
 using Umbraco.Cms.Infrastructure.Scoping;
-using Umbraco.Cms.Persistence.SqlServer.Services;
 using Umbraco.Cms.Tests.Common.PostgreSql.TestHelpers;
 using Umbraco.Cms.Tests.UnitTests.PostgreSql.TestHelpers;
 using Umbraco.Extensions;
@@ -47,7 +45,7 @@ public class MigrationPlanTests
             .Returns(database);
 
         var sqlContext = new SqlContext(
-            new SqlServerSyntaxProvider(Options.Create(new GlobalSettings())),
+            new PostgreSqlSyntaxProvider(Options.Create(new PostgreSqlOptions())),
             DatabaseType.SQLCe,
             Mock.Of<IPocoDataFactory>());
         var scopeProvider = new MigrationTests.TestScopeProvider(scope) { SqlContext = sqlContext };

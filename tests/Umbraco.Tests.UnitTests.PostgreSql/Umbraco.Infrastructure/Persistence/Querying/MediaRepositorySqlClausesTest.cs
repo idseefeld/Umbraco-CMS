@@ -12,7 +12,7 @@ using Umbraco.Extensions;
 namespace Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.Querying;
 
 [TestFixture]
-public class MediaRepositorySqlClausesTest : BaseUsingSqlSyntax
+public class MediaRepositorySqlClausesTest : BaseUsingPostgreSqlSyntax
 {
     [Test]
     public void Can_Verify_Base_Clause()

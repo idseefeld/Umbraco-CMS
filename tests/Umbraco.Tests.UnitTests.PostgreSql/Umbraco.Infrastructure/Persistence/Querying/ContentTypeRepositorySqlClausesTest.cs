@@ -15,7 +15,7 @@ using static Umbraco.Cms.Core.Constants;
 namespace Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.Querying;
 
 [TestFixture]
-public class ContentTypeRepositorySqlClausesTest : BaseUsingSqlSyntax
+public class ContentTypeRepositorySqlClausesTest : BaseUsingPostgreSqlSyntax
 {
     [Test]
     public void Can_Verify_Base_Clause()

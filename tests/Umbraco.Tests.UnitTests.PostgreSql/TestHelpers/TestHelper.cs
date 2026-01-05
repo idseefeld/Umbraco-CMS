@@ -2,10 +2,7 @@
 // See LICENSE for more details.
 
 using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
-using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,6 +10,8 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
+using Our.Umbraco.PostgreSql;
+using Our.Umbraco.PostgreSql.Services;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Cache;
 using Umbraco.Cms.Core.Composing;
@@ -38,10 +37,10 @@ using Umbraco.Cms.Infrastructure.Mail;
 using Umbraco.Cms.Infrastructure.Mail.Interfaces;
 using Umbraco.Cms.Infrastructure.Persistence;
 using Umbraco.Cms.Infrastructure.Persistence.Mappers;
-using Umbraco.Cms.Persistence.SqlServer.Services;
 using Umbraco.Cms.Tests.Common.PostgreSql;
 using Umbraco.Cms.Tests.Common.PostgreSql.Testing;
 using Umbraco.Extensions;
+using Constants = Umbraco.Cms.Core.Constants;
 using File = System.IO.File;
 using IHostingEnvironment = Umbraco.Cms.Core.Hosting.IHostingEnvironment;
 using IScopeProvider = Umbraco.Cms.Infrastructure.Scoping.IScopeProvider;
@@ -90,7 +89,7 @@ public static class TestHelper
     public static Lazy<ISqlContext> GetMockSqlContext()
     {
         var sqlContext = Mock.Of<ISqlContext>();
-        var syntax = new SqlServerSyntaxProvider(Options.Create(new GlobalSettings()));
+        var syntax = new PostgreSqlSyntaxProvider(Options.Create(new PostgreSqlOptions()));
         Mock.Get(sqlContext).Setup(x => x.SqlSyntax).Returns(syntax);
         return new Lazy<ISqlContext>(() => sqlContext);
     }

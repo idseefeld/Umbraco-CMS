@@ -13,7 +13,7 @@ using Umbraco.Extensions;
 namespace Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.NPocoTests;
 
 [TestFixture]
-public class NPocoSqlTests : BaseUsingSqlSyntax
+public class NPocoSqlTests : BaseUsingPostgreSqlSyntax
 {
     [Test]
     public void Where_Clause_With_Starts_With_Additional_Parameters()

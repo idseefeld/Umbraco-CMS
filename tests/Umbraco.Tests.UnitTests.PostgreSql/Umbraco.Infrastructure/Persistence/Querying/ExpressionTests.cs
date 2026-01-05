@@ -19,7 +19,7 @@ using Umbraco.Cms.Tests.UnitTests.PostgreSql.TestHelpers;
 namespace Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persistence.Querying;
 
 [TestFixture]
-public class ExpressionTests : BaseUsingSqlSyntax
+public class ExpressionTests : BaseUsingPostgreSqlSyntax
 {
     [Test]
     public void Equals_Claus_With_Two_Entity_Values()
