@@ -16,10 +16,10 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\_idseefeld\efcore.pg\src\EFCore.PG\EFCore.PG.csproj" />
     <ProjectReference Include="..\Umbraco.Cms.Persistence.EFCore\Umbraco.Cms.Persistence.EFCore.csproj" />
   </ItemGroup>
   

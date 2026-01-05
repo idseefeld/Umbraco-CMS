@@ -10,6 +10,7 @@ namespace Our.Umbraco.PostgreSql.EFCore
         public void Setup(DbContextOptionsBuilder builder, string? connectionString)
         {
             var assemblyName = GetType().Assembly.FullName;
+            builder.AddInterceptors(new PostgreSqlMigrationCommandInterceptor());
             builder.UseNpgsql(connectionString, x => x.MigrationsAssembly(assemblyName));
         }
     }
