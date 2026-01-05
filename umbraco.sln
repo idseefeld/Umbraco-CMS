@@ -205,6 +205,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.PostgreSql", "s
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.PostgreSql.EFCore", "src\Our.Umbraco.PostgreSql.EFCore\Our.Umbraco.PostgreSql.EFCore.csproj", "{67561E80-30DC-493E-1C37-6572A5EF97C2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbraco.Tests.UnitTests.PostgreSql", "tests\Umbraco.Tests.UnitTests.PostgreSql\Umbraco.Tests.UnitTests.PostgreSql.csproj", "{CD44D69B-AADC-AAE7-F0F0-AAAB739EE661}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbraco.Tests.Common.PostgreSql", "tests\Umbraco.Tests.Common.PostgreSql\Umbraco.Tests.Common.PostgreSql.csproj", "{8C05E3C9-A9D8-AE21-1DB1-E86723E30B52}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -397,6 +401,18 @@ Global
 		{67561E80-30DC-493E-1C37-6572A5EF97C2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{67561E80-30DC-493E-1C37-6572A5EF97C2}.SkipTests|Any CPU.ActiveCfg = Release|Any CPU
 		{67561E80-30DC-493E-1C37-6572A5EF97C2}.SkipTests|Any CPU.Build.0 = Release|Any CPU
+		{CD44D69B-AADC-AAE7-F0F0-AAAB739EE661}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD44D69B-AADC-AAE7-F0F0-AAAB739EE661}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD44D69B-AADC-AAE7-F0F0-AAAB739EE661}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD44D69B-AADC-AAE7-F0F0-AAAB739EE661}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD44D69B-AADC-AAE7-F0F0-AAAB739EE661}.SkipTests|Any CPU.ActiveCfg = Release|Any CPU
+		{CD44D69B-AADC-AAE7-F0F0-AAAB739EE661}.SkipTests|Any CPU.Build.0 = Release|Any CPU
+		{8C05E3C9-A9D8-AE21-1DB1-E86723E30B52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C05E3C9-A9D8-AE21-1DB1-E86723E30B52}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C05E3C9-A9D8-AE21-1DB1-E86723E30B52}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C05E3C9-A9D8-AE21-1DB1-E86723E30B52}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C05E3C9-A9D8-AE21-1DB1-E86723E30B52}.SkipTests|Any CPU.ActiveCfg = Release|Any CPU
+		{8C05E3C9-A9D8-AE21-1DB1-E86723E30B52}.SkipTests|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -417,6 +433,8 @@ Global
 		{EA628ABD-624E-4AF3-B548-6710D4D66531} = {2B47AD9F-FFF1-448A-88F1-D4F568811738}
 		{A13FF0A0-69FA-468A-9F79-565401D5C341} = {B5BD12C1-A454-435E-8A46-FF4A364C0382}
 		{E90531F6-E32D-40DA-BCB2-55FA94D5AB19} = {20CE9C97-9314-4A19-BCF1-D12CF49B7205}
+		{CD44D69B-AADC-AAE7-F0F0-AAAB739EE661} = {B5BD12C1-A454-435E-8A46-FF4A364C0382}
+		{8C05E3C9-A9D8-AE21-1DB1-E86723E30B52} = {B5BD12C1-A454-435E-8A46-FF4A364C0382}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7A0F2E34-D2AF-4DAB-86A0-7D7764B3D0EC}

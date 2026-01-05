@@ -1,0 +1,45 @@
+using System.Linq;
+using System.Net;
+using Microsoft.Extensions.Options;
+using Moq;
+using NUnit.Framework;
+using Umbraco.Cms.Core.Configuration.Models;
+using Umbraco.Cms.Core.Services.Implement;
+using Umbraco.Cms.Web.Common.Mvc;
+
+namespace Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Core.Services;
+
+[TestFixture]
+public class BasicAuthServiceTests
+{
+    [TestCase(true, ExpectedResult = true)]
+    [TestCase(false, ExpectedResult = false)]
+    public bool IsBasicAuthEnabled(bool enabled)
+    {
+        var sut = new BasicAuthService(
+            Mock.Of<IOptionsMonitor<BasicAuthSettings>>(
+                _ => _.CurrentValue == new BasicAuthSettings { Enabled = enabled }),
+            new IpAddressUtilities());
+
+        return sut.IsBasicAuthEnabled();
+    }
+
+    [TestCase("::1", "1.1.1.1", ExpectedResult = false)]
+    [TestCase("::1", "1.1.1.1, ::1", ExpectedResult = true)]
+    [TestCase("127.0.0.1", "127.0.0.1, ::1", ExpectedResult = true)]
+    [TestCase("127.0.0.1", "", ExpectedResult = false)]
+    [TestCase("125.125.125.1", "125.125.125.0/24", ExpectedResult = true)]
+    [TestCase("125.125.124.1", "125.125.125.0/24", ExpectedResult = false)]
+    public bool IsIpAllowListed(string clientIpAddress, string commaSeperatedAllowlist)
+    {
+        var sut = new BasicAuthService(
+            Mock.Of<IOptionsMonitor<BasicAuthSettings>>(x =>
+                x.CurrentValue == new BasicAuthSettings
+                {
+                    AllowedIPs = new HashSet<string>(commaSeperatedAllowlist.Split(',', StringSplitOptions.TrimEntries))
+                }),
+            new IpAddressUtilities());
+
+        return sut.IsIpAllowListed(IPAddress.Parse(clientIpAddress));
+    }
+}
