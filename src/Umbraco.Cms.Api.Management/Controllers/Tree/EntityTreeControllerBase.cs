@@ -36,7 +36,7 @@ public abstract class EntityTreeControllerBase<TItem> : ManagementApiControllerB
 
     protected abstract UmbracoObjectTypes ItemObjectType { get; }
 
-    protected virtual Ordering ItemOrdering => Ordering.By(Infrastructure.Persistence.Dtos.NodeDto.SortOrderColumnName);
+    protected virtual Ordering ItemOrdering => Ordering.By(Infrastructure.Persistence.Dtos.NodeDto.TextColumnName);
 
     protected async Task<ActionResult<PagedViewModel<TItem>>> GetRoot(int skip, int take)
     {

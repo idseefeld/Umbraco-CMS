@@ -118,7 +118,7 @@ public class DatabaseSchemaCreator
         _eventAggregator = eventAggregator;
         _installDefaultDataSettings = installDefaultDataSettings;
 
-        if (_database?.SqlContext?.SqlSyntax == null)
+        if (_database.SqlContext?.SqlSyntax == null)
         {
             throw new InvalidOperationException("No SqlContext has been assigned to the database");
         }
