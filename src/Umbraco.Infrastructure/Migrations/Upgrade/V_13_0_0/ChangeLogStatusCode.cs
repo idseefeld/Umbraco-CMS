@@ -44,12 +44,11 @@ public class ChangeLogStatusCode : MigrationBase
     }
 
     [TableName(Constants.DatabaseSchema.Tables.WebhookLog)]
-    [PrimaryKey(PrimaryKeyName)]
+    [PrimaryKey("id")]
     [ExplicitColumns]
     private class WebhookLogDtoOld
     {
-        public const string PrimaryKeyName = Constants.DatabaseSchema.PrimaryKeyNameId;
-        [Column(PrimaryKeyName)]
+        [Column("id")]
         [PrimaryKeyColumn(AutoIncrement = true)]
         public int Id { get; set; }
 

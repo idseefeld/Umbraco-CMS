@@ -151,15 +151,14 @@ public class AddListViewKeysToDocumentTypes : UnscopedMigrationBase
 
 
     [TableName(Constants.DatabaseSchema.Tables.ContentType)]
-    [PrimaryKey(PrimaryKeyName)]
+    [PrimaryKey("pk")]
     [ExplicitColumns]
     private class ContentTypeDtoOld
     {
         public const string TableName = Constants.DatabaseSchema.Tables.ContentType;
-        public const string PrimaryKeyName = "pk";
         private string? _alias;
 
-        [Column(PrimaryKeyName)]
+        [Column("pk")]
         [PrimaryKeyColumn(IdentitySeed = 700)]
         public int PrimaryKey { get; set; }
 

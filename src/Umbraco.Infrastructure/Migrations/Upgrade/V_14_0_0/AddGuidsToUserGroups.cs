@@ -137,18 +137,17 @@ public class AddGuidsToUserGroups : UnscopedMigrationBase
         };
 
     [TableName(Constants.DatabaseSchema.Tables.UserGroup)]
-    [PrimaryKey(PrimaryKeyName)]
+    [PrimaryKey("id")]
     [ExplicitColumns]
     private class OldUserGroupDto
     {
-        public const string PrimaryKeyName = Constants.DatabaseSchema.PrimaryKeyNameId;
         public OldUserGroupDto()
         {
             UserGroup2AppDtos = new List<UserGroup2AppDto>();
             UserGroup2LanguageDtos = new List<UserGroup2LanguageDto>();
         }
 
-        [Column(PrimaryKeyName)]
+        [Column("id")]
         [PrimaryKeyColumn(IdentitySeed = 6)]
         public int Id { get; set; }
 

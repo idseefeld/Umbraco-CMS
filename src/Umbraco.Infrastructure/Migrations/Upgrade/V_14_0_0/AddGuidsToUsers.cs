@@ -177,12 +177,11 @@ internal class AddGuidsToUsers : UnscopedMigrationBase
     }
 
     [TableName(TableName)]
-    [PrimaryKey(PrimaryKeyName, AutoIncrement = true)]
+    [PrimaryKey("id", AutoIncrement = true)]
     [ExplicitColumns]
     public class OldUserDto
     {
         public const string TableName = Constants.DatabaseSchema.Tables.User;
-        public const string PrimaryKeyName = Constants.DatabaseSchema.PrimaryKeyNameId;
 
         public OldUserDto()
         {
@@ -190,7 +189,7 @@ internal class AddGuidsToUsers : UnscopedMigrationBase
             UserStartNodeDtos = new HashSet<UserStartNodeDto>();
         }
 
-        [Column(PrimaryKeyName)]
+        [Column("id")]
         [PrimaryKeyColumn(Name = "PK_user")]
         public int Id { get; set; }
 
@@ -291,12 +290,11 @@ internal class AddGuidsToUsers : UnscopedMigrationBase
     }
 
     [TableName(TableName)]
-    [PrimaryKey(PrimaryKeyName, AutoIncrement = true)]
+    [PrimaryKey("id", AutoIncrement = true)]
     [ExplicitColumns]
     public class NewUserDto
     {
         public const string TableName = Constants.DatabaseSchema.Tables.User;
-        public const string PrimaryKeyName = Constants.DatabaseSchema.PrimaryKeyNameId;
 
         public NewUserDto()
         {
@@ -304,7 +302,7 @@ internal class AddGuidsToUsers : UnscopedMigrationBase
             UserStartNodeDtos = new HashSet<UserStartNodeDto>();
         }
 
-        [Column(PrimaryKeyName)]
+        [Column("id")]
         [PrimaryKeyColumn(Name = "PK_user")]
         public int Id { get; set; }
 

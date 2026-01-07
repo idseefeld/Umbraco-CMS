@@ -481,7 +481,6 @@ public class DatabaseSchemaCreator
 
         TableDefinition tableDefinition = DefinitionFactory.GetTableDefinition(modelType, SqlSyntax);
         var tableName = tableDefinition.Name;
-        var primaryKeyName = tableDefinition.Columns.FirstOrDefault(c => c.IsIdentity && c.IsPrimaryKey)?.Name;
         var tableExist = TableExists(tableName);
         if (string.IsNullOrEmpty(tableName))
         {

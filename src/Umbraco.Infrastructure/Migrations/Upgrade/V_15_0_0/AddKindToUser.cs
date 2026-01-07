@@ -104,12 +104,11 @@ public class AddKindToUser : UnscopedMigrationBase
     }
 
     [TableName(TableName)]
-    [PrimaryKey(PrimaryKeyName, AutoIncrement = true)]
+    [PrimaryKey("id", AutoIncrement = true)]
     [ExplicitColumns]
     public class OldUserDto
     {
         public const string TableName = Constants.DatabaseSchema.Tables.User;
-        public const string PrimaryKeyName = Constants.DatabaseSchema.PrimaryKeyNameId;
 
         public OldUserDto()
         {
@@ -117,7 +116,7 @@ public class AddKindToUser : UnscopedMigrationBase
             UserStartNodeDtos = new HashSet<UserStartNodeDto>();
         }
 
-        [Column(PrimaryKeyName)]
+        [Column("id")]
         [PrimaryKeyColumn(Name = "PK_user")]
         public int Id { get; set; }
 

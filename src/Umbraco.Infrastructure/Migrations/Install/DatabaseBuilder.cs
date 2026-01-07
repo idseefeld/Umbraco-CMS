@@ -106,22 +106,21 @@ namespace Umbraco.Cms.Infrastructure.Migrations.Install
             using (ICoreScope scope = _scopeProvider.CreateCoreScope())
             {
                 IScope ambientScope = _scopeAccessor.AmbientScope ?? throw new InvalidOperationException("Cannot execute without a valid AmbientScope.");
-
-                // look for the super user with default password
+                                // look for the super user with default password
                 NPoco.Sql<ISqlContext> sql = ambientScope.Database.SqlContext.Sql()
                     .SelectCount()
                     .From<UserDto>()
                     .Where<UserDto>(x => x.Id == Constants.Security.SuperUserId && x.Password == "default");
-                var result = ambientScope.Database.ExecuteScalar<int>(sql);
+                var result = _scopeAccessor.AmbientScope.Database.ExecuteScalar<int>(sql);
                 var has = result != 1;
                 if (has == false)
                 {
                     // found only 1 user == the default user with default password
                     // however this always exists on uCloud, also need to check if there are other users too
-                    sql = ambientScope.Database.SqlContext.Sql()
+                    sql = _scopeAccessor.AmbientScope.Database.SqlContext.Sql()
                         .SelectCount()
                         .From<UserDto>();
-                    result = ambientScope.Database.ExecuteScalar<int>(sql);
+                    result = _scopeAccessor.AmbientScope.Database.ExecuteScalar<int>(sql);
                     has = result != 1;
                 }
                 scope.Complete();
@@ -317,7 +316,7 @@ namespace Umbraco.Cms.Infrastructure.Migrations.Install
 
                 _logger.LogInformation("Database configuration status: Started");
 
-                IUmbracoDatabase database = _scopeAccessor.AmbientScope?.Database ?? throw new ArgumentNullException(nameof(database));
+                IUmbracoDatabase? database = _scopeAccessor.AmbientScope?.Database;
 
                 var message = string.Empty;
 

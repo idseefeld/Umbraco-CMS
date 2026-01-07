@@ -7,7 +7,6 @@ using Umbraco.Cms.Core.Exceptions;
 using Umbraco.Cms.Core.Notifications;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Infrastructure.Migrations.Install;
-using Umbraco.Cms.Infrastructure.Migrations.Notifications;
 using Umbraco.Cms.Infrastructure.Persistence;
 
 namespace Umbraco.Cms.Infrastructure.Install;
@@ -117,7 +116,6 @@ public class UnattendedInstaller : INotificationAsyncHandler<RuntimeUnattendedIn
                 DatabaseSchemaCreator creator = _databaseSchemaCreatorFactory.Create(database);
                 creator.InitializeDatabaseSchema();
                 database.CompleteTransaction();
-
                 _logger.LogInformation("Unattended install completed.");
 
                 // Emit an event with EventAggregator that unattended install completed
