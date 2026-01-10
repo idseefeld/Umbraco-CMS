@@ -6,14 +6,14 @@ using Umbraco.Cms.Infrastructure.Persistence.DatabaseModelDefinitions;
 namespace Umbraco.Cms.Infrastructure.Persistence.Dtos;
 
 [TableName(TableName)]
-[PrimaryKey(PrimaryKeyName, AutoIncrement = false)]
+[PrimaryKey(PrimaryKeyColumnName, AutoIncrement = false)]
 [ExplicitColumns]
 internal sealed class AccessDto
 {
     public const string TableName = Constants.DatabaseSchema.Tables.Access;
-    public const string PrimaryKeyName = Constants.DatabaseSchema.PrimaryKeyNameId;
+    public const string PrimaryKeyColumnName = Constants.DatabaseSchema.Columns.PrimaryKeyNameId;
 
-    [Column(PrimaryKeyName)]
+    [Column(PrimaryKeyColumnName)]
     [PrimaryKeyColumn(Name = "PK_umbracoAccess", AutoIncrement = false)]
     public Guid Id { get; set; }
 
@@ -39,6 +39,6 @@ internal sealed class AccessDto
     public DateTime UpdateDate { get; set; }
 
     [ResultColumn]
-    [Reference(ReferenceType.Many, ReferenceMemberName = "AccessId")]
+    [Reference(ReferenceType.Many, ReferenceMemberName = nameof(AccessRuleDto.AccessId))]
     public List<AccessRuleDto> Rules { get; set; } = new();
 }

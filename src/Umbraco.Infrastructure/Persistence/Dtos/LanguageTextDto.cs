@@ -5,24 +5,27 @@ using Umbraco.Cms.Infrastructure.Persistence.DatabaseAnnotations;
 namespace Umbraco.Cms.Infrastructure.Persistence.Dtos;
 
 [TableName(TableName)]
-[PrimaryKey(PrimaryKeyName)]
+[PrimaryKey(PrimaryKeyColumnName)]
 [ExplicitColumns]
 public class LanguageTextDto
 {
     public const string TableName = Constants.DatabaseSchema.Tables.DictionaryValue;
-    public const string PrimaryKeyName = Constants.DatabaseSchema.PrimaryKeyNamePK;
+    public const string PrimaryKeyColumnName = Constants.DatabaseSchema.Columns.PrimaryKeyNamePk;
 
-    [Column(PrimaryKeyName)]
+    private const string LanguageIdName = "languageId";
+    private const string UniqueIdName = "UniqueId";
+
+    [Column(PrimaryKeyColumnName)]
     [PrimaryKeyColumn]
     public int PrimaryKey { get; set; }
 
-    [Column("languageId")]
-    [ForeignKey(typeof(LanguageDto), Column = "id")]
-    [Index(IndexTypes.UniqueNonClustered, Name = "IX_" + TableName + "_languageId", ForColumns = "languageId,uniqueId")]
+    [Column(LanguageIdName)]
+    [ForeignKey(typeof(LanguageDto), Column = LanguageDto.PrimaryKeyColumnName)]
+    [Index(IndexTypes.UniqueNonClustered, Name = "IX_" + TableName + "_languageId", ForColumns = $"{LanguageIdName},{UniqueIdName}")]
     public int LanguageId { get; set; }
 
-    [Column("uniqueId")]
-    [ForeignKey(typeof(DictionaryDto), Column = "id")]
+    [Column(UniqueIdName)]
+    [ForeignKey(typeof(DictionaryDto), Column = DictionaryDto.UniqueIdColumnName)]
     public Guid UniqueId { get; set; }
 
     [Column("value")]
