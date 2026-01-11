@@ -1,5 +1,6 @@
 // Don't remove the unused System using, for some reason this breaks docfx, and I have no clue why.
 using System;
+using System.Collections.Concurrent;
 using System.Data;
 using System.Data.SqlTypes;
 using System.Diagnostics.CodeAnalysis;
@@ -586,6 +587,9 @@ public abstract class SqlSyntaxProviderBase<TSyntax> : ISqlSyntaxProvider
 
     public virtual string GetSpecialDbType(SpecialDbType dbType, int customSize) =>
         $"{GetSpecialDbType(dbType)}({customSize})";
+
+    /// <inheritdoc />
+    public virtual ConcurrentBag<string> GetHashedForeignKeys() => [];
 
     protected virtual string FormatCascade(string onWhat, Rule rule)
     {
