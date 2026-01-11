@@ -10,6 +10,7 @@ using System.Text;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NPoco;
+using Our.Umbraco.PostgreSql.Caching;
 using Our.Umbraco.PostgreSql.Mappers;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Persistence;
@@ -31,7 +32,7 @@ namespace Our.Umbraco.PostgreSql.Services;
 /// </summary>
 public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxProvider>
 {
-    private const int PostgreSqlMaxIdentifierLength = 63;
+    private const int PostgreSqlMaxIdentifierLength = 64;
 
     private readonly IOptions<PostgreSqlOptions> _postgreSqlOptions;
     private readonly ILogger<PostgreSqlSyntaxProvider> _logger;
@@ -80,12 +81,6 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
     };
 
     private static SemVersion? _databseEngineVersion;
-
-    private static ConcurrentBag<string> HashedForeignKeys => [];
-
-    private static bool InternalHashedForeignKeysContains(string key) => HashedForeignKeys.Contains(key);
-
-    private static void InternalHashedForeignKeysAdd(string key) => HashedForeignKeys.Add(key);
 
     public PostgreSqlSyntaxProvider(IOptions<PostgreSqlOptions> globalSettings)
         : this(globalSettings, StaticApplicationLogging.CreateLogger<PostgreSqlSyntaxProvider>()) { }
@@ -595,8 +590,6 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
             ? BuildForeignKeyConstraintName(foreignKey)
             : TruncateToMaxIdentifierLength(foreignKey.Name);
 
-        InternalHashedForeignKeysAdd(constraintName);
-
         var anyRule = foreignKey.OnDelete != Rule.None || foreignKey.OnUpdate != Rule.None;
         var deferrableInitiallyDeferredSql = anyRule ? string.Empty : " DEFERRABLE INITIALLY DEFERRED ";
 
@@ -613,10 +606,8 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
     }
 
     /// <inheritdoc />
-    public override bool HashedForeignKeysContains(string foreignKey)
-    {
-        return InternalHashedForeignKeysContains(foreignKey);
-    }
+    public override bool IsValidHashedForeignKey(string? foreignKey) =>
+        StaticCaching.HashedForeignKeysContains(foreignKey);
 
     private static string GetStableHexHash(string value)
     {
@@ -653,7 +644,16 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
         string hash = GetStableHexHash(value);
         string prefix = value.Substring(0, maxPrefixLength);
 
-        return string.Concat(prefix, "_", hash);
+        var fk = string.Concat(prefix, "_", hash);
+
+        if (!StaticCaching.HashedForeignKeysContains(fk))
+        {
+            StaticCaching.HashedForeignKeysAdd(fk);
+
+            var keys = StaticCaching.GetHashedForeignKeys();
+        }
+
+        return fk;
     }
 
     private static string BuildForeignKeyConstraintName(ForeignKeyDefinition foreignKey)
