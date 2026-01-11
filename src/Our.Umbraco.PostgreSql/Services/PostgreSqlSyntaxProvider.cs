@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Data;
 using System.Data.SqlTypes;
 using System.Diagnostics.CodeAnalysis;
@@ -79,6 +80,12 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
     };
 
     private static SemVersion? _databseEngineVersion;
+
+    private static ConcurrentBag<string> HashedForeignKeys => [];
+
+    private static bool InternalHashedForeignKeysContains(string key) => HashedForeignKeys.Contains(key);
+
+    private static void InternalHashedForeignKeysAdd(string key) => HashedForeignKeys.Add(key);
 
     public PostgreSqlSyntaxProvider(IOptions<PostgreSqlOptions> globalSettings)
         : this(globalSettings, StaticApplicationLogging.CreateLogger<PostgreSqlSyntaxProvider>()) { }
@@ -588,6 +595,8 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
             ? BuildForeignKeyConstraintName(foreignKey)
             : TruncateToMaxIdentifierLength(foreignKey.Name);
 
+        InternalHashedForeignKeysAdd(constraintName);
+
         var anyRule = foreignKey.OnDelete != Rule.None || foreignKey.OnUpdate != Rule.None;
         var deferrableInitiallyDeferredSql = anyRule ? string.Empty : " DEFERRABLE INITIALLY DEFERRED ";
 
@@ -601,6 +610,12 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
             deferrableInitiallyDeferredSql,
             FormatCascade("DELETE", foreignKey.OnDelete),
             FormatCascade("UPDATE", foreignKey.OnUpdate));
+    }
+
+    /// <inheritdoc />
+    public override bool HashedForeignKeysContains(string foreignKey)
+    {
+        return InternalHashedForeignKeysContains(foreignKey);
     }
 
     private static string GetStableHexHash(string value)
