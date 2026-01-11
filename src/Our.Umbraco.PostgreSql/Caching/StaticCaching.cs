@@ -75,12 +75,12 @@ namespace Our.Umbraco.PostgreSql.Caching
 
     internal class CachingPersister
     {
-        internal static string[] RetrieveHashedForeignKeys()
-        {
-            return new string[]{
-                "FK_umbracoContentVersionCultureVariation_umbracoContent_955834c", // ToDo: is this constant on all environments?
-            };
-        }
+        internal static string[] RetrieveHashedForeignKeys() =>
+            [
+
+                // ToDo: is this constant on all environments?
+                Constants.FkContentVersionCultureVariationAndContent,
+            ];
 
         internal static void PersistHashedForeignKeys(IEnumerable<string> keys)
         {
