@@ -469,9 +469,11 @@ JOIN {syntax.GetQuotedTableName("zbThingA3")} a3x ON a2x.id=a3x.id
     [ExplicitColumns]
     public class Thing4Dto
     {
-        [Column("id")] public int Id { get; set; }
+        [Column("id")]
+        public int Id { get; set; }
 
-        [Column("name")] public string Name { get; set; }
+        [Column("name")]
+        public string Name { get; set; }
 
         // reference is required else FetchOneToMany aggregation does not happen
         // not sure ColumnName nor ReferenceMemberName make much sense here
@@ -484,9 +486,11 @@ JOIN {syntax.GetQuotedTableName("zbThingA3")} a3x ON a2x.id=a3x.id
     [ExplicitColumns]
     public class Thing5Dto
     {
-        [Column("id")] public int Id { get; set; }
+        [Column("id")]
+        public int Id { get; set; }
 
-        [Column("name")] public string Name { get; set; }
+        [Column("name")]
+        public string Name { get; set; }
 
         [Column("groupCount")]
         [ResultColumn] // not included in insert/update, not sql-generated
@@ -518,9 +522,11 @@ JOIN {syntax.GetQuotedTableName("zbThingA3")} a3x ON a2x.id=a3x.id
     [ExplicitColumns]
     public class ThingA2Dto
     {
-        [Column("id")] public int Id { get; set; }
+        [Column("id")]
+        public int Id { get; set; }
 
-        [Column("name")] public string Name { get; set; }
+        [Column("name")]
+        public string Name { get; set; }
 
         [ResultColumn]
         [Reference(ReferenceType.OneToOne)]
@@ -532,19 +538,24 @@ JOIN {syntax.GetQuotedTableName("zbThingA3")} a3x ON a2x.id=a3x.id
     [ExplicitColumns]
     public class ThingA3Dto
     {
-        [Column("id")] public int Id { get; set; }
+        [Column("id")]
+        public int Id { get; set; }
 
-        [Column("name")] public string Name { get; set; }
+        [Column("name")]
+        public string Name { get; set; }
     }
 
     [TableName("zbThingA12")]
     [ExplicitColumns]
     public class ThingA12Dto
     {
-        [Column("thing1id")] public int Thing1Id { get; set; }
+        [Column("thing1id")]
+        public int Thing1Id { get; set; }
 
-        [Column("thing2id")] public int Thing2Id { get; set; }
+        [Column("thing2id")]
+        public int Thing2Id { get; set; }
 
-        [Column("name")] public string Name { get; set; }
+        [Column("name")]
+        public string Name { get; set; }
     }
 }

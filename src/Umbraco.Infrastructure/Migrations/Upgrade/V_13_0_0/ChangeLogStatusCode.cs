@@ -52,7 +52,8 @@ public class ChangeLogStatusCode : MigrationBase
         [PrimaryKeyColumn(AutoIncrement = true)]
         public int Id { get; set; }
 
-        [Column("webhookKey")] public Guid WebhookKey { get; set; }
+        [Column("webhookKey")]
+        public Guid WebhookKey { get; set; }
 
         [Column(Name = "key")]
         [NullSetting(NullSetting = NullSettings.NotNull)]

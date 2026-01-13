@@ -445,29 +445,33 @@ namespace Umbraco.Cms.Infrastructure.Persistence.Repositories.Implement
             return innerUnionSql;
         }
 
+        /// <summary>
+        /// Represents a data transfer object used to encapsulate information for union operations between entities.
+        /// </summary>
+        /// <remarks>
+        /// It does NOT need NPoco Column attributes as it is used internally within SQL queries.
+        /// </remarks>
         private sealed class UnionHelperDto
         {
-            public const string PrimaryKeyName = Core.Constants.DatabaseSchema.Columns.PrimaryKeyNameId;
+            public int Id { get; set; }
 
-            [Column(PrimaryKeyName)] public int Id { get; set; }
+            public int OtherId { get; set; }
 
-            [Column("otherId")] public int OtherId { get; set; }
+            public Guid Key { get; set; }
 
-            [Column("key")] public Guid Key { get; set; }
+            public bool Trashed { get; set; }
 
-            [Column("trashed")] public bool Trashed { get; set; }
+            public Guid NodeObjectType { get; set; }
 
-            [Column("nodeObjectType")] public Guid NodeObjectType { get; set; }
+            public Guid OtherKey { get; set; }
 
-            [Column("otherKey")] public Guid OtherKey { get; set; }
+            public string? Alias { get; set; }
 
-            [Column("alias")] public string? Alias { get; set; }
+            public string? Name { get; set; }
 
-            [Column("name")] public string? Name { get; set; }
+            public bool IsDependency { get; set; }
 
-            [Column("isDependency")] public bool IsDependency { get; set; }
-
-            [Column("dual")] public bool Dual { get; set; }
+            public bool Dual { get; set; }
         }
 
         private RelationItem MapDtoToEntity(RelationItemDto dto) =>

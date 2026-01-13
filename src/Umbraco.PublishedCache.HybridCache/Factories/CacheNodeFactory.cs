@@ -21,10 +21,9 @@ internal sealed class CacheNodeFactory : ICacheNodeFactory
 
         ContentData contentData = GetContentData(
             content,
-              GetPublishedValue(content, preview),
-              GetTemplateId(content, preview),
-              content.PublishCultureInfos!.Values.Select(x=>x.Culture).ToHashSet()
-            );
+            GetPublishedValue(content, preview),
+            GetTemplateId(content, preview),
+            content.PublishCultureInfos!.Values.Select(x => x.Culture).ToHashSet());
         return new ContentCacheNode
         {
             Id = content.Id,
