@@ -32,7 +32,7 @@ namespace Our.Umbraco.PostgreSql.Services;
 /// </summary>
 public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxProvider>
 {
-    private const int PostgreSqlMaxIdentifierLength = 64;
+    private const int PostgreSqlMaxIdentifierLength = 63;
 
     private readonly IOptions<PostgreSqlOptions> _postgreSqlOptions;
     private readonly ILogger<PostgreSqlSyntaxProvider> _logger;
@@ -588,7 +588,7 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
     {
         var constraintName = string.IsNullOrEmpty(foreignKey.Name)
             ? BuildForeignKeyConstraintName(foreignKey)
-            : TruncateToMaxIdentifierLength(foreignKey.Name);
+            : TruncateConstraintName<ForeignKeyDefinition>(foreignKey.Name);
 
         var anyRule = foreignKey.OnDelete != Rule.None || foreignKey.OnUpdate != Rule.None;
         var deferrableInitiallyDeferredSql = anyRule ? string.Empty : " DEFERRABLE INITIALLY DEFERRED ";
@@ -604,10 +604,6 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
             FormatCascade("DELETE", foreignKey.OnDelete),
             FormatCascade("UPDATE", foreignKey.OnUpdate));
     }
-
-    /// <inheritdoc />
-    public override bool IsValidHashedForeignKey(string? foreignKey) =>
-        StaticCaching.HashedForeignKeysContains(foreignKey);
 
     private static string GetStableHexHash(string value)
     {
@@ -627,11 +623,18 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
         return hash.ToString("x8", CultureInfo.InvariantCulture);
     }
 
-    private static string TruncateToMaxIdentifierLength(string value)
+    /// <inheritdoc />
+    public override string? TruncateConstraintName<T>(string? constraintName)
     {
-        if (value.Length <= PostgreSqlMaxIdentifierLength)
+        var isForeignKey = typeof(T).Equals(typeof(ForeignKeyDefinition));
+        if (string.IsNullOrEmpty(constraintName) || !isForeignKey)
         {
-            return value;
+            return constraintName;
+        }
+
+        if (constraintName.Length <= PostgreSqlMaxIdentifierLength)
+        {
+            return constraintName;
         }
 
         // Keep it deterministic and collision-resistant:
@@ -641,8 +644,8 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
         const int separatorLength = 1; // "_"
         int maxPrefixLength = PostgreSqlMaxIdentifierLength - separatorLength - hashLength;
 
-        string hash = GetStableHexHash(value);
-        string prefix = value.Substring(0, maxPrefixLength);
+        string hash = GetStableHexHash(constraintName);
+        string prefix = constraintName.Substring(0, maxPrefixLength);
 
         var fk = string.Concat(prefix, "_", hash);
 
@@ -656,7 +659,7 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
         return fk;
     }
 
-    private static string BuildForeignKeyConstraintName(ForeignKeyDefinition foreignKey)
+    private string BuildForeignKeyConstraintName(ForeignKeyDefinition foreignKey)
     {
         // Conventional pattern (similar to EF): FK_<dependent>_<principal>_<fkColumns>
         // Use FK columns (not PK columns) as they identify the relationship on the dependent table.
@@ -665,7 +668,7 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
             : foreignKey.PrimaryColumns.First();
 
         var name = $"FK_{foreignKey.ForeignTable}_{foreignKey.PrimaryTable}_{fkColumns}";
-        return TruncateToMaxIdentifierLength(name);
+        return TruncateConstraintName<ForeignKeyDefinition>(name)!;
     }
 
     /// <inheritdoc />
