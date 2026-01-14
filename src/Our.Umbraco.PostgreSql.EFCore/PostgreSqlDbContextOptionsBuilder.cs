@@ -8,8 +8,6 @@ namespace Our.Umbraco.PostgreSql.EFCore
 
         public PostgreSqlDbContextOptionsBuilder(DbContextOptionsBuilder optionsBuilder)
             : base(optionsBuilder)
-        {
-            optionsBuilder.UseNpgsql();
-        }
+        { }
     }
 }

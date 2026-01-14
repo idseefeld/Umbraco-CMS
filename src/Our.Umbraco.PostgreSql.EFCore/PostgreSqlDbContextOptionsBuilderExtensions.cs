@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure.Internal;
+using Our.Umbraco.PostgreSql.EFCore.Interceptors;
 
 namespace Our.Umbraco.PostgreSql.EFCore
 {
@@ -257,13 +258,15 @@ namespace Our.Umbraco.PostgreSql.EFCore
         /// <returns>
         ///     An existing instance of <see cref="NpgsqlOptionsExtension" />, or a new instance if one does not exist.
         /// </returns>
-        private static NpgsqlOptionsExtension GetOrCreateExtension(DbContextOptionsBuilder optionsBuilder)
-            => optionsBuilder.Options.FindExtension<NpgsqlOptionsExtension>() is { } existing
-                ? new NpgsqlOptionsExtension(existing)
-                : new NpgsqlOptionsExtension();
+        private static PostgreSqlOptionsExtension GetOrCreateExtension(DbContextOptionsBuilder optionsBuilder)
+            => optionsBuilder.Options.FindExtension<PostgreSqlOptionsExtension>() is { } existing
+                ? existing
+                : new PostgreSqlOptionsExtension();
 
         private static void ConfigureWarnings(DbContextOptionsBuilder optionsBuilder)
         {
+            optionsBuilder.AddInterceptors(new DbCommandExceptionInterceptor());
+
             var coreOptionsExtension = optionsBuilder.Options.FindExtension<CoreOptionsExtension>()
                 ?? new CoreOptionsExtension();
 
