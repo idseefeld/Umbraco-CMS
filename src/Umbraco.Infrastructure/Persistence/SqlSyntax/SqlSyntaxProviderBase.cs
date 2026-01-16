@@ -1,8 +1,6 @@
 // Don't remove the unused System using, for some reason this breaks docfx, and I have no clue why.
 using System;
-using System.Collections.Concurrent;
 using System.Data;
-using System.Data.SqlTypes;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq.Expressions;
@@ -159,9 +157,6 @@ public abstract class SqlSyntaxProviderBase<TSyntax> : ISqlSyntaxProvider
     public virtual string GetQuotedName(string? name) => $"\"{name}\"";
 
     public virtual string GetQuotedValue(string value) => $"'{value}'";
-
-    /// <inheritdoc />
-    public virtual string GetNullExtension<T>() => string.Empty;
 
     public virtual string GetIndexType(IndexTypes indexTypes)
     {
