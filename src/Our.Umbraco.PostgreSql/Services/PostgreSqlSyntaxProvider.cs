@@ -163,10 +163,10 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
     public override bool SupportsIdentityInsert() => false; // PostgreSQL does not support identity insert
 
     /// <inheritdoc />
-    public override bool SupportsSequences() => true; // PostgreSQL does not support identity insert
+    public bool SupportsSequences() => true; // PostgreSQL does not support identity insert
 
     /// <inheritdoc />
-    public override void AlterSequences(IUmbracoDatabase database)
+    public void AlterSequences(IUmbracoDatabase database)
     {
         if (_lastInsertIds.Count < _tablesToAlter.Count)
         {
@@ -180,7 +180,7 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
     }
 
     /// <inheritdoc />
-    public override void AlterSequences(IUmbracoDatabase database, string tableName)
+    public void AlterSequences(IUmbracoDatabase database, string tableName)
     {
         if (string.IsNullOrEmpty(tableName))
         {
@@ -345,7 +345,7 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
     public override string GetQuotedValue(string value) => $"'{value.Replace("'", "''")}'";
 
     /// <inheritdoc />
-    public override string GetNullExtension<T>()
+    public string GetNullExtension<T>()
     {
         if (typeof(T) == typeof(SqlGuid) || typeof(T) == typeof(Guid?))
         {
@@ -624,7 +624,7 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
     }
 
     /// <inheritdoc />
-    public override string? TruncateConstraintName<T>(string? constraintName)
+    public string? TruncateConstraintName<T>(string? constraintName)
     {
         var isForeignKey = typeof(T).Equals(typeof(ForeignKeyDefinition));
         if (string.IsNullOrEmpty(constraintName) || !isForeignKey)
