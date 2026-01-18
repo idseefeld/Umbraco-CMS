@@ -163,7 +163,7 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
     public override bool SupportsIdentityInsert() => false; // PostgreSQL does not support identity insert
 
     /// <inheritdoc />
-    public bool SupportsSequences() => true; // PostgreSQL does not support identity insert
+    public override bool SupportsSequences() => true; // PostgreSQL does not support identity insert
 
     /// <inheritdoc />
     public override void AlterSequences(IUmbracoDatabase database)
@@ -1018,8 +1018,16 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
 
     #region implementation for abstract methods from SqlSyntaxProviderBase
 
+    private static IEnumerable<Tuple<string, string, string, bool>>? _definedIndexes;
+
+    /// <inheritdoc />
     public override IEnumerable<Tuple<string, string, string, bool>> GetDefinedIndexes(IDatabase db)
     {
+        if (_definedIndexes != null)
+        {
+            return _definedIndexes;
+        }
+
         // This query returns: TableName, IndexName, ColumnName, IsUnique (excluding primary keys)
         const string sql = @"
             SELECT
@@ -1041,17 +1049,29 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
                 t.relname, i.relname, a.attnum;
         ";
 
-        // Map the result to the expected tuple
-        var result = db.Fetch<dynamic>(sql);
-        foreach (var row in result)
-        {
-            yield return new Tuple<string, string, string, bool>(
-                (string)row.tablename,
-                (string)row.indexname,
-                (string)row.columnname,
-                (bool)row.isunique
-            );
-        }
+        var result = db.Fetch<DefinedIndexDto>(sql);
+
+        var rVal = result.Select(row => new Tuple<string, string, string, bool>(
+            row.TableName,
+            row.IndexName,
+            row.ColumnName,
+            row.IsUnique))
+            .ToArray();
+
+        _definedIndexes = rVal;
+        return rVal;
+    }
+
+    private class DefinedIndexDto
+    {
+        [Column("tablename")]
+        public string TableName { get; set; } = null!;
+        [Column("indexname")]
+        public string IndexName { get; set; } = null!;
+        [Column("columnname")]
+        public string ColumnName { get; set; } = null!;
+        [Column("isunique")]
+        public bool IsUnique { get; set; }
     }
 
     public override bool TryGetDefaultConstraint(IDatabase db, string? tableName, string columnName, [MaybeNullWhen(false)] out string constraintName)

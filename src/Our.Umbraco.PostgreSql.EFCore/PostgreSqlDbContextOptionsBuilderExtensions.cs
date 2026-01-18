@@ -31,6 +31,8 @@ namespace Our.Umbraco.PostgreSql.EFCore
 
             ((IDbContextOptionsBuilderInfrastructure)optionsBuilder).AddOrUpdateExtension(GetOrCreateExtension(optionsBuilder));
 
+            ConfigureDbCommandInterceptors(optionsBuilder);
+
             ConfigureWarnings(optionsBuilder);
 
             npgsqlOptionsAction?.Invoke(new PostgreSqlDbContextOptionsBuilder(optionsBuilder));
@@ -56,6 +58,8 @@ namespace Our.Umbraco.PostgreSql.EFCore
 
             var extension = (NpgsqlOptionsExtension)GetOrCreateExtension(optionsBuilder).WithConnectionString(connectionString);
             ((IDbContextOptionsBuilderInfrastructure)optionsBuilder).AddOrUpdateExtension(extension);
+
+            ConfigureDbCommandInterceptors(optionsBuilder);
 
             ConfigureWarnings(optionsBuilder);
 
@@ -112,6 +116,8 @@ namespace Our.Umbraco.PostgreSql.EFCore
             var extension = (NpgsqlOptionsExtension)GetOrCreateExtension(optionsBuilder).WithConnection(connection, contextOwnsConnection);
             ((IDbContextOptionsBuilderInfrastructure)optionsBuilder).AddOrUpdateExtension(extension);
 
+            ConfigureDbCommandInterceptors(optionsBuilder);
+
             ConfigureWarnings(optionsBuilder);
 
             npgsqlOptionsAction?.Invoke(new PostgreSqlDbContextOptionsBuilder(optionsBuilder));
@@ -138,6 +144,8 @@ namespace Our.Umbraco.PostgreSql.EFCore
 
             var extension = (NpgsqlOptionsExtension)GetOrCreateExtension(optionsBuilder).WithDataSource(dataSource);
             ((IDbContextOptionsBuilderInfrastructure)optionsBuilder).AddOrUpdateExtension(extension);
+
+            ConfigureDbCommandInterceptors(optionsBuilder);
 
             ConfigureWarnings(optionsBuilder);
 
@@ -263,9 +271,13 @@ namespace Our.Umbraco.PostgreSql.EFCore
                 ? existing
                 : new PostgreSqlOptionsExtension();
 
+        private static void ConfigureDbCommandInterceptors(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.AddInterceptors(new DbCommandInterceptor());
+        }
+
         private static void ConfigureWarnings(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.AddInterceptors(new DbCommandExceptionInterceptor());
 
             var coreOptionsExtension = optionsBuilder.Options.FindExtension<CoreOptionsExtension>()
                 ?? new CoreOptionsExtension();

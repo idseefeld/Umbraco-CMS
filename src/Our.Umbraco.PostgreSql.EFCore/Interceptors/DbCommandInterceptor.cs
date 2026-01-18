@@ -2,14 +2,86 @@ using System.Data.Common;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Npgsql;
 using Umbraco.Extensions;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Our.Umbraco.PostgreSql.EFCore.Interceptors;
 
 /// <summary>
 /// Interceptor für das Abfangen von DbCommand-Exceptions bei PostgreSQL/Npgsql.
 /// </summary>
-public class DbCommandExceptionInterceptor : DbCommandInterceptor
+public class DbCommandInterceptor : Microsoft.EntityFrameworkCore.Diagnostics.DbCommandInterceptor
 {
+    public override InterceptionResult<DbCommand> CommandCreating(CommandCorrelatedEventData eventData, InterceptionResult<DbCommand> result)
+    {
+        try
+        {
+            return base.CommandCreating(eventData, result);
+        }
+        catch (Exception)
+        {
+            if (!result.Result.CommandText.InvariantContains("__EFMigrationsHistory"))
+            {
+                throw;
+            }
+
+            return result;
+        }
+    }
+
+    public override DbCommand CommandCreated(CommandEndEventData eventData, DbCommand result)
+    {
+        try
+        {
+            return base.CommandCreated(eventData, result);
+        }
+        catch (Exception)
+        {
+            if (!result.CommandText.InvariantContains("__EFMigrationsHistory"))
+            {
+                throw;
+            }
+
+            // Return the original result when exception is handled
+            return result;
+        }
+    }
+
+    public override InterceptionResult<DbDataReader> ReaderExecuting(DbCommand command, CommandEventData eventData, InterceptionResult<DbDataReader> result)
+    {
+        try
+        {
+            return base.ReaderExecuting(command, eventData, result);
+        }
+        catch (Exception)
+        {
+            if (!command.CommandText.InvariantContains("__EFMigrationsHistory"))
+            {
+                throw;
+            }
+
+            // Return the original result wrapped in ValueTask when exception is handled
+            return result;
+        }
+    }
+
+    public override ValueTask<DbDataReader> ReaderExecutedAsync(DbCommand command, CommandExecutedEventData eventData, DbDataReader result, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            return base.ReaderExecutedAsync(command, eventData, result, cancellationToken);
+        }
+        catch (Exception)
+        {
+            if (!command.CommandText.InvariantContains("__EFMigrationsHistory"))
+            {
+                throw;
+            }
+
+            // Return the original result wrapped in ValueTask when exception is handled
+            return new ValueTask<DbDataReader>(result);
+        }
+    }
+
     public override void CommandFailed(DbCommand command, CommandErrorEventData eventData)
     {
         if (!HandleException(command, eventData))
