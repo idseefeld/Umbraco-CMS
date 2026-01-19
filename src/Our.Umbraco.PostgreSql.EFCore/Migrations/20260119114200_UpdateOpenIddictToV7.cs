@@ -1,4 +1,3 @@
-﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -6,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Our.Umbraco.PostgreSql.EFCore.Migrations
 {
     /// <inheritdoc />
-    public partial class AddOpenIdDict : Migration
+    public partial class UpdateOpenIddictToV7 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

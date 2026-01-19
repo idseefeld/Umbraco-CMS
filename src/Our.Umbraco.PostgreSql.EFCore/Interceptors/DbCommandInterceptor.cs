@@ -11,6 +11,19 @@ namespace Our.Umbraco.PostgreSql.EFCore.Interceptors;
 /// </summary>
 public class DbCommandInterceptor : Microsoft.EntityFrameworkCore.Diagnostics.DbCommandInterceptor
 {
+    public override DbCommand CommandInitialized(CommandEndEventData eventData, DbCommand result)
+    {
+        try
+        {
+            return base.CommandInitialized(eventData, result);
+        }
+        catch (Exception)
+        {
+
+            throw;
+        }
+    }
+
     public override InterceptionResult<DbCommand> CommandCreating(CommandCorrelatedEventData eventData, InterceptionResult<DbCommand> result)
     {
         try
@@ -68,7 +81,11 @@ public class DbCommandInterceptor : Microsoft.EntityFrameworkCore.Diagnostics.Db
     {
         try
         {
-            return base.ReaderExecutedAsync(command, eventData, result, cancellationToken);
+            var awaitResult = base.ReaderExecutedAsync(command, eventData, result, cancellationToken);
+            var dataReader = awaitResult.Result;
+            var dataTable =dataReader?.GetSchemaTable(); // Access schema to ensure reader is fully initialized
+
+            return awaitResult;
         }
         catch (Exception)
         {

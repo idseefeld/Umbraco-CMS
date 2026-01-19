@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace Our.Umbraco.PostgreSql.EFCore
 {
-    public class PostgreSqlDbContextOptionsBuilder : RelationalDbContextOptionsBuilder<PostgreSqlDbContextOptionsBuilder, PostgreSqlOptionsExtension>
+    public class PostgreSqlDbContextOptionsBuilder : RelationalDbContextOptionsBuilder<PostgreSqlDbContextOptionsBuilder, PostgreSqlForNpgsqlOptionsExtension>
     {
 
         public PostgreSqlDbContextOptionsBuilder(DbContextOptionsBuilder optionsBuilder)

@@ -30,7 +30,10 @@ namespace Our.Umbraco.PostgreSql.EFCore
         private static Type GetMigrationType(EFCoreMigration migration) =>
             migration switch
             {
-                EFCoreMigration.InitialCreate => typeof(Migrations.AddOpenIdDict),
+                EFCoreMigration.InitialCreate => typeof(Migrations.InitialCreate),
+                EFCoreMigration.AddOpenIddict => typeof(Migrations.AddOpenIddict),
+                EFCoreMigration.UpdateOpenIddictToV5 => typeof(Migrations.UpdateOpenIddictToV5),
+                EFCoreMigration.UpdateOpenIddictToV7 => typeof(Migrations.UpdateOpenIddictToV7),
                 _ => throw new ArgumentOutOfRangeException(nameof(migration), $@"Not expected migration value: {migration}"),
             };
     }

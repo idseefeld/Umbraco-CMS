@@ -266,10 +266,10 @@ namespace Our.Umbraco.PostgreSql.EFCore
         /// <returns>
         ///     An existing instance of <see cref="NpgsqlOptionsExtension" />, or a new instance if one does not exist.
         /// </returns>
-        private static PostgreSqlOptionsExtension GetOrCreateExtension(DbContextOptionsBuilder optionsBuilder)
-            => optionsBuilder.Options.FindExtension<PostgreSqlOptionsExtension>() is { } existing
+        private static PostgreSqlForNpgsqlOptionsExtension GetOrCreateExtension(DbContextOptionsBuilder optionsBuilder)
+            => optionsBuilder.Options.FindExtension<PostgreSqlForNpgsqlOptionsExtension>() is { } existing
                 ? existing
-                : new PostgreSqlOptionsExtension();
+                : new PostgreSqlForNpgsqlOptionsExtension();
 
         private static void ConfigureDbCommandInterceptors(DbContextOptionsBuilder optionsBuilder)
         {
