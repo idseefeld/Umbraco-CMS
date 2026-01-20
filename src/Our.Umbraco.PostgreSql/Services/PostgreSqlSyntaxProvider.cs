@@ -1018,16 +1018,9 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
 
     #region implementation for abstract methods from SqlSyntaxProviderBase
 
-    private static IEnumerable<Tuple<string, string, string, bool>>? _definedIndexes;
-
     /// <inheritdoc />
     public override IEnumerable<Tuple<string, string, string, bool>> GetDefinedIndexes(IDatabase db)
     {
-        if (_definedIndexes != null)
-        {
-            return _definedIndexes;
-        }
-
         // This query returns: TableName, IndexName, ColumnName, IsUnique (excluding primary keys)
         const string sql = @"
             SELECT
@@ -1058,7 +1051,6 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
             row.IsUnique))
             .ToArray();
 
-        _definedIndexes = rVal;
         return rVal;
     }
 
