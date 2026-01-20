@@ -345,7 +345,7 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
     public override string GetQuotedValue(string value) => $"'{value.Replace("'", "''")}'";
 
     /// <inheritdoc />
-    public override string GetNullExtension<T>()
+    public override string GetNullCastSuffix<T>()
     {
         if (typeof(T) == typeof(SqlGuid) || typeof(T) == typeof(Guid?))
         {
