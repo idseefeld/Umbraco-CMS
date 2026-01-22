@@ -588,7 +588,7 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
     {
         var constraintName = string.IsNullOrEmpty(foreignKey.Name)
             ? BuildForeignKeyConstraintName(foreignKey)
-            : TruncateConstraintName<ForeignKeyDefinition>(foreignKey.Name);
+            : TruncateConstraintName<ForeignKeyDefinition>(foreignKey.Name!);
 
         var anyRule = foreignKey.OnDelete != Rule.None || foreignKey.OnUpdate != Rule.None;
         var deferrableInitiallyDeferredSql = anyRule ? string.Empty : " DEFERRABLE INITIALLY DEFERRED ";
@@ -624,7 +624,7 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
     }
 
     /// <inheritdoc />
-    public override string? TruncateConstraintName<T>(string? constraintName)
+    public override string TruncateConstraintName<T>(string constraintName)
     {
         var isForeignKey = typeof(T).Equals(typeof(ForeignKeyDefinition));
         if (string.IsNullOrEmpty(constraintName) || !isForeignKey)
@@ -667,8 +667,8 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
             ? string.Join("_", foreignKey.ForeignColumns.Select(c => c.Trim()))
             : foreignKey.PrimaryColumns.First();
 
-        var name = $"FK_{foreignKey.ForeignTable}_{foreignKey.PrimaryTable}_{fkColumns}";
-        return TruncateConstraintName<ForeignKeyDefinition>(name)!;
+        string name = $"FK_{foreignKey.ForeignTable}_{foreignKey.PrimaryTable}_{fkColumns}";
+        return TruncateConstraintName<ForeignKeyDefinition>(name);
     }
 
     /// <inheritdoc />
