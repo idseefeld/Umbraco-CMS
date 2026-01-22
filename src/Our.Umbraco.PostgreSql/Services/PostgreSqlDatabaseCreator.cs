@@ -24,7 +24,7 @@ namespace Our.Umbraco.PostgreSql.Services
             try
             {
                 var dataSourceBuilder = new NpgsqlDataSourceBuilder(connectionString);
-                
+
                 using (NpgsqlDataSource dataSource = dataSourceBuilder.Build())
                 {
                     // Open a connection to the database to ensure the connection string is valid

@@ -80,7 +80,7 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
         {"umbracoWebhook","id"},
     };
 
-    private static SemVersion? _databseEngineVersion;
+    private static bool _efMigrationHistoryTableCreated = false;
 
     public PostgreSqlSyntaxProvider(IOptions<PostgreSqlOptions> globalSettings)
         : this(globalSettings, StaticApplicationLogging.CreateLogger<PostgreSqlSyntaxProvider>()) { }
@@ -172,7 +172,7 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
         {
             _logger.LogDebug("Altering sequences for PostgreSQL database after schema and data creation.");
 
-            foreach (var table in _tablesToAlter)
+            foreach (KeyValuePair<string, string> table in _tablesToAlter)
             {
                 AlterSequence(database, table.Key, table.Value);
             }
@@ -186,7 +186,7 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
         {
             AlterSequences(database);
         }
-        else
+        else if (_tablesToAlter.ContainsKey(tableName))
         {
             KeyValuePair<string, string> tableToAlter = _tablesToAlter.FirstOrDefault(t => t.Key.Equals(tableName, StringComparison.InvariantCultureIgnoreCase));
             AlterSequence(database, tableToAlter.Key, tableToAlter.Value);
@@ -251,6 +251,8 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
     /// <inheritdoc/>
     public override void HandleCreateTable(IDatabase database, TableDefinition tableDefinition, bool skipKeysAndIndexes = false)
     {
+        CreateEFMigrationHistoryTable(database);
+
         var createSql = Format(tableDefinition);
         var createPrimaryKeySql = FormatPrimaryKey(tableDefinition);
         List<string> foreignSql = Format(tableDefinition.ForeignKeys);
@@ -286,6 +288,21 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
             _logger.LogInformation("Create Foreign Key:\n {Sql}", sql);
             database.Execute(new Sql(sql));
         }
+    }
+
+    private void CreateEFMigrationHistoryTable(IDatabase database)
+    {
+        if (_efMigrationHistoryTableCreated)
+        {
+            return;
+        }
+
+        database.Execute(@"
+            CREATE TABLE IF NOT EXISTS ""__EFMigrationsHistory"" (
+                ""MigrationId"" VARCHAR(150) NOT NULL PRIMARY KEY,
+                ""ProductVersion"" VARCHAR(32) NOT NULL
+            );");
+        _efMigrationHistoryTableCreated = true;
     }
 
     /// <inheritdoc />
