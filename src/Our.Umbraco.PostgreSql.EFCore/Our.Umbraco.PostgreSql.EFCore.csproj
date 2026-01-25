@@ -2,7 +2,12 @@
 
   <PropertyGroup>
     <PackageId>Our.Umbraco.PostgreSql.EFCore</PackageId>
-    <PackageIcon>postgresql.png</PackageIcon>
+    <Company>-</Company>
+    <Authors>Dirk Seefeld</Authors>
+    <PackageIcon>uPostgresql2.png</PackageIcon>
+    <PackageReadmeFile>readme.md</PackageReadmeFile>
+    <Product>PostgreSQL Provider for Umbraco CMS</Product>
+    <PackageTags>umbraco, postgresql, community</PackageTags>
     <Title>Umbraco CMS - Persistence - Entity Framework Core - PostgreSQL migrations</Title>
     <Description>Adds support for Entity Framework Core PostgreSQL migrations to Umbraco CMS.</Description>
   </PropertyGroup>
@@ -19,5 +24,11 @@
   <ItemGroup>
     <ProjectReference Include="..\Umbraco.Cms.Persistence.EFCore\Umbraco.Cms.Persistence.EFCore.csproj" />
   </ItemGroup>
-  
+
+  <ItemGroup>
+    <Content Include="..\Our.Umbraco.PostgreSql\readme.md" Pack="true" PackagePath="\" />
+    <Content Include="..\Our.Umbraco.PostgreSql\uPostgresql2.png" Pack="true" PackagePath="" Visible="false" />
+  </ItemGroup>
+
+
 </Project>
