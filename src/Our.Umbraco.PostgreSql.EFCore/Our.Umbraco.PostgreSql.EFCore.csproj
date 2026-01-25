@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <PackageId>Our.Umbraco.PostgreSql.EFCore</PackageId>
+    <PackageIcon>postgresql.png</PackageIcon>
     <Title>Umbraco CMS - Persistence - Entity Framework Core - PostgreSQL migrations</Title>
     <Description>Adds support for Entity Framework Core PostgreSQL migrations to Umbraco CMS.</Description>
   </PropertyGroup>
