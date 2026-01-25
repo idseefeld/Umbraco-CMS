@@ -1,37 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <PackageId>Our.Umbraco.PostgreSql</PackageId>
     <Title>Umbraco CMS - Persistence - PostgreSQL</Title>
     <Description>Adds support for PostgreSQL to Umbraco CMS.</Description>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="Helper\**" />
-    <Compile Remove="Notifications\**" />
-    <EmbeddedResource Remove="Helper\**" />
-    <EmbeddedResource Remove="Notifications\**" />
-    <None Remove="Helper\**" />
-    <None Remove="Notifications\**" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Compile Remove="DatabaseInitializedHandler.cs" />
-    <Compile Remove="FaultHandling\Strategies\PostgreSqlTransientErrorDetectionStrategy.cs" />
-    <Compile Remove="FaultHandling\Strategies\ThrottlingCondition.cs" />
-    <Compile Remove="GlobalSuppressions.cs" />
-    <Compile Remove="Interceptors\PostgreSqlAddDbConnectionInterceptor.cs" />
-    <Compile Remove="Mappers\PostgreSqlDateTimeScalarMapper.cs" />
-    <Compile Remove="Mappers\PostgreSqlNullableDateTimeScalarMapper.cs" />
-    <Compile Remove="NPocoPostgreSqlDatabaseExtensions.cs" />
-    <Compile Remove="PostgreSqlDataInitializedHandler.cs" />
-    <Compile Remove="Services\IPostgreSqlAlterSequences.cs" />
-    <Compile Remove="Services\PostgreSqlAlterSequences.cs" />
-    <Compile Remove="Services\PostgreSqlBulkSqlInsertProvider.cs" />
-    <Compile Remove="Services\PostgreSqlDatabaseFactory - Copy.cs" />
-    <Compile Remove="Services\PostgreSqlDatabaseSchemaCreator.cs" />
-    <Compile Remove="Services\PostgreSqlDatabaseSchemaCreatorFactory.cs" />
-    <Compile Remove="Services\PostgreSqlSyntaxProviderBase.cs" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Npgsql" />
