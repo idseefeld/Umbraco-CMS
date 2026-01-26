@@ -959,7 +959,7 @@ internal sealed class DocumentRepositoryTest : UmbracoIntegrationTest
                 ScopeAccessor.AmbientScope.Database.AsUmbracoDatabase().EnableSqlCount = true;
 
                 var query = ScopeProvider.CreateQuery<IContent>().Where(x => x.ParentId == root.Id);
-                var result = repository.GetPage(query, 0, 20, out var totalRecords, null, Ordering.By("UpdateDate"));
+                var result = repository.GetPage(query, 0, 20, out var totalRecords, propertyAliases: null, filter: null, Ordering.By("UpdateDate"));
 
                 Assert.AreEqual(25, totalRecords);
                 foreach (var r in result)
@@ -1002,12 +1002,12 @@ internal sealed class DocumentRepositoryTest : UmbracoIntegrationTest
                 ScopeAccessor.AmbientScope.Database.AsUmbracoDatabase().EnableSqlTrace = true;
                 ScopeAccessor.AmbientScope.Database.AsUmbracoDatabase().EnableSqlCount = true;
 
-                var result = repository.GetPage(query, 0, 2, out var totalRecords, null, Ordering.By("title", isCustomField: true));
+                var result = repository.GetPage(query, 0, 2, out var totalRecords, propertyAliases: null, filter: null, Ordering.By("title", isCustomField: true));
 
                 Assert.AreEqual(3, totalRecords);
                 Assert.AreEqual(2, result.Count());
 
-                result = repository.GetPage(query, 1, 2, out totalRecords, null, Ordering.By("title", isCustomField: true));
+                result = repository.GetPage(query, 1, 2, out totalRecords, propertyAliases: null, filter: null, Ordering.By("title", isCustomField: true));
 
                 Assert.AreEqual(1, result.Count());
             }
@@ -1034,7 +1034,7 @@ internal sealed class DocumentRepositoryTest : UmbracoIntegrationTest
                 ScopeAccessor.AmbientScope.Database.AsUmbracoDatabase().EnableSqlTrace = true;
                 ScopeAccessor.AmbientScope.Database.AsUmbracoDatabase().EnableSqlCount = true;
 
-                var result = repository.GetPage(query, 0, 1, out var totalRecords, null, Ordering.By("Name"));
+                var result = repository.GetPage(query, 0, 1, out var totalRecords, propertyAliases: null, filter: null, Ordering.By("Name"));
 
                 Assert.That(totalRecords, Is.GreaterThanOrEqualTo(2));
                 Assert.That(result.Count(), Is.EqualTo(1));
@@ -1057,7 +1057,7 @@ internal sealed class DocumentRepositoryTest : UmbracoIntegrationTest
             var repository = CreateRepository((IScopeAccessor)provider, out _);
 
             var query = ScopeProvider.CreateQuery<IContent>().Where(x => x.Level == 2);
-            var result = repository.GetPage(query, 1, 1, out var totalRecords, null, Ordering.By("Name")).ToArray();
+            var result = repository.GetPage(query, 1, 1, out var totalRecords, propertyAliases: null, filter: null, Ordering.By("Name")).ToArray();
 
             Assert.That(totalRecords, Is.GreaterThanOrEqualTo(2));
             Assert.That(result.Count(), Is.EqualTo(1));
@@ -1074,7 +1074,7 @@ internal sealed class DocumentRepositoryTest : UmbracoIntegrationTest
             var repository = CreateRepository((IScopeAccessor)provider, out _);
 
             var query = ScopeProvider.CreateQuery<IContent>().Where(x => x.Level == 2);
-            var result = repository.GetPage(query, 0, 2, out var totalRecords, null, Ordering.By("Name")).ToArray();
+            var result = repository.GetPage(query, 0, 2, out var totalRecords, propertyAliases: null, filter: null, Ordering.By("Name")).ToArray();
 
             Assert.That(totalRecords, Is.GreaterThanOrEqualTo(2));
             Assert.That(result.Count(), Is.EqualTo(2));
@@ -1091,7 +1091,7 @@ internal sealed class DocumentRepositoryTest : UmbracoIntegrationTest
             var repository = CreateRepository((IScopeAccessor)provider, out _);
 
             var query = ScopeProvider.CreateQuery<IContent>().Where(x => x.Level == 2);
-            var result = repository.GetPage(query, 0, 1, out var totalRecords, null, Ordering.By("Name", Direction.Descending)).ToArray();
+            var result = repository.GetPage(query, 0, 1, out var totalRecords, propertyAliases: null, filter: null, Ordering.By("Name", Direction.Descending)).ToArray();
 
             Assert.That(totalRecords, Is.GreaterThanOrEqualTo(2));
             Assert.That(result.Count(), Is.EqualTo(1));
@@ -1110,7 +1110,7 @@ internal sealed class DocumentRepositoryTest : UmbracoIntegrationTest
             var query = ScopeProvider.CreateQuery<IContent>().Where(x => x.Level == 2);
 
             var filterQuery = ScopeProvider.CreateQuery<IContent>().Where(x => x.Name.Contains("Page 2"));
-            var result = repository.GetPage(query, 0, 1, out var totalRecords, filterQuery, Ordering.By("Name")).ToArray();
+            var result = repository.GetPage(query, 0, 1, out var totalRecords, propertyAliases: null, filterQuery, Ordering.By("Name")).ToArray();
 
             Assert.That(totalRecords, Is.EqualTo(1));
             Assert.That(result.Count(), Is.EqualTo(1));
@@ -1129,7 +1129,7 @@ internal sealed class DocumentRepositoryTest : UmbracoIntegrationTest
             var query = ScopeProvider.CreateQuery<IContent>().Where(x => x.Level == 2);
 
             var filterQuery = ScopeProvider.CreateQuery<IContent>().Where(x => x.Name.Contains("text"));
-            var result = repository.GetPage(query, 0, 1, out var totalRecords, filterQuery, Ordering.By("Name")).ToArray();
+            var result = repository.GetPage(query, 0, 1, out var totalRecords, propertyAliases: null, filterQuery, Ordering.By("Name")).ToArray();
 
             Assert.That(totalRecords, Is.EqualTo(2));
             Assert.That(result.Count(), Is.EqualTo(1));
