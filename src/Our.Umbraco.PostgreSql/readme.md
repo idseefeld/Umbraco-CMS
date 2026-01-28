@@ -7,13 +7,15 @@ Currently it is still in early development and should be used for testing and ev
 purposes only. And there are several issues in Umbraco's core that prevent full functionality 
 when using PostgreSQL as the database. These are already addressed and will hopefully be 
 fixed in future releases of Umbraco.
+```
+
+
+### Comments and contributions are very welcome!
 
 If you are curios about the progress, please have a look into my fork of Umbraco on GitHub:
-https://github.com/idseefeld/Umbraco-CMS/tree/v173/postgreSqlProvider
 
-Comments and contributions are very welcome!
+[Our.Umbraco.PostgreSql](https://github.com/idseefeld/Umbraco-CMS/tree/v173/postgreSqlProvider)
 
-```
 
 
 ## Install PostggreSQL Database
