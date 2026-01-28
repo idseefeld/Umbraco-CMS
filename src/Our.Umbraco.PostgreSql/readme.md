@@ -24,11 +24,10 @@ If you are curios about the progress, please have a look into my fork of Umbraco
 1. Start debugging this solution [F5]
 1. If not trusting databse certificate "SSL Mode" is set to `VerifyCA` during installation. <br>But you can change this later on in the connection string in `appsettings.json` file. <br>Read details: https://www.npgsql.org/doc/security.html?tabs=tabid-1
 
-## Known Issues
-1. Can not create User Group
-
 
 ## appSettings
+I have created a pull request for NPoco project. This will allow case insensitivity for PostgreSQL. But it is not merged yet.
+When this is done, you can add the following setting from your `appsettings.json` for your Umbraco instance.
 ```
   "PostgreSqlOptions": {
     "EscapeTableColumAliasNames": false
