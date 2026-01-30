@@ -411,17 +411,18 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
     /// <inheritdoc />
     public override string GetColumn(DatabaseType dbType, string tableName, string columnName, string? columnAlias, string? referenceName = null, bool forInsert = false)
     {
-        if (columnAlias.InvariantEquals(global::Umbraco.Cms.Core.Constants.DatabaseSchema.Columns.UniqueIdName))
-        {
-            columnAlias = global::Umbraco.Cms.Core.Constants.DatabaseSchema.Columns.UniqueIdName;
-        }
+        var qTableName = GetQuotedTableName(tableName);
+        var qColumnName = GetQuotedColumnName(columnName);
+        var column = forInsert ? qColumnName : qTableName + "." + qColumnName;
 
-        tableName = GetQuotedTableName(tableName);
-        columnName = GetQuotedColumnName(columnName);
-        var column = forInsert ? columnName : tableName + "." + columnName;
         if (columnAlias == null)
         {
             return column;
+        }
+
+        if (referenceName == null && columnAlias.InvariantEquals(columnName))
+        {
+            columnAlias = columnName;
         }
 
         referenceName = referenceName == null ? string.Empty : referenceName + "__";
