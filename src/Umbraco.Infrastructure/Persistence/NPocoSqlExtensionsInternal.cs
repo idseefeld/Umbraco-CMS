@@ -7,7 +7,7 @@ using Umbraco.Cms.Infrastructure.Persistence;
 
 namespace Umbraco.Extensions
 {
-    public static class NPocoSqlExtensionsInternal
+    public static partial class NPocoSqlExtensions
     {
         internal static string GetAliasedField(this Sql<ISqlContext> sql, string field)
         {
@@ -22,12 +22,6 @@ namespace Umbraco.Extensions
             MatchCollection matches = sql.SqlContext.SqlSyntax.AliasRegex.Matches(sql.SQL);
             Match? match = matches.Cast<Match>().FirstOrDefault(m => m.Groups[1].Value.InvariantEquals(field));
             return match == null ? field : match.Groups[2].Value;
-        }
-
-        internal static string GetColumnName(this PropertyInfo column)
-        {
-            ColumnAttribute? attr = column.FirstAttribute<ColumnAttribute>();
-            return string.IsNullOrWhiteSpace(attr?.Name) ? column.Name : attr.Name;
         }
 
         internal static string[] GetColumns<TDto>(this Sql<ISqlContext> sql, string? tableAlias = null, string? referenceName = null, Expression<Func<TDto, object?>>[]? columnExpressions = null, bool withAlias = true, bool forInsert = false)
