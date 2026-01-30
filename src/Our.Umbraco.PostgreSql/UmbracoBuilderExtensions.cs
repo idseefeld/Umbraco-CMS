@@ -31,8 +31,21 @@ namespace Our.Umbraco.PostgreSql
 
             builder.Services.TryAddEnumerable(ServiceDescriptor
                 .Singleton<ISqlSyntaxProvider, PostgreSqlSyntaxProvider>());
-            builder.Services.TryAddEnumerable(ServiceDescriptor
-                .Singleton<IBulkSqlInsertProvider, PostgreSqlBatchSqlInsertProvider>());
+
+            var useNpgsqlBatching = true;
+            if (useNpgsqlBatching)
+            {
+                builder.Services.TryAddEnumerable(ServiceDescriptor
+                    .Singleton<IBulkSqlInsertProvider, PostgreSqlBatchSqlInsertProvider>());
+            }
+            else
+            {
+                // inefficient fallback
+                builder.Services.TryAddEnumerable(ServiceDescriptor
+                    .Singleton<IBulkSqlInsertProvider, PostgreSqlBulkSqlInsertProvider>());
+            }
+
+
             builder.Services.TryAddEnumerable(ServiceDescriptor
                 .Singleton<IDatabaseCreator, PostgreSqlDatabaseCreator>());
             builder.Services.TryAddEnumerable(ServiceDescriptor
