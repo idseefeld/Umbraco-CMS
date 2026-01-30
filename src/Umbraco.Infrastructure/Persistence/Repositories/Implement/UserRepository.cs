@@ -1358,9 +1358,9 @@ SELECT 4 AS {keyAlias}, COUNT(id) AS {valueAlias} FROM {userTableName}
     /// <param name="filterSql">The SQL filter to which the user state conditions are appended. If null, no conditions are added.</param>
     private void FilterByUserState(UserState[]? userState, Sql<ISqlContext> filterSql)
     {
+        // the "ALL" state doesn't require any filtering so we ignore that, if it exists in the list we don't do any filtering
         if (userState != null && userState.Length > 0)
         {
-            // the "ALL" state doesn't require any filtering so we ignore that, if it exists in the list we don't do any filtering
             if (userState.Contains(UserState.All) == false)
             {
                 var sb = new StringBuilder("(");
@@ -1419,7 +1419,6 @@ SELECT 4 AS {keyAlias}, COUNT(id) AS {valueAlias} FROM {userTableName}
                     }
 
                     sb.Append($"({lastLoginDate} IS NULL AND {userDisabled} = {trueValue} AND {invitedDate} IS NOT NULL)");
-                    appended = true;
                 }
 
                 sb.Append(")");
