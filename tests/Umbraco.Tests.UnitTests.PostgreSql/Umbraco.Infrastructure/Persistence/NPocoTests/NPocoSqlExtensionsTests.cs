@@ -135,20 +135,20 @@ public class NPocoSqlExtensionsTests : BaseUsingPostgreSqlSyntax
             .Select<Dto1>()
             .From<Dto1>();
         Assert.AreEqual(
-            "SELECT \"dto1\".\"id\" AS \"Id\", \"dto1\".\"name\" AS \"Name\", \"dto1\".\"value\" AS \"Value\" FROM \"dto1\"",
+            "SELECT \"dto1\".\"id\" AS \"id\", \"dto1\".\"name\" AS \"name\", \"dto1\".\"value\" AS \"value\" FROM \"dto1\"",
             sql.SQL.NoCrLf());
 
         // select only 1 field
         sql = Sql()
             .Select<Dto1>(x => x.Id)
             .From<Dto1>();
-        Assert.AreEqual("SELECT \"dto1\".\"id\" AS \"Id\" FROM \"dto1\"", sql.SQL.NoCrLf());
+        Assert.AreEqual("SELECT \"dto1\".\"id\" AS \"id\" FROM \"dto1\"", sql.SQL.NoCrLf());
 
         // select 2 fields
         sql = Sql()
             .Select<Dto1>(x => x.Id, x => x.Name)
             .From<Dto1>();
-        Assert.AreEqual("SELECT \"dto1\".\"id\" AS \"Id\", \"dto1\".\"name\" AS \"Name\" FROM \"dto1\"", sql.SQL.NoCrLf());
+        Assert.AreEqual("SELECT \"dto1\".\"id\" AS \"id\", \"dto1\".\"name\" AS \"name\" FROM \"dto1\"", sql.SQL.NoCrLf());
 
         // select the whole DTO and a referenced DTO
         sql = Sql()
@@ -156,7 +156,7 @@ public class NPocoSqlExtensionsTests : BaseUsingPostgreSqlSyntax
             .From<Dto1>()
             .InnerJoin<Dto2>().On<Dto1, Dto2>(left => left.Id, right => right.Dto1Id);
         Assert.AreEqual(
-            "SELECT \"dto1\".\"id\" AS \"Id\", \"dto1\".\"name\" AS \"Name\", \"dto1\".\"value\" AS \"Value\" , \"dto2\".\"id\" AS \"Dto2__Id\", \"dto2\".\"dto1id\" AS \"Dto2__Dto1Id\", \"dto2\".\"name\" AS \"Dto2__Name\" FROM \"dto1\" INNER JOIN \"dto2\" ON \"dto1\".\"id\" = \"dto2\".\"dto1id\"".NoCrLf(),
+            "SELECT \"dto1\".\"id\" AS \"id\", \"dto1\".\"name\" AS \"name\", \"dto1\".\"value\" AS \"value\" , \"dto2\".\"id\" AS \"Dto2__Id\", \"dto2\".\"dto1id\" AS \"Dto2__Dto1Id\", \"dto2\".\"name\" AS \"Dto2__Name\" FROM \"dto1\" INNER JOIN \"dto2\" ON \"dto1\".\"id\" = \"dto2\".\"dto1id\"".NoCrLf(),
             sql.SQL.NoCrLf(),
             sql.SQL);
 
@@ -167,7 +167,7 @@ public class NPocoSqlExtensionsTests : BaseUsingPostgreSqlSyntax
             .InnerJoin<Dto2>().On<Dto1, Dto2>(left => left.Id, right => right.Dto1Id)
             .InnerJoin<Dto3>().On<Dto2, Dto3>(left => left.Id, right => right.Dto2Id);
         Assert.AreEqual(
-            "SELECT \"dto1\".\"id\" AS \"Id\", \"dto1\".\"name\" AS \"Name\", \"dto1\".\"value\" AS \"Value\" , \"dto2\".\"id\" AS \"Dto2__Id\", \"dto2\".\"dto1id\" AS \"Dto2__Dto1Id\", \"dto2\".\"name\" AS \"Dto2__Name\" , \"dto3\".\"id\" AS \"Dto2__Dto3__Id\", \"dto3\".\"dto2id\" AS \"Dto2__Dto3__Dto2Id\", \"dto3\".\"name\" AS \"Dto2__Dto3__Name\" FROM \"dto1\" INNER JOIN \"dto2\" ON \"dto1\".\"id\" = \"dto2\".\"dto1id\" INNER JOIN \"dto3\" ON \"dto2\".\"id\" = \"dto3\".\"dto2id\"".NoCrLf(),
+            "SELECT \"dto1\".\"id\" AS \"id\", \"dto1\".\"name\" AS \"name\", \"dto1\".\"value\" AS \"value\" , \"dto2\".\"id\" AS \"Dto2__Id\", \"dto2\".\"dto1id\" AS \"Dto2__Dto1Id\", \"dto2\".\"name\" AS \"Dto2__Name\" , \"dto3\".\"id\" AS \"Dto2__Dto3__Id\", \"dto3\".\"dto2id\" AS \"Dto2__Dto3__Dto2Id\", \"dto3\".\"name\" AS \"Dto2__Dto3__Name\" FROM \"dto1\" INNER JOIN \"dto2\" ON \"dto1\".\"id\" = \"dto2\".\"dto1id\" INNER JOIN \"dto3\" ON \"dto2\".\"id\" = \"dto3\".\"dto2id\"".NoCrLf(),
             sql.SQL.NoCrLf());
 
         // select the whole DTO and referenced DTOs
@@ -176,7 +176,7 @@ public class NPocoSqlExtensionsTests : BaseUsingPostgreSqlSyntax
             .From<Dto1>()
             .InnerJoin<Dto2>().On<Dto1, Dto2>(left => left.Id, right => right.Dto1Id);
         Assert.AreEqual(
-            "SELECT \"dto1\".\"id\" AS \"Id\", \"dto1\".\"name\" AS \"Name\", \"dto1\".\"value\" AS \"Value\" , \"dto2\".\"id\" AS \"Dto2s__Id\", \"dto2\".\"dto1id\" AS \"Dto2s__Dto1Id\", \"dto2\".\"name\" AS \"Dto2s__Name\" FROM \"dto1\" INNER JOIN \"dto2\" ON \"dto1\".\"id\" = \"dto2\".\"dto1id\"".NoCrLf(),
+            "SELECT \"dto1\".\"id\" AS \"id\", \"dto1\".\"name\" AS \"name\", \"dto1\".\"value\" AS \"value\" , \"dto2\".\"id\" AS \"Dto2s__Id\", \"dto2\".\"dto1id\" AS \"Dto2s__Dto1Id\", \"dto2\".\"name\" AS \"Dto2s__Name\" FROM \"dto1\" INNER JOIN \"dto2\" ON \"dto1\".\"id\" = \"dto2\".\"dto1id\"".NoCrLf(),
             sql.SQL.NoCrLf());
     }
 
@@ -187,19 +187,19 @@ public class NPocoSqlExtensionsTests : BaseUsingPostgreSqlSyntax
         var sql = Sql()
             .Select<Dto1>(x => x.Id)
             .Select<Dto2>(x => x.Id);
-        Assert.AreEqual("SELECT \"dto1\".\"id\" AS \"Id\" SELECT \"dto2\".\"id\" AS \"Id\"".NoCrLf(), sql.SQL.NoCrLf());
+        Assert.AreEqual("SELECT \"dto1\".\"id\" AS \"id\" SELECT \"dto2\".\"id\" AS \"id\"".NoCrLf(), sql.SQL.NoCrLf());
 
         // and select - good
         sql = Sql()
             .Select<Dto1>(x => x.Id)
             .AndSelect<Dto2>(x => x.Id);
-        Assert.AreEqual("SELECT \"dto1\".\"id\" AS \"Id\" , \"dto2\".\"id\" AS \"Id\"".NoCrLf(), sql.SQL.NoCrLf());
+        Assert.AreEqual("SELECT \"dto1\".\"id\" AS \"id\" , \"dto2\".\"id\" AS \"id\"".NoCrLf(), sql.SQL.NoCrLf());
 
         // and select + alias
         sql = Sql()
             .Select<Dto1>(x => x.Id)
             .AndSelect<Dto2>(x => Alias(x.Id, "id2"));
-        Assert.AreEqual("SELECT \"dto1\".\"id\" AS \"Id\" , \"dto2\".\"id\" AS \"id2\"".NoCrLf(), sql.SQL.NoCrLf());
+        Assert.AreEqual("SELECT \"dto1\".\"id\" AS \"id\" , \"dto2\".\"id\" AS \"id2\"".NoCrLf(), sql.SQL.NoCrLf());
     }
 
     [Test]
