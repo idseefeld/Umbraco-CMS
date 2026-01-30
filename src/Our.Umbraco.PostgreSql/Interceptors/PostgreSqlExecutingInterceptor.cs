@@ -15,17 +15,7 @@ public class PostgreSqlExecutingInterceptor : IProviderSpecificExecutingIntercep
     // Called before NPoco executes a DbCommand
     public void OnExecutingCommand(IDatabase database, DbCommand command)
     {
-        // Example: normalize RETURNING clauses or adjust timeout
-        if (command?.CommandText is { } sql)
-        {
-
-        }
-
-        // Example: set a per-command timeout if not set already
-        if (command?.CommandTimeout is null or 0)
-        {
-            command?.CommandTimeout = 30;
-        }
+        // command?.CommandText = command?.CommandText.Replace("UniqueId", "uniqueId");
     }
 
     // Called after execution (both for readers and scalars)
