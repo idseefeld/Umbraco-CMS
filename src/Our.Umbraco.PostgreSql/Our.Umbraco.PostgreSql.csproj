@@ -4,7 +4,7 @@
     <PackageId>Our.Umbraco.PostgreSql</PackageId>
     <Company>-</Company>
     <Authors>Dirk Seefeld</Authors>
-    <PackageIcon>uPostgresql2.png</PackageIcon>
+    <PackageIcon>uPostgresql.png</PackageIcon>
     <PackageReadmeFile>readme.md</PackageReadmeFile>
     <Product>PostgreSQL Provider for Umbraco CMS</Product>
     <PackageTags>umbraco, postgresql, community</PackageTags>
@@ -28,7 +28,7 @@
 
   <ItemGroup>
     <Content Include="readme.md" Pack="true" PackagePath="\" />
-    <Content Include="uPostgresql2.png" Pack="true" PackagePath="" Visible="false" />
+    <Content Include="uPostgresql.png" Pack="true" PackagePath="" Visible="false" />
   </ItemGroup>
 
 </Project>
