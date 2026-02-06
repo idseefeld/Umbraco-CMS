@@ -111,6 +111,7 @@ namespace Umbraco.Extensions
                     return sql;
                 }
             }
+
             sql.Where($"{fieldName} IN (@values)", new { values });
             return sql;
         }
@@ -1552,8 +1553,6 @@ namespace Umbraco.Extensions
             var queryColumns = pd.QueryColumns.ToList();
 
             Dictionary<string, string>? aliases = null;
-            //            return fieldName;
-            //        }).ToArray();
 
             if (columnExpressions != null && columnExpressions.Length > 0)
             {
