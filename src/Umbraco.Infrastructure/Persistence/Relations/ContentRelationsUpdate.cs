@@ -162,8 +162,7 @@ internal sealed class ContentRelationsUpdate :
 
     private sealed class NodeIdKey
     {
-        public const string PrimaryKeyName = Constants.DatabaseSchema.Columns.PrimaryKeyNameId;
-        [Column(PrimaryKeyName)]
+        [Column("id")]
         public int NodeId { get; set; }
 
         [Column("uniqueId")]
