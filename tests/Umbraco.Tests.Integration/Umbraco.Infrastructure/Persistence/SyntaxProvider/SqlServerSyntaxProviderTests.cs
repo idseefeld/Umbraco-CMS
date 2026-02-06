@@ -56,7 +56,7 @@ internal sealed class SqlServerSyntaxProviderTests : UmbracoIntegrationTest
         var sqlOutput = SqlContext.SqlSyntax.GetDeleteSubquery(ContentNuDto.TableName, ContentNuDto.NodeIdColumnName, subQuery);
 
 
-        var expectedSql = @$"DELETE FROM {QTab(ContentNuDto.TableName)} WHERE {QCol(ContentNuDto.NodeIdColumnName)} IN (SELECT {QCol(ContentNuDto.NodeIdColumnName)} FROM (SELECT DISTINCT {QTab(ContentNuDto.TableName)}.{QCol(ContentNuDto.NodeIdColumnName)} AS {QAli(nameof(ContentNuDto.NodeId))} FROM {QTab(ContentNuDto.TableName)} INNER JOIN {QTab(NodeDto.TableName)} ON {QTab(ContentNuDto.TableName)}.{QCol(ContentNuDto.NodeIdColumnName)} = {QTab(NodeDto.TableName)}.{QCol(NodeDto.PrimaryKeyColumnName)} WHERE (({QTab(NodeDto.TableName)}.{QCol(NodeDto.NodeObjectTypeColumnName)} = @0))) x)".Replace(Environment.NewLine, " ")
+        var expectedSql = @$"DELETE FROM {QTab(ContentNuDto.TableName)} WHERE {QCol(ContentNuDto.NodeIdColumnName)} IN (SELECT {QCol(ContentNuDto.NodeIdColumnName)} FROM (SELECT DISTINCT {QTab(ContentNuDto.TableName)}.{QCol(ContentNuDto.NodeIdColumnName)} AS {QAli(ContentNuDto.NodeIdColumnName)} FROM {QTab(ContentNuDto.TableName)} INNER JOIN {QTab(NodeDto.TableName)} ON {QTab(ContentNuDto.TableName)}.{QCol(ContentNuDto.NodeIdColumnName)} = {QTab(NodeDto.TableName)}.{QCol(NodeDto.PrimaryKeyColumnName)} WHERE (({QTab(NodeDto.TableName)}.{QCol(NodeDto.NodeObjectTypeColumnName)} = @0))) x)".Replace(Environment.NewLine, " ")
                 .Replace("\n", " ").Replace("\r", " ");
         var sqlOutputSql = sqlOutput.SQL.Replace(Environment.NewLine, " ").Replace("\n", " ").Replace("\r", " ");
 
