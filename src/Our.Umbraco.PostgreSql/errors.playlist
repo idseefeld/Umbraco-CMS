@@ -1,0 +1,123 @@
+<Playlist Version="2.0">
+  <Rule Name="Includes" Match="Any">
+    <Rule Match="All">
+      <Property Name="Solution" />
+      <Rule Match="Any">
+        <Rule Match="All">
+          <Property Name="Project" Value="Umbraco.Tests.Integration" />
+          <Rule Match="Any">
+            <Rule Match="All">
+              <Property Name="Namespace" Value="Umbraco.Cms.Tests.Integration.Umbraco.Core.Services" />
+              <Rule Match="Any">
+                <Rule Match="All">
+                  <Property Name="Class" Value="ContentServiceTests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Core.Services.ContentServiceTests.Can_Verify_Property_Types_On_Content" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Verify_Property_Types_On_Content" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+              </Rule>
+            </Rule>
+            <Rule Match="All">
+              <Property Name="Namespace" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Migrations" />
+              <Rule Match="Any">
+                <Rule Match="All">
+                  <Property Name="Class" Value="AdvancedMigrationTests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Migrations.AdvancedMigrationTests.AddColumnAsync" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="AddColumnAsync" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+              </Rule>
+            </Rule>
+            <Rule Match="All">
+              <Property Name="Namespace" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.NPocoTests" />
+              <Rule Match="Any">
+                <Rule Match="All">
+                  <Property Name="Class" Value="NPocoBulkInsertTests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoBulkInsertTests.Generate_Bulk_Import_Sql" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Generate_Bulk_Import_Sql" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="NPocoFetchTests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.NPocoTests.NPocoFetchTests.TestMultipleOneToOne" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="TestMultipleOneToOne" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+              </Rule>
+            </Rule>
+            <Rule Match="All">
+              <Property Name="Namespace" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.Repositories" />
+              <Rule Match="Any">
+                <Rule Match="All">
+                  <Property Name="Class" Value="CacheInstructionRepositoryTest" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.Repositories.CacheInstructionRepositoryTest.Can_Add_Cache_Instruction" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Can_Add_Cache_Instruction" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+              </Rule>
+            </Rule>
+            <Rule Match="All">
+              <Property Name="Namespace" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Scoping" />
+              <Rule Match="Any">
+                <Rule Match="All">
+                  <Property Name="Class" Value="ScopeTests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Scoping.ScopeTests.NestedTransactionComplete" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="NestedTransactionComplete" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Scoping.ScopeTests.NestedTransactionInnerFail" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="NestedTransactionInnerFail" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Scoping.ScopeTests.NestedTransactionOuterFail" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="NestedTransactionOuterFail" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Scoping.ScopeTests.Transaction" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Transaction" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+              </Rule>
+            </Rule>
+          </Rule>
+        </Rule>
+      </Rule>
+    </Rule>
+  </Rule>
+</Playlist>

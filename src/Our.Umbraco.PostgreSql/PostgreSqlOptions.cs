@@ -8,6 +8,6 @@ namespace Our.Umbraco.PostgreSql
     [UmbracoOptions(Constants.Configuration)]
     public class PostgreSqlOptions
     {
-        public bool? EscapeTableColumAliasNames { get; set; } = null;
+        public bool EscapeTableColumAliasNames { get; set; } = false;
     }
 }

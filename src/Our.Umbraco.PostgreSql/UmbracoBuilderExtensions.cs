@@ -68,7 +68,9 @@ namespace Our.Umbraco.PostgreSql
             DbProviderFactories.UnregisterFactory(Constants.ProviderName);
             DbProviderFactories.RegisterFactory(Constants.ProviderName, PostgreSqlDbProviderFactory.Instance);
 
-            builder.Services.Replace(ServiceDescriptor.Singleton<IUmbracoDatabaseFactory, PostgreSqlDatabaseFactory>());
+            // NOTE: No longer need to replace IUmbracoDatabaseFactory.
+            // The custom UmbracoPostgreSQLDatabaseType returned by PostgreSqlSyntaxProvider.GetUpdatedDatabaseType
+            // handles primary key name normalization (ID -> id) internally.
 
             return builder;
         }

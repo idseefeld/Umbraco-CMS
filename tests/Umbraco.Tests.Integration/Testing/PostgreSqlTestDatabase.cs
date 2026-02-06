@@ -22,10 +22,11 @@ namespace Umbraco.Cms.Tests.Integration.Testing
     {
         public const string DatabaseName = "UmbracoTests";
         private readonly TestDatabaseSettings _settings;
+        private readonly List<Thread> _prepareThreads = new();
 
         #region Base methods like SqlServerBaseTestDatabase
 #pragma warning disable IDE1006 // Naming Styles
-        protected PostgreSqlDatabase.CommandInfo[] _cachedDatabaseInitCommands = new PostgreSqlDatabase.CommandInfo[0];
+        protected UmbracoDatabase.CommandInfo[] _cachedDatabaseInitCommands = new UmbracoDatabase.CommandInfo[0];
 #pragma warning restore IDE1006 // Naming Styles
 
         protected override void ResetTestDatabase(TestDbMeta meta)
@@ -154,6 +155,7 @@ namespace Umbraco.Cms.Tests.Integration.Testing
             for (var i = 0; i < _settings.PrepareThreadCount; i++)
             {
                 var thread = new Thread(PrepareDatabase);
+                _prepareThreads.Add(thread);
                 thread.Start();
             }
         }
@@ -236,6 +238,12 @@ WHERE datname = @dbname AND pid <> pg_backend_pid();";
             _readySchemaQueue.CompleteAdding();
             while (_readySchemaQueue.TryTake(out _))
             {
+            }
+
+            // Wait for all worker threads to complete before dropping databases
+            foreach (var thread in _prepareThreads)
+            {
+                thread.Join();
             }
 
             Parallel.ForEach(_testDatabases, Drop);

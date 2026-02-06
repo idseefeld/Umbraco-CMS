@@ -127,14 +127,9 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
     /// <inheritdoc/>
     public override DatabaseType GetUpdatedDatabaseType(DatabaseType current, string? connectionString)
     {
-        var escapeTableColumAliasNames = _postgreSqlOptions?.Value?.EscapeTableColumAliasNames ?? false;
-        if (escapeTableColumAliasNames)
-        {
-            // ToDo: the following is needed to avoid issues with casing when comparing strings in Postgres. ATTENTION: this needs an updated NPoco version that supports this flag!
-            // current.EscapeTableColumAliasNames = true;
-        }
-
-        return current;
+        // Return custom database type that handles primary key name normalization
+        // This handles the "ID" vs "id" case sensitivity issue in PostgreSQL
+        return new UmbracoPostgreSQLDatabaseType();
     }
 
     /// <summary>
@@ -346,7 +341,7 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
         }
 
         var optionsValue = _postgreSqlOptions?.Value;
-        var escapeTableColumAliasNames = optionsValue?.EscapeTableColumAliasNames ?? false;
+        var escapeTableColumAliasNames = optionsValue?.EscapeTableColumAliasNames ?? true;
 
         var rVal = !escapeTableColumAliasNames || SqlKeywords.InvariantContains(identifier) ? $"\"{identifier}\"" : $"{identifier}";
         return rVal;
