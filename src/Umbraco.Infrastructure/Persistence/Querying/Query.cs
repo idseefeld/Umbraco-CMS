@@ -80,7 +80,6 @@ public class Query<T> : IQuery<T>
         }
     }
 
-
     /// <summary>
     ///     Adds a set of OR-ed where clauses to the query.
     /// </summary>
@@ -104,7 +103,7 @@ public class Query<T> : IQuery<T>
             {
                 sb = new StringBuilder("(");
                 parameters = new List<object>();
-                sql = NPoco.Sql.BuilderFor(_sqlContext);
+                sql = Sql.BuilderFor(_sqlContext);
             }
             else
             {

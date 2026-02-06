@@ -41,6 +41,7 @@ namespace Umbraco.Cms.Tests.Integration.Testing;
 public abstract class UmbracoIntegrationTest : UmbracoIntegrationTestBase
 {
     private IHost _host;
+    protected ISqlContext SqlContext => GetRequiredService<IUmbracoDatabaseFactory>().SqlContext;
 
     protected IServiceProvider Services => _host.Services;
 
@@ -77,7 +78,7 @@ public abstract class UmbracoIntegrationTest : UmbracoIntegrationTestBase
 
     protected string GetDBTypeNameForTextColumn(IScope scope, int size = 64)
     {
-        return scope.Database.DatabaseType is PostgreSQLDatabaseType ? "TEXT" : $"NVARCHAR({size})";
+        return string.Format(scope.Database.SqlContext.SqlSyntax.StringLengthUnicodeColumnDefinitionFormat, size);
     }
 
     [SetUp]
@@ -286,6 +287,20 @@ public abstract class UmbracoIntegrationTest : UmbracoIntegrationTestBase
         }
     }
 
+    protected string QTab(string x)
+    {
+        return SqlContext.SqlSyntax.GetQuotedTableName(x);
+    }
+
+    protected string QCol(string x)
+    {
+        return SqlContext.SqlSyntax.GetQuotedColumnName(x);
+    }
+
+    protected string QAli(string x)
+    {
+        return SqlContext.SqlSyntax.GetQuotedName(x);
+    }
     protected int CountUmbracoNodesOfType(Guid objectType)
     {
         var db = ScopeAccessor.AmbientScope.Database;

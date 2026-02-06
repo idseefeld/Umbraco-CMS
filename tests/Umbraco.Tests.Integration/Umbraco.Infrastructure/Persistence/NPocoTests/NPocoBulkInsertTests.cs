@@ -172,19 +172,17 @@ internal sealed class NPocoBulkInsertTests : UmbracoIntegrationTest
             });
         }
 
-        var isPostgreSql = false;
+        string pF = "@";
         IDbCommand[] commands;
         using (var scope = ScopeProvider.CreateScope())
         {
-            isPostgreSql = ScopeAccessor.AmbientScope.Database.DatabaseType is PostgreSQLDatabaseType;
+            pF = SqlContext.DatabaseType.GetParameterPrefix(ScopeAccessor.AmbientScope.Database.ConnectionString);
             commands = ScopeAccessor.AmbientScope.Database.GenerateBulkInsertCommands(servers.ToArray());
             scope.Complete();
         }
 
         // Assert
-        var defaultSqlText = isPostgreSql
-            ? "INSERT INTO \"umbracoServer\" (\"umbracoServer\".\"address\", \"umbracoServer\".\"computerName\", \"umbracoServer\".\"registeredDate\", \"umbracoServer\".\"lastNotifiedDate\", \"umbracoServer\".\"isActive\", \"umbracoServer\".\"isSchedulingPublisher\") VALUES (@p0,@p1,@p2,@p3,@p4,@p5), (@p6,@p7,@p8,@p9,@p10,@p11)"
-            : "INSERT INTO [umbracoServer] ([umbracoServer].[address], [umbracoServer].[computerName], [umbracoServer].[registeredDate], [umbracoServer].[lastNotifiedDate], [umbracoServer].[isActive], [umbracoServer].[isSchedulingPublisher]) VALUES (@0,@1,@2,@3,@4,@5), (@6,@7,@8,@9,@10,@11)";
+        var defaultSqlText = $"INSERT INTO {QTab("umbracoServer")} ({QTab("umbracoServer")}.{QCol("address")}, {QTab("umbracoServer")}.{QCol("computerName")}, {QTab("umbracoServer")}.{QCol("registeredDate")}, {QTab("umbracoServer")}.{QCol("lastNotifiedDate")}, {QTab("umbracoServer")}.{QCol("isActive")}, {QTab("umbracoServer")}.{QCol("isSchedulingPublisher")}) VALUES ({pF}0,{pF}1,{pF}2,{pF}3,{pF}4,{pF}5), ({pF}6,{pF}7,{pF}8,{pF}9,{pF}10,{pF}11)";
 
         Assert.That(commands[0].CommandText, Is.EqualTo(defaultSqlText));
     }
