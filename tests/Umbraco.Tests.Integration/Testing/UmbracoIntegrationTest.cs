@@ -4,10 +4,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
-using NPoco.DatabaseTypes;
 using NUnit.Framework;
-using Our.Umbraco.PostgreSql;
-using Our.Umbraco.PostgreSql.EFCore;
 using Umbraco.Cms.Api.Management.DependencyInjection;
 using Umbraco.Cms.Core.Cache;
 using Umbraco.Cms.Core.Configuration.Models;
@@ -17,9 +14,8 @@ using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.Strings;
 using Umbraco.Cms.Core.Web;
 using Umbraco.Cms.Infrastructure.DependencyInjection;
-using Umbraco.Cms.Infrastructure.Persistence;
-using Umbraco.Cms.Infrastructure.Persistence.Dtos;
 using Umbraco.Cms.Infrastructure.Persistence.Mappers;
+using Umbraco.Cms.Infrastructure.Persistence.SqlSyntax;
 using Umbraco.Cms.Infrastructure.Scoping;
 using Umbraco.Cms.Persistence.Sqlite;
 using Umbraco.Cms.Persistence.SqlServer;
@@ -41,6 +37,7 @@ namespace Umbraco.Cms.Tests.Integration.Testing;
 public abstract class UmbracoIntegrationTest : UmbracoIntegrationTestBase
 {
     private IHost _host;
+    protected ISqlContext SqlContext => GetRequiredService<IUmbracoDatabaseFactory>().SqlContext;
 
     protected IServiceProvider Services => _host.Services;
 
@@ -77,7 +74,7 @@ public abstract class UmbracoIntegrationTest : UmbracoIntegrationTestBase
 
     protected string GetDBTypeNameForTextColumn(IScope scope, int size = 64)
     {
-        return scope.Database.DatabaseType is PostgreSQLDatabaseType ? "TEXT" : $"NVARCHAR({size})";
+        return string.Format(scope.Database.SqlContext.SqlSyntax.StringLengthUnicodeColumnDefinitionFormat, size);
     }
 
     [SetUp]
@@ -178,8 +175,6 @@ public abstract class UmbracoIntegrationTest : UmbracoIntegrationTestBase
             .AddExamine()
             .AddUmbracoSqlServerSupport()
             .AddUmbracoSqliteSupport()
-            .AddUmbracoPostgreSqlSupport()
-            .AddUmbracoPostgreSqlEFCoreSupport()
             .AddUmbracoHybridCache()
             .AddTestServices(TestHelper);
 
@@ -286,13 +281,18 @@ public abstract class UmbracoIntegrationTest : UmbracoIntegrationTestBase
         }
     }
 
-    protected int CountUmbracoNodesOfType(Guid objectType)
+    protected string QTab(string x)
     {
-        var db = ScopeAccessor.AmbientScope.Database;
-        var sql = db.SqlContext.Sql()
-            .SelectCount("*")
-            .From<NodeDto>()
-            .Where<NodeDto>(x => x.NodeObjectType == objectType);
-        return db.ExecuteScalar<int>(sql);
+        return SqlContext.SqlSyntax.GetQuotedTableName(x);
+    }
+
+    protected string QCol(string x)
+    {
+        return SqlContext.SqlSyntax.GetQuotedColumnName(x);
+    }
+
+    protected string QAli(string x)
+    {
+        return SqlContext.SqlSyntax.GetQuotedName(x);
     }
 }

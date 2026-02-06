@@ -1,19 +1,8 @@
 // Copyright (c) Umbraco.
 // See LICENSE for more details.
 
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Moq;
 using NPoco;
 using NUnit.Framework;
-using Umbraco.Cms.Core.Configuration;
-using Umbraco.Cms.Core.Configuration.Models;
-using Umbraco.Cms.Core.Events;
-using Umbraco.Cms.Infrastructure.Migrations.Install;
-using Umbraco.Cms.Infrastructure.Persistence;
-using Umbraco.Cms.Infrastructure.Persistence.DatabaseAnnotations;
-using Umbraco.Cms.Infrastructure.Persistence.SqlSyntax;
 using Umbraco.Cms.Tests.Common.Testing;
 using Umbraco.Cms.Tests.Integration.Testing;
 
@@ -28,49 +17,86 @@ internal sealed class NPocoFetchTests : UmbracoIntegrationTest
     {
         using (var scope = ScopeProvider.CreateScope())
         {
-            var databaseSchemaCreator = new DatabaseSchemaCreator(
-                scope.Database,
-                Mock.Of<ILogger<DatabaseSchemaCreator>>(),
-                CreateLoggerFactory(),
-                Mock.Of<IUmbracoVersion>(),
-                Mock.Of<IEventAggregator>(),
-                Mock.Of<IOptionsMonitor<InstallDefaultDataSettings>>());
-
-            AddTables(databaseSchemaCreator);
-
-            InsertData(scope.Database);
-
+            InsertData(ScopeAccessor.AmbientScope.Database);
             scope.Complete();
         }
     }
-    private static void AddTables(DatabaseSchemaCreator databaseSchemaCreator)
+
+    private static void InsertData(IDatabase database)
     {
-        databaseSchemaCreator.CreateTable<Thing1Dto>();
-        databaseSchemaCreator.CreateTable<Thing2Base>();
-        databaseSchemaCreator.CreateTable<ThingGroupDto>();
-        databaseSchemaCreator.CreateTable<Thing2GroupDto>();
-        databaseSchemaCreator.CreateTable<ThingA1Dto>();
-        databaseSchemaCreator.CreateTable<ThingA2Dto>();
-        databaseSchemaCreator.CreateTable<ThingA3Dto>();
-        databaseSchemaCreator.CreateTable<ThingA12Dto>();
-    }
-    private static void InsertData(IUmbracoDatabase database)
-    {
+        database.Execute(@"
+                CREATE TABLE zbThing1 (
+                    id int PRIMARY KEY NOT NULL,
+                    name NVARCHAR(255) NULL
+                );");
+
         database.Insert(new Thing1Dto { Id = 1, Name = "one" });
+
         database.Insert(new Thing1Dto { Id = 2, Name = "two" });
 
+        database.Execute(@"
+                CREATE TABLE zbThing2 (
+                    id int PRIMARY KEY NOT NULL,
+                    name NVARCHAR(255) NULL,
+                    thingId int NULL
+                );");
+
         database.Insert(new Thing2Dto { Id = 1, Name = "uno", ThingId = 1 });
+
         database.Insert(new Thing2Dto { Id = 2, Name = "due", ThingId = 2 });
+
         database.Insert(new Thing2Dto { Id = 3, Name = "tri", ThingId = 1 });
 
+        database.Execute(@"
+                CREATE TABLE zbThingGroup (
+                    id int PRIMARY KEY NOT NULL,
+                    name NVARCHAR(255) NULL
+                );");
+
         database.Insert(new ThingGroupDto { Id = 1, Name = "g-one" });
+
         database.Insert(new ThingGroupDto { Id = 2, Name = "g-two" });
+
         database.Insert(new ThingGroupDto { Id = 3, Name = "g-three" });
 
+        database.Execute(@"
+                CREATE TABLE zbThing2Group (
+                    thingId int NOT NULL,
+                    groupId int NOT NULL
+                );");
+
         database.Insert(new Thing2GroupDto { ThingId = 1, GroupId = 1 });
+
         database.Insert(new Thing2GroupDto { ThingId = 1, GroupId = 2 });
+
         database.Insert(new Thing2GroupDto { ThingId = 2, GroupId = 2 });
+
         database.Insert(new Thing2GroupDto { ThingId = 3, GroupId = 3 });
+
+        database.Execute(@"
+                CREATE TABLE zbThingA1 (
+                    id int PRIMARY KEY NOT NULL,
+                    name NVARCHAR(255) NULL
+                );");
+
+        database.Execute(@"
+                CREATE TABLE zbThingA2 (
+                    id int PRIMARY KEY NOT NULL,
+                    name NVARCHAR(255) NULL
+                );");
+
+        database.Execute(@"
+                CREATE TABLE zbThingA3 (
+                    id int PRIMARY KEY NOT NULL,
+                    name NVARCHAR(255) NULL
+                );");
+
+        database.Execute(@"
+                CREATE TABLE zbThingA12 (
+                    thing1id int NOT NULL,
+                    thing2id int NOT NULL,
+                    name NVARCHAR(255) NOT NULL
+                );");
     }
 
     [Test]
@@ -272,7 +298,6 @@ internal sealed class NPocoFetchTests : UmbracoIntegrationTest
         // with an n-to-n intermediate table.
         using (var scope = ScopeProvider.CreateScope())
         {
-            var syntax = scope.SqlContext.SqlSyntax;
             // This is the raw SQL, but it's better to use expressions and no magic strings!
             // var sql = @"
             //    SELECT zbThing1.id, zbThing1.name, COUNT(zbThing2Group.groupId) as groupCount
@@ -281,7 +306,7 @@ internal sealed class NPocoFetchTests : UmbracoIntegrationTest
             //    GROUP BY zbThing1.id, zbThing1.name";
             var sql = ScopeAccessor.AmbientScope.SqlContext.Sql()
                 .Select<Thing1Dto>()
-                .Append($", COUNT({syntax.GetQuotedTableName("zbThing2Group")}.{syntax.GetQuotedColumnName("groupId")}) AS {syntax.GetQuotedName("groupCount")}")
+                .Append($", COUNT({QTab("zbThing2Group")}.{syntax.GetQuotedColumnName("groupId")}) AS {syntax.GetQuotedName("groupCount")}")
                 .From<Thing1Dto>()
                 .InnerJoin<Thing2GroupDto>().On<Thing1Dto, Thing2GroupDto>((t, t2g) => t.Id == t2g.ThingId)
                 .GroupBy<Thing1Dto>(x => x.Id, x => x.Name);
@@ -362,15 +387,15 @@ internal sealed class NPocoFetchTests : UmbracoIntegrationTest
 
             var syntax = scope.SqlContext.SqlSyntax;
             var sql = @$"SELECT a1.id, a1.name,
-a2.id AS T2A__Id, a2.name AS T2A__Name, a3.id AS T2A__T3__Id, a3.name AS T2A__T3__Name,
-a2x.id AS T2B__Id, a2x.name AS T2B__Name, a3x.id AS T2B__T3__Id, a3x.name AS T2B__T3__Name
-FROM {syntax.GetQuotedTableName("zbThingA1")} a1
-JOIN {syntax.GetQuotedTableName("zbThingA12")} a12 ON a1.id=a12.thing1id AND a12.name='a'
-JOIN {syntax.GetQuotedTableName("zbThingA2")} a2 ON a12.thing2id=a2.id
-JOIN {syntax.GetQuotedTableName("zbThingA3")} a3 ON a2.id=a3.id
-JOIN {syntax.GetQuotedTableName("zbThingA12")} a12x ON a1.id=a12x.thing1id AND a12x.name='b'
-JOIN {syntax.GetQuotedTableName("zbThingA2")} a2x ON a12x.thing2id=a2x.id
-JOIN {syntax.GetQuotedTableName("zbThingA3")} a3x ON a2x.id=a3x.id
+a2.id AS {QAli("T2A__Id")}, a2.name AS {QAli("T2A__Name")}, a3.id AS {QAli("T2A__T3__Id")}, a3.name AS {QAli("T2A__T3__Name")},
+a2x.id AS {QAli("T2B__Id")}, a2x.name AS {QAli("T2B__Name")}, a3x.id AS {QAli("T2B__T3__Id")}, a3x.name AS {QAli("T2B__T3__Name")}
+FROM {QTab("zbThingA1")} a1
+JOIN {QTab("zbThingA12")} a12 ON a1.id=a12.thing1id AND a12.name='a'
+JOIN {QTab("zbThingA2")} a2 ON a12.thing2id=a2.id
+JOIN {QTab("zbThingA3")} a3 ON a2.id=a3.id
+JOIN {QTab("zbThingA12")} a12x ON a1.id=a12x.thing1id AND a12x.name='b'
+JOIN {QTab("zbThingA2")} a2x ON a12x.thing2id=a2x.id
+JOIN {QTab("zbThingA3")} a3x ON a2x.id=a3x.id
 ";
 
             var ts = ScopeAccessor.AmbientScope.Database.Fetch<ThingA1Dto>(sql);
@@ -403,7 +428,7 @@ JOIN {syntax.GetQuotedTableName("zbThingA3")} a3x ON a2x.id=a3x.id
     [TableName("zbThing2")]
     [PrimaryKey("id", AutoIncrement = false)]
     [ExplicitColumns]
-    public class Thing2Base
+    public class Thing2Dto
     {
         [Column("id")]
         public int Id { get; set; }
@@ -411,19 +436,16 @@ JOIN {syntax.GetQuotedTableName("zbThingA3")} a3x ON a2x.id=a3x.id
         [Column("name")]
         public string Name { get; set; }
 
-        [Column("thingId")]
+        [Column("thingid")]
         public int ThingId { get; set; }
-    }
 
-    public class Thing2Dto : Thing2Base
-    {
         // reference is required else value remains null
         // columnName indicates which column has the id, referenceMembreName not needed if PK
-        [Reference(ReferenceType.OneToOne, ColumnName = "thingId" /*, ReferenceMemberName="id"*/)]
+        [Reference(ReferenceType.OneToOne, ColumnName = "thingid" /*, ReferenceMemberName="id"*/)]
         public Thing1Dto Thing { get; set; }
     }
 
-    [TableName("zbThing1")]
+    [TableName("zbThing3")]
     [PrimaryKey("id", AutoIncrement = false)]
     [ExplicitColumns]
     public class Thing3Dto
@@ -453,18 +475,18 @@ JOIN {syntax.GetQuotedTableName("zbThingA3")} a3x ON a2x.id=a3x.id
     }
 
     [TableName("zbThing2Group")]
-    [PrimaryKey("thingId, groupId", AutoIncrement = false)]
+    [PrimaryKey("thingid, groupid", AutoIncrement = false)]
     [ExplicitColumns]
     public class Thing2GroupDto
     {
-        [Column("thingId")]
+        [Column("thingid")]
         public int ThingId { get; set; }
 
-        [Column("groupId")]
+        [Column("groupid")]
         public int GroupId { get; set; }
     }
 
-    [TableName("zbThing1")]
+    [TableName("zbThing4")]
     [PrimaryKey("id", AutoIncrement = false)]
     [ExplicitColumns]
     public class Thing4Dto
@@ -481,7 +503,7 @@ JOIN {syntax.GetQuotedTableName("zbThingA3")} a3x ON a2x.id=a3x.id
         public List<ThingGroupDto> Groups { get; set; }
     }
 
-    [TableName("zbThing1")]
+    [TableName("zbThing5")]
     [PrimaryKey("id", AutoIncrement = false)]
     [ExplicitColumns]
     public class Thing5Dto
@@ -492,7 +514,7 @@ JOIN {syntax.GetQuotedTableName("zbThingA3")} a3x ON a2x.id=a3x.id
         [Column("name")]
         public string Name { get; set; }
 
-        [Column("groupCount")]
+        [Column("groupcount")]
         [ResultColumn] // not included in insert/update, not sql-generated
         public int GroupCount { get; set; }
     }
@@ -546,6 +568,7 @@ JOIN {syntax.GetQuotedTableName("zbThingA3")} a3x ON a2x.id=a3x.id
     }
 
     [TableName("zbThingA12")]
+    [PrimaryKey("PK_thing1id_thing2id", AutoIncrement = false)]
     [ExplicitColumns]
     public class ThingA12Dto
     {
