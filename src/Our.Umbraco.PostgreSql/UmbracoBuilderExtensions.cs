@@ -60,8 +60,8 @@ namespace Our.Umbraco.PostgreSql
                 .Singleton<IProviderSpecificInterceptor, PostgreSqlAddMiniProfilerInterceptor>());
             builder.Services.TryAddEnumerable(ServiceDescriptor
                 .Singleton<IProviderSpecificInterceptor, PostgreSqlAddRetryPolicyInterceptor>());
-            builder.Services.TryAddEnumerable(ServiceDescriptor
-                .Singleton<IProviderSpecificInterceptor, PostgreSqlExecutingInterceptor>());
+            //builder.Services.TryAddEnumerable(ServiceDescriptor
+            //    .Singleton<IProviderSpecificInterceptor, PostgreSqlExecutingInterceptor>());
             builder.Services.TryAddEnumerable(ServiceDescriptor
                 .Singleton<IProviderSpecificInterceptor, PostgreSqlDataInterceptor>());
 
