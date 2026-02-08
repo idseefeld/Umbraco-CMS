@@ -281,6 +281,8 @@ internal sealed class EntityRepository : RepositoryBase, IEntityRepositoryExtend
             .Where<NodeDto>(x => x.ParentId == parentId && x.Trashed == isTrashed)
             .WhereIn<NodeDto>(x => x.NodeObjectType, objectTypes);
 
+        string quotedImplicitUniqueIdAlias = QuoteColumnName("UniqueId");
+
         // Apply the filter if provided.
         if (filter != null)
         {
@@ -294,7 +296,6 @@ internal sealed class EntityRepository : RepositoryBase, IEntityRepositoryExtend
         // the final query for before and after positions will increase. So we need to calculate the offset based on the provided values.
         int beforeAfterParameterIndexOffset = GetBeforeAfterParameterOffset(objectTypes, filter);
 
-        // use all lower case alias names to avoid sql syntax issues
         string targetAlias = "target";
 
         // Find the specific row number of the target node.
@@ -302,7 +303,7 @@ internal sealed class EntityRepository : RepositoryBase, IEntityRepositoryExtend
         Sql<ISqlContext> targetRowSql = Sql()
             .Select("rn")
             .From().AppendSubQuery(rowNumberSql, targetAlias)
-            .Where<NodeDto>(x => x.UniqueId == targetKey, targetAlias);
+            .Where($"{QuoteTableName(targetAlias)}.{quotedImplicitUniqueIdAlias} IN (@0)", [targetKey]); // cannot use generic .Where<T> here beacause of the implicit aliasing "UniqueId" of the subquery
 
         // We have to reuse the target row sql arguments, however, we also need to add the "before" and "after" values to the arguments.
         // If we try to do this directly in the params array it'll consider the initial argument array as a single argument.
@@ -319,7 +320,7 @@ internal sealed class EntityRepository : RepositoryBase, IEntityRepositoryExtend
         totalAfter = GetNumberOfSiblingsOutsideSiblingRange(rowNumberSql, targetRowSql, beforeAfterParameterIndex, afterArgumentsArray, false);
 
         return Sql()
-            .Select(QuoteColumnName("uniqueId"))
+            .Select(quotedImplicitUniqueIdAlias)
             .From().AppendSubQuery(rowNumberSql, "nn")
             .Where($"rn >= ({targetRowSql.SQL}) - @{beforeAfterParameterIndex}", beforeArgumentsArray)
             .Where($"rn <= ({targetRowSql.SQL}) + @{beforeAfterParameterIndex}", afterArgumentsArray)
