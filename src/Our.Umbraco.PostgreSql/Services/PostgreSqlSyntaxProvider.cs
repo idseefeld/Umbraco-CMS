@@ -418,11 +418,6 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
             return column;
         }
 
-        if (referenceName == null && columnAlias.InvariantEquals(columnName))
-        {
-            columnAlias = columnName;
-        }
-
         referenceName = referenceName == null ? string.Empty : referenceName + "__";
         columnAlias = GetQuotedColumnName(referenceName + columnAlias);
         column += " AS " + columnAlias;

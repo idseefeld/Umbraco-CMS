@@ -57,7 +57,7 @@ public class NPocoSqlTemplateTests
             factory);
         var sqlTemplates = new SqlTemplates(sqlContext);
 
-        const string sqlBase = "SELECT \"zbThing1\".\"id\" AS \"id\", \"zbThing1\".\"name\" AS \"name\" FROM \"zbThing1\" WHERE ";
+        const string sqlBase = "SELECT \"zbThing1\".\"id\" AS \"Id\", \"zbThing1\".\"name\" AS \"Name\" FROM \"zbThing1\" WHERE ";
 
         var template = sqlTemplates.Get("sql1", s => s.Select<Thing1Dto>().From<Thing1Dto>()
             .Where<Thing1Dto>(x => x.Name == SqlTemplate.Arg<string>("value")));
