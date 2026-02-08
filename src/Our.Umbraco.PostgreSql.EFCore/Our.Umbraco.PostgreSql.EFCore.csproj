@@ -26,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="readme.md" Pack="true" PackagePath="\" />
     <Content Include="..\Our.Umbraco.PostgreSql\uPostgresql.png" Pack="true" PackagePath="" Visible="false" />
   </ItemGroup>
 
