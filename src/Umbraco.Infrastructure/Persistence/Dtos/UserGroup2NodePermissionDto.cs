@@ -11,14 +11,14 @@ namespace Umbraco.Cms.Infrastructure.Persistence.Dtos;
 internal class UserGroup2NodePermissionDto
 {
     public const string TableName = Constants.DatabaseSchema.Tables.UserGroup2NodePermission;
-    public const string PrimaryKeyColumnName = "PK_umbracoUserGroup2NodePermission";
+    public const string PrimaryKeyConstraintName = "PK_umbracoUserGroup2NodePermission";
 
     private const string UserGroupIdColumnName = "userGroupId";
     private const string NodeIdColumnName = "nodeId";
     private const string PermissionColumnName = "permission";
 
     [Column(UserGroupIdColumnName)]
-    [PrimaryKeyColumn(AutoIncrement = false, Name = PrimaryKeyColumnName, OnColumns = $"{UserGroupIdColumnName}, {NodeIdColumnName}, {PermissionColumnName}")]
+    [PrimaryKeyColumn(AutoIncrement = false, Name = PrimaryKeyConstraintName, OnColumns = $"{UserGroupIdColumnName}, {NodeIdColumnName}, {PermissionColumnName}")]
     [ForeignKey(typeof(UserGroupDto))]
     public int UserGroupId { get; set; }
 

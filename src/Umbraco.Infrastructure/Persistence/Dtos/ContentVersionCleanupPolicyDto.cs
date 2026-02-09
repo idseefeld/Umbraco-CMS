@@ -13,7 +13,7 @@ internal sealed class ContentVersionCleanupPolicyDto
     public const string PrimaryKeyColumnName = "contentTypeId";
 
     [Column(PrimaryKeyColumnName)]
-    [PrimaryKeyColumn(AutoIncrement = false, Name = $"PK_{TableName}")]
+    [PrimaryKeyColumn(AutoIncrement = false)]
     [ForeignKey(typeof(ContentTypeDto), Column = ContentTypeDto.NodeIdColumnName)]
     public int ContentTypeId { get; set; }
 

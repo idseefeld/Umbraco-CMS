@@ -11,13 +11,13 @@ namespace Umbraco.Cms.Infrastructure.Persistence.Dtos;
 internal sealed class UserGroup2NodeDto
 {
     public const string TableName = Constants.DatabaseSchema.Tables.UserGroup2Node;
-    public const string PrimaryKeyColumnName = "PK_" + TableName;
+    public const string PrimaryKeyConstraintName = "PK_" + TableName;
 
     private const string UserGroupIdColumnName = "userGroupId";
     private const string NodeIdColumnName = "nodeId";
 
     [Column(UserGroupIdColumnName)]
-    [PrimaryKeyColumn(AutoIncrement = false, Name = PrimaryKeyColumnName, OnColumns = $"{UserGroupIdColumnName}, {NodeIdColumnName}")]
+    [PrimaryKeyColumn(AutoIncrement = false, Name = PrimaryKeyConstraintName, OnColumns = $"{UserGroupIdColumnName}, {NodeIdColumnName}")]
     [ForeignKey(typeof(UserGroupDto))]
     public int UserGroupId { get; set; }
 

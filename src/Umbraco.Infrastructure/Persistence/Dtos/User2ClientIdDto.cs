@@ -10,13 +10,13 @@ namespace Umbraco.Cms.Infrastructure.Persistence.Dtos;
 public class User2ClientIdDto
 {
     public const string TableName = Constants.DatabaseSchema.Tables.User2ClientId;
-    public const string PrimaryKeyColumnName = "PK_umbracoUser2ClientId";
+    public const string PrimaryKeyConstraintName = "PK_umbracoUser2ClientId";
     public const string UserIdColumnName = "userId";
 
     private const string ClientIdColumnName = "clientId";
 
     [Column(UserIdColumnName)]
-    [PrimaryKeyColumn(AutoIncrement = false, Name = PrimaryKeyColumnName, OnColumns = $"{UserIdColumnName}, {ClientIdColumnName}")]
+    [PrimaryKeyColumn(AutoIncrement = false, Name = PrimaryKeyConstraintName, OnColumns = $"{UserIdColumnName}, {ClientIdColumnName}")]
     [ForeignKey(typeof(UserDto))]
     public int UserId { get; set; }
 

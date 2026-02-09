@@ -11,7 +11,7 @@ namespace Umbraco.Cms.Infrastructure.Persistence.Dtos;
 public class ContentNuDto
 {
     public const string TableName = Constants.DatabaseSchema.Tables.NodeData;
-    public const string PrimaryKeyColumnName = "PK_cmsContentNu";
+    public const string PrimaryKeyConstraintName = "PK_cmsContentNu";
     public const string NodeIdColumnName = Constants.DatabaseSchema.Columns.NodeIdName;
 
     private const string PublishedColumnName = "published";
@@ -19,7 +19,7 @@ public class ContentNuDto
     private const string DataRawColumnName = "dataRaw";
 
     [Column(NodeIdColumnName)]
-    [PrimaryKeyColumn(AutoIncrement = false, Name = PrimaryKeyColumnName, OnColumns = $"{NodeIdColumnName}, {PublishedColumnName}")]
+    [PrimaryKeyColumn(AutoIncrement = false, Name = PrimaryKeyConstraintName, OnColumns = $"{NodeIdColumnName}, {PublishedColumnName}")]
     [ForeignKey(typeof(ContentDto), Column = ContentDto.PrimaryKeyColumnName, OnDelete = Rule.Cascade)]
     public int NodeId { get; set; }
 

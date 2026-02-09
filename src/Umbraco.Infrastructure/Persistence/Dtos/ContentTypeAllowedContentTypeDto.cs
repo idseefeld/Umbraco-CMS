@@ -10,7 +10,7 @@ namespace Umbraco.Cms.Infrastructure.Persistence.Dtos;
 internal sealed class ContentTypeAllowedContentTypeDto
 {
     public const string TableName = Constants.DatabaseSchema.Tables.ContentChildType;
-    public const string PrimaryKeyColumnName = "PK_cmsContentTypeAllowedContentType";
+    public const string PrimaryKeyConstraintName = "PK_cmsContentTypeAllowedContentType";
 
     // To avoid any risk of casing bugs caused by inconsistencies between upgraded and new installs, we keep the casing "Id" here even though in other tables the usual casing is lower-case ("id").
     public const string IdKeyColumnName = "Id";
@@ -19,7 +19,7 @@ internal sealed class ContentTypeAllowedContentTypeDto
     public const string AllowedIdColumnName = "AllowedId";
 
     [Column(IdKeyColumnName)]
-    [PrimaryKeyColumn(AutoIncrement = false, Clustered = true, Name = PrimaryKeyColumnName, OnColumns = $"{IdKeyColumnName}, {AllowedIdColumnName}")]
+    [PrimaryKeyColumn(AutoIncrement = false, Clustered = true, Name = PrimaryKeyConstraintName, OnColumns = $"{IdKeyColumnName}, {AllowedIdColumnName}")]
     [ForeignKey(typeof(ContentTypeDto), Name = "FK_cmsContentTypeAllowedContentType_cmsContentType", Column = ContentTypeDto.NodeIdColumnName)]
     public int Id { get; set; }
 
