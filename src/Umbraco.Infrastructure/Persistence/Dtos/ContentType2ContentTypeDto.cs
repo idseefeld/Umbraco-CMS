@@ -10,12 +10,12 @@ namespace Umbraco.Cms.Infrastructure.Persistence.Dtos;
 internal sealed class ContentType2ContentTypeDto
 {
     public const string TableName = Constants.DatabaseSchema.Tables.ContentTypeTree;
-    public const string PrimaryKeyConstraintName = "PK_cmsContentType2ContentType";
+    public const string PrimaryKeyColumnName = ParentIdColumnName;
     public const string ParentIdColumnName = "parentContentTypeId";
     public const string ChildIdColumnName = "childContentTypeId";
 
-    [Column(ParentIdColumnName)]
-    [PrimaryKeyColumn(AutoIncrement = false, Clustered = true, Name = PrimaryKeyConstraintName, OnColumns = $"{ParentIdColumnName}, {ChildIdColumnName}")]
+    [Column(PrimaryKeyColumnName)]
+    [PrimaryKeyColumn(AutoIncrement = false, Clustered = true, Name = "PK_cmsContentType2ContentType", OnColumns = $"{PrimaryKeyColumnName}, {ChildIdColumnName}")]
     [ForeignKey(typeof(NodeDto), Name = "FK_cmsContentType2ContentType_umbracoNode_parent")]
     public int ParentId { get; set; }
 

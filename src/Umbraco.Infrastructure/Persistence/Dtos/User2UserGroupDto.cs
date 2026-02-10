@@ -10,13 +10,12 @@ namespace Umbraco.Cms.Infrastructure.Persistence.Dtos;
 public class User2UserGroupDto
 {
     public const string TableName = Constants.DatabaseSchema.Tables.User2UserGroup;
-    public const string PrimaryKeyConstraintName = "PK_user2userGroup";
 
     private const string UserIdColumnName = "userId";
     private const string UserGroupIdColumnName = "userGroupId";
 
     [Column(UserIdColumnName)]
-    [PrimaryKeyColumn(AutoIncrement = false, Name = PrimaryKeyConstraintName, OnColumns = $"{UserIdColumnName}, {UserGroupIdColumnName}")]
+    [PrimaryKeyColumn(AutoIncrement = false, Name = "PK_user2userGroup", OnColumns = $"{UserIdColumnName}, {UserGroupIdColumnName}")]
     [ForeignKey(typeof(UserDto))]
     public int UserId { get; set; }
 

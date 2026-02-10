@@ -5,22 +5,21 @@ using Umbraco.Cms.Infrastructure.Persistence.DatabaseAnnotations;
 namespace Umbraco.Cms.Infrastructure.Persistence.Dtos;
 
 [TableName(TableName)]
-[PrimaryKey([IdKeyColumnName, AllowedIdColumnName], AutoIncrement = false)]
+[PrimaryKey([PrimaryKeyColumnName, AllowedIdColumnName], AutoIncrement = false)]
 [ExplicitColumns]
 internal sealed class ContentTypeAllowedContentTypeDto
 {
     public const string TableName = Constants.DatabaseSchema.Tables.ContentChildType;
-    public const string PrimaryKeyConstraintName = "PK_cmsContentTypeAllowedContentType";
+    public const string PrimaryKeyColumnName = IdKeyColumnName;
+    public const string IdKeyColumnName = "Id"; // To avoid any risk of casing bugs caused by inconsistencies between upgraded and new installs, we keep the casing "Id" here even though in other tables the usual casing is lower-case ("id").
 
-    // To avoid any risk of casing bugs caused by inconsistencies between upgraded and new installs, we keep the casing "Id" here even though in other tables the usual casing is lower-case ("id").
-    public const string IdKeyColumnName = "Id";
     public const string NodeIdColumnName = Constants.DatabaseSchema.Columns.NodeIdName;
     public const string SortOrderColumnName = "SortOrder";
     public const string AllowedIdColumnName = "AllowedId";
 
-    [Column(IdKeyColumnName)]
-    [PrimaryKeyColumn(AutoIncrement = false, Clustered = true, Name = PrimaryKeyConstraintName, OnColumns = $"{IdKeyColumnName}, {AllowedIdColumnName}")]
+    [Column(PrimaryKeyColumnName)]
     [ForeignKey(typeof(ContentTypeDto), Name = "FK_cmsContentTypeAllowedContentType_cmsContentType", Column = ContentTypeDto.NodeIdColumnName)]
+    [PrimaryKeyColumn(AutoIncrement = false, Clustered = true, Name = "PK_cmsContentTypeAllowedContentType", OnColumns = $"{PrimaryKeyColumnName}, {AllowedIdColumnName}")]
     public int Id { get; set; }
 
     [Column(AllowedIdColumnName)]

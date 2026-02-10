@@ -5,20 +5,20 @@ using Umbraco.Cms.Infrastructure.Persistence.DatabaseAnnotations;
 namespace Umbraco.Cms.Infrastructure.Persistence.Dtos;
 
 [TableName(TableName)]
-[PrimaryKey([UserGroupIdColumnName, AppAliasColumnName], AutoIncrement = false)]
+[PrimaryKey([PrimaryKeyColumnName, AppAliasColumnName], AutoIncrement = false)]
 [ExplicitColumns]
 public class UserGroup2AppDto
 {
     public const string TableName = Constants.DatabaseSchema.Tables.UserGroup2App;
-    public const string PrimaryKeyConstraintName = "PK_userGroup2App";
-    public const string UserGroupIdColumnName = "userGroupId";
+    public const string PrimaryKeyColumnName = UserGroupIdColumnName;
 
-    internal const string ReferenceMemberName = "UserGroupId"; // should be UserGroupIdColumnName, but for database compatibility we keep it like this
+    internal const string ReferenceMemberName = "UserGroupId"; // should be PrimaryKeyColumnName, but for database compatibility we keep it like this
 
+    private const string UserGroupIdColumnName = "userGroupId";
     private const string AppAliasColumnName = "app";
 
-    [Column(UserGroupIdColumnName)]
-    [PrimaryKeyColumn(AutoIncrement = false, Name = PrimaryKeyConstraintName, OnColumns = $"{UserGroupIdColumnName}, {AppAliasColumnName}")]
+    [Column(PrimaryKeyColumnName)]
+    [PrimaryKeyColumn(AutoIncrement = false, Name = "PK_userGroup2App", OnColumns = $"{PrimaryKeyColumnName}, {AppAliasColumnName}")]
     [ForeignKey(typeof(UserGroupDto))]
     public int UserGroupId { get; set; }
 

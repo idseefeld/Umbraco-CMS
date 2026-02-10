@@ -10,7 +10,6 @@ namespace Umbraco.Cms.Infrastructure.Persistence.Dtos;
 public class Webhook2EventsDto
 {
     public const string TableName = Constants.DatabaseSchema.Tables.Webhook2Events;
-    public const string PrimaryKeyConstraintName = "PK_webhookEvent2WebhookDto";
 
     internal const string ReferenceMemberName = "WebhookId"; // should be WebhookIdColumnName, but for database compatibility we keep it like this
 
@@ -18,7 +17,7 @@ public class Webhook2EventsDto
     private const string EventColumnName = "event";
 
     [Column(WebhookIdColumnName)]
-    [PrimaryKeyColumn(AutoIncrement = false, Name = PrimaryKeyConstraintName, OnColumns = $"{WebhookIdColumnName}, {EventColumnName}")]
+    [PrimaryKeyColumn(AutoIncrement = false, Name = "PK_webhookEvent2WebhookDto", OnColumns = $"{WebhookIdColumnName}, {EventColumnName}")]
     [ForeignKey(typeof(WebhookDto), OnDelete = Rule.Cascade)]
     public int WebhookId { get; set; }
 
