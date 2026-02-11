@@ -5,7 +5,7 @@ using Umbraco.Cms.Infrastructure.Persistence.DatabaseAnnotations;
 namespace Umbraco.Cms.Infrastructure.Persistence.Dtos;
 
 [TableName(TableName)]
-[PrimaryKey([UserIdColumnName, UserGroupIdColumnName], AutoIncrement = false)]
+[PrimaryKey([UserIdColumnName, UserGroupIdColumnName], AutoIncrement = false)] // fix wrong PrimaryKey attribute
 [ExplicitColumns]
 public class User2UserGroupDto
 {

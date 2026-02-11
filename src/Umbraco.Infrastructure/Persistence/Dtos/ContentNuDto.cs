@@ -6,7 +6,7 @@ using Umbraco.Cms.Infrastructure.Persistence.DatabaseAnnotations;
 namespace Umbraco.Cms.Infrastructure.Persistence.Dtos;
 
 [TableName(TableName)]
-[PrimaryKey([PrimaryKeyColumnName, PublishedColumnName], AutoIncrement = false)]
+[PrimaryKey([PrimaryKeyColumnName, PublishedColumnName], AutoIncrement = false)] // fix wrong PrimaryKey attribute
 [ExplicitColumns]
 public class ContentNuDto
 {

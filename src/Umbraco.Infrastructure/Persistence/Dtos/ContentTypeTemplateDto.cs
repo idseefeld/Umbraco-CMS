@@ -5,7 +5,7 @@ using Umbraco.Cms.Infrastructure.Persistence.DatabaseAnnotations;
 namespace Umbraco.Cms.Infrastructure.Persistence.Dtos;
 
 [TableName(TableName)]
-[PrimaryKey([PrimaryKeyName, TemplateNodeIdColumnName], AutoIncrement = false)]
+[PrimaryKey([PrimaryKeyName, TemplateNodeIdColumnName], AutoIncrement = false)] // fix wrong PrimaryKey attribute
 [ExplicitColumns]
 internal sealed class ContentTypeTemplateDto
 {
