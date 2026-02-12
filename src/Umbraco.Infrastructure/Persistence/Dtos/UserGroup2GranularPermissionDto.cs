@@ -13,8 +13,6 @@ public class UserGroup2GranularPermissionDto
     public const string PrimaryKeyColumnName = Constants.DatabaseSchema.Columns.PrimaryKeyNameId;
     public const string UniqueIdColumnName = Constants.DatabaseSchema.Columns.UniqueIdName;
 
-    internal const string ReferenceMemberName = "UserGroupId"; // should be UserGroupKeyColumnName, but for database compatibility we keep it like this
-
     private const string UserGroupKeyColumnName = "userGroupKey";
 
     [Column(PrimaryKeyColumnName)]

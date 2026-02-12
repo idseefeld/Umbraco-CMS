@@ -119,10 +119,10 @@ public class UserDto
     public string? Avatar { get; set; }
 
     [ResultColumn]
-    [Reference(ReferenceType.Many, ReferenceMemberName = User2UserGroupDto.ReferenceMemberName)]
+    [Reference(ReferenceType.Many, ReferenceMemberName = nameof(User2UserGroupDto.UserId))]
     public List<UserGroupDto> UserGroupDtos { get; set; }
 
     [ResultColumn]
-    [Reference(ReferenceType.Many, ReferenceMemberName = UserStartNodeDto.ReferenceMemberName)]
+    [Reference(ReferenceType.Many, ReferenceMemberName = nameof(UserStartNodeDto.UserId))]
     public HashSet<UserStartNodeDto> UserStartNodeDtos { get; set; }
 }

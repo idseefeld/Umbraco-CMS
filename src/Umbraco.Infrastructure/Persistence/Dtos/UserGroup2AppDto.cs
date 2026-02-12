@@ -14,8 +14,6 @@ public class UserGroup2AppDto
     [Obsolete("Use UserGroupIdColumnName instead. Scheduled for removal in Umbraco 18.")]
     public const string PrimaryKeyColumnName = UserGroupIdColumnName;
 
-    internal const string ReferenceMemberName = "UserGroupId"; // should be UserGroupIdColumnName, but for database compatibility we keep it like this
-
     public const string UserGroupIdColumnName = "userGroupId";
     private const string AppAliasColumnName = "app";
 

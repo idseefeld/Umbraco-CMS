@@ -16,7 +16,7 @@ internal sealed class TagRelationshipDto
 
     [Column(NodeIdColumnName)]
     [PrimaryKeyColumn(AutoIncrement = false, Name = "PK_cmsTagRelationship", OnColumns = $"{NodeIdColumnName}, {PropertyTypeIdColumnName}, {TagIdColumnName}")]
-    [ForeignKey(typeof(ContentDto), Name = "FK_cmsTagRelationship_cmsContent", Column = ContentDto.NodeIdColumnName)]
+    [ForeignKey(typeof(ContentDto), Name = "FK_cmsTagRelationship_cmsContent", Column = ContentDto.PrimaryKeyColumnName)]
     [Index(IndexTypes.NonClustered, Name = "IX_" + TableName + "_tagId_nodeId", ForColumns = $"{TagIdColumnName},{NodeIdColumnName}", IncludeColumns = PropertyTypeIdColumnName)]
     public int NodeId { get; set; }
 

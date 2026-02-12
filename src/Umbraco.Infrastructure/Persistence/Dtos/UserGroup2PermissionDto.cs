@@ -12,8 +12,6 @@ public class UserGroup2PermissionDto
     public const string TableName = Constants.DatabaseSchema.Tables.UserGroup2Permission;
     public const string PrimaryKeyColumnName = Constants.DatabaseSchema.Columns.PrimaryKeyNameId;
 
-    internal const string ReferenceMemberName = "UserGroupId"; // should be UserGroupKeyColumnName, but for database compatibility we keep it like this
-
     private const string UserGroupKeyColumnName = "userGroupKey";
     private const string PermissionColumnName = "permission";
 
