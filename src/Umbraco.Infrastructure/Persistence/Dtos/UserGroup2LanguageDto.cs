@@ -10,7 +10,6 @@ namespace Umbraco.Cms.Infrastructure.Persistence.Dtos;
 public class UserGroup2LanguageDto
 {
     public const string TableName = Cms.Core.Constants.DatabaseSchema.Tables.UserGroup2Language;
-    public const string PrimaryKeyColumnName = "PK_userGroup2language";
 
     internal const string ReferenceMemberName = "UserGroupId"; // should be UserGroupIdColumnName, but for database compatibility we keep it like this
 
@@ -18,7 +17,7 @@ public class UserGroup2LanguageDto
     private const string LanguageIdColumnName = "languageId";
 
     [Column(UserGroupIdColumnName)]
-    [PrimaryKeyColumn(AutoIncrement = false, Name = PrimaryKeyColumnName, OnColumns = $"{UserGroupIdColumnName}, {LanguageIdColumnName}")]
+    [PrimaryKeyColumn(AutoIncrement = false, Name = "PK_userGroup2language", OnColumns = $"{UserGroupIdColumnName}, {LanguageIdColumnName}")]
     [ForeignKey(typeof(UserGroupDto), OnDelete = Rule.Cascade)]
     public int UserGroupId { get; set; }
 
