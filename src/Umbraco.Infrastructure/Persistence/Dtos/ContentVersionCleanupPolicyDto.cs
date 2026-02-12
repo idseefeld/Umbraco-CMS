@@ -13,7 +13,7 @@ internal sealed class ContentVersionCleanupPolicyDto
     public const string PrimaryKeyColumnName = "contentTypeId";
 
     [Column(PrimaryKeyColumnName)]
-    [PrimaryKeyColumn(AutoIncrement = false)]
+    [PrimaryKeyColumn(AutoIncrement = false, Name = "PK_umbracoContentVersionCleanupPolicy")]
     [ForeignKey(typeof(ContentTypeDto), Column = ContentTypeDto.NodeIdColumnName)]
     public int ContentTypeId { get; set; }
 
