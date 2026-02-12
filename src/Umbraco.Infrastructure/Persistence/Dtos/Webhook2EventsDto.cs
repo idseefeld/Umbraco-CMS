@@ -7,6 +7,7 @@ namespace Umbraco.Cms.Infrastructure.Persistence.Dtos;
 
 [TableName(TableName)]
 [PrimaryKey([WebhookIdColumnName, EventColumnName], AutoIncrement = false)]
+[ExplicitColumns]
 public class Webhook2EventsDto
 {
     public const string TableName = Constants.DatabaseSchema.Tables.Webhook2Events;

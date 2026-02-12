@@ -7,6 +7,7 @@ namespace Umbraco.Cms.Infrastructure.Persistence.Dtos;
 
 [TableName(TableName)]
 [PrimaryKey([WebhookIdColumnName, KeyColumnName], AutoIncrement = false)]
+[ExplicitColumns]
 public class Webhook2HeadersDto
 {
     public const string TableName = Constants.DatabaseSchema.Tables.Webhook2Headers;
