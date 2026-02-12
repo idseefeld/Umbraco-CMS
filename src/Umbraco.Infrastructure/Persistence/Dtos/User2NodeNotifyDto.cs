@@ -5,7 +5,7 @@ using Umbraco.Cms.Infrastructure.Persistence.DatabaseAnnotations;
 namespace Umbraco.Cms.Infrastructure.Persistence.Dtos;
 
 [TableName(TableName)]
-[PrimaryKey([PrimaryKeyColumnName, NodeIdColumnName, ActionColumnName], AutoIncrement = false)] // fix wrong PrimaryKey attribute
+[PrimaryKey([PrimaryKeyColumnName, NodeIdColumnName, ActionColumnName], AutoIncrement = false)]
 [ExplicitColumns]
 internal sealed class User2NodeNotifyDto
 {
