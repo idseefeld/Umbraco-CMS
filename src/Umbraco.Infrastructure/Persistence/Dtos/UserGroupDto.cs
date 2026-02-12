@@ -90,11 +90,11 @@ public class UserGroupDto
     public List<UserGroup2LanguageDto> UserGroup2LanguageDtos { get; set; }
 
     [ResultColumn]
-    [Reference(ReferenceType.Many, ReferenceMemberName = "UserGroupId")]
+    [Reference(ReferenceType.Many, ReferenceMemberName = UserGroup2PermissionDto.ReferenceMemberName)]
     public List<UserGroup2PermissionDto> UserGroup2PermissionDtos { get; set; }
 
     [ResultColumn]
-    [Reference(ReferenceType.Many, ReferenceMemberName = "UserGroupId")]
+    [Reference(ReferenceType.Many, ReferenceMemberName = UserGroup2GranularPermissionDto.ReferenceMemberName)]
     public List<UserGroup2GranularPermissionDto> UserGroup2GranularPermissionDtos { get; set; }
 
     /// <summary>

@@ -32,6 +32,6 @@ public class ContentDto
     // they can only be loaded one by one (as several content),
     // so this here is a OneToOne reference
     [ResultColumn]
-    [Reference(ReferenceType.OneToOne, ReferenceMemberName = ReferenceMemberName)]
+    [Reference(ReferenceType.OneToOne, ReferenceMemberName = ContentVersionDto.ReferenceColumnName)]
     public ContentVersionDto ContentVersionDto { get; set; } = null!;
 }

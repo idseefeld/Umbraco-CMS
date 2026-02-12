@@ -11,6 +11,8 @@ public class User2UserGroupDto
 {
     public const string TableName = Constants.DatabaseSchema.Tables.User2UserGroup;
 
+    internal const string ReferenceMemberName = "UserId"; // should be UserIdColumnName, but for database compatibility we keep it like this
+
     private const string UserIdColumnName = "userId";
     private const string UserGroupIdColumnName = "userGroupId";
 

@@ -12,6 +12,8 @@ public class UserStartNodeDto : IEquatable<UserStartNodeDto>
     public const string TableName = Constants.DatabaseSchema.Tables.UserStartNode;
     public const string PrimaryKeyColumnName = Constants.DatabaseSchema.Columns.PrimaryKeyNameId;
 
+    internal const string ReferenceMemberName = "UserId"; // should be UserIdColumnName, but for database compatibility we keep it like this
+
     private const string UserIdColumnName = "userId";
     private const string StartNodeColumnName = "startNode";
     private const string StartNodeTypeColumnName = "startNodeType";

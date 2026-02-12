@@ -25,7 +25,7 @@ public class DictionaryDto // public as required to be accessible from Deploy fo
 
     [Column("parent")]
     [NullSetting(NullSetting = NullSettings.Null)]
-    [ForeignKey(typeof(DictionaryDto), Column = "id")]
+    [ForeignKey(typeof(DictionaryDto), Column = UniqueIdColumnName)]
     [Index(IndexTypes.NonClustered, Name = "IX_" + TableName + "_Parent")]
     public Guid? Parent { get; set; }
 
