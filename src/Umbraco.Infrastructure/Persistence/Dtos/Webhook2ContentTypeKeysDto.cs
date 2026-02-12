@@ -12,15 +12,12 @@ namespace Umbraco.Cms.Infrastructure.Persistence.Dtos;
 public class Webhook2ContentTypeKeysDto
 {
     public const string TableName = Constants.DatabaseSchema.Tables.Webhook2ContentTypeKeys;
-    public const string PrimaryKeyColumnName = "PK_webhookEntityKey2Webhook";
-
-    internal const string ReferenceMemberName = "WebhookId"; // should be WebhookIdColumnName, but for database compatibility we keep it like this
 
     private const string WebhookIdColumnName = "webhookId";
     private const string ContentTypeKeyColumnName = "entityKey";
 
     [Column(WebhookIdColumnName)]
-    [PrimaryKeyColumn(AutoIncrement = false, Name = PrimaryKeyColumnName, OnColumns = $"{WebhookIdColumnName}, {ContentTypeKeyColumnName}")]
+    [PrimaryKeyColumn(AutoIncrement = false, Name = "PK_webhookEntityKey2Webhook", OnColumns = $"{WebhookIdColumnName}, {ContentTypeKeyColumnName}")]
     [ForeignKey(typeof(WebhookDto), OnDelete = Rule.Cascade)]
     public int WebhookId { get; set; }
 

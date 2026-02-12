@@ -10,13 +10,12 @@ namespace Umbraco.Cms.Infrastructure.Persistence.Dtos;
 internal sealed class Member2MemberGroupDto
 {
     public const string TableName = Constants.DatabaseSchema.Tables.Member2MemberGroup;
-    public const string PrimaryKeyColumnName = "PK_cmsMember2MemberGroup";
     public const string MemberColumnName = "Member";
 
     private const string MemberGroupColumnName = "MemberGroup";
 
     [Column(MemberColumnName)]
-    [PrimaryKeyColumn(AutoIncrement = false, Name = PrimaryKeyColumnName, OnColumns = $"{MemberColumnName}, {MemberGroupColumnName}")]
+    [PrimaryKeyColumn(AutoIncrement = false, Name = "PK_cmsMember2MemberGroup", OnColumns = $"{MemberColumnName}, {MemberGroupColumnName}")]
     [ForeignKey(typeof(MemberDto))]
     public int Member { get; set; }
 

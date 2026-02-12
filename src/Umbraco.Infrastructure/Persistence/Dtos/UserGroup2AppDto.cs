@@ -10,15 +10,15 @@ namespace Umbraco.Cms.Infrastructure.Persistence.Dtos;
 public class UserGroup2AppDto
 {
     public const string TableName = Constants.DatabaseSchema.Tables.UserGroup2App;
-    public const string PrimaryKeyColumnName = "PK_userGroup2App";
+
+    [Obsolete("Use UserGroupIdColumnName instead. Scheduled for removal in Umbraco 18.")]
+    public const string PrimaryKeyColumnName = UserGroupIdColumnName;
+
     public const string UserGroupIdColumnName = "userGroupId";
-
-    internal const string ReferenceMemberName = "UserGroupId"; // should be PrimaryKeyColumnName, but for database compatibility we keep it like this
-
     private const string AppAliasColumnName = "app";
 
     [Column(UserGroupIdColumnName)]
-    [PrimaryKeyColumn(AutoIncrement = false, Name = PrimaryKeyColumnName, OnColumns = $"{UserGroupIdColumnName}, {AppAliasColumnName}")]
+    [PrimaryKeyColumn(AutoIncrement = false, Name = "PK_userGroup2App", OnColumns = $"{UserGroupIdColumnName}, {AppAliasColumnName}")]
     [ForeignKey(typeof(UserGroupDto))]
     public int UserGroupId { get; set; }
 
