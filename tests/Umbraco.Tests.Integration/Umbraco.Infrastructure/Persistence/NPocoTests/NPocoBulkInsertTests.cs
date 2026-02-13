@@ -167,17 +167,19 @@ internal sealed class NPocoBulkInsertTests : UmbracoIntegrationTest
         }
 
         string pF = "@";
+        NPoco.DatabaseType? dbt = null;
         IDbCommand[] commands;
         using (var scope = ScopeProvider.CreateScope())
         {
+            dbt = SqlContext.DatabaseType;
             pF = SqlContext.DatabaseType.GetParameterPrefix(ScopeAccessor.AmbientScope.Database.ConnectionString);
             commands = ScopeAccessor.AmbientScope.Database.GenerateBulkInsertCommands(servers.ToArray());
             scope.Complete();
         }
 
-        // Assert
-        var defaultSqlText = $"INSERT INTO {QTab("umbracoServer")} ({QTab("umbracoServer")}.{QCol("address")}, {QTab("umbracoServer")}.{QCol("computerName")}, {QTab("umbracoServer")}.{QCol("registeredDate")}, {QTab("umbracoServer")}.{QCol("lastNotifiedDate")}, {QTab("umbracoServer")}.{QCol("isActive")}, {QTab("umbracoServer")}.{QCol("isSchedulingPublisher")}) VALUES ({pF}0,{pF}1,{pF}2,{pF}3,{pF}4,{pF}5), ({pF}6,{pF}7,{pF}8,{pF}9,{pF}10,{pF}11)";
+        string defaultSqlText = defaultSqlText = $"INSERT INTO {QTab("umbracoServer", dbt)} ({QTab("umbracoServer", dbt)}.{QCol("address", dbt)}, {QTab("umbracoServer", dbt)}.{QCol("computerName", dbt)}, {QTab("umbracoServer", dbt)}.{QCol("registeredDate", dbt)}, {QTab("umbracoServer", dbt)}.{QCol("lastNotifiedDate", dbt)}, {QTab("umbracoServer", dbt)}.{QCol("isActive", dbt)}, {QTab("umbracoServer", dbt)}.{QCol("isSchedulingPublisher", dbt)}) VALUES ({pF}0,{pF}1,{pF}2,{pF}3,{pF}4,{pF}5), ({pF}6,{pF}7,{pF}8,{pF}9,{pF}10,{pF}11)";
 
+        // Assert
         Assert.That(commands[0].CommandText, Is.EqualTo(defaultSqlText));
     }
 
