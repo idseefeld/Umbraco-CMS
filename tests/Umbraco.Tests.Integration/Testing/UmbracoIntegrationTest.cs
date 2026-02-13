@@ -293,15 +293,31 @@ public abstract class UmbracoIntegrationTest : UmbracoIntegrationTestBase
         return SqlContext.SqlSyntax.GetQuotedTableName(x);
     }
 
-    protected string QCol(string x)
+    protected string QTab(string x, NPoco.DatabaseType databaseType = null)
     {
-        return SqlContext.SqlSyntax.GetQuotedColumnName(x);
+        return databaseType.EscapeTableName(x);
     }
 
-    protected string QAli(string x)
+    protected string QCol(string x)
+    {
+        return QName(x);
+    }
+
+    protected string QCol(string x, NPoco.DatabaseType databaseType = null)
+    {
+        return QName(x, databaseType);
+    }
+
+    protected string QName(string x)
     {
         return SqlContext.SqlSyntax.GetQuotedName(x);
     }
+
+    protected string QName(string x, NPoco.DatabaseType databaseType = null)
+    {
+        return databaseType.EscapeSqlIdentifier(x);
+    }
+
     protected int CountUmbracoNodesOfType(Guid objectType)
     {
         var db = ScopeAccessor.AmbientScope.Database;

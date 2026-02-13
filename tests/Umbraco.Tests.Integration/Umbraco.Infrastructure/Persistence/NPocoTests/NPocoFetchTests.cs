@@ -361,8 +361,8 @@ internal sealed class NPocoFetchTests : UmbracoIntegrationTest
 
             var syntax = scope.SqlContext.SqlSyntax;
             var sql = @$"SELECT a1.id, a1.name,
-a2.id AS {QAli("T2A__Id")}, a2.name AS {QAli("T2A__Name")}, a3.id AS {QAli("T2A__T3__Id")}, a3.name AS {QAli("T2A__T3__Name")},
-a2x.id AS {QAli("T2B__Id")}, a2x.name AS {QAli("T2B__Name")}, a3x.id AS {QAli("T2B__T3__Id")}, a3x.name AS {QAli("T2B__T3__Name")}
+a2.id AS {QName("T2A__Id")}, a2.name AS {QName("T2A__Name")}, a3.id AS {QName("T2A__T3__Id")}, a3.name AS {QName("T2A__T3__Name")},
+a2x.id AS {QName("T2B__Id")}, a2x.name AS {QName("T2B__Name")}, a3x.id AS {QName("T2B__T3__Id")}, a3x.name AS {QName("T2B__T3__Name")}
 FROM {QTab("zbThingA1")} a1
 JOIN {QTab("zbThingA12")} a12 ON a1.id=a12.thing1id AND a12.name='a'
 JOIN {QTab("zbThingA2")} a2 ON a12.thing2id=a2.id

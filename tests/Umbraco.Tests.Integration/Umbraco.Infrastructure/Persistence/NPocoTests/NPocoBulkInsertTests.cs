@@ -172,24 +172,19 @@ internal sealed class NPocoBulkInsertTests : UmbracoIntegrationTest
         }
 
         string pF = "@";
-        bool isSQLite = false;
+        NPoco.DatabaseType? dbt = null;
         IDbCommand[] commands;
         using (var scope = ScopeProvider.CreateScope())
         {
-            isSQLite = SqlContext.DatabaseType == NPoco.DatabaseType.SQLite;
+            dbt = SqlContext.DatabaseType;
             pF = SqlContext.DatabaseType.GetParameterPrefix(ScopeAccessor.AmbientScope.Database.ConnectionString);
             commands = ScopeAccessor.AmbientScope.Database.GenerateBulkInsertCommands(servers.ToArray());
             scope.Complete();
         }
 
-        string Escape(string name)
-        {
-            return isSQLite ? $"[{name}]" : QCol(name);
-        }
+        string defaultSqlText = defaultSqlText = $"INSERT INTO {QTab("umbracoServer", dbt)} ({QTab("umbracoServer", dbt)}.{QCol("address", dbt)}, {QTab("umbracoServer", dbt)}.{QCol("computerName", dbt)}, {QTab("umbracoServer", dbt)}.{QCol("registeredDate", dbt)}, {QTab("umbracoServer", dbt)}.{QCol("lastNotifiedDate", dbt)}, {QTab("umbracoServer", dbt)}.{QCol("isActive", dbt)}, {QTab("umbracoServer", dbt)}.{QCol("isSchedulingPublisher", dbt)}) VALUES ({pF}0,{pF}1,{pF}2,{pF}3,{pF}4,{pF}5), ({pF}6,{pF}7,{pF}8,{pF}9,{pF}10,{pF}11)";
 
         // Assert
-        var defaultSqlText = $"INSERT INTO {Escape("umbracoServer")} ({Escape("umbracoServer")}.{Escape("address")}, {Escape("umbracoServer")}.{Escape("computerName")}, {Escape("umbracoServer")}.{Escape("registeredDate")}, {Escape("umbracoServer")}.{Escape("lastNotifiedDate")}, {Escape("umbracoServer")}.{Escape("isActive")}, {Escape("umbracoServer")}.{Escape("isSchedulingPublisher")}) VALUES ({pF}0,{pF}1,{pF}2,{pF}3,{pF}4,{pF}5), ({pF}6,{pF}7,{pF}8,{pF}9,{pF}10,{pF}11)";
-
         Assert.That(commands[0].CommandText, Is.EqualTo(defaultSqlText));
     }
 
