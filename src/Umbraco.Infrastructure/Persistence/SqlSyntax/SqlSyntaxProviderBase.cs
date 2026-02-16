@@ -264,7 +264,7 @@ public abstract class SqlSyntaxProviderBase<TSyntax> : ISqlSyntaxProvider
     public virtual bool SupportsSequences() => false;
 
     /// <inheritdoc />
-    public virtual bool InsertWithSpecialAutoInkrement() => false;
+    public virtual bool InsertWithSpecialAutoIncrement() => false;
 
     /// <inheritdoc />
     public virtual void AlterSequences(IUmbracoDatabase database) => throw new NotSupportedException();

@@ -193,7 +193,7 @@ public interface ISqlSyntaxProvider
     /// Use case PostgreSQL which uses sequences for auto-incrementing columns but may require specific insert logic.
     /// After inserting a dedicated value the sequence needs to be updated to avoid conflicts.
     /// </remarks>
-    bool InsertWithSpecialAutoInkrement() => false;
+    bool InsertWithSpecialAutoIncrement() => false;
 
     /// <summary>
     /// Alters the database sequences to match the current schema requirements.
