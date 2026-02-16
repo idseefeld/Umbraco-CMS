@@ -161,6 +161,9 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
     public override bool SupportsSequences() => true; // PostgreSQL does not support identity insert
 
     /// <inheritdoc />
+    public override bool IsCaseSensitive() => true;
+
+    /// <inheritdoc />
     public override bool InsertWithSpecialAutoInkrement() => true;
 
     /// <inheritdoc />
