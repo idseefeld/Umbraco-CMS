@@ -182,7 +182,7 @@ internal sealed class NPocoBulkInsertTests : UmbracoIntegrationTest
             scope.Complete();
         }
 
-        string defaultSqlText = defaultSqlText = $"INSERT INTO {QTab("umbracoServer", dbt)} ({QTab("umbracoServer", dbt)}.{QCol("address", dbt)}, {QTab("umbracoServer", dbt)}.{QCol("computerName", dbt)}, {QTab("umbracoServer", dbt)}.{QCol("registeredDate", dbt)}, {QTab("umbracoServer", dbt)}.{QCol("lastNotifiedDate", dbt)}, {QTab("umbracoServer", dbt)}.{QCol("isActive", dbt)}, {QTab("umbracoServer", dbt)}.{QCol("isSchedulingPublisher", dbt)}) VALUES ({pF}0,{pF}1,{pF}2,{pF}3,{pF}4,{pF}5), ({pF}6,{pF}7,{pF}8,{pF}9,{pF}10,{pF}11)";
+        string defaultSqlText = $"INSERT INTO {QTab("umbracoServer", dbt)} ({QTab("umbracoServer", dbt)}.{QCol("address", dbt)}, {QTab("umbracoServer", dbt)}.{QCol("computerName", dbt)}, {QTab("umbracoServer", dbt)}.{QCol("registeredDate", dbt)}, {QTab("umbracoServer", dbt)}.{QCol("lastNotifiedDate", dbt)}, {QTab("umbracoServer", dbt)}.{QCol("isActive", dbt)}, {QTab("umbracoServer", dbt)}.{QCol("isSchedulingPublisher", dbt)}) VALUES ({pF}0,{pF}1,{pF}2,{pF}3,{pF}4,{pF}5), ({pF}6,{pF}7,{pF}8,{pF}9,{pF}10,{pF}11)";
 
         // Assert
         Assert.That(commands[0].CommandText, Is.EqualTo(defaultSqlText));

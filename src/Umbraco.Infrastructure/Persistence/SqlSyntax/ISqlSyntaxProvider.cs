@@ -86,7 +86,7 @@ public interface ISqlSyntaxProvider
     string DbProvider { get; }
 
     /// <summary>
-    /// Retuns the format for a string column definition with a specified length for Unicode text types (e.g. NVARCHAR in SQL Server). The format should include a placeholder for the length, such as "NVARCHAR({0})". This is used when generating SQL for string columns that require a length specification.
+    /// Returns the format for a string column definition with a specified length for Unicode text types (e.g. NVARCHAR in SQL Server). The format should include a placeholder for the length, such as "NVARCHAR({0})". This is used when generating SQL for string columns that require a length specification.
     /// </summary>
     string StringLengthUnicodeColumnDefinitionFormat => "NVARCHAR({0})";
 
@@ -193,7 +193,13 @@ public interface ISqlSyntaxProvider
     /// Use case PostgreSQL which uses sequences for auto-incrementing columns but may require specific insert logic.
     /// After inserting a dedicated value the sequence needs to be updated to avoid conflicts.
     /// </remarks>
-    bool InsertWithSpecialAutoInkrement() => false;
+    bool InsertWithSpecialAutoIncrement() => false;
+
+    /// <summary>
+    /// Indicates whether the comparison is case-sensitive.
+    /// </summary>
+    /// <returns>Returns <see langword="false"/>, indicating that the comparison is not case-sensitive.</returns>
+    bool IsCaseSensitive() => false;
 
     /// <summary>
     /// Alters the database sequences to match the current schema requirements.

@@ -305,6 +305,9 @@
     <Compile Update="Umbraco.Infrastructure\Services\ContentBlueprintEditingServiceTests.GetScaffold.cs">
       <DependentUpon>ContentBlueprintEditingServiceTests.cs</DependentUpon>
     </Compile>
+    <Compile Update="Umbraco.Infrastructure\Services\UserServiceTests.Permissions.cs">
+      <DependentUpon>UserServiceTests.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
