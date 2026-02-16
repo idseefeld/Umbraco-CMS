@@ -97,13 +97,22 @@ namespace Umbraco.Extensions
             string[] stringValues = [.. values.OfType<string>()]; // This is necessary to avoid failing attempting to convert to string[] when values contains non-string types
             if (stringValues.Length > 0)
             {
-                Attempt<string[]> attempt = values.TryConvertTo<string[]>();
-                if (attempt.Success)
+                // Attempt<string[]> attempt = values.TryConvertTo<string[]>();
+                // if (attempt.Success)
+                // {
+                if (sql.SqlContext.SqlSyntax.IsCaseSensitive())
                 {
-                    values = attempt.Result?.Select(v => v?.ToLower());
+                    // values = attempt.Result?.Select(v => v?.ToLower());
+                    values = stringValues.Select(v => v?.ToLower());
                     sql.Where($"LOWER({fieldName}) IN (@values)", new { values });
-                    return sql;
                 }
+                else
+                {
+                    sql.Where($"{fieldName} IN (@values)", new { values = stringValues });
+                }
+
+                return sql;
+                //}
             }
 
             sql.Where($"{fieldName} IN (@values)", new { values });

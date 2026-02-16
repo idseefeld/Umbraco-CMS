@@ -196,6 +196,12 @@ public interface ISqlSyntaxProvider
     bool InsertWithSpecialAutoIncrement() => false;
 
     /// <summary>
+    /// Indicates whether the comparison is case-sensitive.
+    /// </summary>
+    /// <returns>Returns <see langword="false"/>, indicating that the comparison is not case-sensitive.</returns>
+    bool IsCaseSensitive() => false;
+
+    /// <summary>
     /// Alters the database sequences to match the current schema requirements.
     /// </summary>
     /// <remarks>
