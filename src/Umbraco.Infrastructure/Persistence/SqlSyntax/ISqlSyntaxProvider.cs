@@ -109,6 +109,16 @@ public interface ISqlSyntaxProvider
 
     string GetColumn(DatabaseType dbType, string tableName, string columnName, string? columnAlias, string? referenceName = null, bool forInsert = false);
 
+    /// <summary>
+    ///     Gets a quoted table and field name.
+    /// </summary>
+    /// <typeparam name="TDto">The type of the DTO.</typeparam>
+    /// <param name="sqlSyntax">An <see cref="ISqlSyntaxProvider" />.</param>
+    /// <param name="fieldSelector">An expression specifying the field.</param>
+    /// <param name="tableAlias">An optional table alias.</param>
+    /// <returns></returns>
+    string GetFieldName<TDto>(Expression<Func<TDto, object?>> fieldSelector, string? tableAlias = null) => throw new NotImplementedException();
+
     string GetQuotedTableName(string? tableName);
 
     string GetQuotedColumnName(string? columnName);

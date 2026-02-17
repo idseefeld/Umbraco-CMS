@@ -4,6 +4,7 @@ using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using NPoco;
@@ -216,6 +217,28 @@ public abstract class SqlSyntaxProviderBase<TSyntax> : ISqlSyntaxProvider
         columnAlias = GetQuotedColumnName(referenceName + columnAlias);
         column += " AS " + columnAlias;
         return column;
+    }
+
+    public virtual string GetFieldName<TDto>(Expression<Func<TDto, object?>> fieldSelector, string? tableAlias = null)
+    {
+        var field = ExpressionHelper.FindProperty(fieldSelector).Item1 as PropertyInfo;
+        var fieldName = GetColumnName(field);
+
+        Type type = typeof(TDto);
+        var tableName = tableAlias ?? type.GetTableName();
+
+        return GetQuotedTableName(tableName) + "." + GetQuotedColumnName(fieldName);
+    }
+
+    private static string GetColumnName(PropertyInfo? field)
+    {
+        if (field == null)
+        {
+            throw new ArgumentException("Expression does not specify a valid property.");
+        }
+
+        ColumnAttribute? attr = field.FirstAttribute<ColumnAttribute>();
+        return string.IsNullOrWhiteSpace(attr?.Name) ? field.Name : attr.Name;
     }
 
 
