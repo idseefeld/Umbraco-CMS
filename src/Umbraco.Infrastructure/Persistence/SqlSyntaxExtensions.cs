@@ -9,6 +9,7 @@ namespace Umbraco.Extensions;
 /// <summary>
 ///     Provides extension methods to <see cref="ISqlSyntaxProvider" />.
 /// </summary>
+[Obsolete("This class is not intended for public use and will be removed in version 18. Instead, use the methods on ISqlSyntaxProvider directly.")]
 public static class SqlSyntaxExtensions
 {
     /// <summary>
