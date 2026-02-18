@@ -46,7 +46,7 @@ internal sealed class SqlServerSyntaxProviderTests : UmbracoIntegrationTest
     public void Can_Generate_Delete_SubQuery_Statement()
     {
         var mediaObjectType = Constants.ObjectTypes.Media;
-        var autoSelectDistinctAlias = "NodeId"; // .SelectDistinc will auto alias as PocoColumn.MemberInfoKey which is in this case just NodeId.
+        var autoSelectDistinctAlias = "NodeId"; // .SelectDistinc will auto alias as PocoColumn.MemberInfoKey which is in this case NodeId.
         var subQuery = SqlContext.Sql()
             .SelectDistinct<ContentNuDto>(c => c.NodeId)
             .From<ContentNuDto>()

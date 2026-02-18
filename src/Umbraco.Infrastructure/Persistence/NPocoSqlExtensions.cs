@@ -94,25 +94,17 @@ namespace Umbraco.Extensions
 
             var fieldName = sql.SqlContext.SqlSyntax.GetFieldName(field);
 
-            string[] stringValues = [.. values.OfType<string>()]; // This is necessary to avoid failing attempting to convert to string[] when values contains non-string types
-            if (stringValues.Length > 0)
+            if (sql.SqlContext.SqlSyntax.IsCaseSensitive())
             {
-                // Attempt<string[]> attempt = values.TryConvertTo<string[]>();
-                // if (attempt.Success)
-                // {
-                if (sql.SqlContext.SqlSyntax.IsCaseSensitive())
+                // If the database is case sensitive, we need to convert the values to lower case and use LOWER() in the SQL to ensure case insensitive comparison.
+                string[] stringValues = [.. values.OfType<string>()];
+                if (stringValues.Length > 0)
                 {
-                    // values = attempt.Result?.Select(v => v?.ToLower());
                     values = stringValues.Select(v => v?.ToLower());
                     sql.Where($"LOWER({fieldName}) IN (@values)", new { values });
-                }
-                else
-                {
-                    sql.Where($"{fieldName} IN (@values)", new { values = stringValues });
-                }
 
-                return sql;
-                //}
+                    return sql;
+                }
             }
 
             sql.Where($"{fieldName} IN (@values)", new { values });
