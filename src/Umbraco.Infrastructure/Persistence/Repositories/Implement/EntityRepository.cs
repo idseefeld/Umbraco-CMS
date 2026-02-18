@@ -303,7 +303,7 @@ internal sealed class EntityRepository : RepositoryBase, IEntityRepositoryExtend
         Sql<ISqlContext> targetRowSql = Sql()
             .Select("rn")
             .From().AppendSubQuery(rowNumberSql, targetAlias)
-            .Where($"{QuoteTableName(targetAlias)}.{quotedImplicitUniqueIdAlias} IN (@0)", [targetKey]); // cannot use generic .Where<T> here because of the implicit aliasing "UniqueId" of the subquery
+            .Where($"{QuoteTableName(targetAlias)}.{quotedImplicitUniqueIdAlias} IN (@0)", [targetKey]); // cannot use generic .Where<T> here because of the implicit alias "UniqueId" in the subquery
 
         // We have to reuse the target row sql arguments, however, we also need to add the "before" and "after" values to the arguments.
         // If we try to do this directly in the params array it'll consider the initial argument array as a single argument.
