@@ -230,7 +230,7 @@ public abstract class SqlSyntaxProviderBase<TSyntax> : ISqlSyntaxProvider
         return GetQuotedTableName(tableName) + "." + GetQuotedColumnName(fieldName);
     }
 
-    private static string GetColumnName(PropertyInfo? field)
+    protected virtual string GetColumnName(PropertyInfo? field)
     {
         if (field == null)
         {

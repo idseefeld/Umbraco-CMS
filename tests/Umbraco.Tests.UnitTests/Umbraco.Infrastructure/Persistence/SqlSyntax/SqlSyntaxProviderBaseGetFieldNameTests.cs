@@ -1,18 +1,60 @@
 // Copyright (c) Umbraco.
 // See LICENSE for more details.
 
-using Microsoft.Extensions.Options;
+using System.Data;
+using System.Diagnostics.CodeAnalysis;
+using NPoco;
 using NUnit.Framework;
-using Umbraco.Cms.Core.Configuration.Models;
+using Umbraco.Cms.Core.Persistence;
+using Umbraco.Cms.Infrastructure.Persistence;
+using Umbraco.Cms.Infrastructure.Persistence.DatabaseModelDefinitions;
 using Umbraco.Cms.Infrastructure.Persistence.Dtos;
-using Umbraco.Cms.Persistence.SqlServer.Services;
+using Umbraco.Cms.Infrastructure.Persistence.SqlSyntax;
 
 namespace Umbraco.Cms.Tests.UnitTests.Umbraco.Infrastructure.Persistence.SqlSyntax;
 
 [TestFixture]
 public class SqlSyntaxProviderBaseGetFieldNameTests
 {
-    private SqlServerSyntaxProvider SyntaxProvider => new(Options.Create(new GlobalSettings()));
+    /// <summary>
+    ///     Minimal concrete implementation of <see cref="SqlSyntaxProviderBase{TSyntax}"/> used to
+    ///     test the base-class <c>GetFieldName</c> logic without depending on any specific database provider.
+    /// </summary>
+    private sealed class TestSqlSyntaxProvider : SqlSyntaxProviderBase<TestSqlSyntaxProvider>
+    {
+        public override string ProviderName => "Test";
+
+        public override string DbProvider => "Test";
+
+        public override IsolationLevel DefaultIsolationLevel => IsolationLevel.ReadCommitted;
+
+        public override IEnumerable<Tuple<string, string, string, bool>> GetDefinedIndexes(IDatabase db) =>
+            Enumerable.Empty<Tuple<string, string, string, bool>>();
+
+        public override bool TryGetDefaultConstraint(IDatabase db, string? tableName, string columnName, [MaybeNullWhen(false)] out string constraintName)
+        {
+            constraintName = null;
+            return false;
+        }
+
+        public override Sql<ISqlContext>.SqlJoinClause<ISqlContext> LeftJoinWithNestedJoin<TDto>(
+            Sql<ISqlContext> sql,
+            Func<Sql<ISqlContext>, Sql<ISqlContext>> nestedJoin,
+            string? alias = null) =>
+            throw new NotImplementedException();
+
+        public override Sql<ISqlContext> SelectTop(Sql<ISqlContext> sql, int top) =>
+            throw new NotImplementedException();
+
+        public override void HandleCreateTable(IDatabase database, TableDefinition tableDefinition, bool skipKeysAndIndexes = false) =>
+            throw new NotImplementedException();
+
+        protected override string? FormatSystemMethods(SystemMethods systemMethod) => null;
+
+        protected override string FormatIdentity(ColumnDefinition column) => string.Empty;
+    }
+
+    private TestSqlSyntaxProvider SyntaxProvider => new();
 
     private string QuotedField(string tableName, string columnName) =>
         SyntaxProvider.GetQuotedTableName(tableName) + "." + SyntaxProvider.GetQuotedColumnName(columnName);
@@ -94,5 +136,28 @@ public class SqlSyntaxProviderBaseGetFieldNameTests
         var result = SyntaxProvider.GetFieldName<NodeDto>(x => x.Level);
 
         Assert.AreEqual(QuotedField(NodeDto.TableName, NodeDto.LevelColumnName), result);
+    }
+
+    [Test]
+    public void Throws_When_Expression_Selects_Field_Instead_Of_Property()
+    {
+        // When the expression resolves to a field (not a property), GetColumnName receives null
+        // and should throw an ArgumentException.
+        Assert.Throws<ArgumentException>(() =>
+            SyntaxProvider.GetFieldName<DtoWithField>(x => x.SomeField));
+    }
+
+    /// <summary>
+    ///     A DTO that exposes a public field instead of a property, causing <c>FindProperty</c>
+    ///     to return a <see cref="System.Reflection.FieldInfo"/> which fails the <c>as PropertyInfo</c> cast.
+    /// </summary>
+    [NPoco.TableName("testTable")]
+    private class DtoWithField
+    {
+#pragma warning disable SA1401 // Fields should be private - intentionally public for test
+#pragma warning disable IDE1006 // Naming Styles
+        public object? SomeField = null;
+#pragma warning restore IDE1006 // Naming Styles
+#pragma warning restore SA1401
     }
 }

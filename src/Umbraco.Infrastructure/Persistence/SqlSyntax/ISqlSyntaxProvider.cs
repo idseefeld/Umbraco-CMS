@@ -113,10 +113,9 @@ public interface ISqlSyntaxProvider
     ///     Gets a quoted table and field name.
     /// </summary>
     /// <typeparam name="TDto">The type of the DTO.</typeparam>
-    /// <param name="sqlSyntax">An <see cref="ISqlSyntaxProvider" />.</param>
     /// <param name="fieldSelector">An expression specifying the field.</param>
     /// <param name="tableAlias">An optional table alias.</param>
-    /// <returns></returns>
+    /// <returns>Gets a database specific escaped field name with table or alias identifier.</returns>
     string GetFieldName<TDto>(Expression<Func<TDto, object?>> fieldSelector, string? tableAlias = null) => throw new NotImplementedException();
 
     string GetQuotedTableName(string? tableName);
