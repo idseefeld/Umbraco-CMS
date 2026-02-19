@@ -1,4 +1,3 @@
-using System.Collections.Concurrent;
 using System.Data;
 using System.Data.SqlTypes;
 using System.Diagnostics.CodeAnalysis;
@@ -14,7 +13,6 @@ using Our.Umbraco.PostgreSql.Caching;
 using Our.Umbraco.PostgreSql.Mappers;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Persistence;
-using Umbraco.Cms.Core.Semver;
 using Umbraco.Cms.Infrastructure.Persistence;
 using Umbraco.Cms.Infrastructure.Persistence.DatabaseAnnotations;
 using Umbraco.Cms.Infrastructure.Persistence.DatabaseModelDefinitions;
@@ -971,7 +969,7 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
         return systemMethod switch
         {
             SystemMethods.CurrentUTCDateTime => "timezone('utc'::text, now())",
-            SystemMethods.CurrentDateTime => "timezone(now())",
+            SystemMethods.CurrentDateTime => "now()",  // was: "timezone(now())" — invalid, timezone() requires 2 args
             SystemMethods.NewGuid => "gen_random_uuid()", // Requires pgcrypto extension; otherwise use uuid_generate_v4()
             _ => null
         };
