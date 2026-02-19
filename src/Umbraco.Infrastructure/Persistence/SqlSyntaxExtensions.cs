@@ -1,7 +1,4 @@
 using System.Linq.Expressions;
-using System.Reflection;
-using NPoco;
-using Umbraco.Cms.Core;
 using Umbraco.Cms.Infrastructure.Persistence.SqlSyntax;
 
 namespace Umbraco.Extensions;
@@ -9,7 +6,7 @@ namespace Umbraco.Extensions;
 /// <summary>
 ///     Provides extension methods to <see cref="ISqlSyntaxProvider" />.
 /// </summary>
-[Obsolete("This class is not intended for public use and will be removed in version 18. Instead, use the methods on ISqlSyntaxProvider directly.")]
+[Obsolete("Methods in this class are no longer used in Umbraco. Instead use the methods on ISqlSyntaxProvider directly. Scheduled for removal in Umbraco 19.")]
 public static class SqlSyntaxExtensions
 {
     /// <summary>

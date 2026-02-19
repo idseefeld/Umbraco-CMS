@@ -1,11 +1,14 @@
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using NPoco;
+using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Persistence;
 using Umbraco.Cms.Infrastructure.Persistence.DatabaseAnnotations;
 using Umbraco.Cms.Infrastructure.Persistence.DatabaseModelDefinitions;
+using Umbraco.Extensions;
 
 namespace Umbraco.Cms.Infrastructure.Persistence.SqlSyntax;
 
@@ -116,7 +119,19 @@ public interface ISqlSyntaxProvider
     /// <param name="fieldSelector">An expression specifying the field.</param>
     /// <param name="tableAlias">An optional table alias.</param>
     /// <returns>Gets a database specific escaped field name with table or alias identifier.</returns>
-    string GetFieldName<TDto>(Expression<Func<TDto, object?>> fieldSelector, string? tableAlias = null) => throw new NotImplementedException();
+    string GetFieldName<TDto>(Expression<Func<TDto, object?>> fieldSelector, string? tableAlias = null)
+    {
+        PropertyInfo? field = ExpressionHelper.FindProperty(fieldSelector).Item1 as PropertyInfo
+            ?? throw new ArgumentException("Expression does not specify a valid property.");
+
+        ColumnAttribute? attr = field.FirstAttribute<ColumnAttribute>();
+        var fieldName = string.IsNullOrWhiteSpace(attr?.Name) ? field.Name : attr.Name;
+
+        Type type = typeof(TDto);
+        var tableName = tableAlias ?? type.GetTableName();
+
+        return GetQuotedTableName(tableName) + "." + GetQuotedColumnName(fieldName);
+    }
 
     string GetQuotedTableName(string? tableName);
 

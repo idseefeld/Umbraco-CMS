@@ -221,24 +221,16 @@ public abstract class SqlSyntaxProviderBase<TSyntax> : ISqlSyntaxProvider
 
     public virtual string GetFieldName<TDto>(Expression<Func<TDto, object?>> fieldSelector, string? tableAlias = null)
     {
-        var field = ExpressionHelper.FindProperty(fieldSelector).Item1 as PropertyInfo;
-        var fieldName = GetColumnName(field);
+        PropertyInfo? field = ExpressionHelper.FindProperty(fieldSelector).Item1 as PropertyInfo
+            ?? throw new ArgumentException("Expression does not specify a valid property.");
+
+        ColumnAttribute? attr = field.FirstAttribute<ColumnAttribute>();
+        var fieldName = string.IsNullOrWhiteSpace(attr?.Name) ? field.Name : attr.Name;
 
         Type type = typeof(TDto);
         var tableName = tableAlias ?? type.GetTableName();
 
         return GetQuotedTableName(tableName) + "." + GetQuotedColumnName(fieldName);
-    }
-
-    protected virtual string GetColumnName(PropertyInfo? field)
-    {
-        if (field == null)
-        {
-            throw new ArgumentException("Expression does not specify a valid property.");
-        }
-
-        ColumnAttribute? attr = field.FirstAttribute<ColumnAttribute>();
-        return string.IsNullOrWhiteSpace(attr?.Name) ? field.Name : attr.Name;
     }
 
 

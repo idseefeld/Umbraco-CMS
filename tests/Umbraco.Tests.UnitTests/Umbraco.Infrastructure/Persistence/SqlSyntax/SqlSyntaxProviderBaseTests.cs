@@ -14,7 +14,7 @@ using Umbraco.Cms.Infrastructure.Persistence.SqlSyntax;
 namespace Umbraco.Cms.Tests.UnitTests.Umbraco.Infrastructure.Persistence.SqlSyntax;
 
 [TestFixture]
-public class SqlSyntaxProviderBaseGetFieldNameTests
+public class SqlSyntaxProviderBaseTests
 {
     /// <summary>
     ///     Minimal concrete implementation of <see cref="SqlSyntaxProviderBase{TSyntax}"/> used to
