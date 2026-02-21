@@ -177,6 +177,9 @@ internal sealed class NPocoBulkInsertTests : UmbracoIntegrationTest
             scope.Complete();
         }
 
+        // Here we need an overload of QTab and QCol that takes the database type, otherwise it will use the default which is SQL Server, and if we're running against SQLite the generated SQL will be different and the test will fail.
+        // The underling issue is that SQLite understands two types of escaping. 1. surrounding with [] and escaping with [] (e.g. [umbracoServer] becomes [[umbracoServer]]) and 2. surrounding with "" and escaping with "" (e.g. "umbracoServer" becomes ""umbracoServer""). In the NPoco.Database.GenerateBulkInsertCommands() method, Umbracos ISqlSyntaxProvider is not used to generate the SQL, instead NPoco uses its SQliteDatabaseType to generate the SQL, which uses the second type of escaping. So we need to use the same escaping in our test when we generate the expected SQL.
+        // The alternative would be to override the GetQuoted...() methods in the Umbraco.Cms.Persistence.Sqlite project, but that would be a breaking change and would require a major version bump, so we'll go with this approach for here.
         string defaultSqlText = $"INSERT INTO {QTab("umbracoServer", dbt)} ({QTab("umbracoServer", dbt)}.{QCol("address", dbt)}, {QTab("umbracoServer", dbt)}.{QCol("computerName", dbt)}, {QTab("umbracoServer", dbt)}.{QCol("registeredDate", dbt)}, {QTab("umbracoServer", dbt)}.{QCol("lastNotifiedDate", dbt)}, {QTab("umbracoServer", dbt)}.{QCol("isActive", dbt)}, {QTab("umbracoServer", dbt)}.{QCol("isSchedulingPublisher", dbt)}) VALUES ({pF}0,{pF}1,{pF}2,{pF}3,{pF}4,{pF}5), ({pF}6,{pF}7,{pF}8,{pF}9,{pF}10,{pF}11)";
 
         // Assert
