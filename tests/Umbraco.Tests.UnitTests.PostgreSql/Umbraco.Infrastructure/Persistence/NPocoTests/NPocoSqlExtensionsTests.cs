@@ -128,6 +128,16 @@ public class NPocoSqlExtensionsTests : BaseUsingPostgreSqlSyntax
     }
 
     [Test]
+    public void WhereInMixedValueTypesFieldTest()
+    {
+        var sql = new Sql<ISqlContext>(SqlContext)
+            .Select("*")
+            .From<NodeDto>()
+            .WhereIn<NodeDto>(x => x.Text, new object[] { "a", "b", "c", 1, 234 });
+        Assert.AreEqual("SELECT *\nFROM \"umbracoNode\"\nWHERE (LOWER(\"umbracoNode\".\"text\") IN (@0,@1,@2,@3,@4))", sql.SQL);
+    }
+
+    [Test]
     public void SelectTests()
     {
         // select the whole DTO
