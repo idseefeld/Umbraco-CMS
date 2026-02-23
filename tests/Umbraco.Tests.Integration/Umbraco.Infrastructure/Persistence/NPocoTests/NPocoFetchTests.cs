@@ -306,7 +306,7 @@ internal sealed class NPocoFetchTests : UmbracoIntegrationTest
             //    GROUP BY zbThing1.id, zbThing1.name";
             var sql = ScopeAccessor.AmbientScope.SqlContext.Sql()
                 .Select<Thing1Dto>()
-                .Append($", COUNT({QTab("zbThing2Group")}.{QCol("groupId")}) AS {QCol("groupCount")}")
+                .Append(", COUNT(zbThing2Group.groupId) AS groupCount")
                 .From<Thing1Dto>()
                 .InnerJoin<Thing2GroupDto>().On<Thing1Dto, Thing2GroupDto>((t, t2g) => t.Id == t2g.ThingId)
                 .GroupBy<Thing1Dto>(x => x.Id, x => x.Name);
@@ -385,17 +385,16 @@ internal sealed class NPocoFetchTests : UmbracoIntegrationTest
             var k2 = new ThingA12Dto { Name = "b", Thing1Id = tA1A.Id, Thing2Id = tA2B.Id };
             ScopeAccessor.AmbientScope.Database.Insert(k2);
 
-            var syntax = scope.SqlContext.SqlSyntax;
-            var sql = @$"SELECT a1.id, a1.name,
-a2.id AS {QName("T2A__Id")}, a2.name AS {QName("T2A__Name")}, a3.id AS {QName("T2A__T3__Id")}, a3.name AS {QName("T2A__T3__Name")},
-a2x.id AS {QName("T2B__Id")}, a2x.name AS {QName("T2B__Name")}, a3x.id AS {QName("T2B__T3__Id")}, a3x.name AS {QName("T2B__T3__Name")}
-FROM {QTab("zbThingA1")} a1
-JOIN {QTab("zbThingA12")} a12 ON a1.id=a12.thing1id AND a12.name='a'
-JOIN {QTab("zbThingA2")} a2 ON a12.thing2id=a2.id
-JOIN {QTab("zbThingA3")} a3 ON a2.id=a3.id
-JOIN {QTab("zbThingA12")} a12x ON a1.id=a12x.thing1id AND a12x.name='b'
-JOIN {QTab("zbThingA2")} a2x ON a12x.thing2id=a2x.id
-JOIN {QTab("zbThingA3")} a3x ON a2x.id=a3x.id
+            var sql = @"SELECT a1.id, a1.name,
+a2.id AS T2A__Id, a2.name AS T2A__Name, a3.id AS T2A__T3__Id, a3.name AS T2A__T3__Name,
+a2x.id AS T2B__Id, a2x.name AS T2B__Name, a3x.id AS T2B__T3__Id, a3x.name AS T2B__T3__Name
+FROM zbThingA1 a1
+JOIN zbThingA12 a12 ON a1.id=a12.thing1id AND a12.name='a'
+JOIN zbThingA2 a2 ON a12.thing2id=a2.id
+JOIN zbThingA3 a3 ON a2.id=a3.id
+JOIN zbThingA12 a12x ON a1.id=a12x.thing1id AND a12x.name='b'
+JOIN zbThingA2 a2x ON a12x.thing2id=a2x.id
+JOIN zbThingA3 a3x ON a2x.id=a3x.id
 ";
 
             var ts = ScopeAccessor.AmbientScope.Database.Fetch<ThingA1Dto>(sql);
@@ -436,12 +435,12 @@ JOIN {QTab("zbThingA3")} a3x ON a2x.id=a3x.id
         [Column("name")]
         public string Name { get; set; }
 
-        [Column("thingid")]
+        [Column("thingId")]
         public int ThingId { get; set; }
 
         // reference is required else value remains null
         // columnName indicates which column has the id, referenceMembreName not needed if PK
-        [Reference(ReferenceType.OneToOne, ColumnName = "thingid" /*, ReferenceMemberName="id"*/)]
+        [Reference(ReferenceType.OneToOne, ColumnName = "thingId" /*, ReferenceMemberName="id"*/)]
         public Thing1Dto Thing { get; set; }
     }
 
@@ -475,14 +474,14 @@ JOIN {QTab("zbThingA3")} a3x ON a2x.id=a3x.id
     }
 
     [TableName("zbThing2Group")]
-    [PrimaryKey("thingid, groupid", AutoIncrement = false)]
+    [PrimaryKey("thingId, groupId", AutoIncrement = false)]
     [ExplicitColumns]
     public class Thing2GroupDto
     {
-        [Column("thingid")]
+        [Column("thingId")]
         public int ThingId { get; set; }
 
-        [Column("groupid")]
+        [Column("groupId")]
         public int GroupId { get; set; }
     }
 
@@ -514,7 +513,7 @@ JOIN {QTab("zbThingA3")} a3x ON a2x.id=a3x.id
         [Column("name")]
         public string Name { get; set; }
 
-        [Column("groupcount")]
+        [Column("groupCount")]
         [ResultColumn] // not included in insert/update, not sql-generated
         public int GroupCount { get; set; }
     }
@@ -568,7 +567,6 @@ JOIN {QTab("zbThingA3")} a3x ON a2x.id=a3x.id
     }
 
     [TableName("zbThingA12")]
-    [PrimaryKey(["thing1id", "thing2id"], AutoIncrement = false)]
     [ExplicitColumns]
     public class ThingA12Dto
     {

@@ -100,7 +100,7 @@ namespace Umbraco.Extensions
                 string[] stringValues = [.. values.OfType<string>()];
                 if (stringValues.Length > 0)
                 {
-                    values = stringValues.Select(v => v?.ToLower());
+                    values = stringValues.Select(v => v?.ToLowerInvariant());
                     sql.Where($"LOWER({fieldName}) IN (@values)", new { values });
 
                     return sql;

@@ -12,7 +12,6 @@ using Umbraco.Cms.Core.Models.Packaging;
 using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Infrastructure.Packaging;
-using Umbraco.Cms.Infrastructure.Persistence;
 using Umbraco.Cms.Infrastructure.Persistence.Dtos;
 using Umbraco.Cms.Tests.Common.Attributes;
 using Umbraco.Cms.Tests.Common.Testing;
@@ -445,8 +444,7 @@ internal sealed class PackageDataInstallationTests : UmbracoIntegrationTestWithC
         string configuration;
         using (var scope = ScopeProvider.CreateScope())
         {
-            var colNodeId = ScopeAccessor.AmbientScope.Database.SqlContext.SqlSyntax.GetQuotedColumnName("nodeId");
-            var dtos = ScopeAccessor.AmbientScope.Database.Fetch<DataTypeDto>($"WHERE {colNodeId} = @Id", new { dataTypeDefinitions.First().Id });
+            var dtos = ScopeAccessor.AmbientScope.Database.Fetch<DataTypeDto>("WHERE nodeId = @Id", new { dataTypeDefinitions.First().Id });
             configuration = dtos.Single().Configuration;
         }
 
