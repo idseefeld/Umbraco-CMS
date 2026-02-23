@@ -180,6 +180,7 @@ public abstract class UmbracoIntegrationTest : UmbracoIntegrationTestBase
             .AddExamine()
             .AddUmbracoSqlServerSupport()
             .AddUmbracoSqliteSupport()
+            .AddUmbracoPostgreSqlSupport()
             .AddUmbracoHybridCache()
             .AddTestServices(TestHelper);
 
