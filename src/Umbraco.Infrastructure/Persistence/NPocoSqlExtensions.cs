@@ -96,14 +96,17 @@ namespace Umbraco.Extensions
 
             if (sql.SqlContext.SqlSyntax.IsCaseSensitive())
             {
-                // If the database is case sensitive, we need to convert the values to lower case and use LOWER() in the SQL to ensure case insensitive comparison.
-                string[] stringValues = [.. values.OfType<string>()];
-                if (stringValues.Length > 0)
+                var fieldInfo = ExpressionHelper.FindProperty(field).Item1 as PropertyInfo;
+                if (fieldInfo != null && fieldInfo.PropertyType == typeof(string))
                 {
-                    values = stringValues.Select(v => v?.ToLowerInvariant());
-                    sql.Where($"LOWER({fieldName}) IN (@values)", new { values });
-
-                    return sql;
+                    // If the database is case sensitive, we need to convert the values to lower case and use LOWER() in the SQL to ensure case insensitive comparison.
+                    object[] valuesArray = [.. values];
+                    string?[] allStringValues = [.. valuesArray.Select(v => v.ToString()?.ToLowerInvariant())];
+                    if (allStringValues.Length > 0)
+                    {
+                        sql.Where($"LOWER({fieldName}) IN (@values)", new { values = allStringValues });
+                        return sql;
+                    }
                 }
             }
 
