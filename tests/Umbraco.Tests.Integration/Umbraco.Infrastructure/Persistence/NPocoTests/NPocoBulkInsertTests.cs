@@ -234,7 +234,7 @@ internal sealed class NPocoBulkInsertTests : UmbracoIntegrationTest
         // Replicate what ContentRepositoryBase.ReplacePropertyValues does:
         // delete existing property data for the version, then re-insert via InsertBulk.
         //
-        // NPoco's Database.InsertBulk() dispatches to DatabaseType.InsertBulk() ?
+        // NPoco's Database.InsertBulk() dispatches to DatabaseType.InsertBulk() →
         // SqlBulkCopyHelper.BulkInsert(). Without our UmbracoSqlServerDatabaseType override,
         // NPoco uses SqlBulkCopyOptions.Default which bypasses FK validation during SqlBulkCopy,
         // causing SQL Server to mark constraints as untrusted (is_not_trusted = 1).
