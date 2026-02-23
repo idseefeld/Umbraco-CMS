@@ -85,11 +85,17 @@ namespace Umbraco.Extensions
         /// <param name="field">An expression specifying the field.</param>
         /// <param name="values">The values.</param>
         /// <returns>The Sql statement.</returns>
+        /// <remarks>IEnumerable? values may contain nullable values of different types like int, Guid, DateTime or string. In this case an exeption is thrown, because the execution of the resulting sql shall throw anyways. This way the root cause is clearer.</remarks>
         public static Sql<ISqlContext> WhereIn<TDto>(this Sql<ISqlContext> sql, Expression<Func<TDto, object?>> field, IEnumerable? values)
         {
             if (values == null)
             {
                 return sql;
+            }
+
+            if (NotAllValuesAreOfTheSameType(values))
+            {
+                throw new InvalidOperationException($"All values must be of the same type. Values: {string.Join(", ", values.Cast<object>())}");
             }
 
             var fieldName = sql.SqlContext.SqlSyntax.GetFieldName(field);
@@ -101,10 +107,10 @@ namespace Umbraco.Extensions
                 {
                     // If the database is case sensitive, we need to convert the values to lower case and use LOWER() in the SQL to ensure case insensitive comparison.
                     object[] valuesArray = [.. values];
-                    string?[] allStringValues = [.. valuesArray.Select(v => v.ToString()?.ToLowerInvariant())];
-                    if (allStringValues.Length > 0)
+                    string?[] allAsStringValues = [.. valuesArray.Select(v => v.ToString()?.ToLowerInvariant())];
+                    if (allAsStringValues.Length > 0)
                     {
-                        sql.Where($"LOWER({fieldName}) IN (@values)", new { values = allStringValues });
+                        sql.Where($"LOWER({fieldName}) IN (@values)", new { values = allAsStringValues });
                         return sql;
                     }
                 }
@@ -112,6 +118,29 @@ namespace Umbraco.Extensions
 
             sql.Where($"{fieldName} IN (@values)", new { values });
             return sql;
+        }
+
+        private static bool NotAllValuesAreOfTheSameType(IEnumerable values)
+        {
+            Type? firstType = null;
+            foreach (var value in values)
+            {
+                if (value == null)
+                {
+                    continue; // Skip null values
+                }
+
+                if (firstType == null)
+                {
+                    firstType = value.GetType();
+                }
+                else if (value.GetType() != firstType)
+                {
+                    return true; // Found a value of a different type
+                }
+            }
+
+            return false; // All non-null values are of the same type
         }
 
         /// <summary>

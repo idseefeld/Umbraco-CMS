@@ -128,26 +128,12 @@ public class NPocoSqlExtensionsTests : BaseUsingSqlSyntax
     }
 
     [Test]
-    public void WhereInMixedValueTypesFieldTest()
+    public void WhereInMixedValueTypesThrowsTest()
     {
-        var guid = Guid.NewGuid();
-        var arguments = new object[] { "a", "b", "c", 1, 234, guid };
-        var sql = new Sql<ISqlContext>(SqlContext)
+        Assert.Throws<InvalidOperationException>(() => new Sql<ISqlContext>(SqlContext)
             .Select("*")
             .From<NodeDto>()
-            .WhereIn<NodeDto>(x => x.Text, arguments);
-
-        if (SqlContext.SqlSyntax.IsCaseSensitive())
-        {
-            arguments = arguments.Select(x => x.ToString().ToLowerInvariant()).ToArray();
-        }
-
-        foreach (var argument in arguments)
-        {
-            Assert.Contains(argument, sql.Arguments);
-        }
-
-        Assert.AreEqual("SELECT *\nFROM [umbracoNode]\nWHERE ([umbracoNode].[text] IN (@0,@1,@2,@3,@4,@5))", sql.SQL);
+            .WhereIn<NodeDto>(x => x.Text, new object[] { "a", "b", "c", 1, 234, Guid.NewGuid() }));
     }
 
     [Test]
