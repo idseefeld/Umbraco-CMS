@@ -410,7 +410,7 @@ JOIN {QTab("zbThingA3")} a3x ON a2x.id=a3x.id
         [Column("name")]
         public string Name { get; set; }
 
-        [Column("thingid")]
+        [Column("thingId")]
         public int ThingId { get; set; }
     }
 
@@ -418,7 +418,7 @@ JOIN {QTab("zbThingA3")} a3x ON a2x.id=a3x.id
     {
         // reference is required else value remains null
         // columnName indicates which column has the id, referenceMembreName not needed if PK
-        [Reference(ReferenceType.OneToOne, ColumnName = "thingid" /*, ReferenceMemberName="id"*/)]
+        [Reference(ReferenceType.OneToOne, ColumnName = "thingId" /*, ReferenceMemberName="id"*/)]
         public Thing1Dto Thing { get; set; }
     }
 
@@ -452,14 +452,14 @@ JOIN {QTab("zbThingA3")} a3x ON a2x.id=a3x.id
     }
 
     [TableName("zbThing2Group")]
-    [PrimaryKey("thingid, groupid", AutoIncrement = false)]
+    [PrimaryKey("thingId, groupId", AutoIncrement = false)]
     [ExplicitColumns]
     public class Thing2GroupDto
     {
-        [Column("thingid")]
+        [Column("thingId")]
         public int ThingId { get; set; }
 
-        [Column("groupid")]
+        [Column("groupId")]
         public int GroupId { get; set; }
     }
 
@@ -491,7 +491,7 @@ JOIN {QTab("zbThingA3")} a3x ON a2x.id=a3x.id
         [Column("name")]
         public string Name { get; set; }
 
-        [Column("groupcount")]
+        [Column("groupCount")]
         [ResultColumn] // not included in insert/update, not sql-generated
         public int GroupCount { get; set; }
     }

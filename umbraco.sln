@@ -211,13 +211,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbraco.Tests.Common.Postgr
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NPoco", "NPoco", "{23021E69-02EF-4D58-BCE5-220839845D9E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPoco", "..\..\..\_idseefeld\NPoco\src\NPoco\NPoco.csproj", "{61B84D77-0897-145E-8CCC-DC99899D5CAE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPoco", "..\..\..\source\repos\_idseefeld\NPoco\src\NPoco\NPoco.csproj", "{61B84D77-0897-145E-8CCC-DC99899D5CAE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPoco.Abstractions", "..\..\..\_idseefeld\NPoco\src\NPoco.Abstractions\NPoco.Abstractions.csproj", "{130BF51C-EA1B-0704-3380-928B58A43ED7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPoco.Abstractions", "..\..\..\source\repos\_idseefeld\NPoco\src\NPoco.Abstractions\NPoco.Abstractions.csproj", "{130BF51C-EA1B-0704-3380-928B58A43ED7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPoco.SqlServer", "..\..\..\_idseefeld\NPoco\src\NPoco.SqlServer\NPoco.SqlServer.csproj", "{FDA63283-2721-6ECF-7C28-9D03922D4403}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPoco.SqlServer", "..\..\..\source\repos\_idseefeld\NPoco\src\NPoco.SqlServer\NPoco.SqlServer.csproj", "{FDA63283-2721-6ECF-7C28-9D03922D4403}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPoco.SqlServer.SystemData", "..\..\..\_idseefeld\NPoco\src\NPoco.SqlServer.SystemData\NPoco.SqlServer.SystemData.csproj", "{FAF4D1B0-1F40-47B2-A174-B8391F4D305A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPoco.SqlServer.SystemData", "..\..\..\source\repos\_idseefeld\NPoco\src\NPoco.SqlServer.SystemData\NPoco.SqlServer.SystemData.csproj", "{FAF4D1B0-1F40-47B2-A174-B8391F4D305A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
