@@ -104,7 +104,7 @@ namespace Umbraco.Extensions
                     string?[] allStringValues = [.. valuesArray.Select(v => v.ToString()?.ToLowerInvariant())];
                     if (allStringValues.Length > 0)
                     {
-                        sql.Where($"LOWER({fieldName}) IN (@values)", new { allStringValues });
+                        sql.Where($"LOWER({fieldName}) IN (@values)", new { values = allStringValues });
                         return sql;
                     }
                 }
