@@ -65,7 +65,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\_idseefeld\NPoco\src\NPoco\NPoco.csproj" />
+    <ProjectReference Include="..\..\..\..\..\source\repos\_idseefeld\NPoco\src\NPoco\NPoco.csproj" />
     <ProjectReference Include="..\Umbraco.Core\Umbraco.Core.csproj" />
   </ItemGroup>
 

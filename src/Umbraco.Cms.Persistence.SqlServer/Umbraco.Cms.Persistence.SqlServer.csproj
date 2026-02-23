@@ -23,7 +23,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\_idseefeld\NPoco\src\NPoco.SqlServer\NPoco.SqlServer.csproj" />
+    <ProjectReference Include="..\..\..\..\..\source\repos\_idseefeld\NPoco\src\NPoco.SqlServer\NPoco.SqlServer.csproj" />
     <ProjectReference Include="..\Umbraco.Infrastructure\Umbraco.Infrastructure.csproj" />
   </ItemGroup>
 
