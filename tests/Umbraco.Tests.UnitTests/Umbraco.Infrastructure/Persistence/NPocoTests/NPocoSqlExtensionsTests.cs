@@ -128,15 +128,6 @@ public class NPocoSqlExtensionsTests : BaseUsingSqlSyntax
     }
 
     [Test]
-    public void WhereInMixedValueTypesThrowsTest()
-    {
-        Assert.Throws<InvalidOperationException>(() => new Sql<ISqlContext>(SqlContext)
-            .Select("*")
-            .From<NodeDto>()
-            .WhereIn<NodeDto>(x => x.Text, new object[] { "a", "b", "c", 1, 234, Guid.NewGuid() }));
-    }
-
-    [Test]
     public void WhereLike_Uses_Parameterized_Query()
     {
         var sql = new Sql<ISqlContext>(SqlContext)

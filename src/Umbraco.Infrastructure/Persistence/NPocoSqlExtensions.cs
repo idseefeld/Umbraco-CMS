@@ -85,17 +85,12 @@ namespace Umbraco.Extensions
         /// <param name="field">An expression specifying the field.</param>
         /// <param name="values">The values.</param>
         /// <returns>The Sql statement.</returns>
-        /// <remarks>IEnumerable? values may contain nullable values of different types like int, Guid, DateTime or string. In this case an exeption is thrown, because the execution of the resulting sql shall throw anyways. This way the root cause is clearer.</remarks>
+        /// <remarks>IEnumerable? values may contain nullable values of different types like int, Guid, DateTime or string. For performance reasons, this case is not checked here. But be aware that mixing typs result in an invalid sql statement.</remarks>
         public static Sql<ISqlContext> WhereIn<TDto>(this Sql<ISqlContext> sql, Expression<Func<TDto, object?>> field, IEnumerable? values)
         {
             if (values == null)
             {
                 return sql;
-            }
-
-            if (NotAllValuesAreOfTheSameType(values))
-            {
-                throw new InvalidOperationException($"All values must be of the same type. Values: {string.Join(", ", values.Cast<object>())}");
             }
 
             var fieldName = sql.SqlContext.SqlSyntax.GetFieldName(field);
