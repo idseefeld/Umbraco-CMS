@@ -4,6 +4,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
+using NPoco.DatabaseTypes;
 using NUnit.Framework;
 using Our.Umbraco.PostgreSql;
 using Our.Umbraco.PostgreSql.EFCore;
@@ -16,7 +17,10 @@ using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.Strings;
 using Umbraco.Cms.Core.Web;
 using Umbraco.Cms.Infrastructure.DependencyInjection;
+using Umbraco.Cms.Infrastructure.Persistence;
+using Umbraco.Cms.Infrastructure.Persistence.Dtos;
 using Umbraco.Cms.Infrastructure.Persistence.Mappers;
+using Umbraco.Cms.Infrastructure.Persistence.SqlSyntax;
 using Umbraco.Cms.Infrastructure.Scoping;
 using Umbraco.Cms.Persistence.Sqlite;
 using Umbraco.Cms.Persistence.SqlServer;
@@ -38,6 +42,7 @@ namespace Umbraco.Cms.Tests.Integration.Testing;
 public abstract class UmbracoIntegrationTest : UmbracoIntegrationTestBase
 {
     private IHost _host;
+    protected ISqlContext SqlContext => GetRequiredService<IUmbracoDatabaseFactory>().SqlContext;
 
     protected IServiceProvider Services => _host.Services;
 
@@ -71,6 +76,11 @@ public abstract class UmbracoIntegrationTest : UmbracoIntegrationTestBase
     protected UserBuilder UserBuilderInstance { get; } = new();
 
     protected UserGroupBuilder UserGroupBuilderInstance { get; } = new();
+
+    protected string GetDBTypeNameForTextColumn(IScope scope, int size = 64)
+    {
+        return string.Format(scope.Database.SqlContext.SqlSyntax.StringLengthUnicodeColumnDefinitionFormat, size);
+    }
 
     [SetUp]
     public void Setup()
@@ -170,8 +180,6 @@ public abstract class UmbracoIntegrationTest : UmbracoIntegrationTestBase
             .AddExamine()
             .AddUmbracoSqlServerSupport()
             .AddUmbracoSqliteSupport()
-            .AddUmbracoPostgreSqlSupport()
-            .AddUmbracoPostgreSqlEFCoreSupport()
             .AddUmbracoHybridCache()
             .AddTestServices(TestHelper);
 
@@ -276,5 +284,51 @@ public abstract class UmbracoIntegrationTest : UmbracoIntegrationTestBase
         {
             viewFileSystem.DeleteFile(file);
         }
+    }
+
+    protected string QTab(string x)
+    {
+        return SqlContext.SqlSyntax.GetQuotedTableName(x);
+    }
+
+    protected string QTab(string x, NPoco.DatabaseType databaseType)
+    {
+        return databaseType == null
+            ? QTab(x)
+            : databaseType.EscapeTableName(x);
+    }
+
+    protected string QCol(string x)
+    {
+        return SqlContext.SqlSyntax.GetQuotedColumnName(x);
+    }
+
+    protected string QCol(string x, NPoco.DatabaseType databaseType)
+    {
+        return databaseType == null
+            ? QCol(x)
+            : databaseType.EscapeSqlIdentifier(x);
+    }
+
+    protected string QName(string x)
+    {
+        return SqlContext.SqlSyntax.GetQuotedName(x);
+    }
+
+    protected string QName(string x, NPoco.DatabaseType databaseType)
+    {
+        return databaseType == null
+            ? QName(x)
+            : databaseType.EscapeSqlIdentifier(x);
+    }
+
+    protected int CountUmbracoNodesOfType(Guid objectType)
+    {
+        var db = ScopeAccessor.AmbientScope.Database;
+        var sql = db.SqlContext.Sql()
+            .SelectCount("*")
+            .From<NodeDto>()
+            .Where<NodeDto>(x => x.NodeObjectType == objectType);
+        return db.ExecuteScalar<int>(sql);
     }
 }

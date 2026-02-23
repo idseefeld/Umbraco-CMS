@@ -162,9 +162,6 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
     public override bool IsCaseSensitive() => true;
 
     /// <inheritdoc />
-    public override bool InsertWithSpecialAutoIncrement() => true;
-
-    /// <inheritdoc />
     public override void AlterSequences(IUmbracoDatabase database)
     {
         if (_lastInsertIds.Count < _tablesToAlter.Count)
