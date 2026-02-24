@@ -47,6 +47,7 @@
     <PackageReference Include="Microsoft.Extensions.Identity.Stores" />
     <PackageReference Include="MiniProfiler.Shared" />
     <PackageReference Include="ncrontab" />
+    <PackageReference Include="NPoco" />
     <PackageReference Include="OpenIddict.Abstractions" />
     <PackageReference Include="Serilog" />
     <PackageReference Include="Serilog.Enrichers.Process" />
@@ -65,7 +66,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\source\repos\_idseefeld\NPoco\src\NPoco\NPoco.csproj" />
     <ProjectReference Include="..\Umbraco.Core\Umbraco.Core.csproj" />
   </ItemGroup>
 
