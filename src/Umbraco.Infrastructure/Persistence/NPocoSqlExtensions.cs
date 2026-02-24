@@ -119,7 +119,7 @@ namespace Umbraco.Extensions
         {
             if (value == null || value is not string)
             {
-                throw new InvalidOperationException("All values must be of type string when the database is case sensitive and the field is a string.");
+                throw new ArgumentException("All values must be of type string when the database is case sensitive and the field is a string.");
             }
 
             return value?.ToString()?.ToLowerInvariant() ?? string.Empty;
