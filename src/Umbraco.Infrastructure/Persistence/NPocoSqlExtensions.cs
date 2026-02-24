@@ -100,9 +100,9 @@ namespace Umbraco.Extensions
                 var fieldInfo = ExpressionHelper.FindProperty(field).Item1 as PropertyInfo;
                 if (fieldInfo != null && fieldInfo.PropertyType == typeof(string))
                 {
-                    // If the database is case sensitive, we need to convert the values to lower case and use LOWER() in the SQL to ensure case insensitive comparison.
+                    // If the database is case sensitive and the field is a string, we need to convert the values to lower case and use LOWER() in the SQL to ensure case insensitive comparison.
                     object[] valuesArray = [.. values];
-                    string?[] allAsStringValues = [.. valuesArray.Select(v => v.ToString()?.ToLowerInvariant())];
+                    string?[] allAsStringValues = [.. valuesArray.Select(v => EnsureLowerStringValue(v))];
                     if (allAsStringValues.Length > 0)
                     {
                         sql.Where($"LOWER({fieldName}) IN (@values)", new { values = allAsStringValues });
@@ -115,27 +115,14 @@ namespace Umbraco.Extensions
             return sql;
         }
 
-        private static bool NotAllValuesAreOfTheSameType(IEnumerable values)
+        private static string? EnsureLowerStringValue(object? value)
         {
-            Type? firstType = null;
-            foreach (var value in values)
+            if (value == null || value is not string)
             {
-                if (value == null)
-                {
-                    continue; // Skip null values
-                }
-
-                if (firstType == null)
-                {
-                    firstType = value.GetType();
-                }
-                else if (value.GetType() != firstType)
-                {
-                    return true; // Found a value of a different type
-                }
+                throw new InvalidOperationException("All values must be of type string when the database is case sensitive and the field is a string.");
             }
 
-            return false; // All non-null values are of the same type
+            return value?.ToString()?.ToLowerInvariant() ?? string.Empty;
         }
 
         /// <summary>
