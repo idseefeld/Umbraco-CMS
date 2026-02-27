@@ -5,6 +5,8 @@ namespace Our.Umbraco.PostgreSql
     /// </summary>
     public static class Constants
     {
+        public const bool EscapeTableColumAliasNames = true;
+
         /// <summary>
         /// Represents the configuration section name for PostgreSQL options.
         /// </summary>

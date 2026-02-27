@@ -23,8 +23,6 @@ namespace Our.Umbraco.PostgreSql.Services;
 /// </remarks>
 public class UmbracoPostgreSQLDatabaseType : DatabaseType
 {
-    private const bool EscapeTableColumAliasNames = true;
-
     #region PostgreSQL-specific overrides
 
     /// <inheritdoc />
@@ -59,7 +57,7 @@ public class UmbracoPostgreSQLDatabaseType : DatabaseType
     /// <inheritdoc />
     public override string EscapeSqlIdentifier(string str)
     {
-        return EscapeTableColumAliasNames ? string.Format("\"{0}\"", str) : str;
+        return Constants.EscapeTableColumAliasNames ? string.Format("\"{0}\"", str) : str;
     }
 
     /// <inheritdoc />

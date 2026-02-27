@@ -159,9 +159,6 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
     public override bool SupportsSequences() => true; // PostgreSQL does not support identity insert
 
     /// <inheritdoc />
-    public override bool IsCaseSensitive() => true;
-
-    /// <inheritdoc />
     public override void AlterSequences(IUmbracoDatabase database)
     {
         if (_lastInsertIds.Count < _tablesToAlter.Count)
@@ -293,11 +290,12 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
             return;
         }
 
-        database.Execute(@"
-            CREATE TABLE IF NOT EXISTS ""__EFMigrationsHistory"" (
-                ""MigrationId"" VARCHAR(150) NOT NULL PRIMARY KEY,
-                ""ProductVersion"" VARCHAR(32) NOT NULL
+        database.Execute(@$"
+            CREATE TABLE IF NOT EXISTS {GetQuotedIdentifier("__EFMigrationsHistory")} (
+                {GetQuotedIdentifier("MigrationId")} VARCHAR(150) NOT NULL PRIMARY KEY,
+                {GetQuotedIdentifier("ProductVersion")} VARCHAR(32) NOT NULL
             );");
+
         _efMigrationHistoryTableCreated = true;
     }
 
@@ -338,10 +336,9 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
             throw new ArgumentNullException(nameof(identifier));
         }
 
-        var optionsValue = _postgreSqlOptions?.Value;
-        var escapeTableColumAliasNames = optionsValue?.EscapeTableColumAliasNames ?? true;
-
-        var rVal = !escapeTableColumAliasNames || SqlKeywords.InvariantContains(identifier) ? $"\"{identifier}\"" : $"{identifier}";
+        // var optionsValue = _postgreSqlOptions?.Value;
+        // var escapeTableColumAliasNames =optionsValue?.EscapeTableColumAliasNames ?? true;
+        var rVal = Constants.EscapeTableColumAliasNames || SqlKeywords.InvariantContains(identifier) ? $"\"{identifier}\"" : $"{identifier}";
         return rVal;
     }
 
