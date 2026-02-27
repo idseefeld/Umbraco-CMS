@@ -85,44 +85,11 @@ namespace Umbraco.Extensions
         /// <param name="field">An expression specifying the field.</param>
         /// <param name="values">The values.</param>
         /// <returns>The Sql statement.</returns>
-        /// <remarks>IEnumerable? values may contain nullable values of different types like int, Guid, DateTime or string. For performance reasons, this case is not checked here. But be aware that mixing typs result in an invalid sql statement.</remarks>
         public static Sql<ISqlContext> WhereIn<TDto>(this Sql<ISqlContext> sql, Expression<Func<TDto, object?>> field, IEnumerable? values)
         {
-            if (values == null)
-            {
-                return sql;
-            }
-
             var fieldName = sql.SqlContext.SqlSyntax.GetFieldName(field);
-
-            if (sql.SqlContext.SqlSyntax.IsCaseSensitive())
-            {
-                var fieldInfo = ExpressionHelper.FindProperty(field).Item1 as PropertyInfo;
-                if (fieldInfo != null && fieldInfo.PropertyType == typeof(string))
-                {
-                    // If the database is case sensitive and the field is a string, we need to convert the values to lower case and use LOWER() in the SQL to ensure case insensitive comparison.
-                    object[] valuesArray = [.. values];
-                    string?[] allAsStringValues = [.. valuesArray.Select(v => EnsureLowerStringValue(v))];
-                    if (allAsStringValues.Length > 0)
-                    {
-                        sql.Where($"LOWER({fieldName}) IN (@values)", new { values = allAsStringValues });
-                        return sql;
-                    }
-                }
-            }
-
             sql.Where($"{fieldName} IN (@values)", new { values });
             return sql;
-        }
-
-        private static string? EnsureLowerStringValue(object? value)
-        {
-            if (value == null || value is not string)
-            {
-                throw new ArgumentException("All values must be of type string when the database is case sensitive and the field is a string.");
-            }
-
-            return value?.ToString()?.ToLowerInvariant() ?? string.Empty;
         }
 
         /// <summary>
