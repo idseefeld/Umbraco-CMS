@@ -85,7 +85,7 @@ namespace Umbraco.Extensions
         /// <param name="field">An expression specifying the field.</param>
         /// <param name="values">The values.</param>
         /// <returns>The Sql statement.</returns>
-        /// <remarks>IEnumerable? values may contain nullable values of different types like int, Guid, DateTime or string. For performance reasons, this case is not checked here. But be aware that mixing typs result in an invalid sql statement.</remarks>
+        /// <remarks>IEnumerable? values may contain nullable values of different types like int, Guid, DateTime or string. For performance reasons, the case of mixed value types is not checked here. But be aware that mixing types result in an invalid sql statement, which will throw exceptions on execution.</remarks>
         public static Sql<ISqlContext> WhereIn<TDto>(this Sql<ISqlContext> sql, Expression<Func<TDto, object?>> field, IEnumerable? values)
         {
             if (values == null)
