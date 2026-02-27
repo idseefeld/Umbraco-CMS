@@ -243,9 +243,6 @@ public abstract class SqlSyntaxProviderBase<TSyntax> : ISqlSyntaxProvider
         Expression<Func<TDto, object?>> fieldSelector,
         string? tableAlias = null) => this.GetFieldName(fieldSelector, tableAlias);
 
-    /// <inheritdoc/>
-    public virtual bool IsCaseSensitive() => false;
-
     public virtual Sql<ISqlContext> InsertForUpdateHint(Sql<ISqlContext> sql) => sql;
 
     public virtual Sql<ISqlContext> AppendForUpdateHint(Sql<ISqlContext> sql) => sql;
