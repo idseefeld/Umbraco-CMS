@@ -528,7 +528,10 @@ internal sealed class MemberServiceTests : UmbracoIntegrationTest
         Assert.IsNotNull(MemberService.GetById(member1.Id));
         Assert.IsNotNull(MemberService.GetById(member2.Id));
 
-        MemberService.AssignRoles(new[] { member1.Id, member2.Id }, new[] { "mytestrole1" }); // Why is this test needed? In production you should ensure the role exists and is correct casing, but this is to ensure that the role lookup is case-insensitive
+        var allRoles = MemberService.GetAllRoles();
+        var role = allRoles.Single(r => r.Name.Equals("mytestrole1", StringComparison.InvariantCultureIgnoreCase)); // ensure the role lookup is case-insensitive, but the role name has correct casing
+
+        MemberService.AssignRoles(new[] { member1.Id, member2.Id }, new[] { role.Name }); // Why is this test needed? In production you should ensure the role exists and is correct casing, but this is to ensure that the role lookup is case-insensitive
 
         var membersInRole = MemberService.GetMembersInRole("MyTestRole1");
 
