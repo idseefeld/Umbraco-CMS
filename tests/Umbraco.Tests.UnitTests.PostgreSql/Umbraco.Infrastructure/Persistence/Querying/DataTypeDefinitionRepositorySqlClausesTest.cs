@@ -14,6 +14,7 @@ namespace Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persiste
 [TestFixture]
 public class DataTypeDefinitionRepositorySqlClausesTest : BaseUsingPostgreSqlSyntax
 {
+    private readonly string escapeChar = Our.Umbraco.PostgreSql.Constants.EscapeTableColumAliasNames ? "\"" : string.Empty;
     [Test]
     public void Can_Verify_Base_Clause()
     {
@@ -21,10 +22,10 @@ public class DataTypeDefinitionRepositorySqlClausesTest : BaseUsingPostgreSqlSyn
 
         var expected = new Sql();
         expected.Select("*")
-            .From($"\"{Constants.DatabaseSchema.Tables.DataType}\"")
-            .InnerJoin("\"umbracoNode\"")
-            .On($"\"{Constants.DatabaseSchema.Tables.DataType}\".\"nodeId\" = \"umbracoNode\".\"id\"")
-            .Where("(\"umbracoNode\".\"nodeObjectType\" = @0)", new Guid("30a2a501-1978-4ddb-a57b-f7efed43ba3c"));
+            .From($"{escapeChar}{Constants.DatabaseSchema.Tables.DataType}{escapeChar}")
+            .InnerJoin($"{escapeChar}umbracoNode{escapeChar}")
+            .On($"{escapeChar}{Constants.DatabaseSchema.Tables.DataType}{escapeChar}.{escapeChar}nodeId{escapeChar} = {escapeChar}umbracoNode{escapeChar}.{escapeChar}id{escapeChar}")
+            .Where($"({escapeChar}umbracoNode{escapeChar}.{escapeChar}nodeObjectType{escapeChar} = @0)", new Guid("30a2a501-1978-4ddb-a57b-f7efed43ba3c"));
 
         var sql = Sql();
         sql.SelectAll()

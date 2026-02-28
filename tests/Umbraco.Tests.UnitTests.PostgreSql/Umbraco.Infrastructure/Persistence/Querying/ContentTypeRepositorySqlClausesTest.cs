@@ -17,20 +17,21 @@ namespace Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persiste
 [TestFixture]
 public class ContentTypeRepositorySqlClausesTest : BaseUsingPostgreSqlSyntax
 {
+    private readonly string escapeChar = Our.Umbraco.PostgreSql.Constants.EscapeTableColumAliasNames ? "\"" : string.Empty;
     [Test]
     public void Can_Verify_Base_Clause()
     {
         var nodeObjectType = Constants.ObjectTypes.DocumentType;
 
         var expected = Sql();
-        expected.Select("*")
-            .From("\"cmsDocumentType\"")
-            .RightJoin("\"cmsContentType\"")
-            .On("\"cmsContentType\".\"nodeId\" = \"cmsDocumentType\".\"contentTypeNodeId\"")
-            .InnerJoin("\"umbracoNode\"")
-            .On("\"cmsContentType\".\"nodeId\" = \"umbracoNode\".\"id\"")
-            .Where("(\"umbracoNode\".\"nodeObjectType\" = @0)", new Guid("a2cb7800-f571-4787-9638-bc48539a0efb"))
-            .Where("(\"cmsDocumentType\".\"IsDefault\" = @0)", true);
+        expected.Select($"*")
+            .From($"{escapeChar}cmsDocumentType{escapeChar}")
+            .RightJoin($"{escapeChar}cmsContentType{escapeChar}")
+            .On($"{escapeChar}cmsContentType{escapeChar}.{escapeChar}nodeId{escapeChar} = {escapeChar}cmsDocumentType{escapeChar}.{escapeChar}contentTypeNodeId{escapeChar}")
+            .InnerJoin($"{escapeChar}umbracoNode{escapeChar}")
+            .On($"{escapeChar}cmsContentType{escapeChar}.{escapeChar}nodeId{escapeChar} = {escapeChar}umbracoNode{escapeChar}.{escapeChar}id{escapeChar}")
+            .Where($"({escapeChar}umbracoNode{escapeChar}.{escapeChar}nodeObjectType{escapeChar} = @0)", new Guid($"a2cb7800-f571-4787-9638-bc48539a0efb"))
+            .Where($"({escapeChar}cmsDocumentType{escapeChar}.{escapeChar}IsDefault{escapeChar} = @0)", true);
 
         var sql = Sql();
         sql.SelectAll()
@@ -60,14 +61,14 @@ public class ContentTypeRepositorySqlClausesTest : BaseUsingPostgreSqlSyntax
 
         var expected = Sql();
         expected.SelectAll()
-            .From("\"cmsDocumentType\"")
-            .RightJoin("\"cmsContentType\"")
-            .On("\"cmsContentType\".\"nodeId\" = \"cmsDocumentType\".\"contentTypeNodeId\"")
-            .InnerJoin("\"umbracoNode\"")
-            .On("\"cmsContentType\".\"nodeId\" = \"umbracoNode\".\"id\"")
-            .Where("(\"umbracoNode\".\"nodeObjectType\" = @0)", new Guid("a2cb7800-f571-4787-9638-bc48539a0efb"))
-            .Where("\"cmsDocumentType\".\"IsDefault\" = @0", true)
-            .Where("(\"umbracoNode\".\"id\" = @0)", 1050);
+            .From($"{escapeChar}cmsDocumentType{escapeChar}")
+            .RightJoin($"{escapeChar}cmsContentType{escapeChar}")
+            .On($"{escapeChar}cmsContentType{escapeChar}.{escapeChar}nodeId{escapeChar} = {escapeChar}cmsDocumentType{escapeChar}.{escapeChar}contentTypeNodeId{escapeChar}")
+            .InnerJoin($"{escapeChar}umbracoNode{escapeChar}")
+            .On($"{escapeChar}cmsContentType{escapeChar}.{escapeChar}nodeId{escapeChar} = {escapeChar}umbracoNode{escapeChar}.{escapeChar}id{escapeChar}")
+            .Where($"({escapeChar}umbracoNode{escapeChar}.{escapeChar}nodeObjectType{escapeChar} = @0)", new Guid($"a2cb7800-f571-4787-9638-bc48539a0efb"))
+            .Where($"{escapeChar}cmsDocumentType{escapeChar}.{escapeChar}IsDefault{escapeChar} = @0", true)
+            .Where($"({escapeChar}umbracoNode{escapeChar}.{escapeChar}id{escapeChar} = @0)", 1050);
 
         var sql = Sql();
         sql.SelectAll()
@@ -96,10 +97,10 @@ public class ContentTypeRepositorySqlClausesTest : BaseUsingPostgreSqlSyntax
     {
         var expected = Sql();
         expected.SelectAll()
-            .From("\"cmsPropertyTypeGroup\"")
-            .RightJoin("\"cmsPropertyType\"").On("\"cmsPropertyTypeGroup\".\"id\" = \"cmsPropertyType\".\"propertyTypeGroupId\"")
-            .InnerJoin($"\"{Constants.DatabaseSchema.Tables.DataType}\"")
-            .On($"\"cmsPropertyType\".\"dataTypeId\" = \"{Constants.DatabaseSchema.Tables.DataType}\".\"nodeId\"");
+            .From($"{escapeChar}cmsPropertyTypeGroup{escapeChar}")
+            .RightJoin($"{escapeChar}cmsPropertyType{escapeChar}").On($"{escapeChar}cmsPropertyTypeGroup{escapeChar}.{escapeChar}id{escapeChar} = {escapeChar}cmsPropertyType{escapeChar}.{escapeChar}propertyTypeGroupId{escapeChar}")
+            .InnerJoin($"{escapeChar}{Constants.DatabaseSchema.Tables.DataType}{escapeChar}")
+            .On($"{escapeChar}cmsPropertyType{escapeChar}.{escapeChar}dataTypeId{escapeChar} = {escapeChar}{Constants.DatabaseSchema.Tables.DataType}{escapeChar}.{escapeChar}nodeId{escapeChar}");
 
         var sql = Sql();
         sql.SelectAll()
@@ -119,8 +120,8 @@ public class ContentTypeRepositorySqlClausesTest : BaseUsingPostgreSqlSyntax
     {
         var expected = Sql();
         expected.SelectAll()
-            .From("\"cmsContentTypeAllowedContentType\"")
-            .Where("(\"cmsContentTypeAllowedContentType\".\"Id\" = @0)", 1050);
+            .From($"{escapeChar}cmsContentTypeAllowedContentType{escapeChar}")
+            .Where($"({escapeChar}cmsContentTypeAllowedContentType{escapeChar}.{escapeChar}Id{escapeChar} = @0)", 1050);
 
         var sql = Sql();
         sql.SelectAll()
@@ -143,11 +144,11 @@ public class ContentTypeRepositorySqlClausesTest : BaseUsingPostgreSqlSyntax
     {
         var expected = Sql();
         expected.SelectAll()
-            .From("\"cmsPropertyTypeGroup\"")
-            .RightJoin("\"cmsPropertyType\"").On("\"cmsPropertyTypeGroup\".\"id\" = \"cmsPropertyType\".\"propertyTypeGroupId\"")
-            .InnerJoin($"\"{Constants.DatabaseSchema.Tables.DataType}\"")
-            .On($"\"cmsPropertyType\".\"dataTypeId\" = \"{Constants.DatabaseSchema.Tables.DataType}\".\"nodeId\"")
-            .Where("(\"cmsPropertyType\".\"contentTypeId\" = @0)", 1050);
+            .From($"{escapeChar}cmsPropertyTypeGroup{escapeChar}")
+            .RightJoin($"{escapeChar}cmsPropertyType{escapeChar}").On($"{escapeChar}cmsPropertyTypeGroup{escapeChar}.{escapeChar}id{escapeChar} = {escapeChar}cmsPropertyType{escapeChar}.{escapeChar}propertyTypeGroupId{escapeChar}")
+            .InnerJoin($"{escapeChar}{Constants.DatabaseSchema.Tables.DataType}{escapeChar}")
+            .On($"{escapeChar}cmsPropertyType{escapeChar}.{escapeChar}dataTypeId{escapeChar} = {escapeChar}{Constants.DatabaseSchema.Tables.DataType}{escapeChar}.{escapeChar}nodeId{escapeChar}")
+            .Where($"({escapeChar}cmsPropertyType{escapeChar}.{escapeChar}contentTypeId{escapeChar} = @0)", 1050);
 
         var sql = Sql();
         sql.SelectAll()
@@ -186,14 +187,14 @@ public class ContentTypeRepositorySqlClausesTest : BaseUsingPostgreSqlSyntax
                 $"'|{SqlContext.SqlSyntax.GetWildcardPlaceholder()}'");
 
         string expectedSQL =
-@"DELETE FROM ""umbracoUserGroup2GranularPermission""
-WHERE ((""umbracoUserGroup2GranularPermission"".""uniqueId"" = @0))
-AND (""umbracoUserGroup2GranularPermission"".""permission"" LIKE ((SELECT 
- CAST(""UniqueId"" AS NATIONAL CHARACTER VARYING(36))
+@$"DELETE FROM {escapeChar}umbracoUserGroup2GranularPermission{escapeChar}
+WHERE (({escapeChar}umbracoUserGroup2GranularPermission{escapeChar}.{escapeChar}uniqueId{escapeChar} = @0))
+AND ({escapeChar}umbracoUserGroup2GranularPermission{escapeChar}.{escapeChar}permission{escapeChar} LIKE ((SELECT 
+ CAST({escapeChar}UniqueId{escapeChar} AS NATIONAL CHARACTER VARYING(36))
  
-FROM ""cmsPropertyType""
-WHERE ((""cmsPropertyType"".""id"" = @1))
-)) || '|%')".Replace("\r", string.Empty);
+FROM {escapeChar}cmsPropertyType{escapeChar}
+WHERE (({escapeChar}cmsPropertyType{escapeChar}.{escapeChar}id{escapeChar} = @1))
+)) || '|%')".Replace($"\r", string.Empty);
         var typedSql = sql.SQL;
         Assert.That(typedSql, Is.EqualTo(expectedSQL));
     }

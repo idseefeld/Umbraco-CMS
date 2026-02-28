@@ -10,6 +10,7 @@ namespace Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persiste
 [TestFixture]
 public class RelationMapperTest
 {
+    private readonly string escapeChar = Our.Umbraco.PostgreSql.Constants.EscapeTableColumAliasNames ? "\"" : string.Empty;
     [Test]
     public void Can_Map_Id_Property()
     {
@@ -17,7 +18,7 @@ public class RelationMapperTest
         var column = new RelationMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("Id");
 
         // Assert
-        Assert.That(column, Is.EqualTo("\"umbracoRelation\".\"id\""));
+        Assert.That(column, Is.EqualTo($"{escapeChar}umbracoRelation{escapeChar}.{escapeChar}id{escapeChar}"));
     }
 
     [Test]
@@ -27,7 +28,7 @@ public class RelationMapperTest
         var column = new RelationMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("ChildId");
 
         // Assert
-        Assert.That(column, Is.EqualTo("\"umbracoRelation\".\"childId\""));
+        Assert.That(column, Is.EqualTo($"{escapeChar}umbracoRelation{escapeChar}.{escapeChar}childId{escapeChar}"));
     }
 
     [Test]
@@ -37,7 +38,7 @@ public class RelationMapperTest
         var column = new RelationMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("CreateDate");
 
         // Assert
-        Assert.That(column, Is.EqualTo("\"umbracoRelation\".\"datetime\""));
+        Assert.That(column, Is.EqualTo($"{escapeChar}umbracoRelation{escapeChar}.{escapeChar}datetime{escapeChar}"));
     }
 
     [Test]
@@ -47,7 +48,7 @@ public class RelationMapperTest
         var column = new RelationMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("Comment");
 
         // Assert
-        Assert.That(column, Is.EqualTo("\"umbracoRelation\".\"comment\""));
+        Assert.That(column, Is.EqualTo($"{escapeChar}umbracoRelation{escapeChar}.{escapeChar}comment{escapeChar}"));
     }
 
     [Test]
@@ -57,6 +58,6 @@ public class RelationMapperTest
         var column = new RelationMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("RelationTypeId");
 
         // Assert
-        Assert.That(column, Is.EqualTo("\"umbracoRelation\".\"relType\""));
+        Assert.That(column, Is.EqualTo($"{escapeChar}umbracoRelation{escapeChar}.{escapeChar}relType{escapeChar}"));
     }
 }

@@ -17,7 +17,10 @@
   </PropertyGroup>
 
   <Import Project="..\Umbraco.Cms.Targets\buildTransitive\Umbraco.Cms.Targets.props" />
-  <Import Project="..\Umbraco.Cms.Targets\buildTransitive\Umbraco.Cms.Targets.targets" />  
+  <Import Project="..\Umbraco.Cms.Targets\buildTransitive\Umbraco.Cms.Targets.targets" />
+  <ItemGroup>
+    <Content Remove="Views\SimplePage.cshtml" />
+  </ItemGroup>  
   <ItemGroup>
     <ProjectReference Include="..\Umbraco.Cms.DevelopmentMode.Backoffice\Umbraco.Cms.DevelopmentMode.Backoffice.csproj" />
     <ProjectReference Include="..\Umbraco.Cms\Umbraco.Cms.csproj" />
@@ -37,6 +40,7 @@
     <!-- Ensure the AppLocalIcu setting is the same as the referenced ICU package version and changes are also done to the template project! -->
     <!-- Opt-in to app-local ICU to ensure consistent globalization APIs across different platforms -->
     <PackageReference Include="Microsoft.ICU.ICU4C.Runtime" Version="72.1.0.3" />
+    <PackageReference Include="Umbraco.Community.WysiwgUmbracoCommunityExtensions" Version="17.0.1" />
     <RuntimeHostConfigurationOption Include="System.Globalization.AppLocalIcu" Value="72.1.0.3" Condition="$(RuntimeIdentifier.StartsWith('linux')) or $(RuntimeIdentifier.StartsWith('win')) or ('$(RuntimeIdentifier)' == '' and !$([MSBuild]::IsOSPlatform('osx')))" />
   </ItemGroup>
 
@@ -50,12 +54,6 @@
     <RazorCompileOnBuild>false</RazorCompileOnBuild>
     <RazorCompileOnPublish>false</RazorCompileOnPublish>
   </PropertyGroup>
-
-  <ItemGroup>
-    <_ContentIncludedByDefault Remove="umbraco\UmbracoInstall\Index.cshtml" />
-    <_ContentIncludedByDefault Remove="umbraco\UmbracoLogin\Index.cshtml" />
-    <_ContentIncludedByDefault Remove="umbraco\UmbracoBackOffice\Default.cshtml" />
-  </ItemGroup>
 
   <ItemGroup>
     <!-- Hide the content files that come from the Microsoft.CodeAnalysis.Workspaces.MSBuild package. -->

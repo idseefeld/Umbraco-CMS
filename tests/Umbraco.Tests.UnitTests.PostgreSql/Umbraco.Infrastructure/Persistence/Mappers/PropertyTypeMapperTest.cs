@@ -11,6 +11,7 @@ namespace Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persiste
 [TestFixture]
 public class PropertyTypeMapperTest
 {
+    private readonly string escapeChar = Our.Umbraco.PostgreSql.Constants.EscapeTableColumAliasNames ? "\"" : string.Empty;
     [Test]
     public void Can_Map_Id_Property()
     {
@@ -18,7 +19,7 @@ public class PropertyTypeMapperTest
         var column = new PropertyTypeMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("Id");
 
         // Assert
-        Assert.That(column, Is.EqualTo("\"cmsPropertyType\".\"id\""));
+        Assert.That(column, Is.EqualTo($"{escapeChar}cmsPropertyType{escapeChar}.{escapeChar}id{escapeChar}"));
     }
 
     [Test]
@@ -28,7 +29,7 @@ public class PropertyTypeMapperTest
         var column = new PropertyTypeMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("Alias");
 
         // Assert
-        Assert.That(column, Is.EqualTo("\"cmsPropertyType\".\"Alias\""));
+        Assert.That(column, Is.EqualTo($"{escapeChar}cmsPropertyType{escapeChar}.{escapeChar}Alias{escapeChar}"));
     }
 
     [Test]
@@ -38,7 +39,7 @@ public class PropertyTypeMapperTest
         var column = new PropertyTypeMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("DataTypeId");
 
         // Assert
-        Assert.That(column, Is.EqualTo("\"cmsPropertyType\".\"dataTypeId\""));
+        Assert.That(column, Is.EqualTo($"{escapeChar}cmsPropertyType{escapeChar}.{escapeChar}dataTypeId{escapeChar}"));
     }
 
     [Test]
@@ -48,7 +49,7 @@ public class PropertyTypeMapperTest
         var column = new PropertyTypeMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("SortOrder");
 
         // Assert
-        Assert.That(column, Is.EqualTo("\"cmsPropertyType\".\"sortOrder\""));
+        Assert.That(column, Is.EqualTo($"{escapeChar}cmsPropertyType{escapeChar}.{escapeChar}sortOrder{escapeChar}"));
     }
 
     [Test]
@@ -59,7 +60,7 @@ public class PropertyTypeMapperTest
             new PropertyTypeMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("PropertyEditorAlias");
 
         // Assert
-        Assert.That(column, Is.EqualTo($"\"{Constants.DatabaseSchema.Tables.DataType}\".\"propertyEditorAlias\""));
+        Assert.That(column, Is.EqualTo($"{escapeChar}{Constants.DatabaseSchema.Tables.DataType}{escapeChar}.{escapeChar}propertyEditorAlias{escapeChar}"));
     }
 
     [Test]
@@ -70,6 +71,6 @@ public class PropertyTypeMapperTest
             new PropertyTypeMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("ValueStorageType");
 
         // Assert
-        Assert.That(column, Is.EqualTo($"\"{Constants.DatabaseSchema.Tables.DataType}\".\"dbType\""));
+        Assert.That(column, Is.EqualTo($"{escapeChar}{Constants.DatabaseSchema.Tables.DataType}{escapeChar}.{escapeChar}dbType{escapeChar}"));
     }
 }

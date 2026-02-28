@@ -14,6 +14,8 @@ namespace Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persiste
 [TestFixture]
 public class QueryBuilderTests : BaseUsingPostgreSqlSyntax
 {
+    private readonly string escapeChar = Our.Umbraco.PostgreSql.Constants.EscapeTableColumAliasNames ? "\"" : string.Empty;
+
     [Test]
     public void Can_Build_StartsWith_Query_For_IContent()
     {
@@ -29,7 +31,7 @@ public class QueryBuilderTests : BaseUsingPostgreSqlSyntax
         var result = translator.Translate();
         var strResult = result.SQL;
 
-        var expectedResult = "SELECT *\nFROM umbracoNode\nWHERE (UPPER(\"umbracoNode\".\"path\"::text) LIKE UPPER(@0))";
+        var expectedResult = $"SELECT *\nFROM umbracoNode\nWHERE (UPPER({escapeChar}umbracoNode{escapeChar}.{escapeChar}path{escapeChar}::text) LIKE UPPER(@0))";
 
         // Assert
         Assert.That(strResult, Is.Not.Empty);
@@ -56,7 +58,7 @@ public class QueryBuilderTests : BaseUsingPostgreSqlSyntax
         var result = translator.Translate();
         var strResult = result.SQL;
 
-        var expectedResult = "SELECT *\nFROM umbracoNode\nWHERE ((\"umbracoNode\".\"parentId\" = @0))";
+        var expectedResult = $"SELECT *\nFROM umbracoNode\nWHERE (({escapeChar}umbracoNode{escapeChar}.{escapeChar}parentId{escapeChar} = @0))";
 
         // Assert
         Assert.That(strResult, Is.Not.Empty);
@@ -83,7 +85,7 @@ public class QueryBuilderTests : BaseUsingPostgreSqlSyntax
         var result = translator.Translate();
         var strResult = result.SQL;
 
-        var expectedResult = "SELECT *\nFROM umbracoNode\nWHERE ((\"cmsContentType\".\"alias\" = @0))";
+        var expectedResult = $"SELECT *\nFROM umbracoNode\nWHERE (({escapeChar}cmsContentType{escapeChar}.{escapeChar}alias{escapeChar} = @0))";
 
         // Assert
         Assert.That(strResult, Is.Not.Empty);

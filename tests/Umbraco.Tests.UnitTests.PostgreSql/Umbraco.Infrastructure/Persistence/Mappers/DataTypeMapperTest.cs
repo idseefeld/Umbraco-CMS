@@ -11,6 +11,8 @@ namespace Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persiste
 [TestFixture]
 public class DataTypeMapperTest
 {
+    private readonly string escapeChar = Our.Umbraco.PostgreSql.Constants.EscapeTableColumAliasNames ? "\"" : string.Empty;
+
     [Test]
     public void Can_Map_Id_Property()
     {
@@ -18,7 +20,7 @@ public class DataTypeMapperTest
         var column = new DataTypeMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("Id");
 
         // Assert
-        Assert.That(column, Is.EqualTo("\"umbracoNode\".\"id\""));
+        Assert.That(column, Is.EqualTo($"{escapeChar}umbracoNode{escapeChar}.{escapeChar}id{escapeChar}"));
     }
 
     [Test]
@@ -28,7 +30,7 @@ public class DataTypeMapperTest
         var column = new DataTypeMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("Key");
 
         // Assert
-        Assert.That(column, Is.EqualTo("\"umbracoNode\".\"uniqueId\""));
+        Assert.That(column, Is.EqualTo($"{escapeChar}umbracoNode{escapeChar}.{escapeChar}uniqueId{escapeChar}"));
     }
 
     [Test]
@@ -38,7 +40,7 @@ public class DataTypeMapperTest
         var column = new DataTypeMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("DatabaseType");
 
         // Assert
-        Assert.That(column, Is.EqualTo($"\"{Constants.DatabaseSchema.Tables.DataType}\".\"dbType\""));
+        Assert.That(column, Is.EqualTo($"{escapeChar}{Constants.DatabaseSchema.Tables.DataType}{escapeChar}.{escapeChar}dbType{escapeChar}"));
     }
 
     [Test]
@@ -48,6 +50,6 @@ public class DataTypeMapperTest
         var column = new DataTypeMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("EditorAlias");
 
         // Assert
-        Assert.That(column, Is.EqualTo($"\"{Constants.DatabaseSchema.Tables.DataType}\".\"propertyEditorAlias\""));
+        Assert.That(column, Is.EqualTo($"{escapeChar}{Constants.DatabaseSchema.Tables.DataType}{escapeChar}.{escapeChar}propertyEditorAlias{escapeChar}"));
     }
 }

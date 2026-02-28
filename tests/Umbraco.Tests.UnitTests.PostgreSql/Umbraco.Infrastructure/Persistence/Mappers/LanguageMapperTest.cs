@@ -10,6 +10,7 @@ namespace Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persiste
 [TestFixture]
 public class LanguageMapperTest
 {
+    private readonly string escapeChar = Our.Umbraco.PostgreSql.Constants.EscapeTableColumAliasNames ? "\"" : string.Empty;
     [Test]
     public void Can_Map_Id_Property()
     {
@@ -17,7 +18,7 @@ public class LanguageMapperTest
         var column = new LanguageMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("Id");
 
         // Assert
-        Assert.That(column, Is.EqualTo("\"umbracoLanguage\".\"id\""));
+        Assert.That(column, Is.EqualTo($"{escapeChar}umbracoLanguage{escapeChar}.{escapeChar}id{escapeChar}"));
     }
 
     [Test]
@@ -27,7 +28,7 @@ public class LanguageMapperTest
         var column = new LanguageMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("IsoCode");
 
         // Assert
-        Assert.That(column, Is.EqualTo("\"umbracoLanguage\".\"languageISOCode\""));
+        Assert.That(column, Is.EqualTo($"{escapeChar}umbracoLanguage{escapeChar}.{escapeChar}languageISOCode{escapeChar}"));
     }
 
     [Test]
@@ -37,6 +38,6 @@ public class LanguageMapperTest
         var column = new LanguageMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("CultureName");
 
         // Assert
-        Assert.That(column, Is.EqualTo("\"umbracoLanguage\".\"languageCultureName\""));
+        Assert.That(column, Is.EqualTo($"{escapeChar}umbracoLanguage{escapeChar}.{escapeChar}languageCultureName{escapeChar}"));
     }
 }

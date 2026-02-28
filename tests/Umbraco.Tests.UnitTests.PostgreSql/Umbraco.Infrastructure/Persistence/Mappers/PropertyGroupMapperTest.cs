@@ -10,6 +10,7 @@ namespace Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persiste
 [TestFixture]
 public class PropertyGroupMapperTest
 {
+    private readonly string escapeChar = Our.Umbraco.PostgreSql.Constants.EscapeTableColumAliasNames ? "\"" : string.Empty;
     [Test]
     public void Can_Map_Id_Property()
     {
@@ -17,7 +18,7 @@ public class PropertyGroupMapperTest
         var column = new PropertyGroupMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("Id");
 
         // Assert
-        Assert.That(column, Is.EqualTo("\"cmsPropertyTypeGroup\".\"id\""));
+        Assert.That(column, Is.EqualTo($"{escapeChar}cmsPropertyTypeGroup{escapeChar}.{escapeChar}id{escapeChar}"));
     }
 
     [Test]
@@ -27,7 +28,7 @@ public class PropertyGroupMapperTest
         var column = new PropertyGroupMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("SortOrder");
 
         // Assert
-        Assert.That(column, Is.EqualTo("\"cmsPropertyTypeGroup\".\"sortorder\""));
+        Assert.That(column, Is.EqualTo($"{escapeChar}cmsPropertyTypeGroup{escapeChar}.{escapeChar}sortorder{escapeChar}"));
     }
 
     [Test]
@@ -37,6 +38,6 @@ public class PropertyGroupMapperTest
         var column = new PropertyGroupMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("Name");
 
         // Assert
-        Assert.That(column, Is.EqualTo("\"cmsPropertyTypeGroup\".\"text\""));
+        Assert.That(column, Is.EqualTo($"{escapeChar}cmsPropertyTypeGroup{escapeChar}.{escapeChar}text{escapeChar}"));
     }
 }

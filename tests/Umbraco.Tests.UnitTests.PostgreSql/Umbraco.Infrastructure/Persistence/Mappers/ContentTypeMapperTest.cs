@@ -10,6 +10,8 @@ namespace Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persiste
 [TestFixture]
 public class ContentTypeMapperTest
 {
+    private readonly string escapeChar = Our.Umbraco.PostgreSql.Constants.EscapeTableColumAliasNames ? "\"" : string.Empty;
+
     [Test]
     public void Can_Map_Id_Property()
     {
@@ -17,7 +19,7 @@ public class ContentTypeMapperTest
         var column = new ContentTypeMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("Id");
 
         // Assert
-        Assert.That(column, Is.EqualTo("\"umbracoNode\".\"id\""));
+        Assert.That(column, Is.EqualTo($"{escapeChar}umbracoNode{escapeChar}.{escapeChar}id{escapeChar}"));
     }
 
     [Test]
@@ -27,7 +29,7 @@ public class ContentTypeMapperTest
         var column = new ContentTypeMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("Name");
 
         // Assert
-        Assert.That(column, Is.EqualTo("\"umbracoNode\".\"text\""));
+        Assert.That(column, Is.EqualTo($"{escapeChar}umbracoNode{escapeChar}.{escapeChar}text{escapeChar}"));
     }
 
     [Test]
@@ -37,7 +39,7 @@ public class ContentTypeMapperTest
         var column = new ContentTypeMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("Thumbnail");
 
         // Assert
-        Assert.That(column, Is.EqualTo("\"cmsContentType\".\"thumbnail\""));
+        Assert.That(column, Is.EqualTo($"{escapeChar}cmsContentType{escapeChar}.{escapeChar}thumbnail{escapeChar}"));
     }
 
     [Test]
@@ -47,6 +49,6 @@ public class ContentTypeMapperTest
         var column = new ContentTypeMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("Description");
 
         // Assert
-        Assert.That(column, Is.EqualTo("\"cmsContentType\".\"description\""));
+        Assert.That(column, Is.EqualTo($"{escapeChar}cmsContentType{escapeChar}.{escapeChar}description{escapeChar}"));
     }
 }

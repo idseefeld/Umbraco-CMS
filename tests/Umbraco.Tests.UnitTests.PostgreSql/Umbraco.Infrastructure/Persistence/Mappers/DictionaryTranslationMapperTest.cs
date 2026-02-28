@@ -10,6 +10,7 @@ namespace Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persiste
 [TestFixture]
 public class DictionaryTranslationMapperTest
 {
+    private readonly string escapeChar = Our.Umbraco.PostgreSql.Constants.EscapeTableColumAliasNames ? "\"" : string.Empty;
     [Test]
     public void Can_Map_Key_Property()
     {
@@ -18,7 +19,7 @@ public class DictionaryTranslationMapperTest
             new DictionaryTranslationMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("Key");
 
         // Assert
-        Assert.That(column, Is.EqualTo("\"cmsLanguageText\".\"UniqueId\""));
+        Assert.That(column, Is.EqualTo($"{escapeChar}cmsLanguageText{escapeChar}.{escapeChar}UniqueId{escapeChar}"));
     }
 
     [Test]
@@ -29,6 +30,6 @@ public class DictionaryTranslationMapperTest
             new DictionaryTranslationMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("Value");
 
         // Assert
-        Assert.That(column, Is.EqualTo("\"cmsLanguageText\".\"value\""));
+        Assert.That(column, Is.EqualTo($"{escapeChar}cmsLanguageText{escapeChar}.{escapeChar}value{escapeChar}"));
     }
 }

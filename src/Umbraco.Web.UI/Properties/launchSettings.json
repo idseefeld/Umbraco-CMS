@@ -12,6 +12,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
+      "launchUrl": "umbraco",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -19,6 +20,7 @@
     "Umbraco.Web.UI": {
       "commandName": "Project",
       "launchBrowser": true,
+      "launchUrl": "umbraco",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

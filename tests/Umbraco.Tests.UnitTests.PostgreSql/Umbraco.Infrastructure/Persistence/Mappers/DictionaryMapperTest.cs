@@ -10,6 +10,8 @@ namespace Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persiste
 [TestFixture]
 public class DictionaryMapperTest
 {
+    private readonly string escapeChar = Our.Umbraco.PostgreSql.Constants.EscapeTableColumAliasNames ? "\"" : string.Empty;
+
     [Test]
     public void Can_Map_Id_Property()
     {
@@ -17,7 +19,7 @@ public class DictionaryMapperTest
         var column = new DictionaryMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("Id");
 
         // Assert
-        Assert.That(column, Is.EqualTo("\"cmsDictionary\".\"pk\""));
+        Assert.That(column, Is.EqualTo($"{escapeChar}cmsDictionary{escapeChar}.{escapeChar}pk{escapeChar}"));
     }
 
     [Test]
@@ -27,7 +29,7 @@ public class DictionaryMapperTest
         var column = new DictionaryMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("Key");
 
         // Assert
-        Assert.That(column, Is.EqualTo("\"cmsDictionary\".\"id\""));
+        Assert.That(column, Is.EqualTo($"{escapeChar}cmsDictionary{escapeChar}.{escapeChar}id{escapeChar}"));
     }
 
     [Test]
@@ -37,6 +39,6 @@ public class DictionaryMapperTest
         var column = new DictionaryMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("ItemKey");
 
         // Assert
-        Assert.That(column, Is.EqualTo("\"cmsDictionary\".\"key\""));
+        Assert.That(column, Is.EqualTo($"{escapeChar}cmsDictionary{escapeChar}.{escapeChar}key{escapeChar}"));
     }
 }

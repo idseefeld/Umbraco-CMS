@@ -14,6 +14,8 @@ namespace Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persiste
 [TestFixture]
 public class MediaTypeRepositorySqlClausesTest : BaseUsingPostgreSqlSyntax
 {
+    private readonly string escapeChar = Our.Umbraco.PostgreSql.Constants.EscapeTableColumAliasNames ? "\"" : string.Empty;
+
     [Test]
     public void Can_Verify_Base_Clause()
     {
@@ -21,9 +23,9 @@ public class MediaTypeRepositorySqlClausesTest : BaseUsingPostgreSqlSyntax
 
         var expected = new Sql();
         expected.Select("*")
-            .From("\"cmsContentType\"")
-            .InnerJoin("\"umbracoNode\"").On("\"cmsContentType\".\"nodeId\" = \"umbracoNode\".\"id\"")
-            .Where("(\"umbracoNode\".\"nodeObjectType\" = @0)", new Guid("4ea4382b-2f5a-4c2b-9587-ae9b3cf3602e"));
+            .From($"{escapeChar}cmsContentType{escapeChar}")
+            .InnerJoin($"{escapeChar}umbracoNode{escapeChar}").On($"{escapeChar}cmsContentType{escapeChar}.{escapeChar}nodeId{escapeChar} = {escapeChar}umbracoNode{escapeChar}.{escapeChar}id{escapeChar}")
+            .Where($"({escapeChar}umbracoNode{escapeChar}.{escapeChar}nodeObjectType{escapeChar} = @0)", new Guid("4ea4382b-2f5a-4c2b-9587-ae9b3cf3602e"));
 
         var sql = Sql();
         sql.SelectAll()

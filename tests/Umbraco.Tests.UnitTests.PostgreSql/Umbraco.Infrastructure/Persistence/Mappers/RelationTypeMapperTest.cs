@@ -10,6 +10,7 @@ namespace Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Persiste
 [TestFixture]
 public class RelationTypeMapperTest
 {
+    private readonly string escapeChar = Our.Umbraco.PostgreSql.Constants.EscapeTableColumAliasNames ? "\"" : string.Empty;
     [Test]
     public void Can_Map_Id_Property()
     {
@@ -17,7 +18,7 @@ public class RelationTypeMapperTest
         var column = new RelationTypeMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("Id");
 
         // Assert
-        Assert.That(column, Is.EqualTo("\"umbracoRelationType\".\"id\""));
+        Assert.That(column, Is.EqualTo($"{escapeChar}umbracoRelationType{escapeChar}.{escapeChar}id{escapeChar}"));
     }
 
     [Test]
@@ -27,7 +28,7 @@ public class RelationTypeMapperTest
         var column = new RelationTypeMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("Alias");
 
         // Assert
-        Assert.That(column, Is.EqualTo("\"umbracoRelationType\".\"alias\""));
+        Assert.That(column, Is.EqualTo($"{escapeChar}umbracoRelationType{escapeChar}.{escapeChar}alias{escapeChar}"));
     }
 
     [Test]
@@ -38,7 +39,7 @@ public class RelationTypeMapperTest
             new RelationTypeMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("ChildObjectType");
 
         // Assert
-        Assert.That(column, Is.EqualTo("\"umbracoRelationType\".\"childObjectType\""));
+        Assert.That(column, Is.EqualTo($"{escapeChar}umbracoRelationType{escapeChar}.{escapeChar}childObjectType{escapeChar}"));
     }
 
     [Test]
@@ -49,6 +50,6 @@ public class RelationTypeMapperTest
             new RelationTypeMapper(TestHelper.GetMockSqlContext(), TestHelper.CreateMaps()).Map("IsBidirectional");
 
         // Assert
-        Assert.That(column, Is.EqualTo("\"umbracoRelationType\".\"dual\""));
+        Assert.That(column, Is.EqualTo($"{escapeChar}umbracoRelationType{escapeChar}.{escapeChar}dual{escapeChar}"));
     }
 }

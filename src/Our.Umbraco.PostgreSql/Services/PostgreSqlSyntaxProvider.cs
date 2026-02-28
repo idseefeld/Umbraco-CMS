@@ -338,7 +338,8 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
 
         // var optionsValue = _postgreSqlOptions?.Value;
         // var escapeTableColumAliasNames =optionsValue?.EscapeTableColumAliasNames ?? true;
-        var rVal = Constants.EscapeTableColumAliasNames || SqlKeywords.InvariantContains(identifier) ? $"\"{identifier}\"" : $"{identifier}";
+        var isKeyword = SqlKeywords.Contains(identifier, StringComparer.InvariantCultureIgnoreCase);
+        var rVal = Constants.EscapeTableColumAliasNames || isKeyword ? $"\"{identifier}\"" : $"{identifier}";
         return rVal;
     }
 
