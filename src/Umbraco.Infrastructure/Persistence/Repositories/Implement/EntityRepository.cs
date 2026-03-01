@@ -25,6 +25,10 @@ namespace Umbraco.Cms.Infrastructure.Persistence.Repositories.Implement;
 /// </remarks>
 internal sealed class EntityRepository : RepositoryBase, IEntityRepositoryExtended
 {
+    private const string mainSiblingsSqlAlias = "nn";
+    private const string mainSiblingsSqlTargetAlias = "target";
+    private const string mainSiblingsSqlRowNumberAlias = "rn";
+
     public EntityRepository(IScopeAccessor scopeAccessor, AppCaches appCaches)
         : base(scopeAccessor, appCaches)
     {
@@ -260,13 +264,10 @@ internal sealed class EntityRepository : RepositoryBase, IEntityRepositoryExtend
         out long totalBefore,
         out long totalAfter)
     {
-        // Ideally we don't want to have to do a second query for the parent ID, but the siblings query is already messy enough
-        // without us also having to do a nested query for the parent ID too.
         Sql<ISqlContext> parentIdQuery = Sql()
             .Select<NodeDto>(x => x.ParentId)
             .From<NodeDto>()
             .Where<NodeDto>(x => x.UniqueId == targetKey);
-        var parentId = Database.ExecuteScalar<int>(parentIdQuery);
 
         Sql<ISqlContext> orderingSql = Sql();
         ApplyOrdering(ref orderingSql, ordering);
@@ -275,13 +276,12 @@ internal sealed class EntityRepository : RepositoryBase, IEntityRepositoryExtend
         // Order by SortOrder, and assign each a row number.
         // These row numbers are important, we need them to select the "before" and "after" siblings of the target node.
         Sql<ISqlContext> rowNumberSql = Sql()
-            .Select($"ROW_NUMBER() OVER ({orderingSql.SQL}) AS rn")
-            .AndSelect<NodeDto>(n => n.UniqueId)
+            .Select($"ROW_NUMBER() OVER ({orderingSql.SQL}) AS {mainSiblingsSqlRowNumberAlias}")
+            .AndSelect<NodeDto>(withAlias: false, n => n.UniqueId)
             .From<NodeDto>()
-            .Where<NodeDto>(x => x.ParentId == parentId && x.Trashed == isTrashed)
+            .Where<NodeDto>(x => x.Trashed == isTrashed)
+            .WhereIn<NodeDto>(x => x.ParentId, parentIdQuery)
             .WhereIn<NodeDto>(x => x.NodeObjectType, objectTypes);
-
-        string quotedImplicitUniqueIdAlias = QuoteColumnName("UniqueId");
 
         // Apply the filter if provided.
         if (filter != null)
@@ -296,14 +296,13 @@ internal sealed class EntityRepository : RepositoryBase, IEntityRepositoryExtend
         // the final query for before and after positions will increase. So we need to calculate the offset based on the provided values.
         int beforeAfterParameterIndexOffset = GetBeforeAfterParameterOffset(objectTypes, filter);
 
-        string targetAlias = "target";
 
         // Find the specific row number of the target node.
         // We need this to determine the bounds of the row numbers to select.
         Sql<ISqlContext> targetRowSql = Sql()
-            .Select("rn")
-            .From().AppendSubQuery(rowNumberSql, targetAlias)
-            .Where($"{QuoteTableName(targetAlias)}.{quotedImplicitUniqueIdAlias} IN (@0)", [targetKey]); // cannot use generic .Where<T> here because of the implicit alias "UniqueId" in the subquery
+            .Select(mainSiblingsSqlRowNumberAlias)
+            .From().AppendSubQuery(rowNumberSql, mainSiblingsSqlTargetAlias)
+            .Where<NodeDto>(n => n.UniqueId == targetKey, alias: mainSiblingsSqlTargetAlias);
 
         // We have to reuse the target row sql arguments, however, we also need to add the "before" and "after" values to the arguments.
         // If we try to do this directly in the params array it'll consider the initial argument array as a single argument.
@@ -320,11 +319,11 @@ internal sealed class EntityRepository : RepositoryBase, IEntityRepositoryExtend
         totalAfter = GetNumberOfSiblingsOutsideSiblingRange(rowNumberSql, targetRowSql, beforeAfterParameterIndex, afterArgumentsArray, false);
 
         return Sql()
-            .Select(quotedImplicitUniqueIdAlias)
-            .From().AppendSubQuery(rowNumberSql, "nn")
-            .Where($"rn >= ({targetRowSql.SQL}) - @{beforeAfterParameterIndex}", beforeArgumentsArray)
-            .Where($"rn <= ({targetRowSql.SQL}) + @{beforeAfterParameterIndex}", afterArgumentsArray)
-            .OrderBy("rn");
+            .Select<NodeDto>(mainSiblingsSqlAlias, n => n.UniqueId)
+            .From().AppendSubQuery(rowNumberSql, mainSiblingsSqlAlias)
+            .Where($"{mainSiblingsSqlRowNumberAlias} >= ({targetRowSql.SQL}) - @{beforeAfterParameterIndex}", beforeArgumentsArray)
+            .Where($"{mainSiblingsSqlRowNumberAlias} <= ({targetRowSql.SQL}) + @{beforeAfterParameterIndex}", afterArgumentsArray)
+            .OrderBy(mainSiblingsSqlRowNumberAlias);
     }
 
     private static int GetBeforeAfterParameterOffset(ISet<Guid> objectTypes, IQuery<IUmbracoEntity>? filter)
@@ -359,8 +358,8 @@ internal sealed class EntityRepository : RepositoryBase, IEntityRepositoryExtend
     {
         Sql<ISqlContext>? sql = Sql()
             .SelectCount()
-            .From().AppendSubQuery(rowNumberSql, "nn")
-            .Where($"rn {(getBefore ? "<" : ">")} ({targetRowSql.SQL}) {(getBefore ? "-" : "+")} @{parameterIndex}", arguments);
+            .From().AppendSubQuery(rowNumberSql, mainSiblingsSqlAlias)
+            .Where($"{mainSiblingsSqlRowNumberAlias} {(getBefore ? "<" : ">")} ({targetRowSql.SQL}) {(getBefore ? "-" : "+")} @{parameterIndex}", arguments);
         return Database.FirstOrDefault<long>(sql);
     }
 
