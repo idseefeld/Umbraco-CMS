@@ -104,7 +104,7 @@ public class UmbracoPostgreSQLDatabaseType : DatabaseType
 
     private void AdjustSqlInsertCommandText(DbCommand cmd, string primaryKeyName)
     {
-        cmd.CommandText += $" returning {EscapeSqlIdentifier(primaryKeyName)} as NewID";
+        cmd.CommandText += $" returning {EscapeSqlIdentifier(primaryKeyName)} as id";
     }
 
     /// <inheritdoc />
@@ -114,7 +114,7 @@ public class UmbracoPostgreSQLDatabaseType : DatabaseType
 
         if (normalizedPrimaryKey != null)
         {
-            AdjustSqlInsertCommandText(cmd, normalizedPrimaryKey);
+            AdjustSqlInsertCommandText(cmd.FixCommanText(), normalizedPrimaryKey);
             return ((IDatabaseHelpers)db).ExecuteScalarHelper(cmd.FixCommanText());
         }
 
