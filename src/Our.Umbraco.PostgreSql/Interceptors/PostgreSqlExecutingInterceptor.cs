@@ -1,6 +1,7 @@
 using NPoco;
 using Umbraco.Cms.Infrastructure.Persistence;
 using System.Data.Common;
+using Our.Umbraco.PostgreSql.Extensions;
 
 namespace Our.Umbraco.PostgreSql.Interceptors;
 
@@ -16,7 +17,7 @@ public class PostgreSqlExecutingInterceptor : IProviderSpecificExecutingIntercep
     /// </summary>
     public void OnExecutingCommand(IDatabase database, DbCommand command)
     {
-        // DateTime conversion is handled in UmbracoPostgreSQLDatabaseType.MapParameterValue
+        command.FixCommanText();
     }
 
     /// <summary>
