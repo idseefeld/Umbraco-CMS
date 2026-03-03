@@ -24,6 +24,11 @@ namespace Our.Umbraco.PostgreSql.Extensions
                 cmd.CommandText = $"UPDATE \"umbracoProductLicenseValidationStatus\" SET \"ExpiresOn\" = \"ExpiresOn\" {timeZone}";
             }
 
+            if (cmd.CommandText.StartsWith("CREATE ", StringComparison.OrdinalIgnoreCase))
+            {
+                var text = cmd.CommandText;
+            }
+
             return cmd;
         }
     }
