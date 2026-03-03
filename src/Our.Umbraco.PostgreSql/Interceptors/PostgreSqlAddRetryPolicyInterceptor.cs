@@ -2,6 +2,7 @@ using System.Data.Common;
 using Microsoft.Extensions.Options;
 using NPoco;
 using Our.Umbraco.PostgreSql.FaultHandling;
+using Our.Umbraco.PostgreSql.Services;
 using Umbraco.Cms.Core.Configuration.Models;
 using Umbraco.Cms.Infrastructure.Persistence.FaultHandling;
 using Umbraco.Extensions;
@@ -30,7 +31,7 @@ namespace Our.Umbraco.PostgreSql.Interceptors
                 return conn;
             }
 
-            return new RetryDbConnection(conn, connectionRetryPolicy, commandRetryPolicy);
+            return new PostgreSqlRetryDbConnection(conn, connectionRetryPolicy, commandRetryPolicy);
         }
     }
 }

@@ -2,6 +2,7 @@ using System.Data.Common;
 using NPoco;
 using NPoco.DatabaseTypes;
 using NPoco.Expressions;
+using Our.Umbraco.PostgreSql.Extensions;
 
 namespace Our.Umbraco.PostgreSql.Services;
 
@@ -134,6 +135,12 @@ public class UmbracoPostgreSQLDatabaseType : DatabaseType
 
         await ((IDatabaseHelpers)db).ExecuteNonQueryHelperAsync(cmd, cancellationToken).ConfigureAwait(false);
         return -1;
+    }
+
+    public override void PreExecute(DbCommand cmd)
+    {
+        var fixedCmd = cmd.FixCommanText();
+        base.PreExecute(fixedCmd);
     }
 
     #endregion
