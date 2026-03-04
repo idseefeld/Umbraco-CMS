@@ -1,10 +1,5 @@
-using System;
-using System.Collections.Generic;
 using System.Data.Common;
-using System.Text;
 using Our.Umbraco.PostgreSql.Services;
-using static System.Net.Mime.MediaTypeNames;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Our.Umbraco.PostgreSql.Extensions
 {
