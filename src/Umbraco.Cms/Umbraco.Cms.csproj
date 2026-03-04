@@ -7,7 +7,6 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Our.Umbraco.PostgreSql.Umbraco.Forms\Our.Umbraco.PostgreSql.Umbraco.Forms.csproj" />
-    <ProjectReference Include="..\Our.Umbraco.PostgreSql.Umbraco.License\Our.Umbraco.PostgreSql.Umbraco.License.csproj" />
     <ProjectReference Include="..\Our.Umbraco.PostgreSql\Our.Umbraco.PostgreSql.csproj" />
     <ProjectReference Include="..\Umbraco.Cms.Targets\Umbraco.Cms.Targets.csproj" />
     <ProjectReference Include="..\Umbraco.Cms.Imaging.ImageSharp\Umbraco.Cms.Imaging.ImageSharp.csproj" />
