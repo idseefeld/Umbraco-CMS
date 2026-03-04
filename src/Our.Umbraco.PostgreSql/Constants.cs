@@ -32,6 +32,11 @@ namespace Our.Umbraco.PostgreSql
         public const string PostgreSqlDefaultDatabase = "postgres";
 
         /// <summary>
+        /// Microsoft Time Zone ID for Western European Standard Time, which is commonly used in many European countries. This time zone is UTC+1 during standard time and UTC+2 during daylight saving time.
+        /// </summary>
+        public const string DefaultTimeZone = "W. Europe Standard Time";
+
+        /// <summary>
         /// Default database name for Umbraco.
         /// </summary>U
         public const string UmbracoDefaultDatabaseName = "Umbraco";

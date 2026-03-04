@@ -9,6 +9,7 @@ namespace Our.Umbraco.PostgreSql.Services;
 /// <summary>
 /// Custom PostgreSQL database type that handles Umbraco-specific quirks.
 /// </summary>
+/// <param name="packagesService">Service to fix command texts for Umbraco-specific SQL issues.</param>
 /// <remarks>
 /// <para>
 /// Umbraco's DTOs use "ID" as primary key names, but PostgreSQL is case-sensitive
@@ -22,7 +23,7 @@ namespace Our.Umbraco.PostgreSql.Services;
 /// This eliminates the need for custom UmbracoDatabase and UmbracoDatabaseFactory implementations.
 /// </para>
 /// </remarks>
-public class UmbracoPostgreSQLDatabaseType : DatabaseType
+public class UmbracoPostgreSQLDatabaseType(IPackagesService packagesService) : DatabaseType
 {
     #region PostgreSQL-specific overrides
 
@@ -114,11 +115,11 @@ public class UmbracoPostgreSQLDatabaseType : DatabaseType
 
         if (normalizedPrimaryKey != null)
         {
-            AdjustSqlInsertCommandText(cmd.FixCommanText(), normalizedPrimaryKey);
-            return ((IDatabaseHelpers)db).ExecuteScalarHelper(cmd.FixCommanText());
+            AdjustSqlInsertCommandText(cmd.FixCommanText(packagesService), normalizedPrimaryKey);
+            return ((IDatabaseHelpers)db).ExecuteScalarHelper(cmd.FixCommanText(packagesService));
         }
 
-        ((IDatabaseHelpers)db).ExecuteNonQueryHelper(cmd.FixCommanText());
+        ((IDatabaseHelpers)db).ExecuteNonQueryHelper(cmd.FixCommanText(packagesService));
         return -1;
     }
 
@@ -130,18 +131,18 @@ public class UmbracoPostgreSQLDatabaseType : DatabaseType
         if (normalizedPrimaryKey != null)
         {
             AdjustSqlInsertCommandText(cmd, normalizedPrimaryKey);
-            return await ((IDatabaseHelpers)db).ExecuteScalarHelperAsync(cmd.FixCommanText(), cancellationToken).ConfigureAwait(false);
+            return await ((IDatabaseHelpers)db).ExecuteScalarHelperAsync(cmd.FixCommanText(packagesService), cancellationToken).ConfigureAwait(false);
         }
 
-        await ((IDatabaseHelpers)db).ExecuteNonQueryHelperAsync(cmd.FixCommanText(), cancellationToken).ConfigureAwait(false);
+        await ((IDatabaseHelpers)db).ExecuteNonQueryHelperAsync(cmd.FixCommanText(packagesService), cancellationToken).ConfigureAwait(false);
         return -1;
     }
 
-    public override void PreExecute(DbCommand cmd) => base.PreExecute(cmd.FixCommanText());
+    public override void PreExecute(DbCommand cmd) => base.PreExecute(cmd.FixCommanText(packagesService));
 
-    public override string FormatCommand(DbCommand cmd) => base.FormatCommand(cmd.FixCommanText());
+    public override string FormatCommand(DbCommand cmd) => base.FormatCommand(cmd.FixCommanText(packagesService));
 
-    public override Task<DbDataReader> ExecuteReaderAsync(IDatabase database, DbCommand cmd, CancellationToken cancellationToken = default) => base.ExecuteReaderAsync(database, cmd.FixCommanText(), cancellationToken);
+    public override Task<DbDataReader> ExecuteReaderAsync(IDatabase database, DbCommand cmd, CancellationToken cancellationToken = default) => base.ExecuteReaderAsync(database, cmd.FixCommanText(packagesService), cancellationToken);
 
     #endregion
 }

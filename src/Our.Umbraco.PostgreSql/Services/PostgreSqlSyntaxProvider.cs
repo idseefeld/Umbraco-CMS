@@ -35,6 +35,7 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
     private readonly IOptions<PostgreSqlOptions> _postgreSqlOptions;
     private readonly ILogger<PostgreSqlSyntaxProvider> _logger;
     private readonly IDictionary<Type, IScalarMapper> _scalarMappers;
+    private readonly IPackagesService _packagesService;
 
     private readonly Dictionary<string, long> _lastInsertIds = new Dictionary<string, long>();
     private readonly Dictionary<string, string> _tablesToAlter = new()
@@ -80,8 +81,8 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
 
     private static bool _efMigrationHistoryTableCreated = false;
 
-    public PostgreSqlSyntaxProvider(IOptions<PostgreSqlOptions> globalSettings)
-        : this(globalSettings, StaticApplicationLogging.CreateLogger<PostgreSqlSyntaxProvider>()) { }
+    public PostgreSqlSyntaxProvider(IOptions<PostgreSqlOptions> globalSettings, IPackagesService packagesService)
+        : this(globalSettings, StaticApplicationLogging.CreateLogger<PostgreSqlSyntaxProvider>(), packagesService) { }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PostgreSqlSyntaxProvider"/> class.
@@ -90,8 +91,10 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
     /// <param name="logger">Inject Logger.</param>
     public PostgreSqlSyntaxProvider(
         IOptions<PostgreSqlOptions> postgreSqlOptions,
-        ILogger<PostgreSqlSyntaxProvider> logger)
+        ILogger<PostgreSqlSyntaxProvider> logger,
+        IPackagesService packagesService)
     {
+        _packagesService = packagesService;
         _postgreSqlOptions = postgreSqlOptions;
         _logger = logger;
 
@@ -127,7 +130,7 @@ public class PostgreSqlSyntaxProvider : SqlSyntaxProviderBase<PostgreSqlSyntaxPr
     {
         // Return custom database type that handles primary key name normalization
         // This handles the "ID" vs "id" case sensitivity issue in PostgreSQL
-        return new UmbracoPostgreSQLDatabaseType();
+        return new UmbracoPostgreSQLDatabaseType(_packagesService);
     }
 
     /// <summary>
