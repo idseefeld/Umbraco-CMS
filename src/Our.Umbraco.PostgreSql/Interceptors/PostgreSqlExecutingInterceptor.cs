@@ -2,13 +2,14 @@ using NPoco;
 using Umbraco.Cms.Infrastructure.Persistence;
 using System.Data.Common;
 using Our.Umbraco.PostgreSql.Extensions;
+using Our.Umbraco.PostgreSql.Services;
 
 namespace Our.Umbraco.PostgreSql.Interceptors;
 
 /// <summary>
 /// Provider-specific interceptor to customize PostgreSQL command execution.
 /// </summary>
-public class PostgreSqlExecutingInterceptor : IProviderSpecificExecutingInterceptor
+public class PostgreSqlExecutingInterceptor(IPackagesService packagesService) : IProviderSpecificExecutingInterceptor
 {
     public string ProviderName => Constants.ProviderName;
 
@@ -17,7 +18,7 @@ public class PostgreSqlExecutingInterceptor : IProviderSpecificExecutingIntercep
     /// </summary>
     public void OnExecutingCommand(IDatabase database, DbCommand command)
     {
-        command.FixCommanText();
+        command.FixCommanText(packagesService);
     }
 
     /// <summary>

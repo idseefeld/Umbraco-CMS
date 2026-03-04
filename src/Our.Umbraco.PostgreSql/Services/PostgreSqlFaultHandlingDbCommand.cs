@@ -13,13 +13,15 @@ namespace Our.Umbraco.PostgreSql.Services
     internal sealed class PostgreSqlFaultHandlingDbCommand : DbCommand
     {
         private readonly RetryPolicy _cmdRetryPolicy;
+        private readonly IPackagesService _packagesService;
         private RetryDbConnection _connection;
 
-        public PostgreSqlFaultHandlingDbCommand(RetryDbConnection connection, DbCommand command, RetryPolicy? cmdRetryPolicy)
+        public PostgreSqlFaultHandlingDbCommand(RetryDbConnection connection, DbCommand command, RetryPolicy? cmdRetryPolicy, IPackagesService packagesService)
         {
             _connection = connection;
-            Inner = command.FixCommanText();
+            Inner = command.FixCommanText(packagesService);
             _cmdRetryPolicy = cmdRetryPolicy ?? RetryPolicy.NoRetry;
+            _packagesService = packagesService;
         }
 
         public DbCommand Inner { get; private set; }
@@ -71,7 +73,7 @@ namespace Our.Umbraco.PostgreSql.Services
             }
         }
 
-        protected override DbParameterCollection DbParameterCollection => Inner.FixCommanText().Parameters;
+        protected override DbParameterCollection DbParameterCollection => Inner.Parameters;
 
         protected override DbTransaction? DbTransaction
         {
