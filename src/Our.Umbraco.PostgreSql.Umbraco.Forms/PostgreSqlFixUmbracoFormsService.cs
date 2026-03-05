@@ -1,4 +1,5 @@
 using System.Data.Common;
+using Microsoft.Extensions.Logging;
 using Our.Umbraco.PostgreSql.Services;
 using Umbraco.Extensions;
 
@@ -11,9 +12,16 @@ namespace Our.Umbraco.PostgreSql.Umbraco.Forms
     {
         public override bool FixCommanText(DbCommand cmd) => FixUmbracoLicenseIssues(cmd);
 
-        private static bool FixUmbracoLicenseIssues(DbCommand cmd)
+        private bool FixUmbracoLicenseIssues(DbCommand cmd)
         {
             var success = true;
+
+            if (!(cmd.CommandText.Contains(" UF") || cmd.CommandText.Contains(" \"UF")))
+            {
+                return success;
+            }
+
+            var oldCommandText = cmd.CommandText;
             string[] ufTables = [
                 "UFDataSource",
                 "UFFolders",
@@ -103,6 +111,11 @@ namespace Our.Umbraco.PostgreSql.Umbraco.Forms
                 {
                     cmd.CommandText = cmd.CommandText[..cmd.CommandText.IndexOf(" returning ", StringComparison.OrdinalIgnoreCase)];
                 }
+            }
+
+            if (cmd.CommandText.Contains('['))
+            {
+                cmd.CommandText = cmd.CommandText.Replace("[", "\"").Replace("]", "\"");
             }
 
             return success;
