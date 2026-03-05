@@ -18,6 +18,11 @@ namespace Our.Umbraco.PostgreSql.Umbraco.License
         {
             var success = true;
 
+            if (!cmd.CommandText.StartsWith("UPDATE umbracoProductLicense"))
+            {
+                return success;
+            }
+
             switch (cmd.CommandText)
             {
                 case "UPDATE umbracoProductLicenseValidationStatus SET LastValidatedOn = LastValidatedOn AT TIME ZONE 'W. Europe Standard Time' AT TIME ZONE 'UTC'":
