@@ -14,12 +14,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Services\PostgreSqlBatchSqlInsertProvider - Copy.cs" />
-    <Compile Remove="Services\PostgreSqlDatabase.cs" />
-    <Compile Remove="Services\PostgreSqlDatabaseFactory.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Remove="datetime-erros.playlist" />
     <None Remove="ExecuteScalar-errors.playlist" />
     <None Remove="file-open-error.playlist" />
