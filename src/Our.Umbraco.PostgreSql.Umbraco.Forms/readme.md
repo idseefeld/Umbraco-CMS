@@ -12,7 +12,7 @@ fixed in future releases of Umbraco.
 
 ### Extension
 
-Use this package if you want to use PostgreSQL as the database for your Umbraco installation, and you want to use the additional features of the Umbraco.Forms package. This package provides an implementation of the `IFormsService` interface that uses PostgreSQL as the backend for storing form information and will become obsolete when the Umbraco.Forms package implements the necessary changes.
+Use this package if you want to use PostgreSQL as the database for your Umbraco installation, and you want to use the additional features of the Umbraco.Forms package. This package will become obsolete when the Umbraco.Forms package implements the necessary changes.
 
 ### Remark
 This package is not useful in its own. It serves as an extension to the main PostgreSQL 
