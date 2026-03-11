@@ -1,4 +1,5 @@
 using Npgsql;
+using System;
 using Umbraco.Cms.Infrastructure.Persistence.FaultHandling;
 
 namespace Our.Umbraco.PostgreSql.FaultHandling.Strategies;

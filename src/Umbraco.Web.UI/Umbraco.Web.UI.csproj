@@ -55,12 +55,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <_ContentIncludedByDefault Remove="umbraco\UmbracoInstall\Index.cshtml" />
-    <_ContentIncludedByDefault Remove="umbraco\UmbracoLogin\Index.cshtml" />
-    <_ContentIncludedByDefault Remove="umbraco\UmbracoBackOffice\Default.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
     <!-- Hide the content files that come from the Microsoft.CodeAnalysis.Workspaces.MSBuild package. -->
     <Content Update="$(NuGetPackageRoot)\microsoft.codeanalysis.workspaces.msbuild\**\**" Visible="false" />
   </ItemGroup>
