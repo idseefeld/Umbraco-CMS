@@ -10,6 +10,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
+using Our.Umbraco.PostgreSql.EFCore;
+using Our.Umbraco.PostgreSql.EFCore.Locking;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Cache;
 using Umbraco.Cms.Core.Cache.PartialViewCacheInvalidators;
@@ -71,10 +73,14 @@ public static class UmbracoBuilderExtensions
                 {
                     options.UseSqlite(serviceProvider.GetRequiredService<IOptionsMonitor<ConnectionStrings>>().CurrentValue.ConnectionString);
                 }
-                else
+                else if (testDatabaseType is TestDatabaseSettings.TestDatabaseType.SqlServer)
                 {
                     // If not Sqlite, assume SqlServer
                     options.UseSqlServer(serviceProvider.GetRequiredService<IOptionsMonitor<ConnectionStrings>>().CurrentValue.ConnectionString);
+                }
+                else if (testDatabaseType is TestDatabaseSettings.TestDatabaseType.PostgreSql)
+                {
+                    options.UsePostgreSql(serviceProvider.GetRequiredService<IOptionsMonitor<ConnectionStrings>>().CurrentValue.ConnectionString);
                 }
             },
             optionsLifetime: ServiceLifetime.Singleton);
@@ -87,18 +93,24 @@ public static class UmbracoBuilderExtensions
                 {
                     options.UseSqlite(serviceProvider.GetRequiredService<IOptionsMonitor<ConnectionStrings>>().CurrentValue.ConnectionString);
                 }
-                else
+                else if (testDatabaseType is TestDatabaseSettings.TestDatabaseType.SqlServer)
                 {
                     // If not Sqlite, assume SqlServer
                     options.UseSqlServer(serviceProvider.GetRequiredService<IOptionsMonitor<ConnectionStrings>>().CurrentValue.ConnectionString);
+                }
+                else if (testDatabaseType is TestDatabaseSettings.TestDatabaseType.PostgreSql)
+                {
+                    options.UsePostgreSql(serviceProvider.GetRequiredService<IOptionsMonitor<ConnectionStrings>>().CurrentValue.ConnectionString);
                 }
             });
 
         builder.Services.AddUnique<IAmbientEFCoreScopeStack<TestUmbracoDbContext>, AmbientEFCoreScopeStack<TestUmbracoDbContext>>();
         builder.Services.AddUnique<IEFCoreScopeAccessor<TestUmbracoDbContext>, EFCoreScopeAccessor<TestUmbracoDbContext>>();
         builder.Services.AddUnique<IEFCoreScopeProvider<TestUmbracoDbContext>, EFCoreScopeProvider<TestUmbracoDbContext>>();
+
         builder.Services.AddSingleton<IDistributedLockingMechanism, SqliteEFCoreDistributedLockingMechanism<TestUmbracoDbContext>>();
         builder.Services.AddSingleton<IDistributedLockingMechanism, SqlServerEFCoreDistributedLockingMechanism<TestUmbracoDbContext>>();
+        builder.Services.AddSingleton<IDistributedLockingMechanism, PostgreSqlEFCoreDistributedLockingMechanism<TestUmbracoDbContext>>();
 
         builder.Services.AddSingleton<IReservedFieldNamesService, ReservedFieldNamesService>();
 

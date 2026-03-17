@@ -20,6 +20,7 @@ using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Serialization;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Infrastructure.Persistence;
+using Umbraco.Cms.Infrastructure.Persistence.Dtos;
 using Umbraco.Cms.Infrastructure.Persistence.Repositories.Implement;
 using Umbraco.Cms.Infrastructure.Scoping;
 using Umbraco.Cms.Persistence.SqlServer.Services;
@@ -127,7 +128,7 @@ internal sealed class DocumentRepositoryTest : UmbracoIntegrationTest
         var runtimeSettingsMock = new Mock<IOptionsMonitor<RuntimeSettings>>();
         runtimeSettingsMock.Setup(x => x.CurrentValue).Returns(new RuntimeSettings());
 
-        templateRepository = new TemplateRepository(scopeAccessor, appCaches, LoggerFactory.CreateLogger<TemplateRepository>(), FileSystems, ShortStringHelper, Mock.Of<IViewHelper>(), runtimeSettingsMock.Object,  Mock.Of<IRepositoryCacheVersionService>(), Mock.Of<ICacheSyncService>());
+        templateRepository = new TemplateRepository(scopeAccessor, appCaches, LoggerFactory.CreateLogger<TemplateRepository>(), FileSystems, ShortStringHelper, Mock.Of<IViewHelper>(), runtimeSettingsMock.Object, Mock.Of<IRepositoryCacheVersionService>(), Mock.Of<ICacheSyncService>());
         var tagRepository = new TagRepository(scopeAccessor, appCaches, LoggerFactory.CreateLogger<TagRepository>(), Mock.Of<IRepositoryCacheVersionService>(), Mock.Of<ICacheSyncService>());
         var commonRepository =
             new ContentTypeCommonRepository(scopeAccessor, templateRepository, appCaches, ShortStringHelper);
@@ -158,7 +159,8 @@ internal sealed class DocumentRepositoryTest : UmbracoIntegrationTest
             ConfigurationEditorJsonSerializer,
             Mock.Of<IEventAggregator>(),
             Mock.Of<IRepositoryCacheVersionService>(),
-            Mock.Of<ICacheSyncService>());
+            Mock.Of<ICacheSyncService>(),
+            ShortStringHelper);
         return repository;
     }
 
@@ -299,6 +301,7 @@ internal sealed class DocumentRepositoryTest : UmbracoIntegrationTest
         var provider = ScopeProvider;
         using (var scope = provider.CreateScope())
         {
+            var db = ScopeAccessor.AmbientScope.Database;
             var repository = CreateRepository((IScopeAccessor)provider, out var contentTypeRepository, out DataTypeRepository _);
             var versions = new List<int>();
             var template = TemplateBuilder.CreateTextPageTemplate();
@@ -330,9 +333,12 @@ internal sealed class DocumentRepositoryTest : UmbracoIntegrationTest
             Assert.AreEqual(versions[^1], repository.Get(content1.Id).VersionId);
 
             // misc checks
-            Assert.AreEqual(true, ScopeAccessor.AmbientScope.Database.ExecuteScalar<bool>(
-                    $"SELECT published FROM {Constants.DatabaseSchema.Tables.Document} WHERE nodeId=@id",
-                    new { id = content1.Id }));
+            var expectation = true;
+            var miscCheckSql = db.SqlContext.Sql()
+                .Select<DocumentDto>(x => x.Published)
+                .From<DocumentDto>()
+                .Where<DocumentDto>(x => x.NodeId == content1.Id);
+            Assert.AreEqual(expectation, db.ExecuteScalar<bool>(miscCheckSql));
 
             // change something
             // save = update the current (draft) version
@@ -348,11 +354,8 @@ internal sealed class DocumentRepositoryTest : UmbracoIntegrationTest
             Assert.AreEqual(versions[^1], repository.Get(content1.Id).VersionId);
 
             // misc checks
-            Assert.AreEqual(
-                true,
-                ScopeAccessor.AmbientScope.Database.ExecuteScalar<bool>(
-                    $"SELECT published FROM {Constants.DatabaseSchema.Tables.Document} WHERE nodeId=@id",
-                    new { id = content1.Id }));
+            expectation = true;
+            Assert.AreEqual(expectation, db.ExecuteScalar<bool>(miscCheckSql));
 
             // unpublish = no impact on versions
             ((Content)content1).PublishedState = PublishedState.Unpublishing;
@@ -367,11 +370,8 @@ internal sealed class DocumentRepositoryTest : UmbracoIntegrationTest
             Assert.AreEqual(versions[^1], repository.Get(content1.Id).VersionId);
 
             // misc checks
-            Assert.AreEqual(
-                false,
-                ScopeAccessor.AmbientScope.Database.ExecuteScalar<bool>(
-                    $"SELECT published FROM {Constants.DatabaseSchema.Tables.Document} WHERE nodeId=@id",
-                    new { id = content1.Id }));
+            expectation = false;
+            Assert.AreEqual(expectation, db.ExecuteScalar<bool>(miscCheckSql));
 
             // change something
             // save = update the current (draft) version
@@ -386,11 +386,8 @@ internal sealed class DocumentRepositoryTest : UmbracoIntegrationTest
             Assert.AreEqual(versions[^1], repository.Get(content1.Id).VersionId);
 
             // misc checks
-            Assert.AreEqual(
-                false,
-                ScopeAccessor.AmbientScope.Database.ExecuteScalar<bool>(
-                    $"SELECT published FROM {Constants.DatabaseSchema.Tables.Document} WHERE nodeId=@id",
-                    new { id = content1.Id }));
+            expectation = false;
+            Assert.AreEqual(expectation, db.ExecuteScalar<bool>(miscCheckSql));
 
             // publish = version
             content1.PublishCulture(CultureImpact.Invariant, DateTime.UtcNow, PropertyEditorCollection);
@@ -406,11 +403,8 @@ internal sealed class DocumentRepositoryTest : UmbracoIntegrationTest
             Assert.AreEqual(versions[^1], repository.Get(content1.Id).VersionId);
 
             // misc checks
-            Assert.AreEqual(
-                true,
-                ScopeAccessor.AmbientScope.Database.ExecuteScalar<bool>(
-                    $"SELECT published FROM {Constants.DatabaseSchema.Tables.Document} WHERE nodeId=@id",
-                    new { id = content1.Id }));
+            expectation = true;
+            Assert.AreEqual(expectation, db.ExecuteScalar<bool>(miscCheckSql));
 
             // change something
             // save = update the current (draft) version
@@ -428,11 +422,8 @@ internal sealed class DocumentRepositoryTest : UmbracoIntegrationTest
             Assert.AreEqual(versions[^1], repository.Get(content1.Id).VersionId);
 
             // misc checks
-            Assert.AreEqual(
-                true,
-                ScopeAccessor.AmbientScope.Database.ExecuteScalar<bool>(
-                    $"SELECT published FROM {Constants.DatabaseSchema.Tables.Document} WHERE nodeId=@id",
-                    new { id = content1.Id }));
+            expectation = true;
+            Assert.AreEqual(expectation, db.ExecuteScalar<bool>(miscCheckSql));
 
             // publish = new version
             content1.Name = "name-4";
@@ -450,11 +441,8 @@ internal sealed class DocumentRepositoryTest : UmbracoIntegrationTest
             Assert.AreEqual(versions[^1], repository.Get(content1.Id).VersionId);
 
             // misc checks
-            Assert.AreEqual(
-                true,
-                ScopeAccessor.AmbientScope.Database.ExecuteScalar<bool>(
-                    $"SELECT published FROM {Constants.DatabaseSchema.Tables.Document} WHERE nodeId=@id",
-                    new { id = content1.Id }));
+            expectation = true;
+            Assert.AreEqual(expectation, db.ExecuteScalar<bool>(miscCheckSql));
 
             // all versions
             var allVersions = repository.GetAllVersions(content1.Id).ToArray();

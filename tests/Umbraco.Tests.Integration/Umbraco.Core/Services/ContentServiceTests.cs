@@ -4,6 +4,7 @@
 using System.Diagnostics;
 using Microsoft.Extensions.Options;
 using Moq;
+using NPoco.DatabaseTypes;
 using NUnit.Framework;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Cache;
@@ -1257,7 +1258,7 @@ internal sealed class ContentServiceTests : UmbracoIntegrationTestWithContent
 
         Assert.Throws<ArgumentNullException>(() => ContentService.Publish(content, null!));
         Assert.Throws<ArgumentException>(() => ContentService.Publish(content, new string[] { null }));
-        Assert.Throws<ArgumentException>(() => ContentService.Publish(content, new [] { string.Empty }));
+        Assert.Throws<ArgumentException>(() => ContentService.Publish(content, new[] { string.Empty }));
         Assert.Throws<ArgumentException>(() => ContentService.Publish(content, new[] { "*", null }));
         Assert.Throws<ArgumentException>(() => ContentService.Publish(content, new[] { "en-US", "*" }));
     }
@@ -2345,7 +2346,7 @@ internal sealed class ContentServiceTests : UmbracoIntegrationTestWithContent
         Assert.AreEqual(0, contentTags.Length);
 
         // publish
-        ContentService.Publish(content, new []{ "*" });
+        ContentService.Publish(content, ["*"]);
 
         // now tags have been set (published)
         Assert.AreEqual("[\"hello\",\"world\"]", content.GetValue(propAlias));
@@ -2361,7 +2362,7 @@ internal sealed class ContentServiceTests : UmbracoIntegrationTestWithContent
         Assert.AreEqual(0, copiedTags.Length);
 
         // publish
-        ContentService.Publish(copy, new []{ "*" });
+        ContentService.Publish(copy, new[] { "*" });
 
         // now tags have been set (published)
         copiedTags = TagService.GetTagsForEntity(copy.Id).ToArray();
@@ -3109,7 +3110,7 @@ internal sealed class ContentServiceTests : UmbracoIntegrationTestWithContent
         // becomes Published, !Edited
         // creates a new version
         // can get published property values
-        ContentService.Publish(content, new []{ "*" });
+        ContentService.Publish(content, new[] { "*" });
 
         Assert.IsTrue(content.Published);
         Assert.IsFalse(content.Edited);
@@ -3274,6 +3275,68 @@ internal sealed class ContentServiceTests : UmbracoIntegrationTestWithContent
             Assert.AreEqual("child" + (i == 0 ? string.Empty : " (" + i + ")"),
                 child.GetCultureName(langUk.IsoCode));
         }
+    }
+
+    [Test]
+    public void Ensure_Invariant_Unique_Name_When_Url_Segments_Collide()
+    {
+        // Siblings whose names differ only in punctuation produce the same URL segment
+        // (e.g. "Title" and "Title." both produce "title"), so the second should get a suffix.
+        var contentType = ContentTypeService.Get("umbTextpage")!;
+
+        var parent = new Content("root", Constants.System.Root, contentType);
+        ContentService.Save(parent);
+
+        var child1 = new Content("Title", parent, contentType);
+        ContentService.Save(child1);
+        Assert.AreEqual("Title", child1.Name);
+
+        var child2 = new Content("Title.", parent, contentType);
+        ContentService.Save(child2);
+        Assert.AreEqual("Title. (1)", child2.Name);
+
+        // Save again to verify the name is stable (idempotent).
+        ContentService.Save(child2);
+        Assert.AreEqual("Title. (1)", child2.Name);
+    }
+
+    [Test]
+    public async Task Ensure_Unique_Culture_Names_When_Url_Segments_Collide()
+    {
+        var languageService = LanguageService;
+
+        var langUk = new LanguageBuilder()
+            .WithCultureInfo("en-GB")
+            .WithIsDefault(true)
+            .Build();
+        var langFr = new LanguageBuilder()
+            .WithCultureInfo("fr-FR")
+            .Build();
+
+        await languageService.CreateAsync(langFr, Constants.Security.SuperUserKey);
+        await languageService.CreateAsync(langUk, Constants.Security.SuperUserKey);
+
+        var contentType = ContentTypeService.Get("umbTextpage")!;
+        contentType.Variations = ContentVariation.Culture;
+        await ContentTypeService.UpdateAsync(contentType, Constants.Security.SuperUserKey);
+
+        var parent = new Content(null, Constants.System.Root, contentType);
+        parent.SetCultureName("root", langUk.IsoCode);
+        ContentService.Save(parent);
+
+        var child1 = new Content(null, parent, contentType);
+        child1.SetCultureName("Title", langUk.IsoCode);
+        ContentService.Save(child1);
+        Assert.AreEqual("Title", child1.GetCultureName(langUk.IsoCode));
+
+        var child2 = new Content(null, parent, contentType);
+        child2.SetCultureName("Title.", langUk.IsoCode);
+        ContentService.Save(child2);
+        Assert.AreEqual("Title. (1)", child2.GetCultureName(langUk.IsoCode));
+
+        // Save again to verify the name is stable (idempotent).
+        ContentService.Save(child2);
+        Assert.AreEqual("Title. (1)", child2.GetCultureName(langUk.IsoCode));
     }
 
     [Test]
@@ -3603,7 +3666,7 @@ internal sealed class ContentServiceTests : UmbracoIntegrationTestWithContent
         // note that content and content2 culture published dates might be slightly different due to roundtrip to database
 
         // Act
-        ContentService.Publish(content, new []{ "*" });
+        ContentService.Publish(content, new[] { "*" });
 
         // now it has publish name for invariant neutral
         content2 = ContentService.GetById(content.Id);

@@ -13,6 +13,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Moq;
 using NUnit.Framework;
+using Our.Umbraco.PostgreSql;
+using Our.Umbraco.PostgreSql.EFCore;
 using Umbraco.Cms.Api.Delivery.Controllers.Content;
 using Umbraco.Cms.Api.Management.Controllers;
 using Umbraco.Cms.Api.Management.Controllers.ModelsBuilder;
@@ -313,6 +315,8 @@ namespace Umbraco.Cms.Tests.Integration.TestServerTest
                 .AddWebsite()
                 .AddUmbracoSqlServerSupport()
                 .AddUmbracoSqliteSupport()
+                .AddUmbracoPostgreSqlSupport()
+                .AddUmbracoPostgreSqlEFCoreSupport()
                 .AddDeliveryApi()
                 .AddUmbracoManagementApi()
                 .AddComposers()
