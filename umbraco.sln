@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.4.11605.240 stable
+VisualStudioVersion = 18.4.11605.240
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.Web.UI", "src\Umbraco.Web.UI\Umbraco.Web.UI.csproj", "{DCDFE97C-5630-4F6F-855D-8AEEB96556A5}"
 EndProject
@@ -209,6 +209,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.PostgreSql.Umbr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.PostgreSql.Umbraco.License", "..\Pck\PostgreSqlForUmbraco\Our.Umbraco.PostgreSql\Our.Umbraco.PostgreSql.Umbraco.License\Our.Umbraco.PostgreSql.Umbraco.License.csproj", "{8BE8AE68-66DE-D725-965A-04C1DE0A3DC7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbraco.Tests.Common.PostgreSql", "tests\Umbraco.Tests.Common.PostgreSql\Umbraco.Tests.Common.PostgreSql.csproj", "{8C05E3C9-A9D8-AE21-1DB1-E86723E30B52}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbraco.Tests.UnitTests.PostgreSql", "tests\Umbraco.Tests.UnitTests.PostgreSql\Umbraco.Tests.UnitTests.PostgreSql.csproj", "{CD44D69B-AADC-AAE7-F0F0-AAAB739EE661}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -413,6 +417,18 @@ Global
 		{8BE8AE68-66DE-D725-965A-04C1DE0A3DC7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8BE8AE68-66DE-D725-965A-04C1DE0A3DC7}.SkipTests|Any CPU.ActiveCfg = Release|Any CPU
 		{8BE8AE68-66DE-D725-965A-04C1DE0A3DC7}.SkipTests|Any CPU.Build.0 = Release|Any CPU
+		{8C05E3C9-A9D8-AE21-1DB1-E86723E30B52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C05E3C9-A9D8-AE21-1DB1-E86723E30B52}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C05E3C9-A9D8-AE21-1DB1-E86723E30B52}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C05E3C9-A9D8-AE21-1DB1-E86723E30B52}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C05E3C9-A9D8-AE21-1DB1-E86723E30B52}.SkipTests|Any CPU.ActiveCfg = Release|Any CPU
+		{8C05E3C9-A9D8-AE21-1DB1-E86723E30B52}.SkipTests|Any CPU.Build.0 = Release|Any CPU
+		{CD44D69B-AADC-AAE7-F0F0-AAAB739EE661}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD44D69B-AADC-AAE7-F0F0-AAAB739EE661}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD44D69B-AADC-AAE7-F0F0-AAAB739EE661}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD44D69B-AADC-AAE7-F0F0-AAAB739EE661}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD44D69B-AADC-AAE7-F0F0-AAAB739EE661}.SkipTests|Any CPU.ActiveCfg = Release|Any CPU
+		{CD44D69B-AADC-AAE7-F0F0-AAAB739EE661}.SkipTests|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -437,6 +453,8 @@ Global
 		{61592FFA-BBDA-CF98-6D83-1E2F0EAC2BBC} = {D901C100-34DF-4DCC-B1A8-5C2436539E93}
 		{E92EEEE6-599B-14BF-534E-EF688D691C6F} = {D901C100-34DF-4DCC-B1A8-5C2436539E93}
 		{8BE8AE68-66DE-D725-965A-04C1DE0A3DC7} = {D901C100-34DF-4DCC-B1A8-5C2436539E93}
+		{8C05E3C9-A9D8-AE21-1DB1-E86723E30B52} = {B5BD12C1-A454-435E-8A46-FF4A364C0382}
+		{CD44D69B-AADC-AAE7-F0F0-AAAB739EE661} = {B5BD12C1-A454-435E-8A46-FF4A364C0382}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7A0F2E34-D2AF-4DAB-86A0-7D7764B3D0EC}

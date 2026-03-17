@@ -22,11 +22,7 @@
     <WarningsNotAsErrors>$(WarningsNotAsErrors),SA1405,SA1121,SA1117,IDE1006,CS0618,IDE0270,IDE0057,IDE0054,CSO618,IDE0048,CS1574</WarningsNotAsErrors>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="NPoco.SqlServer" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <ItemGroup>
     <ProjectReference Include="..\Umbraco.Infrastructure\Umbraco.Infrastructure.csproj" />
   </ItemGroup>
 
@@ -35,7 +31,14 @@
       <_Parameter1>Umbraco.Tests.Integration</_Parameter1>
     </AssemblyAttribute>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>Umbraco.Tests.UnitTests.PostgreSql</_Parameter1>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
       <_Parameter1>Umbraco.Tests.UnitTests</_Parameter1>
     </AssemblyAttribute>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="NPoco.SqlServer" />
   </ItemGroup>
 </Project>
