@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.1.32328.378
+# Visual Studio Version 18
+VisualStudioVersion = 18.4.11605.240 stable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.Web.UI", "src\Umbraco.Web.UI\Umbraco.Web.UI.csproj", "{DCDFE97C-5630-4F6F-855D-8AEEB96556A5}"
 EndProject
@@ -137,8 +137,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{20CE9C97-9314-4A19-BCF1-D12CF49B7205}"
 	ProjectSection(SolutionItems) = preProject
 		build\azure-pipelines.yml = build\azure-pipelines.yml
-		build\nightly-build-trigger.yml = build\nightly-build-trigger.yml
 		build\templates\backoffice-install.yml = build\templates\backoffice-install.yml
+		build\nightly-build-trigger.yml = build\nightly-build-trigger.yml
 		build\nightly-E2E-test-pipelines.yml = build\nightly-E2E-test-pipelines.yml
 	EndProjectSection
 EndProject
@@ -190,6 +190,7 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbraco.PublishedCache.HybridCache", "src\Umbraco.PublishedCache.HybridCache\Umbraco.PublishedCache.HybridCache.csproj", "{CB0B9817-EDBC-4D6D-B4D2-969019C4606D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbraco.Cms.DevelopmentMode.Backoffice", "src\Umbraco.Cms.DevelopmentMode.Backoffice\Umbraco.Cms.DevelopmentMode.Backoffice.csproj", "{411D1547-C84C-4F0F-A207-A189B59F9486}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nightly-e2e-templates", "nightly-e2e-templates", "{E90531F6-E32D-40DA-BCB2-55FA94D5AB19}"
 	ProjectSection(SolutionItems) = preProject
 		build\nightly-E2E-build-template.yml = build\nightly-E2E-build-template.yml
@@ -197,6 +198,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nightly-e2e-templates", "ni
 		build\nightly-E2E-run-tests-template.yml = build\nightly-E2E-run-tests-template.yml
 		build\nightly-E2E-setup-template.yml = build\nightly-E2E-setup-template.yml
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PostgreSql", "PostgreSql", "{D901C100-34DF-4DCC-B1A8-5C2436539E93}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.PostgreSql", "..\Pck\PostgreSqlForUmbraco\Our.Umbraco.PostgreSql\Our.Umbraco.PostgreSql\Our.Umbraco.PostgreSql.csproj", "{82B78CD9-F2BD-CB71-542F-BDD1B955C6ED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.PostgreSql.EFCore", "..\Pck\PostgreSqlForUmbraco\Our.Umbraco.PostgreSql\Our.Umbraco.PostgreSql.EFCore\Our.Umbraco.PostgreSql.EFCore.csproj", "{61592FFA-BBDA-CF98-6D83-1E2F0EAC2BBC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.PostgreSql.Umbraco.Forms", "..\Pck\PostgreSqlForUmbraco\Our.Umbraco.PostgreSql\Our.Umbraco.PostgreSql.Umbraco.Forms\Our.Umbraco.PostgreSql.Umbraco.Forms.csproj", "{E92EEEE6-599B-14BF-534E-EF688D691C6F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.PostgreSql.Umbraco.License", "..\Pck\PostgreSqlForUmbraco\Our.Umbraco.PostgreSql\Our.Umbraco.PostgreSql.Umbraco.License\Our.Umbraco.PostgreSql.Umbraco.License.csproj", "{8BE8AE68-66DE-D725-965A-04C1DE0A3DC7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -378,6 +389,30 @@ Global
 		{411D1547-C84C-4F0F-A207-A189B59F9486}.Release|Any CPU.Build.0 = Release|Any CPU
 		{411D1547-C84C-4F0F-A207-A189B59F9486}.SkipTests|Any CPU.ActiveCfg = Debug|Any CPU
 		{411D1547-C84C-4F0F-A207-A189B59F9486}.SkipTests|Any CPU.Build.0 = Debug|Any CPU
+		{82B78CD9-F2BD-CB71-542F-BDD1B955C6ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82B78CD9-F2BD-CB71-542F-BDD1B955C6ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82B78CD9-F2BD-CB71-542F-BDD1B955C6ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82B78CD9-F2BD-CB71-542F-BDD1B955C6ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82B78CD9-F2BD-CB71-542F-BDD1B955C6ED}.SkipTests|Any CPU.ActiveCfg = Release|Any CPU
+		{82B78CD9-F2BD-CB71-542F-BDD1B955C6ED}.SkipTests|Any CPU.Build.0 = Release|Any CPU
+		{61592FFA-BBDA-CF98-6D83-1E2F0EAC2BBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61592FFA-BBDA-CF98-6D83-1E2F0EAC2BBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61592FFA-BBDA-CF98-6D83-1E2F0EAC2BBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61592FFA-BBDA-CF98-6D83-1E2F0EAC2BBC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61592FFA-BBDA-CF98-6D83-1E2F0EAC2BBC}.SkipTests|Any CPU.ActiveCfg = Release|Any CPU
+		{61592FFA-BBDA-CF98-6D83-1E2F0EAC2BBC}.SkipTests|Any CPU.Build.0 = Release|Any CPU
+		{E92EEEE6-599B-14BF-534E-EF688D691C6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E92EEEE6-599B-14BF-534E-EF688D691C6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E92EEEE6-599B-14BF-534E-EF688D691C6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E92EEEE6-599B-14BF-534E-EF688D691C6F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E92EEEE6-599B-14BF-534E-EF688D691C6F}.SkipTests|Any CPU.ActiveCfg = Release|Any CPU
+		{E92EEEE6-599B-14BF-534E-EF688D691C6F}.SkipTests|Any CPU.Build.0 = Release|Any CPU
+		{8BE8AE68-66DE-D725-965A-04C1DE0A3DC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8BE8AE68-66DE-D725-965A-04C1DE0A3DC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8BE8AE68-66DE-D725-965A-04C1DE0A3DC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8BE8AE68-66DE-D725-965A-04C1DE0A3DC7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8BE8AE68-66DE-D725-965A-04C1DE0A3DC7}.SkipTests|Any CPU.ActiveCfg = Release|Any CPU
+		{8BE8AE68-66DE-D725-965A-04C1DE0A3DC7}.SkipTests|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -398,6 +433,10 @@ Global
 		{EA628ABD-624E-4AF3-B548-6710D4D66531} = {2B47AD9F-FFF1-448A-88F1-D4F568811738}
 		{A13FF0A0-69FA-468A-9F79-565401D5C341} = {B5BD12C1-A454-435E-8A46-FF4A364C0382}
 		{E90531F6-E32D-40DA-BCB2-55FA94D5AB19} = {20CE9C97-9314-4A19-BCF1-D12CF49B7205}
+		{82B78CD9-F2BD-CB71-542F-BDD1B955C6ED} = {D901C100-34DF-4DCC-B1A8-5C2436539E93}
+		{61592FFA-BBDA-CF98-6D83-1E2F0EAC2BBC} = {D901C100-34DF-4DCC-B1A8-5C2436539E93}
+		{E92EEEE6-599B-14BF-534E-EF688D691C6F} = {D901C100-34DF-4DCC-B1A8-5C2436539E93}
+		{8BE8AE68-66DE-D725-965A-04C1DE0A3DC7} = {D901C100-34DF-4DCC-B1A8-5C2436539E93}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7A0F2E34-D2AF-4DAB-86A0-7D7764B3D0EC}
