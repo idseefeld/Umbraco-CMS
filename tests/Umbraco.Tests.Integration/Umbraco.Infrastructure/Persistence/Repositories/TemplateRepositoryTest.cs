@@ -543,8 +543,7 @@ internal sealed class TemplateRepositoryTest : UmbracoIntegrationTest
                 serializer,
                 Mock.Of<IEventAggregator>(),
                 Mock.Of<IRepositoryCacheVersionService>(),
-                Mock.Of<ICacheSyncService>(),
-                ShortStringHelper);
+                Mock.Of<ICacheSyncService>());
 
             var template = TemplateBuilder.CreateTextPageTemplate();
             fileService.SaveTemplate(template); // else, FK violation on contentType!

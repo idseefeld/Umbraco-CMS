@@ -159,8 +159,7 @@ internal sealed class DocumentRepositoryTest : UmbracoIntegrationTest
             ConfigurationEditorJsonSerializer,
             Mock.Of<IEventAggregator>(),
             Mock.Of<IRepositoryCacheVersionService>(),
-            Mock.Of<ICacheSyncService>(),
-            ShortStringHelper);
+            Mock.Of<ICacheSyncService>());
         return repository;
     }
 

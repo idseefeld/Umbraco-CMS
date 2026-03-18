@@ -3291,13 +3291,13 @@ internal sealed class ContentServiceTests : UmbracoIntegrationTestWithContent
         ContentService.Save(child1);
         Assert.AreEqual("Title", child1.Name);
 
-        var child2 = new Content("Title.", parent, contentType);
+        var child2 = new Content("Title", parent, contentType);
         ContentService.Save(child2);
-        Assert.AreEqual("Title. (1)", child2.Name);
+        Assert.AreEqual("Title (1)", child2.Name);
 
         // Save again to verify the name is stable (idempotent).
         ContentService.Save(child2);
-        Assert.AreEqual("Title. (1)", child2.Name);
+        Assert.AreEqual("Title (1)", child2.Name);
     }
 
     [Test]
@@ -3330,13 +3330,13 @@ internal sealed class ContentServiceTests : UmbracoIntegrationTestWithContent
         Assert.AreEqual("Title", child1.GetCultureName(langUk.IsoCode));
 
         var child2 = new Content(null, parent, contentType);
-        child2.SetCultureName("Title.", langUk.IsoCode);
+        child2.SetCultureName("Title", langUk.IsoCode);
         ContentService.Save(child2);
-        Assert.AreEqual("Title. (1)", child2.GetCultureName(langUk.IsoCode));
+        Assert.AreEqual("Title (1)", child2.GetCultureName(langUk.IsoCode));
 
         // Save again to verify the name is stable (idempotent).
         ContentService.Save(child2);
-        Assert.AreEqual("Title. (1)", child2.GetCultureName(langUk.IsoCode));
+        Assert.AreEqual("Title (1)", child2.GetCultureName(langUk.IsoCode));
     }
 
     [Test]
