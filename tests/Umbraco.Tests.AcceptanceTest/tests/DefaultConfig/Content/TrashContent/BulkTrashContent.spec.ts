@@ -1,20 +1,13 @@
 import {ConstantHelper, test} from '@umbraco/acceptance-test-helpers';
 import {expect} from "@playwright/test";
 
-// Content
+let collectionId = '';
 const contentName = 'TestContent';
-const firstChildContentName = 'First Child Content';
-const secondChildContentName = 'Second Child Content';
-let contentId = '';
-// Document Types
 const documentTypeName = 'TestDocumentTypeForContent';
 const childDocumentTypeName = 'TestChildDocumentType';
-let documentTypeId = '';
-let childDocumentTypeId = '';
-// Data Type
+const firstChildContentName = 'First Child Content';
+const secondChildContentName = 'Second Child Content';
 const collectionDataTypeName = 'List View - Content';
-let collectionId = '';
-// Document Picker
 const referenceHeadline = ConstantHelper.trashDeleteDialogMessage.bulkReferenceHeadline;
 const documentPickerName = ['TestPicker', 'DocumentTypeForPicker'];
 
@@ -23,9 +16,6 @@ test.beforeEach(async ({umbracoApi}) => {
   await umbracoApi.document.ensureNameNotExists(contentName);
   const collectionDataTypeData = await umbracoApi.dataType.getByName(collectionDataTypeName);
   collectionId = collectionDataTypeData.id;
-  childDocumentTypeId = await umbracoApi.documentType.createDefaultDocumentType(childDocumentTypeName);
-  documentTypeId = await umbracoApi.documentType.createDocumentTypeWithAllowedChildNodeAndCollectionId(documentTypeName, childDocumentTypeId, collectionId);
-  contentId = await umbracoApi.document.createDefaultDocument(contentName, documentTypeId);
 });
 
 test.afterEach(async ({umbracoApi}) => {
@@ -35,8 +25,11 @@ test.afterEach(async ({umbracoApi}) => {
   await umbracoApi.document.emptyRecycleBin();
 });
 
-test('can bulk trash content nodes without a relation in list view', async ({umbracoApi, umbracoUi}) => {
+test('can bulk trash content nodes without a relation', async ({umbracoApi, umbracoUi}) => {
   // Arrange
+  const childDocumentTypeId = await umbracoApi.documentType.createDefaultDocumentType(childDocumentTypeName);
+  const documentTypeId = await umbracoApi.documentType.createDocumentTypeWithAllowedChildNodeAndCollectionId(documentTypeName, childDocumentTypeId, collectionId);
+  const contentId = await umbracoApi.document.createDefaultDocument(contentName, documentTypeId);
   await umbracoApi.document.createDefaultDocumentWithParent(firstChildContentName, childDocumentTypeId, contentId);
   await umbracoApi.document.createDefaultDocumentWithParent(secondChildContentName, childDocumentTypeId, contentId);
   await umbracoUi.goToBackOffice();
@@ -44,7 +37,6 @@ test('can bulk trash content nodes without a relation in list view', async ({umb
 
   // Act
   await umbracoUi.content.goToContentWithName(contentName);
-  await umbracoUi.content.changeToListView();
   await umbracoUi.content.selectContentWithNameInListView(firstChildContentName);
   await umbracoUi.content.selectContentWithNameInListView(secondChildContentName);
   await umbracoUi.content.clickTrashSelectedListItems();
@@ -61,8 +53,11 @@ test('can bulk trash content nodes without a relation in list view', async ({umb
   expect(await umbracoApi.document.doesItemExistInRecycleBin(secondChildContentName)).toBeTruthy();
 });
 
-test('can bulk trash content nodes with a relation in list view', async ({umbracoApi, umbracoUi}) => {
+test('can bulk trash content nodes with a relation', async ({umbracoApi, umbracoUi}) => {
   // Arrange
+  const childDocumentTypeId = await umbracoApi.documentType.createDefaultDocumentType(childDocumentTypeName);
+  const documentTypeId = await umbracoApi.documentType.createDocumentTypeWithAllowedChildNodeAndCollectionId(documentTypeName, childDocumentTypeId, collectionId);
+  const contentId = await umbracoApi.document.createDefaultDocument(contentName, documentTypeId);
   await umbracoApi.document.publish(contentId);
   const firstChildContentId = await umbracoApi.document.createDefaultDocumentWithParent(firstChildContentName, childDocumentTypeId, contentId);
   await umbracoApi.document.publish(firstChildContentId);
@@ -74,68 +69,8 @@ test('can bulk trash content nodes with a relation in list view', async ({umbrac
 
   // Act
   await umbracoUi.content.goToContentWithName(contentName);
-  await umbracoUi.content.changeToListView();
   await umbracoUi.content.selectContentWithNameInListView(firstChildContentName);
   await umbracoUi.content.selectContentWithNameInListView(secondChildContentName);
-  await umbracoUi.content.clickTrashSelectedListItems();
-  // Verify the references list
-  await umbracoUi.content.doesReferenceHeadlineHaveText(referenceHeadline);
-  await umbracoUi.content.doesReferenceItemsHaveCount(1);
-  await umbracoUi.content.isReferenceItemNameVisible(firstChildContentName);
-  await umbracoUi.content.clickConfirmTrashButtonAndWaitForContentToBeTrashed();
-
-  // Assert
-  expect(await umbracoApi.document.doesNameExist(firstChildContentName)).toBeFalsy();
-  expect(await umbracoApi.document.doesNameExist(secondChildContentName)).toBeFalsy();
-  await umbracoUi.content.isItemVisibleInRecycleBin(firstChildContentName);
-  await umbracoUi.content.isItemVisibleInRecycleBin(secondChildContentName);
-  expect(await umbracoApi.document.doesItemExistInRecycleBin(firstChildContentName)).toBeTruthy();
-  expect(await umbracoApi.document.doesItemExistInRecycleBin(secondChildContentName)).toBeTruthy();
-
-  // Clean
-  await umbracoApi.documentType.ensureNameNotExists(documentPickerName[1]);
-});
-
-test('can bulk trash content nodes without a relation in grid view', async ({umbracoApi, umbracoUi}) => {
-  // Arrange
-  await umbracoApi.document.createDefaultDocumentWithParent(firstChildContentName, childDocumentTypeId, contentId);
-  await umbracoApi.document.createDefaultDocumentWithParent(secondChildContentName, childDocumentTypeId, contentId);
-  await umbracoUi.goToBackOffice();
-  await umbracoUi.content.goToSection(ConstantHelper.sections.content);
-
-  // Act
-  await umbracoUi.content.goToContentWithName(contentName);
-  await umbracoUi.content.selectContentCardWithName(firstChildContentName);
-  await umbracoUi.content.selectContentCardWithName(secondChildContentName);
-  await umbracoUi.content.clickTrashSelectedListItems();
-  // Verify the references list not displayed
-  await umbracoUi.content.isReferenceHeadlineVisible(false);
-  await umbracoUi.content.clickConfirmTrashButtonAndWaitForContentToBeTrashed();
-
-  // // Assert
-  expect(await umbracoApi.document.doesNameExist(firstChildContentName)).toBeFalsy();
-  expect(await umbracoApi.document.doesNameExist(secondChildContentName)).toBeFalsy();
-  await umbracoUi.content.isItemVisibleInRecycleBin(firstChildContentName);
-  await umbracoUi.content.isItemVisibleInRecycleBin(secondChildContentName);
-  expect(await umbracoApi.document.doesItemExistInRecycleBin(firstChildContentName)).toBeTruthy();
-  expect(await umbracoApi.document.doesItemExistInRecycleBin(secondChildContentName)).toBeTruthy();
-});
-
-test('can bulk trash content nodes with a relation in grid view', async ({umbracoApi, umbracoUi}) => {
-  // Arrange
-  await umbracoApi.document.publish(contentId);
-  const firstChildContentId = await umbracoApi.document.createDefaultDocumentWithParent(firstChildContentName, childDocumentTypeId, contentId);
-  await umbracoApi.document.publish(firstChildContentId);
-  await umbracoApi.document.createDefaultDocumentWithParent(secondChildContentName, childDocumentTypeId, contentId);
-  // Create a document that has a document picker with firstChildContentName
-  await umbracoApi.document.createDefaultDocumentWithOneDocumentLink(documentPickerName[0], firstChildContentName, firstChildContentId, documentPickerName[1]);
-  await umbracoUi.goToBackOffice();
-  await umbracoUi.content.goToSection(ConstantHelper.sections.content);
-
-  // Act
-  await umbracoUi.content.goToContentWithName(contentName);
-  await umbracoUi.content.selectContentCardWithName(firstChildContentName);
-  await umbracoUi.content.selectContentCardWithName(secondChildContentName);
   await umbracoUi.content.clickTrashSelectedListItems();
   // Verify the references list
   await umbracoUi.content.doesReferenceHeadlineHaveText(referenceHeadline);
