@@ -207,15 +207,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbraco.Tests.Common.Postgr
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NPoco", "NPoco", "{6E14AFC8-F3A9-4F4D-90BC-87922C135DAC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPoco", "..\..\..\source\repos\_idseefeld\NPoco\src\NPoco\NPoco.csproj", "{D5046F16-97E3-8761-1245-0E6042033BF4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPoco", "..\..\source\repos\_idseefeld\NPoco\src\NPoco\NPoco.csproj", "{D5046F16-97E3-8761-1245-0E6042033BF4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPoco.Abstractions", "..\..\..\source\repos\_idseefeld\NPoco\src\NPoco.Abstractions\NPoco.Abstractions.csproj", "{695AEA00-2B61-269F-B17B-7796E78471DA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPoco.Abstractions", "..\..\source\repos\_idseefeld\NPoco\src\NPoco.Abstractions\NPoco.Abstractions.csproj", "{695AEA00-2B61-269F-B17B-7796E78471DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPoco.JsonNet", "..\..\..\source\repos\_idseefeld\NPoco\src\NPoco.JsonNet\NPoco.JsonNet.csproj", "{919594C0-E3E8-CEAA-F5F4-E2514C28CB96}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPoco.JsonNet", "..\..\source\repos\_idseefeld\NPoco\src\NPoco.JsonNet\NPoco.JsonNet.csproj", "{919594C0-E3E8-CEAA-F5F4-E2514C28CB96}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPoco.SqlServer", "..\..\..\source\repos\_idseefeld\NPoco\src\NPoco.SqlServer\NPoco.SqlServer.csproj", "{FEBB6A8D-6CC7-644E-3240-B80D9BAF71D8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPoco.SqlServer", "..\..\source\repos\_idseefeld\NPoco\src\NPoco.SqlServer\NPoco.SqlServer.csproj", "{FEBB6A8D-6CC7-644E-3240-B80D9BAF71D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPoco.SqlServer.SystemData", "..\..\..\source\repos\_idseefeld\NPoco\src\NPoco.SqlServer.SystemData\NPoco.SqlServer.SystemData.csproj", "{7B991F65-B4C5-D45B-B7EA-C36815BDDBEF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPoco.SqlServer.SystemData", "..\..\source\repos\_idseefeld\NPoco\src\NPoco.SqlServer.SystemData\NPoco.SqlServer.SystemData.csproj", "{7B991F65-B4C5-D45B-B7EA-C36815BDDBEF}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PostgreSql", "PostgreSql", "{C263E5EC-A5E2-4CE2-B5B0-B3ED2F6F150C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.PostgreSql", "..\Pck\PostgreSqlForUmbraco\Our.Umbraco.PostgreSql\Our.Umbraco.PostgreSql\Our.Umbraco.PostgreSql.csproj", "{82B78CD9-F2BD-CB71-542F-BDD1B955C6ED}"
@@ -225,10 +226,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.PostgreSql.Umbraco.Forms", "..\Pck\PostgreSqlForUmbraco\Our.Umbraco.PostgreSql\Our.Umbraco.PostgreSql.Umbraco.Forms\Our.Umbraco.PostgreSql.Umbraco.Forms.csproj", "{E92EEEE6-599B-14BF-534E-EF688D691C6F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.PostgreSql.Umbraco.License", "..\Pck\PostgreSqlForUmbraco\Our.Umbraco.PostgreSql\Our.Umbraco.PostgreSql.Umbraco.License\Our.Umbraco.PostgreSql.Umbraco.License.csproj", "{8BE8AE68-66DE-D725-965A-04C1DE0A3DC7}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.PostgreSql.Umbraco.Forms", "src\Our.Umbraco.PostgreSql.Umbraco.Forms\Our.Umbraco.PostgreSql.Umbraco.Forms.csproj", "{AC418FE6-EE14-4F08-BF0C-C212FFF8562E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.PostgreSql.Umbraco.License", "src\Our.Umbraco.PostgreSql.Umbraco.License\Our.Umbraco.PostgreSql.Umbraco.License.csproj", "{49E0DA9B-B9C1-4696-B7D1-568F82EEA996}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -452,18 +449,6 @@ Global
 		{7B991F65-B4C5-D45B-B7EA-C36815BDDBEF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7B991F65-B4C5-D45B-B7EA-C36815BDDBEF}.SkipTests|Any CPU.ActiveCfg = Release|Any CPU
 		{7B991F65-B4C5-D45B-B7EA-C36815BDDBEF}.SkipTests|Any CPU.Build.0 = Release|Any CPU
-		{AC418FE6-EE14-4F08-BF0C-C212FFF8562E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AC418FE6-EE14-4F08-BF0C-C212FFF8562E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AC418FE6-EE14-4F08-BF0C-C212FFF8562E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AC418FE6-EE14-4F08-BF0C-C212FFF8562E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AC418FE6-EE14-4F08-BF0C-C212FFF8562E}.SkipTests|Any CPU.ActiveCfg = Release|Any CPU
-		{AC418FE6-EE14-4F08-BF0C-C212FFF8562E}.SkipTests|Any CPU.Build.0 = Release|Any CPU
-		{49E0DA9B-B9C1-4696-B7D1-568F82EEA996}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{49E0DA9B-B9C1-4696-B7D1-568F82EEA996}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{49E0DA9B-B9C1-4696-B7D1-568F82EEA996}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{49E0DA9B-B9C1-4696-B7D1-568F82EEA996}.Release|Any CPU.Build.0 = Release|Any CPU
-		{49E0DA9B-B9C1-4696-B7D1-568F82EEA996}.SkipTests|Any CPU.ActiveCfg = Release|Any CPU
-		{49E0DA9B-B9C1-4696-B7D1-568F82EEA996}.SkipTests|Any CPU.Build.0 = Release|Any CPU
 		{82B78CD9-F2BD-CB71-542F-BDD1B955C6ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{82B78CD9-F2BD-CB71-542F-BDD1B955C6ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{82B78CD9-F2BD-CB71-542F-BDD1B955C6ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
