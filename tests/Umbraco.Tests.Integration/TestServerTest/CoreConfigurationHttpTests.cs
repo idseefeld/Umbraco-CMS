@@ -17,6 +17,7 @@ using Umbraco.Cms.Persistence.Sqlite;
 using Umbraco.Cms.Persistence.SqlServer;
 using Umbraco.Cms.Tests.Common.Testing;
 using Umbraco.Cms.Tests.Integration.Testing;
+using Our.Umbraco.PostgreSql;
 
 namespace Umbraco.Cms.Tests.Integration.TestServerTest;
 
@@ -166,6 +167,7 @@ public class CoreConfigurationHttpTests : UmbracoIntegrationTestBase
                     .AddBackOffice()
                     .AddWebsite()
                     .AddDeliveryApi()
+                    .AddUmbracoPostgreSqlSupport()
                     .AddUmbracoSqlServerSupport()
                     .AddUmbracoSqliteSupport()
                     .AddComposers();
@@ -213,6 +215,7 @@ public class CoreConfigurationHttpTests : UmbracoIntegrationTestBase
                 builder
                     .AddCore()
                     .AddWebsite()
+                    .AddUmbracoPostgreSqlSupport()
                     .AddUmbracoSqlServerSupport()
                     .AddUmbracoSqliteSupport()
                     .AddComposers();
@@ -261,6 +264,7 @@ public class CoreConfigurationHttpTests : UmbracoIntegrationTestBase
                 builder
                     .AddCore()
                     .AddDeliveryApi()
+                    .AddUmbracoPostgreSqlSupport()
                     .AddUmbracoSqlServerSupport()
                     .AddUmbracoSqliteSupport()
                     .AddComposers();
@@ -310,6 +314,7 @@ public class CoreConfigurationHttpTests : UmbracoIntegrationTestBase
                     .AddCore()
                     .AddWebsite()
                     .AddDeliveryApi()
+                    .AddUmbracoPostgreSqlSupport()
                     .AddUmbracoSqlServerSupport()
                     .AddUmbracoSqliteSupport()
                     .AddComposers();
@@ -359,6 +364,7 @@ public class CoreConfigurationHttpTests : UmbracoIntegrationTestBase
                 builder
                     .AddBackOffice()
                     .AddWebsite()
+                    .AddUmbracoPostgreSqlSupport()
                     .AddUmbracoSqlServerSupport()
                     .AddUmbracoSqliteSupport()
                     .AddComposers();
