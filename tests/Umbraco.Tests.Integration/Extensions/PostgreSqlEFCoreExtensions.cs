@@ -9,8 +9,38 @@ using Umbraco.Cms.Core.Configuration.Models;
 
 namespace Umbraco.Cms.Tests.Integration.Extensions
 {
-    public static class PostgreSqlEFCoreExtensions
+    public static class PostgreSqlEfCoreExtensions
     {
+        /// <summary>
+        /// Sets the database provider. I.E UseSqlite or UseSqlServer based on the provider name.
+        /// </summary>
+        /// <param name="builder">The DbContext options builder.</param>
+        /// <param name="providerName">The database provider name.</param>
+        /// <param name="connectionString">The connection string.</param>
+        /// <exception cref="InvalidDataException">Thrown when the provider is not supported.</exception>
+        /// <remarks>
+        /// Only supports the databases normally supported in Umbraco.
+        /// </remarks>
+        public static void UseCustomDatabaseProvider(this DbContextOptionsBuilder builder, string providerName, string connectionString)
+        {
+            switch (providerName)
+            {
+                case Core.Constants.ProviderNames.SQLServer:
+                    builder.UseSqlServer(connectionString);
+                    break;
+                case Core.Constants.ProviderNames.SQLLite:
+                case "Microsoft.Data.SQLite":
+                    builder.UseSqlite(connectionString);
+                    break;
+                case "Npgsql":
+                case "Npgsql2":
+                    builder.UseNpgsql(connectionString);
+                    break;
+                default:
+                    throw new InvalidDataException($"The provider {providerName} is not supported. Manually add the add the UseXXX statement to the options. I.E UseNpgsql()");
+            }
+        }
+
         /// <summary>
         /// Sets the database provider to use based on the Umbraco connection string.
         /// </summary>
@@ -40,36 +70,6 @@ namespace Umbraco.Cms.Tests.Integration.Extensions
             }
 
             builder.UseCustomDatabaseProvider(connectionStrings.ProviderName, connectionStrings.ConnectionString);
-        }
-
-        /// <summary>
-        /// Sets the database provider. I.E UseSqlite or UseSqlServer based on the provider name.
-        /// </summary>
-        /// <param name="builder">The DbContext options builder.</param>
-        /// <param name="providerName">The database provider name.</param>
-        /// <param name="connectionString">The connection string.</param>
-        /// <exception cref="InvalidDataException">Thrown when the provider is not supported.</exception>
-        /// <remarks>
-        /// Only supports the databases normally supported in Umbraco.
-        /// </remarks>
-        public static void UseCustomDatabaseProvider(this DbContextOptionsBuilder builder, string providerName, string connectionString)
-        {
-            switch (providerName)
-            {
-                case Core.Constants.ProviderNames.SQLServer:
-                    builder.UseSqlServer(connectionString);
-                    break;
-                case Core.Constants.ProviderNames.SQLLite:
-                case "Microsoft.Data.SQLite":
-                    builder.UseSqlite(connectionString);
-                    break;
-                case "Npgsql2":
-                case "Npgsql":
-                    builder.UseNpgsql(connectionString);
-                    break;
-                default:
-                    throw new InvalidDataException($"The provider {providerName} is not supported. Manually add the add the UseXXX statement to the options. I.E UseNpgsql()");
-            }
         }
     }
 }
