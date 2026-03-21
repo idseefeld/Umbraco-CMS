@@ -207,13 +207,17 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbraco.Tests.Common.Postgr
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PostgreSql", "PostgreSql", "{C263E5EC-A5E2-4CE2-B5B0-B3ED2F6F150C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.PostgreSql", "..\Pck\PostgreSqlForUmbraco\Our.Umbraco.PostgreSql\Our.Umbraco.PostgreSql\Our.Umbraco.PostgreSql.csproj", "{82B78CD9-F2BD-CB71-542F-BDD1B955C6ED}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.PostgreSql.EFCore", "..\Pck\PostgreSqlForUmbraco\Our.Umbraco.PostgreSql\Our.Umbraco.PostgreSql.EFCore\Our.Umbraco.PostgreSql.EFCore.csproj", "{61592FFA-BBDA-CF98-6D83-1E2F0EAC2BBC}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.PostgreSql.Umbraco.Forms", "..\Pck\PostgreSqlForUmbraco\Our.Umbraco.PostgreSql\Our.Umbraco.PostgreSql.Umbraco.Forms\Our.Umbraco.PostgreSql.Umbraco.Forms.csproj", "{E92EEEE6-599B-14BF-534E-EF688D691C6F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.PostgreSql.Umbraco.License", "..\Pck\PostgreSqlForUmbraco\Our.Umbraco.PostgreSql\Our.Umbraco.PostgreSql.Umbraco.License\Our.Umbraco.PostgreSql.Umbraco.License.csproj", "{8BE8AE68-66DE-D725-965A-04C1DE0A3DC7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Npgsql", "Npgsql", "{8909B8BD-4FA4-4CA0-BD4E-CF401AAAD2B7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EFCore.PG", "..\..\source\repos\_idseefeld\efcore.pg\src\EFCore.PG\EFCore.PG.csproj", "{17EF318C-D168-6358-4BE4-EAFEC1B21AED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.PostgreSql.EFCore.source", "..\Pck\PostgreSqlForUmbraco\Our.Umbraco.PostgreSql\Our.Umbraco.PostgreSql.EFCore\Our.Umbraco.PostgreSql.EFCore.source.csproj", "{3FC0B2BE-6FAE-B393-0F77-FA1C47D3FBB9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.PostgreSql.source", "..\Pck\PostgreSqlForUmbraco\Our.Umbraco.PostgreSql\Our.Umbraco.PostgreSql\Our.Umbraco.PostgreSql.source.csproj", "{050076DF-3DB3-BE43-925D-FCBF9657B6CD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -407,18 +411,6 @@ Global
 		{8C05E3C9-A9D8-AE21-1DB1-E86723E30B52}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8C05E3C9-A9D8-AE21-1DB1-E86723E30B52}.SkipTests|Any CPU.ActiveCfg = Release|Any CPU
 		{8C05E3C9-A9D8-AE21-1DB1-E86723E30B52}.SkipTests|Any CPU.Build.0 = Release|Any CPU
-		{82B78CD9-F2BD-CB71-542F-BDD1B955C6ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{82B78CD9-F2BD-CB71-542F-BDD1B955C6ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{82B78CD9-F2BD-CB71-542F-BDD1B955C6ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{82B78CD9-F2BD-CB71-542F-BDD1B955C6ED}.Release|Any CPU.Build.0 = Release|Any CPU
-		{82B78CD9-F2BD-CB71-542F-BDD1B955C6ED}.SkipTests|Any CPU.ActiveCfg = Release|Any CPU
-		{82B78CD9-F2BD-CB71-542F-BDD1B955C6ED}.SkipTests|Any CPU.Build.0 = Release|Any CPU
-		{61592FFA-BBDA-CF98-6D83-1E2F0EAC2BBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{61592FFA-BBDA-CF98-6D83-1E2F0EAC2BBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{61592FFA-BBDA-CF98-6D83-1E2F0EAC2BBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{61592FFA-BBDA-CF98-6D83-1E2F0EAC2BBC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{61592FFA-BBDA-CF98-6D83-1E2F0EAC2BBC}.SkipTests|Any CPU.ActiveCfg = Release|Any CPU
-		{61592FFA-BBDA-CF98-6D83-1E2F0EAC2BBC}.SkipTests|Any CPU.Build.0 = Release|Any CPU
 		{E92EEEE6-599B-14BF-534E-EF688D691C6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E92EEEE6-599B-14BF-534E-EF688D691C6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E92EEEE6-599B-14BF-534E-EF688D691C6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -431,6 +423,24 @@ Global
 		{8BE8AE68-66DE-D725-965A-04C1DE0A3DC7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8BE8AE68-66DE-D725-965A-04C1DE0A3DC7}.SkipTests|Any CPU.ActiveCfg = Release|Any CPU
 		{8BE8AE68-66DE-D725-965A-04C1DE0A3DC7}.SkipTests|Any CPU.Build.0 = Release|Any CPU
+		{17EF318C-D168-6358-4BE4-EAFEC1B21AED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17EF318C-D168-6358-4BE4-EAFEC1B21AED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17EF318C-D168-6358-4BE4-EAFEC1B21AED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17EF318C-D168-6358-4BE4-EAFEC1B21AED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17EF318C-D168-6358-4BE4-EAFEC1B21AED}.SkipTests|Any CPU.ActiveCfg = Release|Any CPU
+		{17EF318C-D168-6358-4BE4-EAFEC1B21AED}.SkipTests|Any CPU.Build.0 = Release|Any CPU
+		{3FC0B2BE-6FAE-B393-0F77-FA1C47D3FBB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FC0B2BE-6FAE-B393-0F77-FA1C47D3FBB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FC0B2BE-6FAE-B393-0F77-FA1C47D3FBB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FC0B2BE-6FAE-B393-0F77-FA1C47D3FBB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3FC0B2BE-6FAE-B393-0F77-FA1C47D3FBB9}.SkipTests|Any CPU.ActiveCfg = Release|Any CPU
+		{3FC0B2BE-6FAE-B393-0F77-FA1C47D3FBB9}.SkipTests|Any CPU.Build.0 = Release|Any CPU
+		{050076DF-3DB3-BE43-925D-FCBF9657B6CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{050076DF-3DB3-BE43-925D-FCBF9657B6CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{050076DF-3DB3-BE43-925D-FCBF9657B6CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{050076DF-3DB3-BE43-925D-FCBF9657B6CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{050076DF-3DB3-BE43-925D-FCBF9657B6CD}.SkipTests|Any CPU.ActiveCfg = Release|Any CPU
+		{050076DF-3DB3-BE43-925D-FCBF9657B6CD}.SkipTests|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -453,10 +463,11 @@ Global
 		{E90531F6-E32D-40DA-BCB2-55FA94D5AB19} = {20CE9C97-9314-4A19-BCF1-D12CF49B7205}
 		{CD44D69B-AADC-AAE7-F0F0-AAAB739EE661} = {B5BD12C1-A454-435E-8A46-FF4A364C0382}
 		{8C05E3C9-A9D8-AE21-1DB1-E86723E30B52} = {B5BD12C1-A454-435E-8A46-FF4A364C0382}
-		{82B78CD9-F2BD-CB71-542F-BDD1B955C6ED} = {C263E5EC-A5E2-4CE2-B5B0-B3ED2F6F150C}
-		{61592FFA-BBDA-CF98-6D83-1E2F0EAC2BBC} = {C263E5EC-A5E2-4CE2-B5B0-B3ED2F6F150C}
 		{E92EEEE6-599B-14BF-534E-EF688D691C6F} = {C263E5EC-A5E2-4CE2-B5B0-B3ED2F6F150C}
 		{8BE8AE68-66DE-D725-965A-04C1DE0A3DC7} = {C263E5EC-A5E2-4CE2-B5B0-B3ED2F6F150C}
+		{17EF318C-D168-6358-4BE4-EAFEC1B21AED} = {8909B8BD-4FA4-4CA0-BD4E-CF401AAAD2B7}
+		{3FC0B2BE-6FAE-B393-0F77-FA1C47D3FBB9} = {C263E5EC-A5E2-4CE2-B5B0-B3ED2F6F150C}
+		{050076DF-3DB3-BE43-925D-FCBF9657B6CD} = {C263E5EC-A5E2-4CE2-B5B0-B3ED2F6F150C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7A0F2E34-D2AF-4DAB-86A0-7D7764B3D0EC}
