@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Npgsql;
 using NUnit.Framework;
 using Umbraco.Cms.Persistence.EFCore.Scoping;
 using Umbraco.Cms.Tests.Common.Testing;
@@ -20,6 +21,16 @@ public class PooledDbContextConnectionTaintingTests : UmbracoIntegrationTest
 
     private IDbContextFactory<PooledTestDbContext> DbContextFactory =>
         GetRequiredService<IDbContextFactory<PooledTestDbContext>>();
+
+    [TearDown]
+    public void TearDownNpgsqlConnections()
+    {
+        // Clear the Npgsql connection pool to prevent background NpgsqlExceptions
+        // when the test framework drops the schema. Without this, Npgsql keeps TCP
+        // connections open in its pool and they are forcibly terminated by Postgres
+        // when the schema is dropped, causing "Exception while writing to stream".
+        NpgsqlConnection.ClearAllPools();
+    }
 
     protected override void CustomTestSetup(IUmbracoBuilder builder)
     {
