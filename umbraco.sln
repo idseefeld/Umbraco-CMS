@@ -207,9 +207,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbraco.Tests.Common.Postgr
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PostgreSql", "PostgreSql", "{C263E5EC-A5E2-4CE2-B5B0-B3ED2F6F150C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.PostgreSql.Umbraco.Forms", "..\Pck\PostgreSqlForUmbraco\Our.Umbraco.PostgreSql\Our.Umbraco.PostgreSql.Umbraco.Forms\Our.Umbraco.PostgreSql.Umbraco.Forms.source.csproj", "{E92EEEE6-599B-14BF-534E-EF688D691C6F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.PostgreSql.Umbraco.Forms.source", "..\Pck\PostgreSqlForUmbraco\Our.Umbraco.PostgreSql\Our.Umbraco.PostgreSql.Umbraco.Forms\Our.Umbraco.PostgreSql.Umbraco.Forms.source.csproj", "{E92EEEE6-599B-14BF-534E-EF688D691C6F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.PostgreSql.Umbraco.License", "..\Pck\PostgreSqlForUmbraco\Our.Umbraco.PostgreSql\Our.Umbraco.PostgreSql.Umbraco.License\Our.Umbraco.PostgreSql.Umbraco.License.source.csproj", "{8BE8AE68-66DE-D725-965A-04C1DE0A3DC7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.PostgreSql.Umbraco.License.source", "..\Pck\PostgreSqlForUmbraco\Our.Umbraco.PostgreSql\Our.Umbraco.PostgreSql.Umbraco.License\Our.Umbraco.PostgreSql.Umbraco.License.source.csproj", "{8BE8AE68-66DE-D725-965A-04C1DE0A3DC7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Npgsql", "Npgsql", "{8909B8BD-4FA4-4CA0-BD4E-CF401AAAD2B7}"
 EndProject
@@ -218,6 +218,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.PostgreSql.EFCore.source", "..\Pck\PostgreSqlForUmbraco\Our.Umbraco.PostgreSql\Our.Umbraco.PostgreSql.EFCore\Our.Umbraco.PostgreSql.EFCore.source.csproj", "{3FC0B2BE-6FAE-B393-0F77-FA1C47D3FBB9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.PostgreSql.source", "..\Pck\PostgreSqlForUmbraco\Our.Umbraco.PostgreSql\Our.Umbraco.PostgreSql\Our.Umbraco.PostgreSql.source.csproj", "{050076DF-3DB3-BE43-925D-FCBF9657B6CD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Npgsql", "..\..\source\repos\_idseefeld\npgsql\src\Npgsql\Npgsql.csproj", "{125AB9E4-B6B6-C1EF-2962-83A3CB8194A5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Npgsql.SourceGenerators", "..\..\source\repos\_idseefeld\npgsql\src\Npgsql.SourceGenerators\Npgsql.SourceGenerators.csproj", "{60EB0903-8899-F79F-EBD4-DCD651FD6D52}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -441,6 +445,18 @@ Global
 		{050076DF-3DB3-BE43-925D-FCBF9657B6CD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{050076DF-3DB3-BE43-925D-FCBF9657B6CD}.SkipTests|Any CPU.ActiveCfg = Release|Any CPU
 		{050076DF-3DB3-BE43-925D-FCBF9657B6CD}.SkipTests|Any CPU.Build.0 = Release|Any CPU
+		{125AB9E4-B6B6-C1EF-2962-83A3CB8194A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{125AB9E4-B6B6-C1EF-2962-83A3CB8194A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{125AB9E4-B6B6-C1EF-2962-83A3CB8194A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{125AB9E4-B6B6-C1EF-2962-83A3CB8194A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{125AB9E4-B6B6-C1EF-2962-83A3CB8194A5}.SkipTests|Any CPU.ActiveCfg = Release|Any CPU
+		{125AB9E4-B6B6-C1EF-2962-83A3CB8194A5}.SkipTests|Any CPU.Build.0 = Release|Any CPU
+		{60EB0903-8899-F79F-EBD4-DCD651FD6D52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60EB0903-8899-F79F-EBD4-DCD651FD6D52}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60EB0903-8899-F79F-EBD4-DCD651FD6D52}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60EB0903-8899-F79F-EBD4-DCD651FD6D52}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60EB0903-8899-F79F-EBD4-DCD651FD6D52}.SkipTests|Any CPU.ActiveCfg = Release|Any CPU
+		{60EB0903-8899-F79F-EBD4-DCD651FD6D52}.SkipTests|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -468,6 +484,8 @@ Global
 		{17EF318C-D168-6358-4BE4-EAFEC1B21AED} = {8909B8BD-4FA4-4CA0-BD4E-CF401AAAD2B7}
 		{3FC0B2BE-6FAE-B393-0F77-FA1C47D3FBB9} = {C263E5EC-A5E2-4CE2-B5B0-B3ED2F6F150C}
 		{050076DF-3DB3-BE43-925D-FCBF9657B6CD} = {C263E5EC-A5E2-4CE2-B5B0-B3ED2F6F150C}
+		{125AB9E4-B6B6-C1EF-2962-83A3CB8194A5} = {8909B8BD-4FA4-4CA0-BD4E-CF401AAAD2B7}
+		{60EB0903-8899-F79F-EBD4-DCD651FD6D52} = {8909B8BD-4FA4-4CA0-BD4E-CF401AAAD2B7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7A0F2E34-D2AF-4DAB-86A0-7D7764B3D0EC}
