@@ -149,8 +149,6 @@ public class PooledDbContextConnectionTaintingTests : UmbracoIntegrationTest
                     {
                         db.SetConnectionString(_connectionString);
                     }
-
-                    conn.Open();
                 }
 
                 return db;
