@@ -1,4 +1,4 @@
-name: Test PostgreSql Start
+name: Test PostgreSql Database Provider
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
 on: [push]
 jobs:
