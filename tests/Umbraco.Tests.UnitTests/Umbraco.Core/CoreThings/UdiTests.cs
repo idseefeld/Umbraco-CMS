@@ -262,7 +262,7 @@ public class UdiTests
 
                 if (types.ContainsKey(value) == false)
                 {
-                    Assert.Fail("Error in class Constants.UdiEntityType, type \"{0}\" is not declared by GetTypes.", value);
+                    Assert.Fail(string.Format("Error in class Constants.UdiEntityType, type \"{0}\" is not declared by GetTypes.", value));
                 }
 
                 types.Remove(value);

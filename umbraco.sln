@@ -218,6 +218,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPoco.SqlServer.SystemData", "..\..\source\repos\_idseefeld\NPoco\src\NPoco.SqlServer.SystemData\NPoco.SqlServer.SystemData.csproj", "{7B991F65-B4C5-D45B-B7EA-C36815BDDBEF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PostgreSql", "PostgreSql", "{C263E5EC-A5E2-4CE2-B5B0-B3ED2F6F150C}"
+	ProjectSection(SolutionItems) = preProject
+		..\Pck\PostgreSqlForUmbraco\Our.Umbraco.PostgreSql\Directory.Build.props = ..\Pck\PostgreSqlForUmbraco\Our.Umbraco.PostgreSql\Directory.Build.props
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.PostgreSql", "..\Pck\PostgreSqlForUmbraco\Our.Umbraco.PostgreSql\Our.Umbraco.PostgreSql\Our.Umbraco.PostgreSql.csproj", "{82B78CD9-F2BD-CB71-542F-BDD1B955C6ED}"
 EndProject

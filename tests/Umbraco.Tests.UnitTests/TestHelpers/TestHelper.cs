@@ -81,7 +81,7 @@ public static class TestHelper
 
     public static UriUtility UriUtility => s_testHelperInternal.UriUtility;
 
-    public static IEmailSender EmailSender { get; } = new EmailSender(new NullLogger<EmailSender>(), new TestOptionsMonitor<GlobalSettings>(new GlobalSettings()), Mock.Of<IEventAggregator>(), Mock.Of<IEmailSenderClient>(), null,null);
+    public static IEmailSender EmailSender { get; } = new EmailSender(new NullLogger<EmailSender>(), new TestOptionsMonitor<GlobalSettings>(new GlobalSettings()), Mock.Of<IEventAggregator>(), Mock.Of<IEmailSenderClient>(), null, null);
 
     public static ITypeFinder GetTypeFinder() => s_testHelperInternal.GetTypeFinder();
 
@@ -291,11 +291,13 @@ public static class TestHelper
         if (actualListEx.Count != expectedListEx.Count)
         {
             Assert.Fail(
-                "Collection {0}.{1} does not match. Expected IEnumerable containing {2} elements but was IEnumerable containing {3} elements",
-                property.PropertyType.Name,
-                property.Name,
-                expectedListEx.Count,
-                actualListEx.Count);
+                string.Format(
+                    "Collection {0}.{1} does not match. Expected IEnumerable containing {2} elements but was IEnumerable containing {3} elements",
+                    property.PropertyType.Name,
+                    property.Name,
+                    expectedListEx.Count,
+                    actualListEx.Count)
+                );
         }
 
         for (var i = 0; i < actualListEx.Count; i++)

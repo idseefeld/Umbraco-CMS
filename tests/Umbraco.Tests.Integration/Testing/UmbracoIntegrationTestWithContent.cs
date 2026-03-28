@@ -2,6 +2,7 @@
 // See LICENSE for more details.
 
 using NUnit.Framework;
+using Umbraco.Cms.Api.Management.DependencyInjection;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Tests.Common.Builders;
@@ -24,6 +25,8 @@ public abstract class UmbracoIntegrationTestWithContent : UmbracoIntegrationTest
 
     protected IFileService FileService => GetRequiredService<IFileService>();
 
+    protected ITemplateService TemplateService => GetRequiredService<ITemplateService>();
+
     protected ContentService ContentService => (ContentService)GetRequiredService<IContentService>();
 
     protected Content Trashed { get; private set; }
@@ -38,19 +41,37 @@ public abstract class UmbracoIntegrationTestWithContent : UmbracoIntegrationTest
     protected ContentType ContentType { get; private set; }
 
     [SetUp]
-    public virtual void Setup() => CreateTestData();
+    public override void Setup()
+    {
+        base.Setup();
+        CreateTestData();
+    }
 
     public virtual void CreateTestData()
     {
-        // NOTE Maybe not the best way to create/save test data as we are using the services, which are being tested.
-        var template = TemplateBuilder.CreateTextPageTemplate("defaultTemplate");
-        FileService.SaveTemplate(template);
+        ITemplate template = null;
+        var attempt = TemplateService
+            .CreateAsync(name: "Default Template", alias: "defaultTemplate", content: null, userKey: Core.Constants.Security.SuperUserKey)
+            .GetAwaiter()
+            .GetResult();
+        if (attempt.Success)
+        {
+            template = attempt.Result;
+        }
+        else
+        {
+            Assert.Fail("Failed to create template: " + attempt.Status);
+            return;
+        }
+        //// NOTE Maybe not the best way to create/save test data as we are using the services, which are being tested.
+        //var template = TemplateBuilder.CreateTextPageTemplate("defaultTemplate");
+        //FileService.SaveTemplate(template);
 
         // Create and Save ContentType "umbTextpage" -> 1051 (template), 1052 (content type)
         ContentType =
             ContentTypeBuilder.CreateSimpleContentType("umbTextpage", "Textpage", defaultTemplateId: template.Id);
         ContentType.Key = new Guid(TextpageContentTypeKey);
-        ContentTypeService.Save(ContentType);
+        ContentTypeService.CreateAsync(ContentType, Core.Constants.Security.SuperUserKey).GetAwaiter().GetResult();
 
         // Create and Save Content "Homepage" based on "umbTextpage" -> 1053
         Textpage = ContentBuilder.CreateSimpleContent(ContentType, "Textpage");

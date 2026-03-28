@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using Umbraco.Cms.Core.Security;
 
 namespace Umbraco.Cms.Tests.UnitTests.Umbraco.Core.Security;

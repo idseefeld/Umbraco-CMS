@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using AutoFixture.NUnit3;
+using AutoFixture.NUnit4;
 using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
