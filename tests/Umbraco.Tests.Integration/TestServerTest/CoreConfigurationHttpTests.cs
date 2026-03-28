@@ -10,14 +10,16 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NUnit.Framework;
+using Our.Umbraco.PostgreSql;
 using Umbraco.Cms.Core.Cache;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.Persistence.Repositories;
 using Umbraco.Cms.Persistence.Sqlite;
 using Umbraco.Cms.Persistence.SqlServer;
 using Umbraco.Cms.Tests.Common.Testing;
+using Umbraco.Cms.Tests.Integration.Extensions;
 using Umbraco.Cms.Tests.Integration.Testing;
-using Our.Umbraco.PostgreSql;
+using Umbraco.Forms.Core.Extensions;
 
 namespace Umbraco.Cms.Tests.Integration.TestServerTest;
 
@@ -170,6 +172,7 @@ public class CoreConfigurationHttpTests : UmbracoIntegrationTestBase
                     .AddBackOffice()
                     .AddWebsite()
                     .AddDeliveryApi()
+                    .AddUmbracoFormsSupport()
                     .AddUmbracoPostgreSqlSupport()
                     .AddUmbracoSqlServerSupport()
                     .AddUmbracoSqliteSupport()
@@ -218,6 +221,7 @@ public class CoreConfigurationHttpTests : UmbracoIntegrationTestBase
                 builder
                     .AddCore()
                     .AddWebsite()
+                    .AddUmbracoFormsSupport()
                     .AddUmbracoPostgreSqlSupport()
                     .AddUmbracoSqlServerSupport()
                     .AddUmbracoSqliteSupport()
@@ -267,6 +271,7 @@ public class CoreConfigurationHttpTests : UmbracoIntegrationTestBase
                 builder
                     .AddCore()
                     .AddDeliveryApi()
+                    .AddUmbracoFormsSupport()
                     .AddUmbracoPostgreSqlSupport()
                     .AddUmbracoSqlServerSupport()
                     .AddUmbracoSqliteSupport()
@@ -317,6 +322,7 @@ public class CoreConfigurationHttpTests : UmbracoIntegrationTestBase
                     .AddCore()
                     .AddWebsite()
                     .AddDeliveryApi()
+                    .AddUmbracoFormsSupport()
                     .AddUmbracoPostgreSqlSupport()
                     .AddUmbracoSqlServerSupport()
                     .AddUmbracoSqliteSupport()
@@ -367,6 +373,7 @@ public class CoreConfigurationHttpTests : UmbracoIntegrationTestBase
                 builder
                     .AddBackOffice()
                     .AddWebsite()
+                    .AddUmbracoFormsSupport()
                     .AddUmbracoPostgreSqlSupport()
                     .AddUmbracoSqlServerSupport()
                     .AddUmbracoSqliteSupport()

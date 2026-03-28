@@ -4,13 +4,16 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
+using Our.Umbraco.PostgreSql;
 using Umbraco.Cms.Core.Cache;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Persistence.Sqlite;
 using Umbraco.Cms.Persistence.SqlServer;
 using Umbraco.Cms.Tests.Common.Testing;
+using Umbraco.Cms.Tests.Integration.Extensions;
 using Umbraco.Cms.Tests.Integration.Testing;
+using Umbraco.Forms.Core.Extensions;
 
 namespace Umbraco.Cms.Tests.Integration.TestServerTest;
 
@@ -54,6 +57,8 @@ public class CoreConfigurationTests : UmbracoIntegrationTestBase
         // Act - Register core services only (no backoffice)
         builder
             .AddCore()
+            .AddUmbracoFormsSupport()
+            .AddUmbracoPostgreSqlSupport()
             .AddUmbracoSqlServerSupport()
             .AddUmbracoSqliteSupport();
 
@@ -95,6 +100,7 @@ public class CoreConfigurationTests : UmbracoIntegrationTestBase
         // Act - Register backoffice (which should call AddCore internally)
         builder
             .AddBackOffice()
+            .AddUmbracoFormsSupport()
             .AddUmbracoSqlServerSupport()
             .AddUmbracoSqliteSupport();
 
@@ -142,6 +148,8 @@ public class CoreConfigurationTests : UmbracoIntegrationTestBase
         builder
             .AddCore()
             .AddWebsite()
+            .AddUmbracoFormsSupport()
+            .AddUmbracoPostgreSqlSupport()
             .AddUmbracoSqlServerSupport()
             .AddUmbracoSqliteSupport();
 
@@ -188,6 +196,7 @@ public class CoreConfigurationTests : UmbracoIntegrationTestBase
         builder
             .AddCore()
             .AddDeliveryApi()
+            .AddUmbracoFormsSupport()
             .AddUmbracoSqlServerSupport()
             .AddUmbracoSqliteSupport();
 
@@ -234,7 +243,9 @@ public class CoreConfigurationTests : UmbracoIntegrationTestBase
         builder
             .AddCore()
             .AddCore()  // Second call should be no-op
+            .AddUmbracoFormsSupport()
             .AddUmbracoSqlServerSupport()
+            .AddUmbracoPostgreSqlSupport()
             .AddUmbracoSqliteSupport();
 
         // Assert - Should not throw
@@ -273,7 +284,9 @@ public class CoreConfigurationTests : UmbracoIntegrationTestBase
         builder
             .AddBackOffice()
             .AddCore()  // Should be no-op due to idempotency
+            .AddUmbracoFormsSupport()
             .AddUmbracoSqlServerSupport()
+            .AddUmbracoPostgreSqlSupport()
             .AddUmbracoSqliteSupport();
 
         // Assert - Should not throw
@@ -312,6 +325,8 @@ public class CoreConfigurationTests : UmbracoIntegrationTestBase
         builder
             .AddCore()
             .AddBackOffice()  // AddCore inside should be no-op
+            .AddUmbracoFormsSupport()
+            .AddUmbracoPostgreSqlSupport()
             .AddUmbracoSqlServerSupport()
             .AddUmbracoSqliteSupport();
 
@@ -356,6 +371,8 @@ public class CoreConfigurationTests : UmbracoIntegrationTestBase
             .AddCore()
             .AddWebsite()
             .AddDeliveryApi()
+            .AddUmbracoFormsSupport()
+            .AddUmbracoPostgreSqlSupport()
             .AddUmbracoSqlServerSupport()
             .AddUmbracoSqliteSupport()
             .AddComposers();

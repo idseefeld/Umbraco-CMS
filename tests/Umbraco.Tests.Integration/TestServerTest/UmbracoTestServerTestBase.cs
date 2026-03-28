@@ -29,9 +29,11 @@ using Umbraco.Cms.Persistence.Sqlite;
 using Umbraco.Cms.Persistence.SqlServer;
 using Umbraco.Cms.Tests.Common.Testing;
 using Umbraco.Cms.Tests.Integration.DependencyInjection;
+using Umbraco.Cms.Tests.Integration.Extensions;
 using Umbraco.Cms.Tests.Integration.Testing;
 using Umbraco.Cms.Web.Common.Controllers;
 using Umbraco.Cms.Web.Website.Controllers;
+using Umbraco.Forms.Core.Extensions;
 
 namespace Umbraco.Cms.Tests.Integration.TestServerTest
 {
@@ -313,6 +315,7 @@ namespace Umbraco.Cms.Tests.Integration.TestServerTest
                     CustomMvcSetup(mvcBuilder);
                 })
                 .AddWebsite()
+                .AddUmbracoFormsSupport()
                 .AddUmbracoSqlServerSupport()
                 .AddUmbracoSqliteSupport()
                 .AddUmbracoPostgreSqlSupport()
