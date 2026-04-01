@@ -205,10 +205,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.PostgreSql", ".
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.PostgreSql.EFCore", "..\Pck\PostgreSqlForUmbraco\Our.Umbraco.PostgreSql\Our.Umbraco.PostgreSql.EFCore\Our.Umbraco.PostgreSql.EFCore.csproj", "{61592FFA-BBDA-CF98-6D83-1E2F0EAC2BBC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.PostgreSql.Umbraco.Forms", "..\Pck\PostgreSqlForUmbraco\Our.Umbraco.PostgreSql\Our.Umbraco.PostgreSql.Umbraco.Forms\Our.Umbraco.PostgreSql.Umbraco.Forms.csproj", "{E92EEEE6-599B-14BF-534E-EF688D691C6F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.PostgreSql.Umbraco.License", "..\Pck\PostgreSqlForUmbraco\Our.Umbraco.PostgreSql\Our.Umbraco.PostgreSql.Umbraco.License\Our.Umbraco.PostgreSql.Umbraco.License.csproj", "{8BE8AE68-66DE-D725-965A-04C1DE0A3DC7}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbraco.Tests.Common.PostgreSql", "tests\Umbraco.Tests.Common.PostgreSql\Umbraco.Tests.Common.PostgreSql.csproj", "{8C05E3C9-A9D8-AE21-1DB1-E86723E30B52}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbraco.Tests.UnitTests.PostgreSql", "tests\Umbraco.Tests.UnitTests.PostgreSql\Umbraco.Tests.UnitTests.PostgreSql.csproj", "{CD44D69B-AADC-AAE7-F0F0-AAAB739EE661}"
@@ -405,18 +401,6 @@ Global
 		{61592FFA-BBDA-CF98-6D83-1E2F0EAC2BBC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{61592FFA-BBDA-CF98-6D83-1E2F0EAC2BBC}.SkipTests|Any CPU.ActiveCfg = Release|Any CPU
 		{61592FFA-BBDA-CF98-6D83-1E2F0EAC2BBC}.SkipTests|Any CPU.Build.0 = Release|Any CPU
-		{E92EEEE6-599B-14BF-534E-EF688D691C6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E92EEEE6-599B-14BF-534E-EF688D691C6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E92EEEE6-599B-14BF-534E-EF688D691C6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E92EEEE6-599B-14BF-534E-EF688D691C6F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E92EEEE6-599B-14BF-534E-EF688D691C6F}.SkipTests|Any CPU.ActiveCfg = Release|Any CPU
-		{E92EEEE6-599B-14BF-534E-EF688D691C6F}.SkipTests|Any CPU.Build.0 = Release|Any CPU
-		{8BE8AE68-66DE-D725-965A-04C1DE0A3DC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8BE8AE68-66DE-D725-965A-04C1DE0A3DC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8BE8AE68-66DE-D725-965A-04C1DE0A3DC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8BE8AE68-66DE-D725-965A-04C1DE0A3DC7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8BE8AE68-66DE-D725-965A-04C1DE0A3DC7}.SkipTests|Any CPU.ActiveCfg = Release|Any CPU
-		{8BE8AE68-66DE-D725-965A-04C1DE0A3DC7}.SkipTests|Any CPU.Build.0 = Release|Any CPU
 		{8C05E3C9-A9D8-AE21-1DB1-E86723E30B52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8C05E3C9-A9D8-AE21-1DB1-E86723E30B52}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C05E3C9-A9D8-AE21-1DB1-E86723E30B52}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -451,8 +435,6 @@ Global
 		{E90531F6-E32D-40DA-BCB2-55FA94D5AB19} = {20CE9C97-9314-4A19-BCF1-D12CF49B7205}
 		{82B78CD9-F2BD-CB71-542F-BDD1B955C6ED} = {D901C100-34DF-4DCC-B1A8-5C2436539E93}
 		{61592FFA-BBDA-CF98-6D83-1E2F0EAC2BBC} = {D901C100-34DF-4DCC-B1A8-5C2436539E93}
-		{E92EEEE6-599B-14BF-534E-EF688D691C6F} = {D901C100-34DF-4DCC-B1A8-5C2436539E93}
-		{8BE8AE68-66DE-D725-965A-04C1DE0A3DC7} = {D901C100-34DF-4DCC-B1A8-5C2436539E93}
 		{8C05E3C9-A9D8-AE21-1DB1-E86723E30B52} = {B5BD12C1-A454-435E-8A46-FF4A364C0382}
 		{CD44D69B-AADC-AAE7-F0F0-AAAB739EE661} = {B5BD12C1-A454-435E-8A46-FF4A364C0382}
 	EndGlobalSection
