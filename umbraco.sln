@@ -200,6 +200,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nightly-e2e-templates", "ni
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PostgreSql", "PostgreSql", "{D901C100-34DF-4DCC-B1A8-5C2436539E93}"
+	ProjectSection(SolutionItems) = preProject
+		..\Pck\PostgreSqlForUmbraco\Our.Umbraco.PostgreSql\Directory.Build.props = ..\Pck\PostgreSqlForUmbraco\Our.Umbraco.PostgreSql\Directory.Build.props
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.PostgreSql", "..\Pck\PostgreSqlForUmbraco\Our.Umbraco.PostgreSql\Our.Umbraco.PostgreSql\Our.Umbraco.PostgreSql.csproj", "{82B78CD9-F2BD-CB71-542F-BDD1B955C6ED}"
 EndProject
