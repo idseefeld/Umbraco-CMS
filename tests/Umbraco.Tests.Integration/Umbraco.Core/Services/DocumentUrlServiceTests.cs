@@ -10,7 +10,6 @@ using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.Strings;
 using Umbraco.Cms.Core.Sync;
 using Umbraco.Cms.Infrastructure.Persistence.Dtos;
-using Umbraco.Cms.Infrastructure.Scoping;
 using Umbraco.Cms.Tests.Common.Builders;
 using Umbraco.Cms.Tests.Common.Builders.Extensions;
 using Umbraco.Cms.Tests.Common.Testing;
@@ -793,7 +792,13 @@ internal sealed class DocumentUrlServiceTests : UmbracoIntegrationTestWithConten
                 foreach (var isDraft in new[] { true, false })
                 {
                     database.Execute(
-                        $"INSERT INTO {syntax.GetQuotedTableName("umbracoDocumentUrl")} ({syntax.GetQuotedColumnName("uniqueId")}, {syntax.GetQuotedColumnName("languageId")}, {syntax.GetQuotedColumnName("isDraft")}, {syntax.GetQuotedColumnName("urlSegment")}, {syntax.GetQuotedColumnName("isPrimary")}) VALUES (@0, @1, @2, @3, @4)",
+                        $"INSERT INTO {syntax.GetQuotedTableName(DocumentUrlDto.TableName)}" +
+                        $" ({syntax.GetQuotedColumnName(DocumentUrlDto.UniqueIdColumnName)}" +
+                        $", {syntax.GetQuotedColumnName(DocumentUrlDto.LanguageIdColumnName)}" +
+                        $", {syntax.GetQuotedColumnName(DocumentUrlDto.IsDraftColumnName)}" +
+                        $", {syntax.GetQuotedColumnName(DocumentUrlDto.UrlSegmentColumnName)}" +
+                        $", {syntax.GetQuotedColumnName(DocumentUrlDto.IsPrimaryColumnName)})" +
+                        " VALUES (@0, @1, @2, @3, @4)",
                         documentKey,
                         languageId,
                         isDraft,
@@ -835,7 +840,7 @@ internal sealed class DocumentUrlServiceTests : UmbracoIntegrationTestWithConten
         Assert.DoesNotThrow(() => DocumentUrlRepository.Save(newSegments));
 
         // Verify: old rows deleted, new rows inserted.
-        var remainingRows = database.ExecuteScalar<int>(database.SqlContext.Sql().SelectCount<DocumentUrlDto>());
+        var remainingRows = database.ExecuteScalar<int>(database.SqlContext.Sql().SelectCount().From<DocumentUrlDto>());
         Assert.That(
             remainingRows,
             Is.EqualTo(newSegments.Count),
