@@ -153,7 +153,9 @@ public abstract class ManagementApiTest<T> : UmbracoTestServerTestBase
                 userKey,
                 new ChangeUserPasswordModel
                 {
-                    NewPassword = password, ResetPasswordToken = token.Result.ToUrlBase64(), UserKey = userKey,
+                    NewPassword = password,
+                    ResetPasswordToken = token.Result.ToUrlBase64(),
+                    UserKey = userKey,
                 });
 
             Assert.IsTrue(changePasswordAttempt.Success);
@@ -169,8 +171,9 @@ public abstract class ManagementApiTest<T> : UmbracoTestServerTestBase
         var loginModel = new LoginRequestModel { Username = username, Password = password };
 
         // Login to ensure the cookie is set (used in next request)
-        var loginResponse = await client.PostAsync(
-            GetManagementApiUrl<BackOfficeController>(x => x.Login(CancellationToken.None, null)), JsonContent.Create(loginModel));
+        var loginUrl = GetManagementApiUrl<BackOfficeController>(x => x.Login(CancellationToken.None, null));
+        var loginModelJson = JsonContent.Create(loginModel);
+        var loginResponse = await client.PostAsync(loginUrl, loginModelJson);
 
         Assert.AreEqual(HttpStatusCode.OK, loginResponse.StatusCode, await loginResponse.Content.ReadAsStringAsync());
 

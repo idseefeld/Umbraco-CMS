@@ -222,12 +222,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PostgreSql", "PostgreSql", 
 	ProjectSection(SolutionItems) = preProject
 		..\Pck\PostgreSqlForUmbraco\Our.Umbraco.PostgreSql\Directory.Build.props = ..\Pck\PostgreSqlForUmbraco\Our.Umbraco.PostgreSql\Directory.Build.props
 	EndProjectSection
-		readme-how-to-include-postgresql-projects.md = readme-how-to-include-postgresql-projects.md
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.PostgreSql", "src\PostgreSqlForUmbraco\Our.Umbraco.PostgreSql\Our.Umbraco.PostgreSql\Our.Umbraco.PostgreSql.csproj", "{3E6895C0-A936-EE05-9FDC-1E5434F2841F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.PostgreSql.EFCore", "src\PostgreSqlForUmbraco\Our.Umbraco.PostgreSql\Our.Umbraco.PostgreSql.EFCore\Our.Umbraco.PostgreSql.EFCore.csproj", "{1A5352CD-DCB7-13DE-9D7A-E7CBD252663F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.PostgreSql.Umbraco.License", "src\PostgreSqlForUmbraco\Our.Umbraco.PostgreSql\Our.Umbraco.PostgreSql.Umbraco.License\Our.Umbraco.PostgreSql.Umbraco.License.csproj", "{8D53E6E6-D0CA-E3F9-7AF8-D1450AE7D1C4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.PostgreSql.Umbraco.Forms", "src\PostgreSqlForUmbraco\Our.Umbraco.PostgreSql\Our.Umbraco.PostgreSql.Umbraco.Forms\Our.Umbraco.PostgreSql.Umbraco.Forms.csproj", "{10D26637-2E00-136D-11D6-B36C1922F50A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -463,6 +465,18 @@ Global
 		{1A5352CD-DCB7-13DE-9D7A-E7CBD252663F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1A5352CD-DCB7-13DE-9D7A-E7CBD252663F}.SkipTests|Any CPU.ActiveCfg = Release|Any CPU
 		{1A5352CD-DCB7-13DE-9D7A-E7CBD252663F}.SkipTests|Any CPU.Build.0 = Release|Any CPU
+		{8D53E6E6-D0CA-E3F9-7AF8-D1450AE7D1C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D53E6E6-D0CA-E3F9-7AF8-D1450AE7D1C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D53E6E6-D0CA-E3F9-7AF8-D1450AE7D1C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D53E6E6-D0CA-E3F9-7AF8-D1450AE7D1C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D53E6E6-D0CA-E3F9-7AF8-D1450AE7D1C4}.SkipTests|Any CPU.ActiveCfg = Release|Any CPU
+		{8D53E6E6-D0CA-E3F9-7AF8-D1450AE7D1C4}.SkipTests|Any CPU.Build.0 = Release|Any CPU
+		{10D26637-2E00-136D-11D6-B36C1922F50A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10D26637-2E00-136D-11D6-B36C1922F50A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10D26637-2E00-136D-11D6-B36C1922F50A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10D26637-2E00-136D-11D6-B36C1922F50A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10D26637-2E00-136D-11D6-B36C1922F50A}.SkipTests|Any CPU.ActiveCfg = Release|Any CPU
+		{10D26637-2E00-136D-11D6-B36C1922F50A}.SkipTests|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -492,6 +506,8 @@ Global
 		{7B991F65-B4C5-D45B-B7EA-C36815BDDBEF} = {6E14AFC8-F3A9-4F4D-90BC-87922C135DAC}
 		{3E6895C0-A936-EE05-9FDC-1E5434F2841F} = {C263E5EC-A5E2-4CE2-B5B0-B3ED2F6F150C}
 		{1A5352CD-DCB7-13DE-9D7A-E7CBD252663F} = {C263E5EC-A5E2-4CE2-B5B0-B3ED2F6F150C}
+		{8D53E6E6-D0CA-E3F9-7AF8-D1450AE7D1C4} = {C263E5EC-A5E2-4CE2-B5B0-B3ED2F6F150C}
+		{10D26637-2E00-136D-11D6-B36C1922F50A} = {C263E5EC-A5E2-4CE2-B5B0-B3ED2F6F150C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7A0F2E34-D2AF-4DAB-86A0-7D7764B3D0EC}
