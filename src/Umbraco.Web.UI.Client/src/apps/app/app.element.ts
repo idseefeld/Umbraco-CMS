@@ -20,7 +20,7 @@ import {
 	umbExtensionsRegistry,
 } from '@umbraco-cms/backoffice/extension-registry';
 import { firstValueFrom } from '@umbraco-cms/backoffice/external/rxjs';
-import { hasOwnOpener, redirectToStoredPath } from '@umbraco-cms/backoffice/utils';
+import { redirectToStoredPath } from '@umbraco-cms/backoffice/utils';
 import { umbHttpClient } from '@umbraco-cms/backoffice/http-client';
 import { UmbViewContext } from '@umbraco-cms/backoffice/view';
 
@@ -98,10 +98,6 @@ export class UmbAppElement extends UmbLitElement {
 						redirectToStoredPath(this.backofficePath, true);
 						return;
 					}
-
-					// If this is a popup window, the parent will handle navigation.
-					// The BroadcastChannel message already notified the parent.
-					if (hasOwnOpener(this.backofficePath)) return;
 
 					// For redirect flows (no popup), navigate to the stored path.
 					// Use force=true for a full page navigation so the new page
@@ -230,6 +226,14 @@ export class UmbAppElement extends UmbLitElement {
 			throw new Error('[Fatal] AuthContext requested before it was initialized');
 		}
 
+		// The oauth_complete popup must not call setInitialState(): a successful silent
+		// refresh would set isAuthorized=true and cause the oauth_complete handler to
+		// redirect the popup to the backoffice instead of completing the code exchange.
+		// Other windows opened via window.open() (e.g. the preview window) DO need
+		// setInitialState() so they can restore the session from a peer tab.
+		const pathname = pathWithoutBasePath({ start: true, end: false });
+		if (window.opener && pathname === '/oauth_complete') return;
+
 		// Auth context configures umbHttpClient in its constructor, so we only need to set initial state
 		await this.#authContext.setInitialState();
 	}
@@ -251,6 +255,14 @@ export class UmbAppElement extends UmbLitElement {
 
 			case RuntimeLevelModel.UPGRADE:
 				history.replaceState(null, '', 'upgrade');
+				break;
+
+			case RuntimeLevelModel.UPGRADING:
+				this.#errorPage(
+					'An automatic upgrade is currently in progress. The backoffice will be available once the upgrade has completed.',
+					undefined,
+					{ headline: 'Website is Under Maintenance', hideBackButton: true },
+				);
 				break;
 
 			case RuntimeLevelModel.BOOT_FAILED:
@@ -280,7 +292,7 @@ export class UmbAppElement extends UmbLitElement {
 		return () => this.#authController.isAuthorized() ?? false;
 	}
 
-	#errorPage(errorMsg: string, error?: unknown) {
+	#errorPage(errorMsg: string, error?: unknown, options?: { headline?: string; hideBackButton?: boolean }) {
 		// Redirect to the error page
 		this._routes = [
 			{
@@ -289,6 +301,8 @@ export class UmbAppElement extends UmbLitElement {
 				setup: (component) => {
 					(component as UmbAppErrorElement).errorMessage = errorMsg;
 					(component as UmbAppErrorElement).error = error;
+					if (options?.headline) (component as UmbAppErrorElement).errorHeadline = options.headline;
+					if (options?.hideBackButton) (component as UmbAppErrorElement).hideBackButton = true;
 				},
 			},
 		];
