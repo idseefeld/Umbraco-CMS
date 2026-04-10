@@ -33,6 +33,7 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="Moq" />
     <PackageReference Include="NUnit3TestAdapter" PrivateAssets="all" />
+    <PackageReference Include="Umbraco.Forms.Core.Providers" />
   </ItemGroup>
 
   <Import Project="..\..\src\Umbraco.Cms.Targets\buildTransitive\Umbraco.Cms.Targets.props" />
