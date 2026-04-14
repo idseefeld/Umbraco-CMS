@@ -2059,6 +2059,7 @@ internal partial class UserService : RepositoryService, IUserService
         {
             return Attempt.SucceedWithStatus(UserOperationStatus.Success, Enumerable.Empty<NodePermissions>());
         }
+
         IUser? user = await GetAsync(userKey);
         if (user is null)
         {
