@@ -271,4 +271,22 @@ internal sealed partial class UserServiceTests
         Assert.IsFalse(result.Success);
         Assert.AreEqual(UserOperationStatus.UserNotFound, result.Status);
     }
+    [Test]
+    public async Task GetDocumentPermissionsAsync_Returns_Empty_Permissions_For_Empty_Keys()
+    {
+        var userGroup = await CreateTestUserGroup();
+        var user = UserService.CreateUserWithIdentity("test1", "test1@test.com");
+        user.AddGroup(userGroup.ToReadOnlyGroup());
+        UserService.Save(user);
+        var contentType = ContentTypeBuilder.CreateSimpleContentType();
+        contentType.AllowedTemplates = null;
+        await ContentTypeService.CreateAsync(contentType, Constants.Security.SuperUserKey);
+        var content = ContentBuilder.CreateSimpleContent(contentType);
+        ContentService.Save(content);
+        var result = await UserService
+            .GetDocumentPermissionsAsync(user.Key, Array.Empty<Guid>());
+        Assert.IsTrue(result.Success);
+        Assert.AreEqual(UserOperationStatus.Success, result.Status);
+        Assert.IsEmpty(result.Result);
+    }
 }
