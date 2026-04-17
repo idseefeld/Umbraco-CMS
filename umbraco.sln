@@ -228,6 +228,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.PostgreSql.Umbr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.PostgreSql.Umbraco.Forms", "src\PostgreSqlForUmbraco\Our.Umbraco.PostgreSql\Our.Umbraco.PostgreSql.Umbraco.Forms\Our.Umbraco.PostgreSql.Umbraco.Forms.csproj", "{10D26637-2E00-136D-11D6-B36C1922F50A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{99FDD13B-68FE-45DD-A0B1-FF7640D96100}"
+	ProjectSection(SolutionItems) = preProject
+		tests\codeanalysis.ruleset = tests\codeanalysis.ruleset
+		tests\Directory.Build.props = tests\Directory.Build.props
+		tests\Directory.Packages.props = tests\Directory.Packages.props
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -505,6 +512,7 @@ Global
 		{1A5352CD-DCB7-13DE-9D7A-E7CBD252663F} = {C263E5EC-A5E2-4CE2-B5B0-B3ED2F6F150C}
 		{8D53E6E6-D0CA-E3F9-7AF8-D1450AE7D1C4} = {C263E5EC-A5E2-4CE2-B5B0-B3ED2F6F150C}
 		{10D26637-2E00-136D-11D6-B36C1922F50A} = {C263E5EC-A5E2-4CE2-B5B0-B3ED2F6F150C}
+		{99FDD13B-68FE-45DD-A0B1-FF7640D96100} = {E5D4B5F9-6CCE-46CE-8985-9A350445F92B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7A0F2E34-D2AF-4DAB-86A0-7D7764B3D0EC}
