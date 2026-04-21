@@ -203,6 +203,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NPoco", "NPoco", "{A942860D-C0E1-4A54-BA48-82B74B948AC1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PostgreSQL", "PostgreSQL", "{D20EE09B-42FC-43EE-AF6B-9095240FCBA5}"
+	ProjectSection(SolutionItems) = preProject
+		src\PostgreSqlForUmbraco\Our.Umbraco.PostgreSql\Directory.Build.props = src\PostgreSqlForUmbraco\Our.Umbraco.PostgreSql\Directory.Build.props
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPoco", "..\..\source\repos\_idseefeld\NPoco\src\NPoco\NPoco.csproj", "{CCA7190F-3870-2EA1-5081-CBCF5D60931F}"
 EndProject
