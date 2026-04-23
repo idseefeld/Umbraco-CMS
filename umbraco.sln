@@ -216,6 +216,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.PostgreSql", "s
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.PostgreSql.EFCore", "src\PostgreSqlForUmbraco\Our.Umbraco.PostgreSql\Our.Umbraco.PostgreSql.EFCore\Our.Umbraco.PostgreSql.EFCore.csproj", "{1A5352CD-DCB7-13DE-9D7A-E7CBD252663F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NPoco", "NPoco", "{40F8D65C-B428-4A59-801E-50755A1DE083}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPoco.Abstractions", "..\..\source\repos\_idseefeld\NPoco\src\NPoco.Abstractions\NPoco.Abstractions.csproj", "{191D5C81-E842-EA1E-4656-098513CBC157}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPoco", "..\..\source\repos\_idseefeld\NPoco\src\NPoco\NPoco.csproj", "{CCA7190F-3870-2EA1-5081-CBCF5D60931F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPoco.SqlServer", "..\..\source\repos\_idseefeld\NPoco\src\NPoco.SqlServer\NPoco.SqlServer.csproj", "{CF484AF3-A5EE-4B02-0106-B3580F98CBA9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -420,6 +428,24 @@ Global
 		{1A5352CD-DCB7-13DE-9D7A-E7CBD252663F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1A5352CD-DCB7-13DE-9D7A-E7CBD252663F}.SkipTests|Any CPU.ActiveCfg = Release|Any CPU
 		{1A5352CD-DCB7-13DE-9D7A-E7CBD252663F}.SkipTests|Any CPU.Build.0 = Release|Any CPU
+		{191D5C81-E842-EA1E-4656-098513CBC157}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{191D5C81-E842-EA1E-4656-098513CBC157}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{191D5C81-E842-EA1E-4656-098513CBC157}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{191D5C81-E842-EA1E-4656-098513CBC157}.Release|Any CPU.Build.0 = Release|Any CPU
+		{191D5C81-E842-EA1E-4656-098513CBC157}.SkipTests|Any CPU.ActiveCfg = Release|Any CPU
+		{191D5C81-E842-EA1E-4656-098513CBC157}.SkipTests|Any CPU.Build.0 = Release|Any CPU
+		{CCA7190F-3870-2EA1-5081-CBCF5D60931F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCA7190F-3870-2EA1-5081-CBCF5D60931F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CCA7190F-3870-2EA1-5081-CBCF5D60931F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CCA7190F-3870-2EA1-5081-CBCF5D60931F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CCA7190F-3870-2EA1-5081-CBCF5D60931F}.SkipTests|Any CPU.ActiveCfg = Release|Any CPU
+		{CCA7190F-3870-2EA1-5081-CBCF5D60931F}.SkipTests|Any CPU.Build.0 = Release|Any CPU
+		{CF484AF3-A5EE-4B02-0106-B3580F98CBA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF484AF3-A5EE-4B02-0106-B3580F98CBA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF484AF3-A5EE-4B02-0106-B3580F98CBA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF484AF3-A5EE-4B02-0106-B3580F98CBA9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF484AF3-A5EE-4B02-0106-B3580F98CBA9}.SkipTests|Any CPU.ActiveCfg = Release|Any CPU
+		{CF484AF3-A5EE-4B02-0106-B3580F98CBA9}.SkipTests|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -444,6 +470,9 @@ Global
 		{8C05E3C9-A9D8-AE21-1DB1-E86723E30B52} = {B5BD12C1-A454-435E-8A46-FF4A364C0382}
 		{3E6895C0-A936-EE05-9FDC-1E5434F2841F} = {C263E5EC-A5E2-4CE2-B5B0-B3ED2F6F150C}
 		{1A5352CD-DCB7-13DE-9D7A-E7CBD252663F} = {C263E5EC-A5E2-4CE2-B5B0-B3ED2F6F150C}
+		{191D5C81-E842-EA1E-4656-098513CBC157} = {40F8D65C-B428-4A59-801E-50755A1DE083}
+		{CCA7190F-3870-2EA1-5081-CBCF5D60931F} = {40F8D65C-B428-4A59-801E-50755A1DE083}
+		{CF484AF3-A5EE-4B02-0106-B3580F98CBA9} = {40F8D65C-B428-4A59-801E-50755A1DE083}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7A0F2E34-D2AF-4DAB-86A0-7D7764B3D0EC}
