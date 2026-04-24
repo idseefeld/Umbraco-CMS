@@ -67,20 +67,21 @@ public class FixLabelDataTypeDbTypeFromConfiguration : AsyncMigrationBase
         // could exceed the default command timeout, so extend it here.
         EnsureLongCommandTimeout(database);
 
+        var syntax = database.SqlContext.SqlSyntax;
         var sql = $@"
-UPDATE umbracoPropertyData
-SET textValue = varcharValue, varcharValue = NULL
-WHERE propertyTypeId IN (
-    SELECT id
-    FROM cmsPropertyType
-    WHERE dataTypeId IN (
-        SELECT nodeId
-        FROM umbracoDataType
-        WHERE propertyEditorAlias = '{Constants.PropertyEditors.Aliases.Label}'
-        AND dbType = '{nameof(ValueStorageType.Ntext)}'
+UPDATE {syntax.GetQuotedTableName("umbracoPropertyData")}
+SET {syntax.GetQuotedColumnName("textValue")} = {syntax.GetQuotedColumnName("varcharValue")}, {syntax.GetQuotedColumnName("varcharValue")} = NULL
+WHERE {syntax.GetQuotedColumnName("propertyTypeId")} IN (
+    SELECT {syntax.GetQuotedColumnName("id")}
+    FROM {syntax.GetQuotedTableName("cmsPropertyType")}
+    WHERE {syntax.GetQuotedColumnName("dataTypeId")} IN (
+        SELECT {syntax.GetQuotedColumnName("nodeId")}
+        FROM {syntax.GetQuotedTableName("umbracoDataType")}
+        WHERE {syntax.GetQuotedColumnName("propertyEditorAlias")} = '{Constants.PropertyEditors.Aliases.Label}'
+        AND {syntax.GetQuotedColumnName("dbType")} = '{nameof(ValueStorageType.Ntext)}'
     )
 )
-AND varcharValue IS NOT NULL";
+AND {syntax.GetQuotedColumnName("varcharValue")} IS NOT NULL";
         await database.ExecuteAsync(sql);
     }
 }
