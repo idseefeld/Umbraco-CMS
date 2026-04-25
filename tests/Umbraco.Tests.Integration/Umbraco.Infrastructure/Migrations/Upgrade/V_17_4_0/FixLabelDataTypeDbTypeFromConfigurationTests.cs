@@ -207,7 +207,7 @@ internal sealed class FixLabelDataTypeDbTypeFromConfigurationTests : UmbracoInte
     {
         using IScope scope = ScopeProvider.CreateScope();
         await scope.Database.ExecuteAsync(
-            "UPDATE umbracoDataType SET dbType = @0 WHERE nodeId = @1",
+            $"UPDATE {scope.Database.SqlContext.SqlSyntax.GetQuotedTableName("umbracoDataType")} SET {scope.Database.SqlContext.SqlSyntax.GetQuotedColumnName("dbType")} = @0 WHERE {scope.Database.SqlContext.SqlSyntax.GetQuotedColumnName("nodeId")} = @1",
             dbType.ToString(),
             dataTypeId);
         scope.Complete();
@@ -218,9 +218,11 @@ internal sealed class FixLabelDataTypeDbTypeFromConfigurationTests : UmbracoInte
         using IScope scope = ScopeProvider.CreateScope();
 
         // Find the current version for the content so the property data row is associated with real state.
-        var versionId = await scope.Database.ExecuteScalarAsync<int>(
-            "SELECT id FROM umbracoContentVersion WHERE nodeId = @0 AND [current] = 1",
-            contentId);
+        var sql = scope.Database.SqlContext.Sql()
+                    .Select<ContentVersionDto>(c => c.Id)
+                    .From<ContentVersionDto>()
+                    .Where<ContentVersionDto>(c => c.NodeId == contentId && c.Current);
+        var versionId = await scope.Database.ExecuteScalarAsync<int>(sql);
 
         var propertyDataDto = new PropertyDataDto
         {
@@ -239,9 +241,11 @@ internal sealed class FixLabelDataTypeDbTypeFromConfigurationTests : UmbracoInte
     {
         using IScope scope = ScopeProvider.CreateScope();
 
-        var versionId = await scope.Database.ExecuteScalarAsync<int>(
-            "SELECT id FROM umbracoContentVersion WHERE nodeId = @0 AND [current] = 1",
-            contentId);
+        var sql = scope.Database.SqlContext.Sql()
+            .Select<ContentVersionDto>(c => c.Id)
+            .From<ContentVersionDto>()
+            .Where<ContentVersionDto>(c => c.NodeId == contentId && c.Current);
+        var versionId = await scope.Database.ExecuteScalarAsync<int>(sql);
 
         var propertyDataDto = new PropertyDataDto
         {
@@ -260,7 +264,7 @@ internal sealed class FixLabelDataTypeDbTypeFromConfigurationTests : UmbracoInte
     {
         using IScope scope = ScopeProvider.CreateScope();
         var actual = await scope.Database.ExecuteScalarAsync<string>(
-            "SELECT dbType FROM umbracoDataType WHERE nodeId = @0",
+            $"SELECT {scope.Database.SqlContext.SqlSyntax.GetQuotedColumnName("dbType")} FROM {scope.Database.SqlContext.SqlSyntax.GetQuotedTableName("umbracoDataType")} WHERE {scope.Database.SqlContext.SqlSyntax.GetQuotedColumnName("nodeId")} = @0",
             dataTypeId);
         scope.Complete();
         Assert.AreEqual(expected.ToString(), actual);
