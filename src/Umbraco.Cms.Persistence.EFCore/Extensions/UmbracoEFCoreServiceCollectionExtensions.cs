@@ -2,13 +2,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Serilog;
-using Core = Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Configuration.Models;
 using Umbraco.Cms.Core.DistributedLocking;
 using Umbraco.Cms.Persistence.EFCore;
 using Umbraco.Cms.Persistence.EFCore.Locking;
 using Umbraco.Cms.Persistence.EFCore.Migrations;
 using Umbraco.Cms.Persistence.EFCore.Scoping;
+using Core = Umbraco.Cms.Core;
 
 namespace Umbraco.Extensions;
 
@@ -124,6 +124,32 @@ public static class UmbracoEFCoreServiceCollectionExtensions
         services.AddSingleton<IDistributedLockingMechanism, SqlServerEFCoreDistributedLockingMechanism<T>>();
 
         return services;
+    }
+
+    /// <summary>
+    /// Sets the database provider. I.E UseSqlite or UseSqlServer based on the provider name.
+    /// </summary>
+    /// <param name="builder">The DbContext options builder.</param>
+    /// <param name="providerName">The database provider name.</param>
+    /// <param name="connectionString">The connection string.</param>
+    /// <exception cref="InvalidDataException">Thrown when the provider is not supported.</exception>
+    /// <remarks>
+    /// Only supports the databases normally supported in Umbraco.
+    /// </remarks>
+    public static void UseDatabaseProvider(this DbContextOptionsBuilder builder, string providerName, string connectionString)
+    {
+        switch (providerName)
+        {
+            case Constants.ProviderNames.SQLServer:
+                builder.UseSqlServer(connectionString);
+                break;
+            case Constants.ProviderNames.SQLLite:
+            case "Microsoft.Data.SQLite":
+                builder.UseSqlite(connectionString);
+                break;
+            default:
+                throw new InvalidDataException($"The provider {providerName} is not supported. Manually add the add the UseXXX statement to the options. I.E UseNpgsql()");
+        }
     }
 
     /// <summary>
