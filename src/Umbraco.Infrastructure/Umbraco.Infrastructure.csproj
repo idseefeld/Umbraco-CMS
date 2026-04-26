@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <PackageId>Umbraco.Cms.Infrastructure</PackageId>
     <Title>Umbraco CMS - Infrastructure</Title>
@@ -66,6 +66,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\..\source\repos\_idseefeld\NPoco\src\NPoco\NPoco.csproj" />
+    <ProjectReference Include="..\npoco\src\NPoco\NPoco.csproj" />
     <ProjectReference Include="..\Umbraco.Core\Umbraco.Core.csproj" />
   </ItemGroup>
 
