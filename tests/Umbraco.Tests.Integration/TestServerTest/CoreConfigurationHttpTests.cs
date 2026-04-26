@@ -325,6 +325,7 @@ public class CoreConfigurationHttpTests : UmbracoIntegrationTestBase
                 builder
                     .AddCore()
                     .AddDeliveryApi()
+                    .AddUmbracoPostgreSqlSupport()
                     .AddUmbracoSqlServerSupport()
                     .AddUmbracoSqliteSupport()
                     .AddComposers();

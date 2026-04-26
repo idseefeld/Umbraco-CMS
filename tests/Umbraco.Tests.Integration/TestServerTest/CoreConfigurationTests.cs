@@ -102,6 +102,7 @@ public class CoreConfigurationTests : UmbracoIntegrationTestBase
         builder
             .AddBackOffice()
             .AddUmbracoFormsSupport()
+            .AddUmbracoPostgreSqlSupport()
             .AddUmbracoSqlServerSupport()
             .AddUmbracoSqliteSupport();
 
@@ -199,6 +200,7 @@ public class CoreConfigurationTests : UmbracoIntegrationTestBase
             .AddDeliveryApi()
             .AddUmbracoFormsSupport()
             .AddUmbracoSqlServerSupport()
+            .AddUmbracoPostgreSqlSupport()
             .AddUmbracoSqliteSupport();
 
         builder.Build();
@@ -430,7 +432,8 @@ public class CoreConfigurationTests : UmbracoIntegrationTestBase
             .AddDeliveryApi()
             .AddWebComponents()
             .AddUmbracoSqlServerSupport()
-            .AddUmbracoSqliteSupport();
+            .AddUmbracoSqliteSupport()
+            .AddUmbracoPostgreSqlSupport();
 
         builder.Build();
 

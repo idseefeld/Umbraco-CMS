@@ -15,6 +15,7 @@ using Umbraco.Cms.Api.Management.Controllers.Security;
 using Umbraco.Cms.Api.Management.Security;
 using Umbraco.Cms.Api.Management.ViewModels.Security;
 using Umbraco.Cms.Core;
+using Umbraco.Cms.Core.Configuration.Models;
 using Umbraco.Cms.Core.Extensions;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.Membership;
@@ -43,6 +44,10 @@ public abstract class ManagementApiTest<T> : UmbracoTestServerTestBase
     public override void Setup()
     {
         InMemoryConfiguration["Umbraco:CMS:ModelsBuilder:ModelsMode"] = "Nothing";
+        // Disable unattended package migrations so the runtime stays at RuntimeLevel.Run
+        // even when package migrations are pending (e.g. Umbraco Forms tables).
+        // RuntimeLevel.Upgrading blocks all Management API endpoints with a 503.
+        InMemoryConfiguration[Constants.Configuration.ConfigUnattended + ":" + nameof(UnattendedSettings.PackageMigrationsUnattended)] = "false";
 
         base.Setup();
         Client.DefaultRequestHeaders.Accept.Clear();
