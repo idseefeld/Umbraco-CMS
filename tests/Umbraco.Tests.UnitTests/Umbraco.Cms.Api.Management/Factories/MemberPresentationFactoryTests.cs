@@ -4,6 +4,7 @@
 using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using Umbraco.Cms.Api.Management.Factories;
 using Umbraco.Cms.Api.Management.ViewModels.Member;
 using Umbraco.Cms.Api.Management.ViewModels.Member.Item;
