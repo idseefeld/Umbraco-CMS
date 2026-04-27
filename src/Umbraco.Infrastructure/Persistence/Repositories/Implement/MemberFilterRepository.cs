@@ -43,6 +43,7 @@ internal sealed class MemberFilterRepository : IMemberFilterRepository
     private string QTab(string tableName) => SqlSyntax.GetQuotedTableName(tableName);
     private string QCol(string columnName) => SqlSyntax.GetQuotedColumnName(columnName);
     private string QName(string name) => SqlSyntax.GetQuotedName(name);
+
     /// <inheritdoc />
     public async Task<PagedModel<MemberFilterItem>> GetPagedByFilterAsync(MemberFilter filter, int skip, int take, Ordering ordering)
     {
@@ -90,7 +91,7 @@ internal sealed class MemberFilterRepository : IMemberFilterRepository
         Sql<ISqlContext> sql = SqlContext.Sql()
             .Append($@"SELECT
                 n.{QCol(NodeDto.KeyColumnName)} AS {QName("key")},
-                m.{QCol("Email")},
+                m.{QCol("Email")} AS {QName("email")},
                 m.{QCol("LoginName")} AS {QName("userName")},
                 n.{QCol(NodeDto.TextColumnName)} AS {QName("name")},
                 m.{QCol("isApproved")},
