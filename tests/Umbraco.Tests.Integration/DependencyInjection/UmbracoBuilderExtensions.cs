@@ -10,7 +10,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
-using Our.Umbraco.PostgreSql.EFCore;
 using Our.Umbraco.PostgreSql.EFCore.Locking;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Cache;
@@ -33,6 +32,8 @@ using Umbraco.Cms.Tests.Common.TestHelpers.Stubs;
 using Umbraco.Cms.Tests.Integration.Implementations;
 using Umbraco.Cms.Tests.Integration.Testing;
 using Umbraco.Cms.Tests.Integration.Umbraco.Persistence.EFCore.DbContext;
+using Our.Umbraco.PostgreSql.EFCore.Extensions;
+using Our.Umbraco.PostgreSql.EFCore.Services;
 
 namespace Umbraco.Cms.Tests.Integration.DependencyInjection;
 

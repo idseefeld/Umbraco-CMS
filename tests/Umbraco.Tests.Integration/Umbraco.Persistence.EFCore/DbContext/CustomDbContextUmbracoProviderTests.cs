@@ -4,7 +4,9 @@ using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using Umbraco.Cms.Tests.Common.Testing;
 using Umbraco.Cms.Tests.Integration.Testing;
-using Umbraco.Cms.Tests.Integration.Extensions;
+using Umbraco.Cms.Infrastructure.Persistence.SqlSyntax;
+using Our.Umbraco.PostgreSql.EFCore.Services;
+using Our.Umbraco.PostgreSql.EFCore.Extensions;
 
 namespace Umbraco.Cms.Tests.Integration.Umbraco.Persistence.EFCore.DbContext;
 
@@ -15,7 +17,17 @@ internal sealed class CustomDbContextUmbracoProviderTests : UmbracoIntegrationTe
     [Test]
     public void Can_Register_Custom_DbContext_And_Resolve()
     {
-        var dbContext = Services.GetRequiredService<CustomDbContext>();
+        Microsoft.EntityFrameworkCore.DbContext dbContext;
+
+        var sqlSyntaxProvider = Services.GetRequiredService<ISqlSyntaxProvider>();
+        if (sqlSyntaxProvider.DbProvider.StartsWith("Npgsql"))
+        {
+            dbContext = Services.GetRequiredService<PostgreSqlDbContext>();
+        }
+        else
+        {
+            dbContext = Services.GetRequiredService<CustomDbContext>();
+        }
 
         Assert.IsNotNull(dbContext);
         Assert.IsNotEmpty(dbContext.Database.GetConnectionString());
@@ -23,11 +35,17 @@ internal sealed class CustomDbContextUmbracoProviderTests : UmbracoIntegrationTe
 
     protected override void CustomTestSetup(IUmbracoBuilder builder)
     {
-        builder.Services.AddUmbracoDbContext<CustomDbContext>((serviceProvider, options, connectionString, providerName) =>
-        {
-            options.UseUmbracoDatabaseProvider(serviceProvider);
-        },
-        shareUmbracoConnection: true);
+        builder.Services.AddUmbracoDbContext<CustomDbContext>(
+            (serviceProvider, options, connectionString, providerName) =>
+                options.UseUmbracoDatabaseProvider(serviceProvider),
+            shareUmbracoConnection: true);
+
+        builder.Services.AddPostgreSqlDatabaseContext<PostgreSqlDbContext>(
+            (serviceProvider, options, connectionString, providerName) =>
+            {
+                options.UsePostgreSqlDatabaseProvider(serviceProvider);
+            },
+            shareUmbracoConnection: true);
     }
 
     internal class CustomDbContext : Microsoft.EntityFrameworkCore.DbContext
@@ -54,11 +72,14 @@ public class CustomDbContextCustomSqliteProviderTests : UmbracoIntegrationTest
 
     protected override void CustomTestSetup(IUmbracoBuilder builder)
     {
-        builder.Services.AddUmbracoDbContext<CustomDbContext>((serviceProvider, options, connectionString, providerName) =>
-        {
-            options.UseSqlite("Data Source=:memory:;Version=3;New=True;");
-        },
-        shareUmbracoConnection: true);
+        builder.Services.AddUmbracoDbContext<CustomDbContext>(
+            (serviceProvider, options, connectionString, providerName) => options.UseSqlite("Data Source=:memory:;Version=3;New=True;"),
+            shareUmbracoConnection: true);
+
+        builder.Services.AddUmbracoDbContext<PostgreSqlDbContext>(
+            (serviceProvider, options, connectionString, providerName) =>
+                options.UsePostgreSqlDatabaseProvider(serviceProvider),
+            shareUmbracoConnection: true);
     }
 
     internal class CustomDbContext : Microsoft.EntityFrameworkCore.DbContext
@@ -69,4 +90,3 @@ public class CustomDbContextCustomSqliteProviderTests : UmbracoIntegrationTest
         }
     }
 }
-
