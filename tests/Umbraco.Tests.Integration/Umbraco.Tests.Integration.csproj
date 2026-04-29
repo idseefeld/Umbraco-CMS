@@ -59,6 +59,7 @@
       <DependentUpon>TestFiles.resx</DependentUpon>
     </Compile>
     <Content Include="Umbraco.Infrastructure\Services\Importing\*.xml" />
+    <Compile Remove="Extensions\PostgreSqlEfCoreExtensions.cs" />
     <Compile Remove="Umbraco.Infrastructure\Persistence\NPocoTests\NPocoBulkInsertTests - Copy.cs" />
     <EmbeddedResource Update="Umbraco.Infrastructure\Services\Importing\ImportResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

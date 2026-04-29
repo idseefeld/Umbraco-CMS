@@ -41,8 +41,11 @@ internal sealed class MemberFilterRepository : IMemberFilterRepository
         ?? throw new NotSupportedException("Need to be executed in a scope.");
 
     private string QTab(string tableName) => SqlSyntax.GetQuotedTableName(tableName);
+
     private string QCol(string columnName) => SqlSyntax.GetQuotedColumnName(columnName);
+
     private string QName(string name) => SqlSyntax.GetQuotedName(name);
+
     /// <inheritdoc />
     public async Task<PagedModel<MemberFilterItem>> GetPagedByFilterAsync(MemberFilter filter, int skip, int take, Ordering ordering)
     {
@@ -90,7 +93,7 @@ internal sealed class MemberFilterRepository : IMemberFilterRepository
         Sql<ISqlContext> sql = SqlContext.Sql()
             .Append($@"SELECT
                 n.{QCol(NodeDto.KeyColumnName)} AS {QName("key")},
-                m.{QCol("Email")},
+                m.{QCol("Email")} AS {QName("email")},
                 m.{QCol("LoginName")} AS {QName("userName")},
                 n.{QCol(NodeDto.TextColumnName)} AS {QName("name")},
                 m.{QCol("isApproved")},
@@ -116,7 +119,8 @@ internal sealed class MemberFilterRepository : IMemberFilterRepository
                     ON m2mg.{QCol(Member2MemberGroupDto.MemberColumnName)} = m.{QCol(MemberDto.PrimaryKeyColumnName)}
                 INNER JOIN {QTab(NodeDto.TableName)} mgn
                     ON mgn.{QCol(NodeDto.PrimaryKeyColumnName)} = m2mg.{QCol(Member2MemberGroupDto.MemberGroupColumnName)}
-                    AND mgn.{QCol(NodeDto.TextColumnName)} = @groupName", new { groupName = filter.MemberGroupName });
+                    AND mgn.{QCol(NodeDto.TextColumnName)} = @groupName",
+                new { groupName = filter.MemberGroupName });
         }
 
         if (filter.MemberTypeId.HasValue)
