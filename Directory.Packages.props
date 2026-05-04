@@ -40,7 +40,7 @@
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
     <PackageVersion Include="Umbraco.Cms.Infrastructure" Version="17.3.0--rc.preview.225.gde851f8" />
     <PackageVersion Include="Umbraco.Cms.Persistence.EFCore" Version="17.3.0--rc.preview.225.gde851f8" />
-    <PackageVersion Include="Umbraco.Forms.Core.Providers" Version="17.3.1" />
+    <PackageVersion Include="Umbraco.Forms.Core.Providers" Version="17.3.2" />
   </ItemGroup>
   <!-- Umbraco packages -->
   <ItemGroup>
