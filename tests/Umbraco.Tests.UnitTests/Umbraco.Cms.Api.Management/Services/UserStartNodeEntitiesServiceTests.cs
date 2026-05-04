@@ -1,5 +1,6 @@
 using System.Globalization;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using Umbraco.Cms.Api.Management.Services.Entities;
 
 namespace Umbraco.Cms.Tests.UnitTests.Umbraco.Cms.Api.Management.Services;
