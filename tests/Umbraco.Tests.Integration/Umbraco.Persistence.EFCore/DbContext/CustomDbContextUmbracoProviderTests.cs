@@ -44,8 +44,7 @@ internal sealed class CustomDbContextUmbracoProviderTests : UmbracoIntegrationTe
             (serviceProvider, options, connectionString, providerName) =>
             {
                 options.UsePostgreSqlDatabaseProvider(serviceProvider);
-            },
-            shareUmbracoConnection: true);
+            });
     }
 
     internal class CustomDbContext : Microsoft.EntityFrameworkCore.DbContext
