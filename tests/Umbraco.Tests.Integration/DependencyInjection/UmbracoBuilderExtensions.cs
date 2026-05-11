@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
-using Our.Umbraco.PostgreSql.EFCore;
+using Our.Umbraco.PostgreSql.EFCore.Extensions;
 using Our.Umbraco.PostgreSql.EFCore.Locking;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Cache;
