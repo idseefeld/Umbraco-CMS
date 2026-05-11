@@ -45,7 +45,7 @@ public class MigrationPlanTests
             .Returns(database);
 
         var sqlContext = new SqlContext(
-            new PostgreSqlSyntaxProvider(Options.Create(new PostgreSqlOptions()), Mock.Of<IPackagesService>()),
+            new PostgreSqlSyntaxProvider(Options.Create(new PostgreSqlOptions())),
             DatabaseType.SQLCe,
             Mock.Of<IPocoDataFactory>());
         var scopeProvider = new MigrationTests.TestScopeProvider(scope) { SqlContext = sqlContext };
