@@ -2283,7 +2283,7 @@ internal sealed class ContentServiceTests : UmbracoIntegrationTestWithContent
     {
         using var scope = ScopeProvider.CreateScope(autoComplete: true);
         var rows = scope.Database.Fetch<DocumentCultureVariationDto>(
-            "WHERE nodeId = @0",
+            $"WHERE {scope.Database.SqlContext.SqlSyntax.GetQuotedColumnName("nodeId")} = @0",
             nodeId);
 
         Assert.That(

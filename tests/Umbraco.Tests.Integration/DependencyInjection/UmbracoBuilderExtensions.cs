@@ -10,7 +10,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
-using Our.Umbraco.PostgreSql.EFCore.Extensions;
 using Our.Umbraco.PostgreSql.EFCore.Locking;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Cache;
@@ -27,11 +26,14 @@ using Umbraco.Cms.Infrastructure.Examine;
 using Umbraco.Cms.Infrastructure.Services;
 using Umbraco.Cms.Infrastructure.PublishedCache;
 using Umbraco.Cms.Persistence.EFCore.Locking;
+using Umbraco.Cms.Persistence.EFCore.Migrations;
 using Umbraco.Cms.Persistence.EFCore.Scoping;
 using Umbraco.Cms.Tests.Common.TestHelpers.Stubs;
 using Umbraco.Cms.Tests.Integration.Implementations;
 using Umbraco.Cms.Tests.Integration.Testing;
 using Umbraco.Cms.Tests.Integration.Umbraco.Persistence.EFCore.DbContext;
+using Our.Umbraco.PostgreSql.EFCore.Extensions;
+using Our.Umbraco.PostgreSql.EFCore.Services;
 
 namespace Umbraco.Cms.Tests.Integration.DependencyInjection;
 
@@ -112,6 +114,7 @@ public static class UmbracoBuilderExtensions
         builder.Services.AddSingleton<IDistributedLockingMechanism, SqliteEFCoreDistributedLockingMechanism<TestUmbracoDbContext>>();
         builder.Services.AddSingleton<IDistributedLockingMechanism, SqlServerEFCoreDistributedLockingMechanism<TestUmbracoDbContext>>();
         builder.Services.AddSingleton<IDistributedLockingMechanism, PostgreSqlEFCoreDistributedLockingMechanism<TestUmbracoDbContext>>();
+        builder.Services.AddSingleton<IMigrationProviderSetup, PostgreSqlMigrationProviderSetup>();
 
         builder.Services.AddSingleton<IReservedFieldNamesService, ReservedFieldNamesService>();
 

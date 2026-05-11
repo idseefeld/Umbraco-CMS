@@ -22,6 +22,7 @@ namespace Umbraco.Cms.Tests.Integration.Umbraco.Core.Services;
 [UmbracoTest(Database = UmbracoTestOptions.Database.NewSchemaPerTest, Logger = UmbracoTestOptions.Logger.Mock)]
 internal sealed class DocumentUrlServiceTests : UmbracoIntegrationTestWithContent
 {
+    private const string SubSubPage1Key = "09376F1F-AF4E-4E5E-8DCF-074A5C8A81E7";
     private const string SubSubPage2Key = "48AE405E-5142-4EBE-929F-55EB616F51F2";
     private const string SubSubPage3Key = "AACF2979-3F53-4184-B071-BA34D3338497";
 
