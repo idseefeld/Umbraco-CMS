@@ -34,7 +34,7 @@ namespace Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.Repos
 internal sealed class ContentTypeRepositoryTest : UmbracoIntegrationTest
 {
     [SetUp]
-    public void SetUpData() => CreateTestData();
+    public async Task SetUpData() => await CreateTestData();
 
     private ContentType _simpleContentType;
     private ContentType _textpageContentType;
@@ -64,17 +64,17 @@ internal sealed class ContentTypeRepositoryTest : UmbracoIntegrationTest
     private ContentTypeRepository ContentTypeRepository =>
         (ContentTypeRepository)GetRequiredService<IContentTypeRepository>();
 
-    public void CreateTestData()
+    public async Task CreateTestData()
     {
         // Create and Save ContentType "umbTextpage" -> (_simpleContentType.Id)
         _simpleContentType =
             ContentTypeBuilder.CreateSimpleContentType("umbTextpage", "Textpage", defaultTemplateId: 0);
 
-        ContentTypeService.Save(_simpleContentType);
+        await ContentTypeService.CreateAsync(_simpleContentType, Constants.Security.SuperUserKey);
 
         // Create and Save ContentType "textPage" -> (_textpageContentType.Id)
         _textpageContentType = ContentTypeBuilder.CreateTextPageContentType(defaultTemplateId: 0);
-        ContentTypeService.Save(_textpageContentType);
+        await ContentTypeService.CreateAsync(_textpageContentType, Constants.Security.SuperUserKey);
     }
 
     // TODO: Add test to verify SetDefaultTemplates updates both AllowedTemplates and DefaultTemplate(id).
@@ -258,6 +258,7 @@ internal sealed class ContentTypeRepositoryTest : UmbracoIntegrationTest
                 (IScopeAccessor)provider,
                 AppCaches.Disabled,
                 LoggerFactory.CreateLogger<TemplateRepository>(),
+                LoggerFactory,
                 FileSystems,
                 ShortStringHelper,
                 Mock.Of<IViewHelper>(),

@@ -23,7 +23,7 @@ internal sealed class DocumentVersionRepositoryTest : UmbracoIntegrationTest
     public IContentService ContentService => GetRequiredService<IContentService>();
 
     [Test]
-    public async Task GetDocumentVersionsEligibleForCleanup_Always_ExcludesActiveVersions()
+    public async Task GetContentVersionsEligibleForCleanup_Always_ExcludesActiveVersions()
     {
         var template = TemplateBuilder.CreateTextPageTemplate();
         await TemplateService.CreateAsync(template, Cms.Core.Constants.Security.SuperUserKey);
@@ -44,7 +44,7 @@ internal sealed class DocumentVersionRepositoryTest : UmbracoIntegrationTest
         using (ScopeProvider.CreateScope())
         {
             var sut = new DocumentVersionRepository(ScopeAccessor);
-            var results = sut.GetDocumentVersionsEligibleForCleanup(DateTime.UtcNow.AddDays(1), null);
+            var results = sut.GetContentVersionsEligibleForCleanup(DateTime.UtcNow.AddDays(1), null);
 
             Assert.Multiple(() =>
             {
@@ -55,7 +55,7 @@ internal sealed class DocumentVersionRepositoryTest : UmbracoIntegrationTest
     }
 
     [Test]
-    public async Task GetDocumentVersionsEligibleForCleanup_Always_ExcludesPinnedVersions()
+    public async Task GetContentVersionsEligibleForCleanup_Always_ExcludesPinnedVersions()
     {
         var template = TemplateBuilder.CreateTextPageTemplate();
         await TemplateService.CreateAsync(template, Cms.Core.Constants.Security.SuperUserKey);
@@ -87,7 +87,7 @@ internal sealed class DocumentVersionRepositoryTest : UmbracoIntegrationTest
             scope.Database.Execute(sql);
 
             var sut = new DocumentVersionRepository(ScopeAccessor);
-            var results = sut.GetDocumentVersionsEligibleForCleanup(DateTime.UtcNow.AddDays(1), null);
+            var results = sut.GetContentVersionsEligibleForCleanup(DateTime.UtcNow.AddDays(1), null);
 
             Assert.Multiple(() =>
             {
@@ -103,7 +103,7 @@ internal sealed class DocumentVersionRepositoryTest : UmbracoIntegrationTest
     }
 
     [Test]
-    public async Task GetDocumentVersionsEligibleForCleanup_WithDateFilter_OnlyReturnsOlderVersions()
+    public async Task GetContentVersionsEligibleForCleanup_WithDateFilter_OnlyReturnsOlderVersions()
     {
         var template = TemplateBuilder.CreateTextPageTemplate();
         await TemplateService.CreateAsync(template, Cms.Core.Constants.Security.SuperUserKey);
@@ -132,7 +132,7 @@ internal sealed class DocumentVersionRepositoryTest : UmbracoIntegrationTest
             var sut = new DocumentVersionRepository(ScopeAccessor);
 
             // Cutoff at 5 days ago — should only return version 1.
-            var results = sut.GetDocumentVersionsEligibleForCleanup(DateTime.UtcNow.AddDays(-5), null);
+            var results = sut.GetContentVersionsEligibleForCleanup(DateTime.UtcNow.AddDays(-5), null);
 
             Assert.Multiple(() =>
             {
@@ -143,7 +143,7 @@ internal sealed class DocumentVersionRepositoryTest : UmbracoIntegrationTest
     }
 
     [Test]
-    public async Task GetDocumentVersionsEligibleForCleanup_WithMaxCount_RespectsLimitAndReturnsOldestFirst()
+    public async Task GetContentVersionsEligibleForCleanup_WithMaxCount_RespectsLimitAndReturnsOldestFirst()
     {
         var template = TemplateBuilder.CreateTextPageTemplate();
         await TemplateService.CreateAsync(template, Cms.Core.Constants.Security.SuperUserKey);
@@ -173,7 +173,7 @@ internal sealed class DocumentVersionRepositoryTest : UmbracoIntegrationTest
             var sut = new DocumentVersionRepository(ScopeAccessor);
 
             // Request at most 2 — should return the 2 oldest of the 3 eligible.
-            var results = sut.GetDocumentVersionsEligibleForCleanup(DateTime.UtcNow, 2);
+            var results = sut.GetContentVersionsEligibleForCleanup(DateTime.UtcNow, 2);
 
             Assert.Multiple(() =>
             {

@@ -12,26 +12,26 @@ namespace Umbraco.Cms.Tests.Integration.Umbraco.Persistence.EFCore.Scoping;
 [UmbracoTest(Database = UmbracoTestOptions.Database.NewEmptyPerTest)]
 internal sealed class EFCoreScopeInfrastructureScopeTests : UmbracoIntegrationTest
 {
-    private IEFCoreScopeProvider<TestUmbracoDbContext> EfCoreScopeProvider =>
+    private IEFCoreScopeProvider<TestUmbracoDbContext> EFCoreScopeProvider =>
         GetRequiredService<IEFCoreScopeProvider<TestUmbracoDbContext>>();
 
     private IScopeProvider InfrastructureScopeProvider =>
         GetRequiredService<IScopeProvider>();
 
-    private EFCoreScopeAccessor<TestUmbracoDbContext> EfCoreScopeAccessor => (EFCoreScopeAccessor<TestUmbracoDbContext>)GetRequiredService<IEFCoreScopeAccessor<TestUmbracoDbContext>>();
+    private EFCoreScopeAccessor<TestUmbracoDbContext> EFCoreScopeAccessor => (EFCoreScopeAccessor<TestUmbracoDbContext>)GetRequiredService<IEFCoreScopeAccessor<TestUmbracoDbContext>>();
 
     private IScopeAccessor InfrastructureScopeAccessor => GetRequiredService<IScopeAccessor>();
 
     [Test]
     public void CanCreateNestedInfrastructureScope()
     {
-        Assert.IsNull(EfCoreScopeAccessor.AmbientScope);
-        using (IEfCoreScope<TestUmbracoDbContext> scope = EfCoreScopeProvider.CreateScope())
+        Assert.IsNull(EFCoreScopeAccessor.AmbientScope);
+        using (IEFCoreScope<TestUmbracoDbContext> scope = EFCoreScopeProvider.CreateScope())
         {
             Assert.IsInstanceOf<EFCoreScope<TestUmbracoDbContext>>(scope);
-            Assert.IsNotNull(EfCoreScopeAccessor.AmbientScope);
+            Assert.IsNotNull(EFCoreScopeAccessor.AmbientScope);
             Assert.IsNotNull(InfrastructureScopeAccessor.AmbientScope);
-            Assert.AreSame(scope, EfCoreScopeAccessor.AmbientScope);
+            Assert.AreSame(scope, EFCoreScopeAccessor.AmbientScope);
             using (var infrastructureScope = InfrastructureScopeProvider.CreateScope())
             {
                 Assert.AreSame(infrastructureScope, InfrastructureScopeAccessor.AmbientScope);
@@ -40,7 +40,7 @@ internal sealed class EFCoreScopeInfrastructureScopeTests : UmbracoIntegrationTe
             Assert.IsNotNull(InfrastructureScopeAccessor.AmbientScope);
         }
 
-        Assert.IsNull(EfCoreScopeAccessor.AmbientScope);
+        Assert.IsNull(EFCoreScopeAccessor.AmbientScope);
         Assert.IsNull(InfrastructureScopeAccessor.AmbientScope);
     }
 
@@ -49,7 +49,7 @@ internal sealed class EFCoreScopeInfrastructureScopeTests : UmbracoIntegrationTe
     [Ignore("The raw SQL in this test does not respect SqlSyntax and uses unsupported database types e.g NAVARCHAR which is not supported by PostgreSql.")]
     public async Task? TransactionWithEfCoreScopeAsParent()
     {
-        using (IEfCoreScope<TestUmbracoDbContext> parentScope = EfCoreScopeProvider.CreateScope())
+        using (IEFCoreScope<TestUmbracoDbContext> parentScope = EFCoreScopeProvider.CreateScope())
         {
             await parentScope.ExecuteWithContextAsync<Task>(async database =>
             {
@@ -77,7 +77,7 @@ internal sealed class EFCoreScopeInfrastructureScopeTests : UmbracoIntegrationTe
         }
 
         // Check that its not rolled back
-        using (IEfCoreScope<TestUmbracoDbContext> scope = EfCoreScopeProvider.CreateScope())
+        using (IEFCoreScope<TestUmbracoDbContext> scope = EFCoreScopeProvider.CreateScope())
         {
             await scope.ExecuteWithContextAsync<Task>(async database =>
             {
@@ -95,7 +95,7 @@ internal sealed class EFCoreScopeInfrastructureScopeTests : UmbracoIntegrationTe
         {
             parentScope.Database.Execute("CREATE TABLE tmp3 (id INT, name NVARCHAR(64))");
 
-            using (IEfCoreScope<TestUmbracoDbContext> scope = EfCoreScopeProvider.CreateScope())
+            using (IEFCoreScope<TestUmbracoDbContext> scope = EFCoreScopeProvider.CreateScope())
             {
                 await scope.ExecuteWithContextAsync<Task>(async database =>
                 {
@@ -113,7 +113,7 @@ internal sealed class EFCoreScopeInfrastructureScopeTests : UmbracoIntegrationTe
         }
 
         // Check that its not rolled back
-        using (IEfCoreScope<TestUmbracoDbContext> scope = EfCoreScopeProvider.CreateScope())
+        using (IEFCoreScope<TestUmbracoDbContext> scope = EFCoreScopeProvider.CreateScope())
         {
             await scope.ExecuteWithContextAsync<Task>(async database =>
             {
@@ -127,7 +127,7 @@ internal sealed class EFCoreScopeInfrastructureScopeTests : UmbracoIntegrationTe
     [Ignore("The raw SQL in this test does not respect SqlSyntax and uses unsupported database types e.g NAVARCHAR which is not supported by PostgreSql.")]
     public async Task EFCoreAsParent_DontCompleteWhenChildScopeDoesNotComplete()
     {
-        using (IEfCoreScope<TestUmbracoDbContext> scope = EfCoreScopeProvider.CreateScope())
+        using (IEFCoreScope<TestUmbracoDbContext> scope = EFCoreScopeProvider.CreateScope())
         {
             await scope.ExecuteWithContextAsync<Task>(async database =>
             {
@@ -136,7 +136,7 @@ internal sealed class EFCoreScopeInfrastructureScopeTests : UmbracoIntegrationTe
             scope.Complete();
         }
 
-        using (IEfCoreScope<TestUmbracoDbContext> parentScope = EfCoreScopeProvider.CreateScope())
+        using (IEFCoreScope<TestUmbracoDbContext> parentScope = EFCoreScopeProvider.CreateScope())
         {
             using (IScope scope = InfrastructureScopeProvider.CreateScope())
             {
@@ -156,7 +156,7 @@ internal sealed class EFCoreScopeInfrastructureScopeTests : UmbracoIntegrationTe
         }
 
         // Check that its rolled back
-        using (IEfCoreScope<TestUmbracoDbContext> scope = EfCoreScopeProvider.CreateScope())
+        using (IEFCoreScope<TestUmbracoDbContext> scope = EFCoreScopeProvider.CreateScope())
         {
             await scope.ExecuteWithContextAsync<Task>(async database =>
             {
@@ -171,7 +171,7 @@ internal sealed class EFCoreScopeInfrastructureScopeTests : UmbracoIntegrationTe
     [Ignore("The raw SQL in this test does not respect SqlSyntax and uses unsupported database types e.g NAVARCHAR which is not supported by PostgreSql.")]
     public async Task InfrastructureScopeAsParent_DontCompleteWhenChildScopeDoesNotComplete()
     {
-        using (IEfCoreScope<TestUmbracoDbContext> scope = EfCoreScopeProvider.CreateScope())
+        using (IEFCoreScope<TestUmbracoDbContext> scope = EFCoreScopeProvider.CreateScope())
         {
             await scope.ExecuteWithContextAsync<Task>(async database =>
             {
@@ -347,7 +347,7 @@ internal sealed class EFCoreScopeInfrastructureScopeTests : UmbracoIntegrationTe
 
         using (IScope parentScope = InfrastructureScopeProvider.CreateScope())
         {
-            using (IEfCoreScope<TestUmbracoDbContext> scope = EfCoreScopeProvider.CreateScope())
+            using (IEFCoreScope<TestUmbracoDbContext> scope = EFCoreScopeProvider.CreateScope())
             {
                 await scope.ExecuteWithContextAsync<Task>(async database =>
                 {
@@ -365,7 +365,7 @@ internal sealed class EFCoreScopeInfrastructureScopeTests : UmbracoIntegrationTe
         }
 
         // Check that its rolled back
-        using (IEfCoreScope<TestUmbracoDbContext> scope = EfCoreScopeProvider.CreateScope())
+        using (IEFCoreScope<TestUmbracoDbContext> scope = EFCoreScopeProvider.CreateScope())
         {
             await scope.ExecuteWithContextAsync<Task>(async database =>
             {
