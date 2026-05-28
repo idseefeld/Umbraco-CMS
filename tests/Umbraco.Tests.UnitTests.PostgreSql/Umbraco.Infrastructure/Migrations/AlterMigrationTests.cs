@@ -48,7 +48,7 @@ public class AlterMigrationTests
 
         // Assert
         Assert.That(database.Operations.Count, Is.EqualTo(1));
-        Assert.That(database.Operations[0].Sql, Is.EqualTo("ALTER TABLE [umbracoUser2app] DROP CONSTRAINT [FK_umbracoUser2app_umbracoUser_id]"));
+        Assert.That(database.Operations[0].Sql, Is.EqualTo("ALTER TABLE \"umbracoUser2app\" DROP CONSTRAINT \"FK_umbracoUser2app_umbracoUser_id\" CASCADE"));
     }
 
     [Test]
@@ -67,17 +67,22 @@ public class AlterMigrationTests
         Assert.That(database.Operations.Count, Is.EqualTo(1));
         Assert.That(
             database.Operations[0].Sql,
-            Is.EqualTo("ALTER TABLE [bar] ADD [foo] UniqueIdentifier NOT NULL"));
+            Is.EqualTo("ALTER TABLE \"bar\" ADD COLUMN \"foo\" UUID NOT NULL"));
     }
 
-    public class CreateColumnMigration : MigrationBase
+    public class CreateColumnMigration : AsyncMigrationBase
     {
         public CreateColumnMigration(IMigrationContext context)
             : base(context)
         {
         }
 
-        protected override void Migrate() => Alter.Table("bar").AddColumn("foo").AsGuid().Do();
+        protected override Task MigrateAsync()
+        {
+            Alter.Table("bar").AddColumn("foo").AsGuid().NotNullable().Do();
+            // stop here, don't Do it
+            return Task.CompletedTask;
+        }
     }
 
     [Test]
@@ -96,20 +101,20 @@ public class AlterMigrationTests
         Assert.That(database.Operations.Count, Is.EqualTo(1));
         Assert.That(
             database.Operations[0].Sql,
-            Is.EqualTo("ALTER TABLE [bar] ALTER COLUMN [foo] UniqueIdentifier NOT NULL"));
+            Is.EqualTo("ALTER TABLE \"bar\" ALTER COLUMN \"foo\" UUID NOT NULL"));
     }
 
-    public class AlterColumnMigration : MigrationBase
+    public class AlterColumnMigration : AsyncMigrationBase
     {
         public AlterColumnMigration(IMigrationContext context)
             : base(context)
         {
         }
 
-        protected override void Migrate() =>
-
-            // bad/good syntax...
-            //// Alter.Column("foo").OnTable("bar").AsGuid().NotNullable();
+        protected override Task MigrateAsync()
+        {
             Alter.Table("bar").AlterColumn("foo").AsGuid().NotNullable().Do();
+            return Task.CompletedTask;
+        }
     }
 }

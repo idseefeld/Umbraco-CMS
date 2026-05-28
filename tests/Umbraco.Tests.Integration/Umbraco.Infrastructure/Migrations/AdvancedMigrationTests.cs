@@ -8,7 +8,6 @@ using NPoco;
 using NUnit.Framework;
 using Our.Umbraco.PostgreSql.Services;
 using System.Linq;
-using System.Runtime.Remoting.Contexts;
 using Umbraco.Cms.Core.Cache;
 using Umbraco.Cms.Core.Configuration;
 using Umbraco.Cms.Core.Events;
@@ -345,13 +344,15 @@ internal sealed class AdvancedMigrationTests : UmbracoIntegrationTest
         {
         }
 
-        protected override async Task MigrateAsync()
+        protected override Task MigrateAsync()
         {
             var sql = Context.Database.SqlContext.SqlSyntax is PostgreSqlSyntaxProvider provider
                 ? string.Format(provider.StringLengthUnicodeColumnDefinitionFormat, 255)
                 : "nvarchar(255)";
 
-            await Database.Execute($"ALTER TABLE {SqlSyntax.GetQuotedTableName("umbracoUser")} ADD {SqlSyntax.GetQuotedColumnName("Foo")} {sql}");
+            Database.Execute($"ALTER TABLE {SqlSyntax.GetQuotedTableName("umbracoUser")} ADD {SqlSyntax.GetQuotedColumnName("Foo")} {sql}");
+
+            return Task.CompletedTask;
         }
     }
 }

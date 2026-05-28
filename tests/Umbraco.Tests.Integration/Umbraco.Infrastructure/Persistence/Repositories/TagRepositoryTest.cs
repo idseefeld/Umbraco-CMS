@@ -1104,7 +1104,7 @@ internal sealed class TagRepositoryTest : UmbracoIntegrationTest
             Tag[] tags1 = { new() { Text = "tag1", Group = "group1" }, new() { Text = "tag1", Group = "Group1" } };
             repository.Assign(
                 content1.Id,
-                propertyTypeId,
+                contentType.PropertyTypes.First().Id,  // propertyTypeId,
                 tags1,
                 false);
 
@@ -1112,7 +1112,7 @@ internal sealed class TagRepositoryTest : UmbracoIntegrationTest
             Tag[] tags2 = { new() { Text = "tag1", Group = "GROUP1" } };
             repository.Assign(
                 content2.Id,
-                propertyTypeId,
+                contentType.PropertyTypes.First().Id,  // propertyTypeId,
                 tags2,
                 false);
 

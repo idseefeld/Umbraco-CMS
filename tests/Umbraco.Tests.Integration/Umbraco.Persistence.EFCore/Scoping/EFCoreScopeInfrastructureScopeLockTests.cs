@@ -78,7 +78,7 @@ internal sealed class EFCoreScopeInfrastructureScopeLockTests : UmbracoIntegrati
     [Test]
     public async Task ScopesCanShareNonEagerLocksPostgreSql()
     {
-        using IEfCoreScope<TestUmbracoDbContext> parentScope = EfCoreScopeProvider.CreateScope();
+        using IEFCoreScope<TestUmbracoDbContext> parentScope = EFCoreScopeProvider.CreateScope();
         await parentScope.ExecuteWithContextAsync<Task>(async database =>
         {
             parentScope.Locks.WriteLock(parentScope.InstanceId, Constants.Locks.Servers);
@@ -100,7 +100,7 @@ internal sealed class EFCoreScopeInfrastructureScopeLockTests : UmbracoIntegrati
     [Test]
     public async Task ScopesCanShareEagerLocksPostgreSql()
     {
-        using IEfCoreScope<TestUmbracoDbContext> parentScope = EfCoreScopeProvider.CreateScope();
+        using IEFCoreScope<TestUmbracoDbContext> parentScope = EFCoreScopeProvider.CreateScope();
         await parentScope.ExecuteWithContextAsync<Task>(async database =>
         {
             parentScope.Locks.EagerWriteLock(parentScope.InstanceId, Constants.Locks.Servers);

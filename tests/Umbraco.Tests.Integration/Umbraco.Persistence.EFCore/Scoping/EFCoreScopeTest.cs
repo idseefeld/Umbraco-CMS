@@ -491,7 +491,7 @@ internal sealed class EFCoreScopeTest : UmbracoIntegrationTest
     [Test]
     public async Task TransactionPostgreSql()
     {
-        using (IEfCoreScope<TestUmbracoDbContext> scope = EfCoreScopeProvider.CreateScope())
+        using (IEFCoreScope<TestUmbracoDbContext> scope = EFCoreScopeProvider.CreateScope())
         {
             await scope.ExecuteWithContextAsync<Task>(async database =>
             {
@@ -500,7 +500,7 @@ internal sealed class EFCoreScopeTest : UmbracoIntegrationTest
             scope.Complete();
         }
 
-        using (IEfCoreScope<TestUmbracoDbContext> scope = EfCoreScopeProvider.CreateScope())
+        using (IEFCoreScope<TestUmbracoDbContext> scope = EFCoreScopeProvider.CreateScope())
         {
             await scope.ExecuteWithContextAsync<Task>(async database =>
             {
@@ -511,7 +511,7 @@ internal sealed class EFCoreScopeTest : UmbracoIntegrationTest
             });
         }
 
-        using (IEfCoreScope<TestUmbracoDbContext> scope = EfCoreScopeProvider.CreateScope())
+        using (IEFCoreScope<TestUmbracoDbContext> scope = EFCoreScopeProvider.CreateScope())
         {
             await scope.ExecuteWithContextAsync<Task>(async database =>
             {
@@ -520,7 +520,7 @@ internal sealed class EFCoreScopeTest : UmbracoIntegrationTest
             });
         }
 
-        using (IEfCoreScope<TestUmbracoDbContext> scope = EfCoreScopeProvider.CreateScope())
+        using (IEFCoreScope<TestUmbracoDbContext> scope = EFCoreScopeProvider.CreateScope())
         {
             await scope.ExecuteWithContextAsync<Task>(async database =>
             {
@@ -530,7 +530,7 @@ internal sealed class EFCoreScopeTest : UmbracoIntegrationTest
             scope.Complete();
         }
 
-        using (IEfCoreScope<TestUmbracoDbContext> scope = EfCoreScopeProvider.CreateScope())
+        using (IEFCoreScope<TestUmbracoDbContext> scope = EFCoreScopeProvider.CreateScope())
         {
             await scope.ExecuteWithContextAsync<Task>(async database =>
             {
@@ -545,7 +545,7 @@ internal sealed class EFCoreScopeTest : UmbracoIntegrationTest
     [Test]
     public async Task NestedTransactionInnerFailPostgreSql()
     {
-        using (IEfCoreScope<TestUmbracoDbContext> scope = EfCoreScopeProvider.CreateScope())
+        using (IEFCoreScope<TestUmbracoDbContext> scope = EFCoreScopeProvider.CreateScope())
         {
             await scope.ExecuteWithContextAsync<Task>(async database =>
             {
@@ -555,7 +555,7 @@ internal sealed class EFCoreScopeTest : UmbracoIntegrationTest
             scope.Complete();
         }
 
-        using (IEfCoreScope<TestUmbracoDbContext> scope = EfCoreScopeProvider.CreateScope())
+        using (IEFCoreScope<TestUmbracoDbContext> scope = EFCoreScopeProvider.CreateScope())
         {
             string n;
             await scope.ExecuteWithContextAsync<Task>(async database =>
@@ -564,7 +564,7 @@ internal sealed class EFCoreScopeTest : UmbracoIntegrationTest
                 n = await database.Database.ExecuteScalarAsync<string>("SELECT name FROM tmp1 WHERE id=1");
                 Assert.AreEqual("a", n);
 
-                using (IEfCoreScope<TestUmbracoDbContext> nested = EfCoreScopeProvider.CreateScope())
+                using (IEFCoreScope<TestUmbracoDbContext> nested = EFCoreScopeProvider.CreateScope())
                 {
                     await nested.ExecuteWithContextAsync<Task>(async nestedDatabase =>
                     {
@@ -582,7 +582,7 @@ internal sealed class EFCoreScopeTest : UmbracoIntegrationTest
             scope.Complete();
         }
 
-        using (IEfCoreScope<TestUmbracoDbContext> scope = EfCoreScopeProvider.CreateScope())
+        using (IEFCoreScope<TestUmbracoDbContext> scope = EFCoreScopeProvider.CreateScope())
         {
             await scope.ExecuteWithContextAsync<Task>(async database =>
             {
@@ -597,7 +597,7 @@ internal sealed class EFCoreScopeTest : UmbracoIntegrationTest
     [Test]
     public async Task NestedTransactionOuterFailPostgreSql()
     {
-        using (IEfCoreScope<TestUmbracoDbContext> scope = EfCoreScopeProvider.CreateScope())
+        using (IEFCoreScope<TestUmbracoDbContext> scope = EFCoreScopeProvider.CreateScope())
         {
             await scope.ExecuteWithContextAsync<Task>(async database =>
             {
@@ -607,7 +607,7 @@ internal sealed class EFCoreScopeTest : UmbracoIntegrationTest
             scope.Complete();
         }
 
-        using (IEfCoreScope<TestUmbracoDbContext> scope = EfCoreScopeProvider.CreateScope())
+        using (IEFCoreScope<TestUmbracoDbContext> scope = EFCoreScopeProvider.CreateScope())
         {
             await scope.ExecuteWithContextAsync<Task>(async database =>
             {
@@ -615,7 +615,7 @@ internal sealed class EFCoreScopeTest : UmbracoIntegrationTest
                 string n = await database.Database.ExecuteScalarAsync<string>("SELECT name FROM tmp2 WHERE id=1");
                 Assert.AreEqual("a", n);
 
-                using (IEfCoreScope<TestUmbracoDbContext> nested = EfCoreScopeProvider.CreateScope())
+                using (IEFCoreScope<TestUmbracoDbContext> nested = EFCoreScopeProvider.CreateScope())
                 {
                     await scope.ExecuteWithContextAsync<Task>(async nestedDatabase =>
                     {
@@ -633,7 +633,7 @@ internal sealed class EFCoreScopeTest : UmbracoIntegrationTest
             });
         }
 
-        using (IEfCoreScope<TestUmbracoDbContext> scope = EfCoreScopeProvider.CreateScope())
+        using (IEFCoreScope<TestUmbracoDbContext> scope = EFCoreScopeProvider.CreateScope())
         {
             await scope.ExecuteWithContextAsync<Task>(async database =>
             {
@@ -648,7 +648,7 @@ internal sealed class EFCoreScopeTest : UmbracoIntegrationTest
     [Test]
     public async Task NestedTransactionCompletePostgreSql()
     {
-        using (IEfCoreScope<TestUmbracoDbContext> scope = EfCoreScopeProvider.CreateScope())
+        using (IEFCoreScope<TestUmbracoDbContext> scope = EFCoreScopeProvider.CreateScope())
         {
             await scope.ExecuteWithContextAsync<Task>(async database =>
             {
@@ -657,7 +657,7 @@ internal sealed class EFCoreScopeTest : UmbracoIntegrationTest
             scope.Complete();
         }
 
-        using (IEfCoreScope<TestUmbracoDbContext> scope = EfCoreScopeProvider.CreateScope())
+        using (IEFCoreScope<TestUmbracoDbContext> scope = EFCoreScopeProvider.CreateScope())
         {
             await scope.ExecuteWithContextAsync<Task>(async database =>
             {
@@ -665,7 +665,7 @@ internal sealed class EFCoreScopeTest : UmbracoIntegrationTest
                 string n = await database.Database.ExecuteScalarAsync<string>("SELECT name FROM tmp WHERE id=1");
                 Assert.AreEqual("a", n);
 
-                using (IEfCoreScope<TestUmbracoDbContext> nested = EfCoreScopeProvider.CreateScope())
+                using (IEFCoreScope<TestUmbracoDbContext> nested = EFCoreScopeProvider.CreateScope())
                 {
                     await scope.ExecuteWithContextAsync<Task>(async nestedDatabase =>
                     {
@@ -685,7 +685,7 @@ internal sealed class EFCoreScopeTest : UmbracoIntegrationTest
             scope.Complete();
         }
 
-        using (IEfCoreScope<TestUmbracoDbContext> scope = EfCoreScopeProvider.CreateScope())
+        using (IEFCoreScope<TestUmbracoDbContext> scope = EFCoreScopeProvider.CreateScope())
         {
             await scope.ExecuteWithContextAsync<Task>(async database =>
             {

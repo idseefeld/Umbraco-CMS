@@ -114,7 +114,7 @@ public class MigrationPlanTests
 
         Assert.AreEqual("VERSION.33", state);
         Assert.AreEqual(1, database.Operations.Count);
-        Assert.AreEqual("DROP TABLE [umbracoRedirectUrl]", database.Operations[0].Sql);
+        Assert.AreEqual("DROP TABLE \"umbracoRedirectUrl\" CASCADE", database.Operations[0].Sql);
     }
 
     [Test]
@@ -251,13 +251,17 @@ public class MigrationPlanTests
         }
     }
 
-    public class DeleteRedirectUrlTable : MigrationBase
+    public class DeleteRedirectUrlTable : AsyncMigrationBase
     {
         public DeleteRedirectUrlTable(IMigrationContext context)
             : base(context)
         {
         }
 
-        protected override void Migrate() => Delete.Table("umbracoRedirectUrl").Do();
+        protected override Task MigrateAsync()
+        {
+            Delete.Table("umbracoRedirectUrl").Do();
+            return Task.CompletedTask;
+        }
     }
 }

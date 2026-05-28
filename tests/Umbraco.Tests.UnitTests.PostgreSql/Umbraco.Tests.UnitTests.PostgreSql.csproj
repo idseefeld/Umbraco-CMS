@@ -28,6 +28,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Umbraco.Infrastructure\Migrations\Stubs\AlterUserTableMigrationStub.cs" />
+    <Compile Remove="Umbraco.Infrastructure\Migrations\Stubs\Dummy.cs" />
+    <Compile Remove="Umbraco.Infrastructure\Migrations\Stubs\FiveZeroMigration.cs" />
+    <Compile Remove="Umbraco.Infrastructure\Migrations\Stubs\FourElevenMigration.cs" />
+    <Compile Remove="Umbraco.Infrastructure\Migrations\Stubs\SixZeroMigration1.cs" />
+    <Compile Remove="Umbraco.Infrastructure\Migrations\Stubs\SixZeroMigration2.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="NUnit3TestAdapter" />
     <PackageReference Include="System.Data.Odbc" />

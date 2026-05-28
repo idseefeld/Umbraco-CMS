@@ -183,7 +183,7 @@ internal sealed class EFCoreScopeInfrastructureScopeTests : UmbracoIntegrationTe
 
         using (IScope parentScope = InfrastructureScopeProvider.CreateScope())
         {
-            using (IEfCoreScope<TestUmbracoDbContext> scope = EfCoreScopeProvider.CreateScope())
+            using (IEFCoreScope<TestUmbracoDbContext> scope = EFCoreScopeProvider.CreateScope())
             {
                 await scope.ExecuteWithContextAsync<Task>(async database =>
                 {
@@ -201,7 +201,7 @@ internal sealed class EFCoreScopeInfrastructureScopeTests : UmbracoIntegrationTe
         }
 
         // Check that its rolled back
-        using (IEfCoreScope<TestUmbracoDbContext> scope = EfCoreScopeProvider.CreateScope())
+        using (IEFCoreScope<TestUmbracoDbContext> scope = EFCoreScopeProvider.CreateScope())
         {
             await scope.ExecuteWithContextAsync<Task>(async database =>
             {
@@ -216,7 +216,7 @@ internal sealed class EFCoreScopeInfrastructureScopeTests : UmbracoIntegrationTe
     [Test]
     public async Task? TransactionWithEfCoreScopeAsParentPostgreSql()
     {
-        using (IEfCoreScope<TestUmbracoDbContext> parentScope = EfCoreScopeProvider.CreateScope())
+        using (IEFCoreScope<TestUmbracoDbContext> parentScope = EFCoreScopeProvider.CreateScope())
         {
             await parentScope.ExecuteWithContextAsync<Task>(async database =>
             {
@@ -244,7 +244,7 @@ internal sealed class EFCoreScopeInfrastructureScopeTests : UmbracoIntegrationTe
         }
 
         // Check that its not rolled back
-        using (IEfCoreScope<TestUmbracoDbContext> scope = EfCoreScopeProvider.CreateScope())
+        using (IEFCoreScope<TestUmbracoDbContext> scope = EFCoreScopeProvider.CreateScope())
         {
             await scope.ExecuteWithContextAsync<Task>(async database =>
             {
@@ -261,7 +261,7 @@ internal sealed class EFCoreScopeInfrastructureScopeTests : UmbracoIntegrationTe
         {
             parentScope.Database.Execute("CREATE TABLE tmp3 (id INT, name TEXT)");
 
-            using (IEfCoreScope<TestUmbracoDbContext> scope = EfCoreScopeProvider.CreateScope())
+            using (IEFCoreScope<TestUmbracoDbContext> scope = EFCoreScopeProvider.CreateScope())
             {
                 await scope.ExecuteWithContextAsync<Task>(async database =>
                 {
@@ -279,7 +279,7 @@ internal sealed class EFCoreScopeInfrastructureScopeTests : UmbracoIntegrationTe
         }
 
         // Check that its not rolled back
-        using (IEfCoreScope<TestUmbracoDbContext> scope = EfCoreScopeProvider.CreateScope())
+        using (IEFCoreScope<TestUmbracoDbContext> scope = EFCoreScopeProvider.CreateScope())
         {
             await scope.ExecuteWithContextAsync<Task>(async database =>
             {
@@ -292,7 +292,7 @@ internal sealed class EFCoreScopeInfrastructureScopeTests : UmbracoIntegrationTe
     [Test]
     public async Task EFCoreAsParent_DontCompleteWhenChildScopeDoesNotCompletePostgreSql()
     {
-        using (IEfCoreScope<TestUmbracoDbContext> scope = EfCoreScopeProvider.CreateScope())
+        using (IEFCoreScope<TestUmbracoDbContext> scope = EFCoreScopeProvider.CreateScope())
         {
             await scope.ExecuteWithContextAsync<Task>(async database =>
             {
@@ -301,7 +301,7 @@ internal sealed class EFCoreScopeInfrastructureScopeTests : UmbracoIntegrationTe
             scope.Complete();
         }
 
-        using (IEfCoreScope<TestUmbracoDbContext> parentScope = EfCoreScopeProvider.CreateScope())
+        using (IEFCoreScope<TestUmbracoDbContext> parentScope = EFCoreScopeProvider.CreateScope())
         {
             using (IScope scope = InfrastructureScopeProvider.CreateScope())
             {
@@ -321,7 +321,7 @@ internal sealed class EFCoreScopeInfrastructureScopeTests : UmbracoIntegrationTe
         }
 
         // Check that its rolled back
-        using (IEfCoreScope<TestUmbracoDbContext> scope = EfCoreScopeProvider.CreateScope())
+        using (IEFCoreScope<TestUmbracoDbContext> scope = EFCoreScopeProvider.CreateScope())
         {
             await scope.ExecuteWithContextAsync<Task>(async database =>
             {
@@ -335,7 +335,7 @@ internal sealed class EFCoreScopeInfrastructureScopeTests : UmbracoIntegrationTe
     [Test]
     public async Task InfrastructureScopeAsParent_DontCompleteWhenChildScopeDoesNotCompletePostgreSql()
     {
-        using (IEfCoreScope<TestUmbracoDbContext> scope = EfCoreScopeProvider.CreateScope())
+        using (IEFCoreScope<TestUmbracoDbContext> scope = EFCoreScopeProvider.CreateScope())
         {
             await scope.ExecuteWithContextAsync<Task>(async database =>
             {

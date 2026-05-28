@@ -10,6 +10,8 @@ using Moq;
 using NPoco;
 using NPoco.DatabaseTypes;
 using NPoco.Linq;
+using Our.Umbraco.PostgreSql;
+using Our.Umbraco.PostgreSql.Services;
 using Umbraco.Cms.Core.Configuration.Models;
 using Umbraco.Cms.Infrastructure.Migrations.Install;
 using Umbraco.Cms.Infrastructure.Persistence;
@@ -36,8 +38,8 @@ public class TestDatabase : IUmbracoDatabase
     /// </remarks>
     public TestDatabase(DatabaseType databaseType = null, ISqlSyntaxProvider syntaxProvider = null)
     {
-        DatabaseType = databaseType ?? new SqlServerDatabaseType();
-        SqlContext = new SqlContext(syntaxProvider ?? new SqlServerSyntaxProvider(Options.Create(new GlobalSettings())), DatabaseType, Mock.Of<IPocoDataFactory>());
+        DatabaseType = databaseType ?? new PostgreSQLDatabaseType();
+        SqlContext = new SqlContext(syntaxProvider ?? new PostgreSqlSyntaxProvider(Options.Create(new PostgreSqlOptions())), DatabaseType, Mock.Of<IPocoDataFactory>());
     }
 
     /// <summary>

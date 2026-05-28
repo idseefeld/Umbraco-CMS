@@ -5,7 +5,6 @@ using Microsoft.Extensions.Options;
 using Umbraco.Cms.Api.Management.Controllers.Security;
 using Umbraco.Cms.Api.Management.ViewModels.Security;
 using Umbraco.Cms.Core.Configuration.Models;
-using Umbraco.Cms.Infrastructure.Migrations.Upgrade.V_13_5_0;
 
 namespace Umbraco.Cms.Tests.Integration.ManagementApi.Security;
 
