@@ -1102,11 +1102,6 @@ public class ContentService : PublishableContentServiceBase<IContent>, IContentS
         return result;
     }
 
-    private IReadOnlyList<string>? GetCulturesPublishing(IContent content)
-        => content.ContentType.VariesByCulture()
-            ? content.PublishCultureInfos?.Values.Where(x => x.IsDirty()).Select(x => x.Culture).ToList()
-            : null;
-
     #endregion
 
     #region Move, RecycleBin

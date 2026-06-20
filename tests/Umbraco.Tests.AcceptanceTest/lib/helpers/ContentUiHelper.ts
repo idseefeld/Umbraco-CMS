@@ -388,6 +388,7 @@ export class ContentUiHelper extends UiBaseLocators {
     this.publishModalBtn = this.backofficeModalContainer.getByLabel('Publish', {exact: true});
     this.unpublishModalBtn = this.backofficeModalContainer.getByLabel('Unpublish', {exact: true});
     this.rollbackContainerBtn = this.container.getByLabel("Rollback");
+    this.rollbackCancelBtn = page.locator('umb-content-rollback-modal').getByRole('button', { name: 'Cancel', exact: true });
     this.publicAccessBtn = page.getByRole("button", { name: "Public Access" });
     this.uuiCheckbox = page.locator("uui-checkbox");
     this.sortBtn = page.getByLabel("Sort", { exact: true });
@@ -1518,7 +1519,21 @@ export class ContentUiHelper extends UiBaseLocators {
     await this.click(this.rollbackBtn, { force: true });
   }
 
-  async clickRollbackContainerButton() {
+  async clickRollbackContainerButton(documentId?: string) {
+    // Workspace re-fetches the document asynchronously after rollback; wait for that GET before asserting.
+    if (documentId) {
+      const expectedPath = `${ConstantHelper.apiEndpoints.document}/${documentId}`;
+      await Promise.all([
+        this.waitForResponse(
+          (resp) =>
+            resp.request().method() === 'GET' &&
+            resp.status() === ConstantHelper.statusCodes.ok &&
+            new URL(resp.url()).pathname === expectedPath,
+        ),
+        this.click(this.rollbackContainerBtn),
+      ]);
+      return;
+    }
     await this.click(this.rollbackContainerBtn);
   }
 

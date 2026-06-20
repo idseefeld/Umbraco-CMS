@@ -388,6 +388,12 @@ test('can rollback element with rollback permission enabled', async ({umbracoApi
   // Assert
   await umbracoUi.library.clickContentTab();
   await umbracoUi.library.doesElementPropertyHaveValue(dataTypeName, elementText);
+  // Verify audit trail
+  await umbracoUi.library.clickInfoTab();
+  await umbracoUi.library.doesHistoryItemHaveTag(ConstantHelper.auditTrailTypes.rollback);
+  await umbracoUi.library.doesHistoryItemHaveDescription(ConstantHelper.auditTrailMessages.elementRolledBack);
+  const currentUser = await umbracoApi.user.getCurrentUser();
+  await umbracoUi.library.doesHistoryItemHaveUsername(currentUser.name);
 });
 
 test('can not rollback element with rollback permission disabled', async ({umbracoApi, umbracoUi}) => {
