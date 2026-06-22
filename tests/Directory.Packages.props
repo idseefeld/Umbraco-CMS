@@ -14,7 +14,7 @@
     <PackageVersion Include="System.Data.Odbc" Version="10.0.6" />
     <PackageVersion Include="System.Data.OleDb" Version="10.0.6" />
     <PackageVersion Include="System.Reflection.Emit" Version="4.7.0" />
-    <PackageVersion Include="Umbraco.Forms" Version="17.4.0" />
+    <PackageVersion Include="Umbraco.Forms" Version="17.4.2" />
   </ItemGroup>
   <ItemGroup>
     <!-- Third-party packages -->
