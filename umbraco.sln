@@ -228,6 +228,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPoco", "src\npoco\src\NPoc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPoco.SqlServer", "src\npoco\src\NPoco.SqlServer\NPoco.SqlServer.csproj", "{4CD90A4E-FEB4-D4CD-BB62-2421793F501E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.PostgreSql.Umbraco.License", "src\PostgreSqlForUmbraco\Our.Umbraco.PostgreSql\Our.Umbraco.PostgreSql.Umbraco.License\Our.Umbraco.PostgreSql.Umbraco.License.csproj", "{8D53E6E6-D0CA-E3F9-7AF8-D1450AE7D1C4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -450,6 +452,12 @@ Global
 		{4CD90A4E-FEB4-D4CD-BB62-2421793F501E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4CD90A4E-FEB4-D4CD-BB62-2421793F501E}.SkipTests|Any CPU.ActiveCfg = Release|Any CPU
 		{4CD90A4E-FEB4-D4CD-BB62-2421793F501E}.SkipTests|Any CPU.Build.0 = Release|Any CPU
+		{8D53E6E6-D0CA-E3F9-7AF8-D1450AE7D1C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D53E6E6-D0CA-E3F9-7AF8-D1450AE7D1C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D53E6E6-D0CA-E3F9-7AF8-D1450AE7D1C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D53E6E6-D0CA-E3F9-7AF8-D1450AE7D1C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D53E6E6-D0CA-E3F9-7AF8-D1450AE7D1C4}.SkipTests|Any CPU.ActiveCfg = Release|Any CPU
+		{8D53E6E6-D0CA-E3F9-7AF8-D1450AE7D1C4}.SkipTests|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -477,6 +485,7 @@ Global
 		{AB378633-AC82-A4BA-A69D-4DE7846AB521} = {40F8D65C-B428-4A59-801E-50755A1DE083}
 		{F6DF2A9D-66E5-61BF-AC93-A6DC3BE200DC} = {40F8D65C-B428-4A59-801E-50755A1DE083}
 		{4CD90A4E-FEB4-D4CD-BB62-2421793F501E} = {40F8D65C-B428-4A59-801E-50755A1DE083}
+		{8D53E6E6-D0CA-E3F9-7AF8-D1450AE7D1C4} = {C263E5EC-A5E2-4CE2-B5B0-B3ED2F6F150C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7A0F2E34-D2AF-4DAB-86A0-7D7764B3D0EC}
