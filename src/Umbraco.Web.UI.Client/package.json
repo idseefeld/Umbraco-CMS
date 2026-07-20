@@ -178,7 +178,7 @@
 		"build:for:npm": "npm run build -- --declaration && npm run package:validate",
 		"build:for:static": "cross-env VITE_UMBRACO_USE_MSW=on vite build",
 		"build:vite": "tsc && vite build --mode staging",
-		"build:workspaces": "npm run build -ws --if-present",
+		"build:workspaces": "npm run build --ws --if-present",
 		"build": "tsc --project ./src/tsconfig.build.json",
 		"postbuild": "node ./devops/build/global-types.js",
 		"check": "npm run lint:errors && npm run compile && npm run build-storybook && npm run generate:jsonschema:dist",
@@ -273,7 +273,7 @@
 		"tiny-glob": "^0.2.9",
 		"tsc-alias": "^1.8.16",
 		"typedoc": "^0.28.19",
-		"typescript": "5.9.3",
+		"typescript": "^6.0.0",
 		"typescript-eslint": "^8.45.0",
 		"typescript-json-schema": "^0.65.1",
 		"vite": "^7.3.2",
@@ -295,5 +295,9 @@
 	"publishConfig": {
 		"access": "public",
 		"registry": "https://registry.npmjs.org/"
+	},
+	"allowScripts": {
+		"msw@2.15.0": true,
+		"esbuild@0.27.7": true
 	}
 }
