@@ -120,7 +120,7 @@ test('can unpublish a specific element with unpublish permission enabled', async
 
 test('can update a specific element with update permission enabled', async ({umbracoApi, umbracoUi}) => {
   // Arrange
-  const newElementName = 'UpdatedElement';
+  const newElementName = 'FirstElementUpdated';
   userGroupId = await umbracoApi.userGroup.createUserGroupWithUpdatePermissionForSpecificElement(userGroupName, firstElementId);
   await umbracoApi.user.setUserPermissions(testUser.name, testUser.email, testUser.password, userGroupId);
   await umbracoApi.user.loginToUser(testUser.name, testUser.email, testUser.password);
@@ -215,8 +215,7 @@ test('can rollback a specific element with rollback permission enabled', async (
   await umbracoUi.library.doesElementPropertyHaveValue(dataTypeName, updatedTextStringText);
   await umbracoUi.library.clickInfoTab();
   await umbracoUi.library.clickRollbackButton();
-  await umbracoUi.waitForTimeout(ConstantHelper.wait.medium);
-  await umbracoUi.library.clickLatestRollBackItem();
+  await umbracoUi.library.clickPreviousRollBackItem();
   await umbracoUi.library.clickRollbackContainerButton();
 
   // Assert
