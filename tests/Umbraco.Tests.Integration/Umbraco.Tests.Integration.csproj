@@ -43,6 +43,7 @@
     <ProjectReference Include="..\..\src\Umbraco.Cms.Persistence.EFCore\Umbraco.Cms.Persistence.EFCore.csproj" />
     <ProjectReference Include="..\..\src\Umbraco.Cms\Umbraco.Cms.csproj" />
     <ProjectReference Include="..\..\src\Umbraco.PublishedCache.HybridCache\Umbraco.PublishedCache.HybridCache.csproj" />
+    <ProjectReference Include="..\..\src\Umbraco.PublishedCache.HybridCache.Bounded\Umbraco.PublishedCache.HybridCache.Bounded.csproj" />
     <ProjectReference Include="..\Umbraco.Tests.Common\Umbraco.Tests.Common.csproj" />
   </ItemGroup>
 
@@ -96,6 +97,9 @@
     <Compile Update="Umbraco.Infrastructure\Services\ContentEditingServiceTests.Sort.cs">
       <DependentUpon>ContentEditingServiceTests.cs</DependentUpon>
     </Compile>
+    <Compile Update="Umbraco.Infrastructure\Services\ContentEditingServiceTests.SortByField.cs">
+      <DependentUpon>ContentEditingServiceTests.cs</DependentUpon>
+    </Compile>
     <Compile Update="Umbraco.Infrastructure\Services\ContentEditingServiceTests.Update.cs">
       <DependentUpon>ContentEditingServiceTests.cs</DependentUpon>
     </Compile>
@@ -103,6 +107,9 @@
       <DependentUpon>ContentEditingServiceTests.cs</DependentUpon>
     </Compile>
     <Compile Update="Umbraco.Infrastructure\Services\MediaEditingServiceTests.MoveToRecycleBin.cs">
+      <DependentUpon>MediaEditingServiceTests.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Umbraco.Infrastructure\Services\MediaEditingServiceTests.SortByField.cs">
       <DependentUpon>MediaEditingServiceTests.cs</DependentUpon>
     </Compile>
     <Compile Update="Umbraco.Infrastructure\Services\ContentPublishingServiceTests.Publish.cs">
@@ -308,6 +315,12 @@
     </Compile>
     <Compile Update="Umbraco.Infrastructure\Services\UserServiceTests.Permissions.cs">
       <DependentUpon>UserServiceTests.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Umbraco.Infrastructure\Services\ContentEditingServiceTests.CreateAndPublish.cs">
+      <DependentUpon>ContentEditingServiceTests.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Umbraco.Infrastructure\Services\ContentEditingServiceTests.UpdateAndPublish.cs">
+      <DependentUpon>ContentEditingServiceTests.cs</DependentUpon>
     </Compile>
   </ItemGroup>
 
