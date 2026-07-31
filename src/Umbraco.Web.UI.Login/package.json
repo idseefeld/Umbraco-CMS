@@ -27,6 +27,7 @@
     ]
   },
   "allowScripts": {
+    "msw@2.14.6": true,
     "esbuild@0.27.3": true
   }
 }
