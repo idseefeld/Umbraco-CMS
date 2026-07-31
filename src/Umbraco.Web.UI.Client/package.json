@@ -298,7 +298,7 @@
 		"registry": "https://registry.npmjs.org/"
 	},
 	"allowScripts": {
-		"esbuild@0.27.7": true,
-		"msw@2.15.0": true
+		"msw@2.14.6": true,
+		"esbuild@0.28.1": true
 	}
 }

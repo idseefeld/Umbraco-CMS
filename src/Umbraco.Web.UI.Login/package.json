@@ -23,5 +23,9 @@
     "workerDirectory": [
       "public"
     ]
+  },
+  "allowScripts": {
+    "msw@2.14.6": true,
+    "esbuild@0.28.1": true
   }
 }
