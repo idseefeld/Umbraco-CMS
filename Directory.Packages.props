@@ -20,6 +20,7 @@
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="5.6.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.6.0" />
     <PackageVersion Include="Microsoft.Data.Sqlite" Version="10.0.10" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.10" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.10" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.10" />
     <PackageVersion Include="Microsoft.Extensions.Caching.Abstractions" Version="10.0.10" />
@@ -40,11 +41,8 @@
     <PackageVersion Include="Microsoft.Extensions.Caching.Hybrid" Version="10.8.0" />
     <PackageVersion Include="System.Linq.Async" Version="7.0.1" />
     <!-- PostgreSQL -->
-    <PackageVersion Include="Npgsql" Version="10.0.2" />
-    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.1" />
-    <PackageVersion Include="Umbraco.Cms.Infrastructure" Version="17.3.0--rc.preview.225.gde851f8" />
-    <PackageVersion Include="Umbraco.Cms.Persistence.EFCore" Version="17.3.0--rc.preview.225.gde851f8" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.9" />
+    <PackageVersion Include="Npgsql" Version="10.0.3" />
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3" />
   </ItemGroup>
   <!-- Umbraco packages -->
   <ItemGroup>
