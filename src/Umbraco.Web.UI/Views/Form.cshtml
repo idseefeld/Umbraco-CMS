@@ -1,0 +1,27 @@
+@using Umbraco.Cms.Web.Common.PublishedModels;
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContentModels.Form>
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@{
+    Layout = "master.cshtml";
+    var theme = string.IsNullOrEmpty(Model.Theme) ? "default" : Model.Theme;
+    var formId = Model.Picker;
+}
+@if (formId == null)
+{
+    <div class="alert alert-danger">
+        <strong>Error:</strong> No form has been selected for this page.
+    </div>
+}
+else
+{
+    <div>
+
+        @await Component.InvokeAsync("RenderForm", new
+        {
+            formId = formId,
+            theme = theme,
+            includeScripts = false
+        })
+
+    </div>
+}
