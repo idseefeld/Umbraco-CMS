@@ -1,0 +1,11 @@
+body {
+    font-family: sans-serif;
+}
+
+.umbraco-forms-hidden {
+  display: none;
+}
+
+.field-validation-error {
+    color: red;
+}
