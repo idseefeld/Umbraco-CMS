@@ -59,6 +59,7 @@
     resolve (GHSA-2m69-gcr7-jv3q).
     -->
     <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="2.1.12" />
+    <PackageReference Include="Umbraco.Forms" Version="17.4.7" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -93,6 +94,7 @@
     <!-- Remove RazorCompileOnBuild and RazorCompileOnPublish when not using ModelsMode InMemoryAuto -->
     <RazorCompileOnBuild>false</RazorCompileOnBuild>
     <RazorCompileOnPublish>false</RazorCompileOnPublish>
+    <UserSecretsId>d79d224d-c2cb-485c-8f35-acf24debfc45</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
