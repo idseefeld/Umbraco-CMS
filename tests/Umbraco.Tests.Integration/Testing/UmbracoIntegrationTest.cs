@@ -190,7 +190,6 @@ public abstract class UmbracoIntegrationTest : UmbracoIntegrationTestBase
             .AddBackOfficeOpenIddictServices()
             .AddBackOfficeIdentity()
             .AddMembersIdentity()
-            .AddExamine()
             .AddUmbracoSqlServerSupport()
             .AddUmbracoSqliteSupport()
             .AddUmbracoPostgreSqlSupport()

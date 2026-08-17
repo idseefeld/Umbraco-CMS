@@ -62,7 +62,7 @@ public static partial class UmbracoBuilderExtensions
         // Register configuration sections.
         builder
             .AddUmbracoOptions<ModelsBuilderSettings>()
-            .AddUmbracoOptions<IndexCreatorSettings>()
+            .AddUmbracoOptions<ExamineSearchProviderSettings>()
             .AddUmbracoOptions<MarketplaceSettings>()
             .AddUmbracoOptions<ContentSettings>()
             .AddUmbracoOptions<DeliveryApiSettings>()
@@ -109,7 +109,6 @@ public static partial class UmbracoBuilderExtensions
             .AddUmbracoOptions<SystemDateMigrationSettings>()
             .AddUmbracoOptions<DistributedJobSettings>()
             .AddUmbracoOptions<ScheduledPublishingSettings>(options => options.ValidateOnStart())
-            .AddUmbracoOptions<BackOfficeTokenCookieSettings>()
             .AddUmbracoOptions<WebsiteSettings>()
             .AddUmbracoOptions<SignalRSettings>();
 

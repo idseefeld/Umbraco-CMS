@@ -33,11 +33,24 @@ internal sealed class CustomDbContextUmbracoProviderTests : UmbracoIntegrationTe
         Assert.IsNotEmpty(dbContext.Database.GetConnectionString());
     }
 
+    /*
     protected override void CustomTestSetup(IUmbracoBuilder builder)
     {
         builder.Services.AddUmbracoDbContext<CustomDbContext>(
             (serviceProvider, options, connectionString, providerName) =>
-                options.UseUmbracoDatabaseProvider(serviceProvider),
+            {
+                options.UseUmbracoDatabaseProvider(serviceProvider);
+            },
+            shareUmbracoConnection: true);
+    }
+    */
+
+    protected override void CustomTestSetup(IUmbracoBuilder builder)
+    {
+        builder.Services.AddUmbracoDbContext<CustomDbContext>(
+            (serviceProvider, options, connectionString, providerName) =>
+
+        options.UseUmbracoDatabaseProvider(serviceProvider),
             shareUmbracoConnection: true);
 
         builder.Services.AddPostgreSqlDatabaseContext<PostgreSqlDbContext>(
@@ -72,12 +85,18 @@ public class CustomDbContextCustomSqliteProviderTests : UmbracoIntegrationTest
     protected override void CustomTestSetup(IUmbracoBuilder builder)
     {
         builder.Services.AddUmbracoDbContext<CustomDbContext>(
+
             (serviceProvider, options, connectionString, providerName) => options.UseSqlite("Data Source=:memory:;Version=3;New=True;"),
             shareUmbracoConnection: true);
 
         builder.Services.AddUmbracoDbContext<PostgreSqlDbContext>(
             (serviceProvider, options, connectionString, providerName) =>
                 options.UsePostgreSqlDatabaseProvider(serviceProvider),
+
+            (serviceProvider, options, connectionString, providerName) =>
+            {
+                options.UseSqlite("Data Source=:memory:;Version=3;New=True;");
+            },
             shareUmbracoConnection: true);
     }
 
@@ -89,3 +108,4 @@ public class CustomDbContextCustomSqliteProviderTests : UmbracoIntegrationTest
         }
     }
 }
+
