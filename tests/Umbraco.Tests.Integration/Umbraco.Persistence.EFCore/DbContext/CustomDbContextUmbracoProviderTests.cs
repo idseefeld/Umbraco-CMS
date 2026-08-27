@@ -85,18 +85,12 @@ public class CustomDbContextCustomSqliteProviderTests : UmbracoIntegrationTest
     protected override void CustomTestSetup(IUmbracoBuilder builder)
     {
         builder.Services.AddUmbracoDbContext<CustomDbContext>(
-
             (serviceProvider, options, connectionString, providerName) => options.UseSqlite("Data Source=:memory:;Version=3;New=True;"),
             shareUmbracoConnection: true);
 
         builder.Services.AddUmbracoDbContext<PostgreSqlDbContext>(
             (serviceProvider, options, connectionString, providerName) =>
                 options.UsePostgreSqlDatabaseProvider(serviceProvider),
-
-            (serviceProvider, options, connectionString, providerName) =>
-            {
-                options.UseSqlite("Data Source=:memory:;Version=3;New=True;");
-            },
             shareUmbracoConnection: true);
     }
 
