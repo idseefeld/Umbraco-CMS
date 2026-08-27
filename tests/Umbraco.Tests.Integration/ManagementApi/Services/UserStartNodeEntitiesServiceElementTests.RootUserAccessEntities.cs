@@ -41,6 +41,7 @@ public partial class UserStartNodeEntitiesServiceElementTests
             .RootUserAccessEntities(
                 [UmbracoObjectTypes.Element, UmbracoObjectTypes.ElementContainer],
                 elementStartNodeIds)
+            .OrderBy(r => r.Entity.Name) // order by name to make the test deterministic, because the order of the roots is not guaranteed
             .ToArray();
 
         Assert.AreEqual(3, roots.Length);

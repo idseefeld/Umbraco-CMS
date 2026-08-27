@@ -18,6 +18,7 @@ using Umbraco.Cms.Core.Web;
 using Umbraco.Cms.Infrastructure.Migrations.Upgrade.V_18_0_0.SingleBlockList;
 using Umbraco.Cms.Infrastructure.Persistence;
 using Umbraco.Cms.Infrastructure.Persistence.Dtos;
+using Umbraco.Cms.Infrastructure.Persistence.SqlSyntax;
 using Umbraco.Cms.Infrastructure.PropertyEditors;
 using Umbraco.Extensions;
 
@@ -259,11 +260,12 @@ public class MigrateSingleBlockList : AsyncMigrationBase
         // update the configuration of all propertyTypes
         var singleBlockListDataTypesIds = singleBlockListDataTypes.Select(type => type.Id).ToList();
 
+        ISqlSyntaxProvider syntax = Database.SqlContext.SqlSyntax;
         string updateSql = $@"
-UPDATE umbracoDataType
-SET propertyEditorAlias = '{Constants.PropertyEditors.Aliases.SingleBlock}',
-    propertyEditorUiAlias = 'Umb.PropertyEditorUi.BlockSingle'
-WHERE nodeId IN (@0)";
+UPDATE {syntax.GetQuotedTableName("umbracoDataType")}
+SET {syntax.GetQuotedColumnName("propertyEditorAlias")} = '{Constants.PropertyEditors.Aliases.SingleBlock}',
+    {syntax.GetQuotedColumnName("propertyEditorUiAlias")} = 'Umb.PropertyEditorUi.BlockSingle'
+WHERE {syntax.GetQuotedColumnName("nodeId")} IN (@0)";
         await Database.ExecuteAsync(updateSql, singleBlockListDataTypesIds);
 
         // the element type cache, and the isolated/runtime caches it is built from in the default implementation,

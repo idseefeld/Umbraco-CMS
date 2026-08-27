@@ -16,6 +16,7 @@ using Umbraco.Cms.Tests.Integration.Testing;
 namespace Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Migrations.Upgrade.V17_0_0;
 
 [TestFixture]
+[Ignore("The migration is a no-op on SQLite, so the test is not applicable to SQLite. And PostgreSQL provider is only available since version 17.4.0")]
 [UmbracoTest(Database = UmbracoTestOptions.Database.NewSchemaPerTest)]
 internal sealed class SetDateDefaultsToUtcNowTests : UmbracoIntegrationTest
 {
@@ -55,9 +56,9 @@ internal sealed class SetDateDefaultsToUtcNowTests : UmbracoIntegrationTest
         {
             return;
         }
-
+        var defaultConstraint = GetDefaultConstraint()?.Name;
         Assert.That(
-            GetDefaultConstraint()?.Name,
+            defaultConstraint,
             Is.EqualTo(ExpectedConstraintName),
             "Arrange failed: a freshly created schema should carry the conventionally named constraint.");
 
@@ -77,8 +78,8 @@ internal sealed class SetDateDefaultsToUtcNowTests : UmbracoIntegrationTest
         // Omitting the constraint name has SQL Server generate one, as happens on databases whose schema was
         // materialised outside of Umbraco.
         ExecuteNonQuery(
-            $"ALTER TABLE [{TableName}] DROP CONSTRAINT [{ExpectedConstraintName}];" +
-            $"ALTER TABLE [{TableName}] ADD DEFAULT (getdate()) FOR [{ColumnName}];");
+            $"ALTER TABLE \"{TableName}\" DROP CONSTRAINT \"{ExpectedConstraintName}\";" +
+            $"ALTER TABLE \"{TableName}\" ADD DEFAULT (getdate()) FOR \"{ColumnName}\";");
 
         Assert.That(
             GetDefaultConstraint()?.Name,
