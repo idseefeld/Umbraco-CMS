@@ -3,6 +3,7 @@
 
 using NUnit.Framework;
 using Umbraco.Cms.Infrastructure.Persistence;
+using Umbraco.Cms.Infrastructure.Persistence.SqlSyntax;
 using Umbraco.Cms.Tests.Common.Testing;
 using Umbraco.Cms.Tests.Integration.Testing;
 using Umbraco.Extensions;
@@ -15,22 +16,21 @@ internal sealed class TruncateTableTests : UmbracoIntegrationTest
 {
     private const string TableName = "testTruncateTable";
 
-    private ISqlContext SqlContext => GetRequiredService<ISqlContext>();
-
     [Test]
     public void Can_Truncate_A_Table()
     {
+        var tableName = SqlContext.SqlSyntax.GetQuotedTableName(TableName);
         // Arrange - a table of our own, so this asserts that emptying a table works rather than
         // anything about a particular table's contents.
         using (ScopeProvider.CreateScope(autoComplete: true))
         {
             IUmbracoDatabase database = ScopeAccessor.AmbientScope!.Database;
-            database.Execute($"CREATE TABLE {TableName} (id int NOT NULL)");
-            database.Execute($"INSERT INTO {TableName} (id) VALUES (1)");
-            database.Execute($"INSERT INTO {TableName} (id) VALUES (2)");
+            database.Execute($"CREATE TABLE {tableName} (id int NOT NULL)");
+            database.Execute($"INSERT INTO {tableName} (id) VALUES (1)");
+            database.Execute($"INSERT INTO {tableName} (id) VALUES (2)");
         }
 
-        Assume.That(CountRows(), Is.EqualTo(2));
+        Assume.That(CountRows(tableName), Is.EqualTo(2));
 
         // Act
         using (ScopeProvider.CreateScope(autoComplete: true))
@@ -39,12 +39,12 @@ internal sealed class TruncateTableTests : UmbracoIntegrationTest
         }
 
         // Assert
-        Assert.That(CountRows(), Is.Zero);
+        Assert.That(CountRows(tableName), Is.Zero);
     }
 
-    private int CountRows()
+    private int CountRows(string tableName)
     {
         using var scope = ScopeProvider.CreateScope(autoComplete: true);
-        return ScopeAccessor.AmbientScope!.Database.ExecuteScalar<int>($"SELECT COUNT(*) FROM {TableName}");
+        return ScopeAccessor.AmbientScope!.Database.ExecuteScalar<int>($"SELECT COUNT(*) FROM {tableName}");
     }
 }

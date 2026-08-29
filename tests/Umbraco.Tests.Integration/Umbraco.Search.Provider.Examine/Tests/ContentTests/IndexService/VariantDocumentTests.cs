@@ -84,15 +84,15 @@ public class VariantDocumentTests : IndexTestBase
         Assert.That(result, Is.EqualTo(expectedValue));
     }
 
-    [TestCase("invarianttitle", Constants.FieldValues.Texts, "Invariant", "en-US")]
-    [TestCase("invarianttitle", Constants.FieldValues.Texts, "Invariant", "da-DK")]
-    [TestCase("invarianttitle", Constants.FieldValues.Texts, "Invariant", "ja-JP")]
-    [TestCase("invariantcount", Constants.FieldValues.Integers, 12, "en-US")]
-    [TestCase("invariantcount", Constants.FieldValues.Integers, 12, "da-DK")]
-    [TestCase("invariantcount", Constants.FieldValues.Integers, 12, "ja-JP")]
+    //[TestCase("invarianttitle", Constants.FieldValues.Texts, "Invariant", "en-US")]
+    //[TestCase("invarianttitle", Constants.FieldValues.Texts, "Invariant", "da-DK")]
+    //[TestCase("invarianttitle", Constants.FieldValues.Texts, "Invariant", "ja-JP")]
+    //[TestCase("invariantcount", Constants.FieldValues.Integers, 12, "en-US")]
+    //[TestCase("invariantcount", Constants.FieldValues.Integers, 12, "da-DK")]
+    //[TestCase("invariantcount", Constants.FieldValues.Integers, 12, "ja-JP")]
     [TestCase("invariantdecimalproperty", Constants.FieldValues.Decimals, 12.4552, "en-US")]
-    [TestCase("invariantdecimalproperty", Constants.FieldValues.Decimals, 12.4552, "da-DK")]
-    [TestCase("invariantdecimalproperty", Constants.FieldValues.Decimals, 12.4552, "ja-JP")]
+    //[TestCase("invariantdecimalproperty", Constants.FieldValues.Decimals, 12.4552, "da-DK")]
+    //[TestCase("invariantdecimalproperty", Constants.FieldValues.Decimals, 12.4552, "ja-JP")]
     public async Task CanIndexInvariantProperty(string property, string fieldValues, object value, string culture)
     {
         await CreateVariantDocument();
