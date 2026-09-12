@@ -18,7 +18,12 @@
   </PropertyGroup>
 
   <Import Project="..\Umbraco.Cms.Targets\buildTransitive\Umbraco.Cms.Targets.props" />
-  <Import Project="..\Umbraco.Cms.Targets\buildTransitive\Umbraco.Cms.Targets.targets" />  
+  <Import Project="..\Umbraco.Cms.Targets\buildTransitive\Umbraco.Cms.Targets.targets" />
+  <ItemGroup>
+    <Content Remove="Views\Form.cshtml" />
+    <Content Remove="Views\master.cshtml" />
+    <Content Remove="Views\Page.cshtml" />
+  </ItemGroup>  
   <ItemGroup>
     <ProjectReference Include="..\Umbraco.Cms.DevelopmentMode.Backoffice\Umbraco.Cms.DevelopmentMode.Backoffice.csproj" />
     <ProjectReference Include="..\Umbraco.Cms\Umbraco.Cms.csproj" />
@@ -36,6 +41,7 @@
     -->
     <PackageReference Include="Microsoft.Build.Tasks.Core" PrivateAssets="all" Version="17.14.28" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" PrivateAssets="all" Version="10.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" PrivateAssets="all" Version="10.0.11" />
   </ItemGroup>
 
   <ItemGroup>
@@ -60,6 +66,7 @@
     -->
     <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="2.1.12" />
     <PackageReference Include="Umbraco.Forms" Version="17.4.7" />
+    <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="2.1.13" />
   </ItemGroup>
 
   <PropertyGroup>
