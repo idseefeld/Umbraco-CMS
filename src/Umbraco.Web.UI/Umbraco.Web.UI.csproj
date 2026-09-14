@@ -65,7 +65,6 @@
     resolve (GHSA-2m69-gcr7-jv3q).
     -->
     <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="2.1.12" />
-    <PackageReference Include="Umbraco.Forms" Version="17.4.7" />
     <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="2.1.13" />
   </ItemGroup>
 
