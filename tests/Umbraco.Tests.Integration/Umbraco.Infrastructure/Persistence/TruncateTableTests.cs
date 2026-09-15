@@ -25,9 +25,9 @@ internal sealed class TruncateTableTests : UmbracoIntegrationTest
         using (ScopeProvider.CreateScope(autoComplete: true))
         {
             IUmbracoDatabase database = ScopeAccessor.AmbientScope!.Database;
-            database.Execute($"CREATE TABLE {TableName} (id int NOT NULL)");
-            database.Execute($"INSERT INTO {TableName} (id) VALUES (1)");
-            database.Execute($"INSERT INTO {TableName} (id) VALUES (2)");
+            database.Execute($"CREATE TABLE {QTab(TableName)} (id int NOT NULL)");
+            database.Execute($"INSERT INTO {QTab(TableName)} (id) VALUES (1)");
+            database.Execute($"INSERT INTO {QTab(TableName)} (id) VALUES (2)");
         }
 
         Assume.That(CountRows(), Is.EqualTo(2));
@@ -45,6 +45,6 @@ internal sealed class TruncateTableTests : UmbracoIntegrationTest
     private int CountRows()
     {
         using var scope = ScopeProvider.CreateScope(autoComplete: true);
-        return ScopeAccessor.AmbientScope!.Database.ExecuteScalar<int>($"SELECT COUNT(*) FROM {TableName}");
+        return ScopeAccessor.AmbientScope!.Database.ExecuteScalar<int>($"SELECT COUNT(*) FROM {QTab(TableName)}");
     }
 }

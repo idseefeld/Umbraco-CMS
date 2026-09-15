@@ -51,7 +51,7 @@ internal sealed class SetDateDefaultsToUtcNowTests : UmbracoIntegrationTest
     [Test]
     public async Task Can_Migrate_When_Default_Constraint_Has_The_Expected_Name()
     {
-        if (SkipOnSqlite())
+        if (SkipOnSqlite() || IsPostgreSql())
         {
             return;
         }
@@ -69,7 +69,7 @@ internal sealed class SetDateDefaultsToUtcNowTests : UmbracoIntegrationTest
     [Test]
     public async Task Can_Migrate_When_Default_Constraint_Has_A_System_Generated_Name()
     {
-        if (SkipOnSqlite())
+        if (SkipOnSqlite() || IsPostgreSql())
         {
             return;
         }
@@ -93,7 +93,7 @@ internal sealed class SetDateDefaultsToUtcNowTests : UmbracoIntegrationTest
     [Test]
     public async Task Can_Migrate_When_Default_Constraint_Is_Missing()
     {
-        if (SkipOnSqlite())
+        if (SkipOnSqlite() || IsPostgreSql())
         {
             return;
         }
@@ -108,6 +108,17 @@ internal sealed class SetDateDefaultsToUtcNowTests : UmbracoIntegrationTest
         ExecutedMigrationPlan result = await ExecuteMigration();
 
         AssertMigratedToUtcDefault(result);
+    }
+
+    private static bool IsPostgreSql()
+    {
+        if (BaseTestDatabase.IsPostgreSql() is false)
+        {
+            return false;
+        }
+
+        Assert.Ignore("Named default constraints are a SQL Server concept, so the migration is a no-op on PostgreSQL.");
+        return true;
     }
 
     private static bool SkipOnSqlite()
