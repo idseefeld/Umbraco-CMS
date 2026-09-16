@@ -13,9 +13,8 @@ namespace Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence;
 [UmbracoTest(Database = UmbracoTestOptions.Database.NewSchemaPerTest)]
 internal sealed class TruncateTableTests : UmbracoIntegrationTest
 {
-    private const string TableName = "testTruncateTable";
-
-    private ISqlContext SqlContext => GetRequiredService<ISqlContext>();
+    private const string RawTableName = "testTruncateTable";
+    private string TableName => SqlContext.SqlSyntax.GetQuotedTableName(RawTableName);
 
     [Test]
     public void Can_Truncate_A_Table()
@@ -35,7 +34,7 @@ internal sealed class TruncateTableTests : UmbracoIntegrationTest
         // Act
         using (ScopeProvider.CreateScope(autoComplete: true))
         {
-            ScopeAccessor.AmbientScope!.Database.TruncateTable(SqlContext.SqlSyntax, TableName);
+            ScopeAccessor.AmbientScope!.Database.TruncateTable(SqlContext.SqlSyntax, RawTableName);
         }
 
         // Assert
