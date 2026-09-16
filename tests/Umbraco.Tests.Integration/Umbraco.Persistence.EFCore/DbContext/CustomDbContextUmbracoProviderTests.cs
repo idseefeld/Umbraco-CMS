@@ -41,7 +41,7 @@ internal sealed class CustomDbContextUmbracoProviderTests : UmbracoIntegrationTe
             shareUmbracoConnection: true);
 
         builder.Services.AddPostgreSqlDatabaseContext<PostgreSqlDbContext>(
-            (serviceProvider, options, connectionString, providerName) =>            
+            (serviceProvider, options, connectionString, providerName) =>
                 options.UsePostgreSqlDatabaseProvider(serviceProvider),
             shareUmbracoConnection: true);
     }
