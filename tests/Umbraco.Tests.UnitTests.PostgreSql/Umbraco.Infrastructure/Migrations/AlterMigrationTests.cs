@@ -98,10 +98,11 @@ public class AlterMigrationTests
             Console.WriteLine("{0}\r\n\t{1}", op.Text, op.Sql);
         }
 
+        var sql = database.Operations[0].Sql;
+        var expectedSql = "ALTER TABLE \"bar\" ALTER COLUMN \"foo\" UUID NOT NULL";
+
         Assert.That(database.Operations.Count, Is.EqualTo(1));
-        Assert.That(
-            database.Operations[0].Sql,
-            Is.EqualTo("ALTER TABLE \"bar\" ALTER COLUMN \"foo\" UUID NOT NULL"));
+        Assert.That(sql, Is.EqualTo(expectedSql));
     }
 
     public class AlterColumnMigration : AsyncMigrationBase
