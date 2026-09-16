@@ -309,6 +309,7 @@
 	},
 	"allowScripts": {
 		"esbuild": true,
-		"msw": true
+		"msw": true,
+		"unrs-resolver": true
 	}
 }
