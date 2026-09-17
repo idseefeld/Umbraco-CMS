@@ -46,7 +46,7 @@
   <!-- Umbraco packages -->
   <ItemGroup>
     <PackageVersion Include="Umbraco.JsonSchema.Extensions" Version="0.4.3" />
-    <PackageVersion Include="Umbraco.Forms.Core.Providers" Version="18.1.1" />
+    <PackageVersion Include="Umbraco.Forms.Core.Providers" Version="18.1.2" />
   </ItemGroup>
   <!-- Third-party packages -->
   <ItemGroup>
