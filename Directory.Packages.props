@@ -42,12 +42,11 @@
     <PackageVersion Include="System.Linq.Async" Version="7.0.1" />
     <PackageVersion Include="Npgsql" Version="10.0.2" />
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.1" />
-    <PackageVersion Include="Umbraco.Cms.Infrastructure" Version="17.3.0--rc.preview.225.gde851f8" />
-    <PackageVersion Include="Umbraco.Cms.Persistence.EFCore" Version="17.3.0--rc.preview.225.gde851f8" />
   </ItemGroup>
   <!-- Umbraco packages -->
   <ItemGroup>
     <PackageVersion Include="Umbraco.JsonSchema.Extensions" Version="0.4.0" />
+    <PackageVersion Include="Umbraco.Forms.Core.Providers" Version="18.0.6" />
   </ItemGroup>
   <!-- Third-party packages -->
   <ItemGroup>
@@ -66,8 +65,6 @@
     <PackageVersion Include="MiniProfiler.AspNetCore.Mvc" Version="4.5.4" />
     <PackageVersion Include="MiniProfiler.Shared" Version="4.5.4" />
     <PackageVersion Include="ncrontab" Version="3.4.0" />
-    <PackageVersion Include="NPoco" Version="6.2.0" />
-    <PackageVersion Include="NPoco.SqlServer" Version="6.2.0" />
     <PackageVersion Include="OpenIddict.Abstractions" Version="7.5.0" />
     <PackageVersion Include="OpenIddict.AspNetCore" Version="7.5.0" />
     <PackageVersion Include="OpenIddict.EntityFrameworkCore" Version="7.5.0" />
