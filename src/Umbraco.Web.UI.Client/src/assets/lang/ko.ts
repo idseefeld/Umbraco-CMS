@@ -261,6 +261,7 @@ export default {
 		constrainProportions: '비율 맞추기',
 		continue: '계속',
 		copy: '복사',
+		copied: '복사됨!',
 		create: '생성',
 		database: '데이타베이스',
 		date: '날짜',
@@ -299,6 +300,8 @@ export default {
 		new: '새로',
 		next: '다음',
 		no: '아니요',
+		noResults: '결과 없음',
+		noResultsFor: (query: string) => `"${query}"에 대한 결과가 없습니다.`,
 		of: '의',
 		ok: '완료',
 		open: '열기',
@@ -787,5 +790,10 @@ export default {
 	logViewer: {
 		selectAllLogLevelFilters: '모두 선택',
 		deselectAllLogLevelFilters: '모두 선택 해제',
+	},
+	picker: {
+		browseTab: '찾아보기',
+		searchTab: '검색',
+		selectedCount: (count: number) => `${count}개 선택됨`,
 	},
 } as UmbLocalizationDictionary;

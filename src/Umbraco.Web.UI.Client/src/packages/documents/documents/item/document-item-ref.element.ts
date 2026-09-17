@@ -1,7 +1,7 @@
 import { UMB_DOCUMENT_ENTITY_TYPE } from '../entity.js';
 import { UMB_EDIT_DOCUMENT_WORKSPACE_PATH_PATTERN } from '../paths.js';
-import type { UmbDocumentItemModel } from './types.js';
 import type { UmbDocumentSearchItemModel } from '../search/types.js';
+import type { UmbDocumentItemModel } from './types.js';
 import { UmbDocumentItemDataResolver } from './document-item-data-resolver.js';
 import { css, customElement, html, ifDefined, nothing, property, state } from '@umbraco-cms/backoffice/external/lit';
 import { UmbLitElement } from '@umbraco-cms/backoffice/lit-element';
@@ -18,13 +18,12 @@ export class UmbDocumentItemRefElement extends UmbLitElement {
 	public set item(value: UmbDocumentItemModel | undefined) {
 		this.#item.setData(value);
 		const ancestors = (value as UmbDocumentSearchItemModel | undefined)?.ancestors;
-		this._ancestorPath =
-			ancestors?.length
-				? ancestors
-						.map((a) => a.variants[0]?.name ?? '(Untitled)')
-						.filter(Boolean)
-						.join(' / ')
-				: '';
+		this._ancestorPath = ancestors?.length
+			? ancestors
+					.map((a) => a.variants[0]?.name ?? '(Untitled)')
+					.filter(Boolean)
+					.join(' / ')
+			: '';
 	}
 	public get item(): UmbDocumentItemModel | undefined {
 		return this.#item.getData();
@@ -89,7 +88,11 @@ export class UmbDocumentItemRefElement extends UmbLitElement {
 	}
 
 	#getHref() {
-		if (!this._unique) return;
+		// No `_editPath` means the modal route registration couldn't reach a parent route context
+		// (e.g. this ref is rendered inside a non-routable modal). Skip rendering an href so we don't
+		// produce a broken `/edit/<guid>` link. Consumers that know they will be in such a context
+		// (like the link-picker modal) should also pass `readonly` so the ref isn't styled as clickable.
+		if (!this._unique || !this._editPath) return;
 		const path = UMB_EDIT_DOCUMENT_WORKSPACE_PATH_PATTERN.generateLocal({ unique: this._unique });
 		return `${this._editPath}/${path}`;
 	}

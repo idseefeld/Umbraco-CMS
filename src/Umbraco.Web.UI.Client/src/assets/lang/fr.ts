@@ -286,6 +286,8 @@ export default {
 		isSensitiveValue:
 			"Cette valeur est masquée. Si vous avez besoin de pouvoir accéder à cette valeur, veuillez prendre contact avec l'administrateur du site web.",
 		isSensitiveValue_short: 'Cette valeur est masquée.',
+		isSensitiveValueNotice:
+			"Si vous avez besoin de pouvoir accéder aux valeurs masquées, veuillez prendre contact avec l'administrateur du site web.",
 		languagesToPublish: 'Quelles langues souhaitez-vous publier?',
 		languagesToSendForApproval: 'Quells langues souhaitez-vous envoyer pour approbation?',
 		languagesToSchedule: 'Quelles langues souhaitez-vous planifier?',
@@ -298,6 +300,8 @@ export default {
 		createEmpty: 'Créer nouveau',
 		createFromClipboard: 'Copier du clipboard',
 		saveModalTitle: 'Sauver',
+		saveAndPublishDescendantsModalTitle: 'Sauver et publier avec les descendants',
+		saveAndScheduleModalTitle: 'Sauver et planifier la publication',
 	},
 	blueprints: {
 		createBlueprintFrom: 'Créer un nouveau Modèle de Contenu à partir de <em>%0%</em>',
@@ -311,6 +315,8 @@ export default {
 	},
 	media: {
 		clickToUpload: 'Cliquez pour télécharger',
+		browseFilesAction: 'Parcourir les fichiers',
+		dropFilesOr: 'Glissez-déposez des médias ici<br />ou',
 		orClickHereToUpload: 'ou cliquez ici pour choisir un fichier',
 		disallowedFileType: "Ce fichier ne peut pas ête chargé, il n'est pas d'un type de fichier autorisé",
 		invalidFileName: "Ce fichier ne peut pas être chargé, le nom du fichier n'est pas valide",
@@ -344,7 +350,7 @@ export default {
 		enterFolderName: 'Introduisez un nom de dossier',
 		updateData: 'Choisissez un type et un titre',
 		noDocumentTypes:
-			"Il n'y a aucun type de document disponible pour créer du contenu ici. Vous devez d'abord les activer dans <strong>Types de documents</strong> sous la section <strong>Paramètres</strong>, en modifiant les <strong>Types de noeuds enfants autorisés</strong> sous les <strong>Permissions</strong>.",
+			"Il n'y a aucun type de document disponible pour créer du contenu ici. Vous devez d'abord les activer dans <strong>Types de documents</strong> sous la section <strong>Paramètres</strong>, en modifiant les <strong>Types de noeuds enfants autorisés</strong> sous la <strong>Structure</strong>.",
 		noDocumentTypesAtRoot:
 			"Il n'y a aucun type de document disponible pour créer du contenu ici. Vous devez d'abord les activer dans <strong>Types de documents</strong> sous la section <strong>Paramètres</strong>.",
 		noDocumentTypesWithNoSettingsAccess:
@@ -352,9 +358,9 @@ export default {
 		noDocumentTypesEditPermissions: 'Modifier les permissions pour ce type de document',
 		noDocumentTypesCreateNew: 'Créer un nouveau type de document',
 		noDocumentTypesAllowedAtRoot:
-			"Il n'y a aucun type de document disponible pour créer du contenu ici. Vous devez d'abord les activer dans <strong>Types de documents</strong> sous la section <strong>Paramètres</strong>, en modifiant l'option <strong>Autoriser comme racine</strong> sous les <strong>Permissions</strong>.",
+			"Il n'y a aucun type de document disponible pour créer du contenu ici. Vous devez d'abord les activer dans <strong>Types de documents</strong> sous la section <strong>Paramètres</strong>, en modifiant l'option <strong>Autoriser comme racine</strong> sous la <strong>Structure</strong>.",
 		noMediaTypes:
-			"Il n'y a aucun type de média disponible pour créer un media ici. Vous devez d'abord les activer dans <strong>Types de médias</strong> dans la section <strong>Paramètres</strong>, en modifiant les <strong>Types de noeuds enfants autorisés</strong> sous les <strong>Permissions</strong>.",
+			"Il n'y a aucun type de média disponible pour créer un media ici. Vous devez d'abord les activer dans <strong>Types de médias</strong> dans la section <strong>Paramètres</strong>, en modifiant les <strong>Types de noeuds enfants autorisés</strong> sous la <strong>Structure</strong>.",
 		noMediaTypesWithNoSettingsAccess:
 			"Le media sélectionné dans l'arborescence n'autorise pas la création d'un autre media sous lui.",
 		noMediaTypesEditPermissions: 'Modifier les permissions pour ce type de media',
@@ -663,6 +669,7 @@ export default {
 		content: 'Contenu',
 		continue: 'Continuer',
 		copy: 'Copier',
+		copied: 'Copié !',
 		create: 'Créer',
 		database: 'Base de données',
 		date: 'Date',
@@ -719,6 +726,8 @@ export default {
 		new: 'Nouveau',
 		next: 'Suivant',
 		no: 'Non',
+		noResults: 'Aucun résultat',
+		noResultsFor: (query: string) => `Aucun résultat pour "${query}".`,
 		of: 'de',
 		off: 'Inactif',
 		ok: 'OK',
@@ -1397,10 +1406,20 @@ export default {
 		childNodesDescription: 'Autorisez la création de contenu des types spécifiés sous le contenu de ce type-ci',
 		chooseChildNode: 'Choisissez les noeuds enfants',
 		compositionsDescription:
-			"Hériter des onglets et propriétés d'un type de document existant. De nouveaux onglets seront ajoutés au type de document actuel, ou fusionnés s'il existe un onglet avec un nom sililaire.",
+			"Hériter des onglets et propriétés d'un type de document existant. De nouveaux onglets seront ajoutés au type de document actuel, ou fusionnés s'il existe un onglet avec un nom similaire.",
+		compositionsDescriptionMediaType:
+			"Hériter des onglets et propriétés d'un type de media existant. De nouveaux onglets seront ajoutés au type de media actuel, ou fusionnés s'il existe un onglet avec un nom similaire.",
+		compositionsDescriptionMemberType:
+			"Hériter des onglets et propriétés d'un type de membre existant. De nouveaux onglets seront ajoutés au type de membre actuel, ou fusionnés s'il existe un onglet avec un nom similaire.",
 		compositionInUse:
 			'Ce type de contenu est utilisé dans une composition, et ne peut donc pas être lui-même un composé.',
+		compositionInUseMediaType:
+			'Ce type de media est utilisé dans une composition, et ne peut donc pas être lui-même un composé.',
+		compositionInUseMemberType:
+			'Ce type de membre est utilisé dans une composition, et ne peut donc pas être lui-même un composé.',
 		noAvailableCompositions: "Il n'y a pas de type de contenu disponible à utiliser dans une composition.",
+		noAvailableCompositionsMediaType: "Il n'y a pas de type de media disponible à utiliser dans une composition.",
+		noAvailableCompositionsMemberType: "Il n'y a pas de type de membre disponible à utiliser dans une composition.",
 		compositionRemoveWarning:
 			"La suppression d'une composition supprimera les données de toutes les propriétés associées. Une fois que vous sauvegardez le type de document, il n'y a plus moyen de faire marche arrière.",
 		availableEditors: 'Editeurs disponibles',
@@ -1437,6 +1456,10 @@ export default {
 		compositionUsageHeading: 'Où cette composition est-elle utilisée?',
 		compositionUsageSpecification:
 			'Cette composition est actuellement utilisée dans la composition des types de contenu suivants :',
+		compositionUsageSpecificationMediaType:
+			'Cette composition est actuellement utilisée dans la composition des types de media suivants :',
+		compositionUsageSpecificationMemberType:
+			'Cette composition est actuellement utilisée dans la composition des types de membre suivants :',
 		variantsHeading: 'Permettre une variation par culture',
 		variantsDescription: 'Permettre aux éditeurs de créer du contenu de ce type dans différentes langues.',
 		allowVaryByCulture: 'Permettre une variation par culture',
@@ -1783,6 +1806,8 @@ export default {
 	redirectUrls: {
 		disableUrlTracker: 'Désactiver URL tracker',
 		enableUrlTracker: 'Activer URL tracker',
+		urlTrackerEnabled: 'Activé',
+		urlTrackerDisabled: 'Désactivé',
 		culture: 'Culture',
 		originalUrl: 'URL original',
 		redirectedTo: 'Redirigé Vers',
@@ -1939,5 +1964,10 @@ export default {
 	treeSearch: {
 		searchResult: 'élément retrouvé',
 		searchResults: 'éléments retrouvés',
+	},
+	picker: {
+		browseTab: 'Parcourir',
+		searchTab: 'Rechercher',
+		selectedCount: (count: number) => `${count} ${count > 1 ? 'éléments sélectionnés' : 'élément sélectionné'}`,
 	},
 } as UmbLocalizationDictionary;

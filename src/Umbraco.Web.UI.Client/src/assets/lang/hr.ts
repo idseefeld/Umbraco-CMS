@@ -301,6 +301,8 @@ export default {
 		isSensitiveValue:
 			'Ova vrijednost je skrivena. Ako vam je potreban pristup da vidite ovu vrijednost, obratite se\n       administratoru web stranice.\n    ',
 		isSensitiveValue_short: 'Ova vrijednost je skrivena.',
+		isSensitiveValueNotice:
+			'Ako vam je potreban pristup da vidite skrivene vrijednosti, obratite se administratoru web stranice.',
 		languagesToPublish: 'Koje jezike želite objaviti?',
 		languagesToSendForApproval: 'Koje jezike želite poslati na odobrenje?',
 		languagesToSchedule: 'Koje jezike želite zakazano objaviti?',
@@ -320,6 +322,8 @@ export default {
 		createFromClipboard: 'Zalijepi iz međuspremnika',
 		nodeIsInTrash: 'Ova stavka je u košu za smeće',
 		saveModalTitle: 'Spremi',
+		saveAndPublishDescendantsModalTitle: 'Spremi i objavi sa potomcima',
+		saveAndScheduleModalTitle: 'Spremi i zakaži objavu',
 	},
 	blueprints: {
 		createBlueprintFrom: 'Kreirajte novi predložak sadržaja iz <em>%0%</em>',
@@ -333,6 +337,8 @@ export default {
 	},
 	media: {
 		clickToUpload: 'Kliknite za prijenos',
+		browseFilesAction: 'Pregledaj datoteke',
+		dropFilesOr: 'Povucite i ispustite medije ovdje<br />ili',
 		orClickHereToUpload: 'ili kliknite ovdje kako bi odaberali datoteke',
 		disallowedFileType: 'Nije moguće učitati ovu datoteku, jer nema odobrenu vrstu datoteke',
 		disallowedMediaType: "Nije moguće učitati ovu datoteku, format medija sa nastavkom '%0%' nije dozvoljen",
@@ -368,7 +374,7 @@ export default {
 		enterFolderName: 'Unesite naziv mape',
 		updateData: 'Odaberite vrstu i naslov',
 		noDocumentTypes:
-			'Nema dozvoljenih vrsta dokumenata dostupnih za kreiranje sadržaja ovdje. Morate ih omogućiti u <strong>Vrste Dokumenta</strong> unutar sekcije <strong>Postavke</strong>, uređivanjem <strong>Dozvoljene vrste podređenih čvorova</strong> unutar <strong>Dozvole</strong>.',
+			'Nema dozvoljenih vrsta dokumenata dostupnih za kreiranje sadržaja ovdje. Morate ih omogućiti u <strong>Vrste Dokumenta</strong> unutar sekcije <strong>Postavke</strong>, uređivanjem <strong>Dozvoljene vrste podređenih čvorova</strong> unutar <strong>Struktura</strong>.',
 		noDocumentTypesAtRoot:
 			'Nema dozvoljenih vrsta dokumenata dostupnih za kreiranje sadržaja ovdje. Morate ih kreirati u <strong>Vrste Dokumenata</strong> unutar sekcije <strong>Postavke</strong>.',
 		noDocumentTypesWithNoSettingsAccess:
@@ -376,9 +382,9 @@ export default {
 		noDocumentTypesEditPermissions: 'Uredi dozvole za ovu vrstu dokumenta',
 		noDocumentTypesCreateNew: 'Kreiraj novu vrstu dokumenta',
 		noDocumentTypesAllowedAtRoot:
-			'Nema dozvoljenih vrsta dokumenata dostupnih za kreiranje sadržaja ovdje. Morate ih omogućiti u <strong>Vrste Dokumenta</strong> unutar sekcije <strong>Postavke</strong>, izmjenom <strong>Dozvoli kao root</strong> opcije unutar <strong>Dozvole</strong>.',
+			'Nema dozvoljenih vrsta dokumenata dostupnih za kreiranje sadržaja ovdje. Morate ih omogućiti u <strong>Vrste Dokumenta</strong> unutar sekcije <strong>Postavke</strong>, izmjenom <strong>Dozvoli kao root</strong> opcije unutar <strong>Struktura</strong>.',
 		noMediaTypes:
-			'Nema dozvoljenih vrsta medija dostupnih za kreiranje medija ovdje. Morate ih omogućiti u <strong>Vrste Medija</strong> unutar sekcije <strong>Postavke</strong>, uređivanjem <strong>Dozvoljene vrste podređenih čvorova</strong> unutar <strong>Dozvole</strong>.',
+			'Nema dozvoljenih vrsta medija dostupnih za kreiranje medija ovdje. Morate ih omogućiti u <strong>Vrste Medija</strong> unutar sekcije <strong>Postavke</strong>, uređivanjem <strong>Dozvoljene vrste podređenih čvorova</strong> unutar <strong>Struktura</strong>.',
 		noMediaTypesWithNoSettingsAccess:
 			'Odabrani medij u stablu ne dopušta bilo koji drugi medij\n       kreiran ispod njega.\n    ',
 		noMediaTypesEditPermissions: 'Uredi dozvole za ovu vrstu medija',
@@ -711,6 +717,7 @@ export default {
 		content: 'Sadržaj',
 		continue: 'Nastavi',
 		copy: 'Kopiraj',
+		copied: 'Kopirano!',
 		create: 'Kreiraj',
 		database: 'Baza podataka',
 		date: 'Datum',
@@ -769,6 +776,8 @@ export default {
 		next: 'Sljedeći',
 		no: 'Ne',
 		nodeName: 'Ime čvora',
+		noResults: 'Nema rezultata',
+		noResultsFor: (query: string) => `Nema rezultata za "${query}".`,
 		of: 'od',
 		off: 'Isključeno',
 		ok: 'OK',
@@ -1512,8 +1521,16 @@ export default {
 		chooseChildNode: 'Odaberite podređeni čvor',
 		compositionsDescription:
 			'Naslijediti kartice i svojstva iz postojeće vrste dokumenta. Nove kartice bit će\n      dodane trenutnoj vrsti dokumenta ili spojene ako postoji kartica s identičnim imenom.\n    ',
+		compositionsDescriptionMediaType:
+			'Naslijediti kartice i svojstva iz postojeće vrste medija. Nove kartice bit će\n      dodane trenutnoj vrsti medija ili spojene ako postoji kartica s identičnim imenom.\n    ',
+		compositionsDescriptionMemberType:
+			'Naslijediti kartice i svojstva iz postojeće vrste člana. Nove kartice bit će\n      dodane trenutnoj vrsti člana ili spojene ako postoji kartica s identičnim imenom.\n    ',
 		compositionInUse: 'Ova vrsta sadržaja se koristi u kompoziciji i stoga se ne može sam sastaviti.\n    ',
+		compositionInUseMediaType: 'Ova vrsta medija se koristi u kompoziciji i stoga se ne može sam sastaviti.\n    ',
+		compositionInUseMemberType: 'Ova vrsta člana se koristi u kompoziciji i stoga se ne može sam sastaviti.\n    ',
 		noAvailableCompositions: 'Nema dostupnih vrsta sadržaja za upotrebu kao kompozicija.',
+		noAvailableCompositionsMediaType: 'Nema dostupnih vrsta medija za upotrebu kao kompozicija.',
+		noAvailableCompositionsMemberType: 'Nema dostupnih vrsta člana za upotrebu kao kompozicija.',
 		compositionRemoveWarning:
 			'Uklanjanje kompozicije će obrisati sve povezane podatke o svojstvu. Jednom kada spremite vrstu dokumenta, nema povratka.\n    ',
 		availableEditors: 'Napravi novi',
@@ -1547,6 +1564,10 @@ export default {
 		tabHasNoSortOrder: 'kartica nema redoslijed sortiranja',
 		compositionUsageHeading: 'Gdje se koristi ovaj sastav?',
 		compositionUsageSpecification: 'Ovaj sastav se trenutno koristi u sastavu sljedećih\n      vrsta sadržaja:\n    ',
+		compositionUsageSpecificationMediaType:
+			'Ovaj sastav se trenutno koristi u sastavu sljedećih\n      vrsta medija:\n    ',
+		compositionUsageSpecificationMemberType:
+			'Ovaj sastav se trenutno koristi u sastavu sljedećih\n      vrsta člana:\n    ',
 		variantsHeading: 'Dozvoli varijacije',
 		cultureVariantHeading: 'Dozvolite varirati u zavisnosti od kulture',
 		segmentVariantHeading: 'Dozvoli segmentaciju',
@@ -1720,6 +1741,10 @@ export default {
 		templatingGroup: 'Predložak',
 		thirdPartyGroup: 'Treća strana',
 		webhooks: 'Webhooks',
+	},
+	picker: {
+		browseTab: 'Pregledaj',
+		searchTab: 'Pretraži',
 	},
 	update: {
 		updateAvailable: 'Postoji nova verzija',
@@ -1947,6 +1972,8 @@ export default {
 	redirectUrls: {
 		disableUrlTracker: 'Onemogući URL praćenje',
 		enableUrlTracker: 'Omogući URL praćenje',
+		urlTrackerEnabled: 'Omogućeno',
+		urlTrackerDisabled: 'Onemogućeno',
 		originalUrl: 'Originalni URL',
 		redirectedTo: 'Preusmjerno na',
 		redirectUrlManagement: 'Preusmjeravanje URL-ova',

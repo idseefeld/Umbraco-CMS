@@ -23,6 +23,9 @@ test.beforeEach(async ({umbracoUi, umbracoApi}) => {
 });
 
 test.afterEach(async ({umbracoApi}) => {
+  // Empty the recycle bin before deleting the folder: bulk-trashed children hold restore relations
+  // referencing the folder, so deleting the folder first hits the element-container FK bug (#23387).
+  await umbracoApi.element.emptyRecycleBin();
   await umbracoApi.element.ensureNameNotExists(elementFolderName);
   await umbracoApi.element.ensureNameNotExists(firstElementName);
   await umbracoApi.element.ensureNameNotExists(secondElementName);
@@ -37,9 +40,21 @@ test('can bulk publish elements in a folder', async ({umbracoApi, umbracoUi}) =>
   await umbracoUi.library.clickConfirmToPublishButtonAndWaitForElementToBePublished();
 
   // Assert
-  await umbracoUi.waitForTimeout(ConstantHelper.wait.short); // Wait for the publish process to complete
   expect(await umbracoApi.element.isElementPublished(firstElementId)).toBeTruthy();
   expect(await umbracoApi.element.isElementPublished(secondElementId)).toBeTruthy();
+  // Verify audit trail
+  const currentUser = await umbracoApi.user.getCurrentUser();
+  await umbracoUi.library.clickCaretButtonForElementName(elementFolderName);
+  await umbracoUi.library.goToElementWithName(firstElementName);
+  await umbracoUi.library.clickInfoTab();
+  await umbracoUi.library.doesHistoryItemHaveTag(ConstantHelper.auditTrailTypes.publish);
+  await umbracoUi.library.doesHistoryItemHaveDescription(ConstantHelper.auditTrailMessages.elementSavedAndPublished);
+  await umbracoUi.library.doesHistoryItemHaveUsername(currentUser.name);
+  await umbracoUi.library.goToElementWithName(secondElementName);
+  await umbracoUi.library.clickInfoTab();
+  await umbracoUi.library.doesHistoryItemHaveTag(ConstantHelper.auditTrailTypes.publish);
+  await umbracoUi.library.doesHistoryItemHaveDescription(ConstantHelper.auditTrailMessages.elementSavedAndPublished);
+  await umbracoUi.library.doesHistoryItemHaveUsername(currentUser.name);
 });
 
 test('can bulk unpublish elements in a folder', async ({umbracoApi, umbracoUi}) => {
@@ -54,8 +69,10 @@ test('can bulk unpublish elements in a folder', async ({umbracoApi, umbracoUi}) 
   await umbracoUi.library.clickConfirmToUnpublishButtonAndWaitForElementToBeUnpublished();
 
   // Assert
-  expect(await umbracoApi.element.isElementPublished(firstElementId)).toBeFalsy();
-  expect(await umbracoApi.element.isElementPublished(secondElementId)).toBeFalsy();
+  // The confirm waiter resolves on the first element's unpublish response; the second can still be
+  // settling, so poll each state rather than reading once.
+  await expect.poll(() => umbracoApi.element.isElementPublished(firstElementId)).toBeFalsy();
+  await expect.poll(() => umbracoApi.element.isElementPublished(secondElementId)).toBeFalsy();
 });
 
 test('can bulk move elements to another folder', async ({umbracoApi, umbracoUi}) => {
@@ -90,8 +107,9 @@ test('can bulk trash elements in a folder', async ({umbracoApi, umbracoUi}) => {
   await umbracoUi.library.clickConfirmTrashButtonAndWaitForElementToBeTrashed();
 
   // Assert
-  expect(await umbracoApi.element.doesNameExist(firstElementName)).toBeFalsy();
-  expect(await umbracoApi.element.doesNameExist(secondElementName)).toBeFalsy();
-  const folderChildren = await umbracoApi.element.getChildren(folderId);
-  expect(folderChildren.length).toBe(0);
+  // The confirm waiter resolves on the first element's trash response; the second can still be
+  // settling, so poll each state rather than reading once.
+  await expect.poll(() => umbracoApi.element.doesNameExist(firstElementName)).toBeFalsy();
+  await expect.poll(() => umbracoApi.element.doesNameExist(secondElementName)).toBeFalsy();
+  await expect.poll(() => umbracoApi.element.getChildren(folderId).then(c => c.length)).toBe(0);
 });

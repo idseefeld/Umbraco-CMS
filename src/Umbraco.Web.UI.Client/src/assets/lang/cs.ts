@@ -301,6 +301,8 @@ export default {
 		createFromClipboard: 'Paste from clipboard',
 		nodeIsInTrash: 'This item is in the Recycle Bin',
 		saveModalTitle: 'Uložit',
+		saveAndPublishDescendantsModalTitle: 'Uložit a publikovat s potomky',
+		saveAndScheduleModalTitle: 'Uložit a naplánovat publikování',
 	},
 	blueprints: {
 		createBlueprintFrom: 'Vytvořit novou šablonu obsahu z <em>%0%</em>',
@@ -314,6 +316,8 @@ export default {
 	},
 	media: {
 		clickToUpload: 'Klikněte pro nahrání',
+		browseFilesAction: 'Procházet soubory',
+		dropFilesOr: 'Přetáhněte média sem<br />nebo',
 		orClickHereToUpload: 'nebo kliknutím sem vyberte soubory',
 		disallowedFileType: 'Tento soubor nelze nahrát, nemá povolený typ souboru',
 		maxFileSize: 'Maximální velikost souboru je',
@@ -343,7 +347,7 @@ export default {
 		noDocumentTypesEditPermissions: 'Oprávnění k úpravám pro tento typ dokumentu',
 		noDocumentTypesCreateNew: 'Vytvořit nový typ dokumentu',
 		noDocumentTypesAllowedAtRoot:
-			'Nejsou zde k dispozici žádné povolené typy dokumentů pro vytváření obsahu. Musíte je povolit v sekci <strong>Typy dokumentů</strong> v části <strong>Nastavení</strong> změnou možnosti <strong>Povolit jako root</strong> v části <strong>Oprávnění</strong>.',
+			'Nejsou zde k dispozici žádné povolené typy dokumentů pro vytváření obsahu. Musíte je povolit v sekci <strong>Typy dokumentů</strong> v části <strong>Nastavení</strong> změnou možnosti <strong>Povolit jako root</strong> v části <strong>Struktura</strong>.',
 		noMediaTypes:
 			'Nejsou dostupné žádné povolené typy medií. Tyto musíte povolit v sekci nastavení pod <strong>"typy medií"</strong>.',
 		noMediaTypesWithNoSettingsAccess: 'Vybraná média ve stromu neumožňuje vytváření pod nimi žádná další média.',
@@ -639,6 +643,7 @@ export default {
 		content: 'Obsah',
 		continue: 'Pokračovat',
 		copy: 'Kopírovat',
+		copied: 'Zkopírováno!',
 		create: 'Vytvořit',
 		database: 'Databáze',
 		date: 'Datum',
@@ -694,6 +699,8 @@ export default {
 		new: 'Nový',
 		next: 'Následující',
 		no: 'Ne',
+		noResults: 'Žádné výsledky',
+		noResultsFor: (query: string) => `Nebyl nalezen žádný výsledek pro "${query}".`,
 		of: 'z',
 		off: 'Vypnuto',
 		ok: 'OK',
@@ -1368,8 +1375,16 @@ export default {
 		chooseChildNode: 'Vybrat podřízený uzel',
 		compositionsDescription:
 			'Zdědí záložky a vlastnosti z existujícího typu dokumentu. Nové záložky budou přidány do aktuálního typu dokumentu nebo sloučeny, pokud existuje záložka se stejným názvem.',
+		compositionsDescriptionMediaType:
+			'Zdědí záložky a vlastnosti z existujícího typu média. Nové záložky budou přidány do aktuálního typu média nebo sloučeny, pokud existuje záložka se stejným názvem.',
+		compositionsDescriptionMemberType:
+			'Zdědí záložky a vlastnosti z existujícího typu člena. Nové záložky budou přidány do aktuálního typu člena nebo sloučeny, pokud existuje záložka se stejným názvem.',
 		compositionInUse: 'Tento typ obsahu se používá ve složení, a proto jej nelze poskládat.',
+		compositionInUseMediaType: 'Tento typ média se používá ve složení, a proto jej nelze poskládat.',
+		compositionInUseMemberType: 'Tento typ člena se používá ve složení, a proto jej nelze poskládat.',
 		noAvailableCompositions: 'Nejsou k dispozici žádné typy obsahu, které lze použít jako složení.',
+		noAvailableCompositionsMediaType: 'Nejsou k dispozici žádné typy média, které lze použít jako složení.',
+		noAvailableCompositionsMemberType: 'Nejsou k dispozici žádné typy člena, které lze použít jako složení.',
 		compositionRemoveWarning:
 			'Odebráním složení odstraníte všechna související data vlastností. Jakmile uložíte typ dokumentu, již není cesta zpět.',
 		availableEditors: 'Vytvořit nové',
@@ -1402,6 +1417,10 @@ export default {
 		tabHasNoSortOrder: 'záložka nemá žádné řazení',
 		compositionUsageHeading: 'Kde se toto složení používá?',
 		compositionUsageSpecification: 'Toto složení se v současnosti používá ve složení následujících typů obsahu:',
+		compositionUsageSpecificationMediaType:
+			'Toto složení se v současnosti používá ve složení následujících typů média:',
+		compositionUsageSpecificationMemberType:
+			'Toto složení se v současnosti používá ve složení následujících typů člena:',
 		variantsHeading: 'Povolit různé jazyky',
 		variantsDescription: 'Povolit editorům vytvářet obsah tohoto typu v různých jazycích.',
 		allowVaryByCulture: 'Povolit různé jazyky',
@@ -1535,6 +1554,10 @@ export default {
 		thirdPartyGroup: 'Třetí strana',
 		userPermissions: 'Oprávnění uživatele',
 		userTypes: 'Typy uživatelů',
+	},
+	picker: {
+		browseTab: 'Procházet',
+		searchTab: 'Hledat',
 	},
 	update: {
 		updateAvailable: 'Nová aktualizace je připrvena',
@@ -1723,6 +1746,8 @@ export default {
 	redirectUrls: {
 		disableUrlTracker: 'Zakázat sledování URL',
 		enableUrlTracker: 'Povolit sledování URL',
+		urlTrackerEnabled: 'Povoleno',
+		urlTrackerDisabled: 'Zakázáno',
 		culture: 'Jazyk',
 		originalUrl: 'Originální URL',
 		redirectedTo: 'Přesměrováno na',
