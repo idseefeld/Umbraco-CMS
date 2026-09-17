@@ -20,6 +20,7 @@
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="5.9.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.9.0" />
     <PackageVersion Include="Microsoft.Data.Sqlite" Version="10.0.11" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.11" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.11" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.11" />
     <PackageVersion Include="Microsoft.Extensions.Caching.Abstractions" Version="10.0.11" />
@@ -39,10 +40,13 @@
     <PackageVersion Include="Microsoft.Extensions.Options.DataAnnotations" Version="10.0.11" />
     <PackageVersion Include="Microsoft.Extensions.Caching.Hybrid" Version="10.9.0" />
     <PackageVersion Include="System.Linq.Async" Version="7.0.1" />
+    <PackageVersion Include="Npgsql" Version="10.0.3" />
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3" />
   </ItemGroup>
   <!-- Umbraco packages -->
   <ItemGroup>
     <PackageVersion Include="Umbraco.JsonSchema.Extensions" Version="0.4.3" />
+    <PackageVersion Include="Umbraco.Forms.Core.Providers" Version="18.1.1" />
   </ItemGroup>
   <!-- Third-party packages -->
   <ItemGroup>
@@ -62,8 +66,6 @@
     <PackageVersion Include="MiniProfiler.AspNetCore.Mvc" Version="4.5.4" />
     <PackageVersion Include="MiniProfiler.Shared" Version="4.5.4" />
     <PackageVersion Include="ncrontab" Version="3.4.0" />
-    <PackageVersion Include="NPoco" Version="6.2.0" />
-    <PackageVersion Include="NPoco.SqlServer" Version="6.2.0" />
     <PackageVersion Include="OpenIddict.Abstractions" Version="7.6.0" />
     <PackageVersion Include="OpenIddict.AspNetCore" Version="7.6.0" />
     <PackageVersion Include="OpenIddict.EntityFrameworkCore" Version="7.6.0" />
