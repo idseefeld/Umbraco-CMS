@@ -256,6 +256,8 @@ export default {
 		noItemsTitle: 'No items',
 		addCollectionConfiguration: 'Add collection',
 		cardViewLabel: 'Cards',
+		gridViewLabel: 'Grid',
+		listViewLabel: 'List',
 		tableViewLabel: 'Table',
 	},
 	content: {
@@ -989,6 +991,7 @@ export default {
 		status: 'Status',
 		submit: 'Submit',
 		success: 'Success',
+		switchView: 'Switch view',
 		type: 'Type',
 		typeName: 'Type Name',
 		typeToSearch: 'Type to search...',
@@ -2975,6 +2978,7 @@ export default {
 		labelInlineMode: 'Display inline with text',
 		notExposedLabel: 'Draft',
 		notExposedDescription: 'This Block is not yet created for this variant',
+		notPublishedLibraryElementDescription: 'The Library Element used by this Block is not published',
 		areaValidationEntriesNotAllowed: '<strong>%0%</strong> is not allowed in this area.',
 		rootValidationEntriesNotAllowed: '<strong>%0%</strong> is not allowed in the root of this property.',
 		unsupportedBlockName: 'Unsupported',
@@ -3246,8 +3250,6 @@ export default {
 		resultsCount: (count: number) => `Found ${count} result${count !== 1 ? 's' : ''}`,
 		tableColumnName: 'Name',
 		tableColumnEntityType: 'Type',
-		statsBoxLabel: 'Statistics',
-		searchBoxLabel: 'Search',
 		// Accessibility labels
 		searching: 'Searching...',
 		searchFailed: 'Search failed',

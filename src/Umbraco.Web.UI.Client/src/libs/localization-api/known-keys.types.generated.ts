@@ -319,6 +319,7 @@ declare global {
 		blockEditor_layoutOptions: string;
 		blockEditor_notExposedDescription: string;
 		blockEditor_notExposedLabel: string;
+		blockEditor_notPublishedLibraryElementDescription: string;
 		blockEditor_pickSpecificAllowance: string;
 		blockEditor_propertyEditorNotSupported: string;
 		blockEditor_rangeAllowed: string;
@@ -447,6 +448,8 @@ declare global {
 		codefile_deleteItemFailed: string;
 		collection_addCollectionConfiguration: string;
 		collection_cardViewLabel: string;
+		collection_gridViewLabel: string;
+		collection_listViewLabel: string;
 		collection_noItemsTitle: string;
 		collection_tableViewLabel: string;
 		colorpicker_noColors: string;
@@ -1194,6 +1197,7 @@ declare global {
 		general_status: string;
 		general_submit: string;
 		general_success: string;
+		general_switchView: string;
 		general_systemField: string;
 		general_to: string;
 		general_toggleFor: string;
@@ -1968,7 +1972,6 @@ declare global {
 		searchManagement_resultsRegion: string;
 		searchManagement_resultsTable: string;
 		searchManagement_searchBox: string;
-		searchManagement_searchBoxLabel: string;
 		searchManagement_searchButton: string;
 		searchManagement_searchButtonAriaLabel: string;
 		searchManagement_searchComplete: (count: number) => string;
@@ -1981,7 +1984,6 @@ declare global {
 		searchManagement_searchInputAriaLabel: (indexAlias: string) => string;
 		searchManagement_searchInputLabel: string;
 		searchManagement_searchPlaceholder: string;
-		searchManagement_statsBoxLabel: string;
 		searchManagement_tableColumnAlias: string;
 		searchManagement_tableColumnDocumentCount: string;
 		searchManagement_tableColumnEntityType: string;

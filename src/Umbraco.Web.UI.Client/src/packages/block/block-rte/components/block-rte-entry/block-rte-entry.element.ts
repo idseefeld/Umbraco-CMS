@@ -237,10 +237,10 @@ export class UmbBlockRteEntryElement extends UmbLitElement implements UmbPropert
 			null,
 		);
 		this.observe(
-			this.#context.hasExpose,
-			(exposed) => {
-				this.#updateBlockViewProps({ unpublished: !exposed });
-				this._exposed = exposed;
+			this.#context.isExposed,
+			(isExposed) => {
+				this.#updateBlockViewProps({ unpublished: !isExposed });
+				this._exposed = isExposed;
 			},
 			null,
 		);
@@ -380,6 +380,7 @@ export class UmbBlockRteEntryElement extends UmbLitElement implements UmbPropert
 				.icon=${this._icon}
 				.index=${this._blockViewProps.index}
 				.unpublished=${!this._exposed}
+				.isExternalContent=${this._isExternalContent}
 				.content=${this._blockViewProps.content}
 				.settings=${this._blockViewProps.settings}
 				.config=${this._blockViewProps.config}>
@@ -404,9 +405,28 @@ export class UmbBlockRteEntryElement extends UmbLitElement implements UmbPropert
 				--umb-block-entry-actions-opacity: 0;
 			}
 
+			:host([settings-invalid]),
+			:host([content-invalid]),
 			:host(:hover),
 			:host(:focus-within) {
 				--umb-block-entry-actions-opacity: 1;
+			}
+
+			:host::after {
+				content: '';
+				position: absolute;
+				z-index: 1;
+				pointer-events: none;
+				inset: 0;
+				border: 1px solid transparent;
+				border-radius: var(--uui-border-radius);
+
+				transition: border-color 240ms ease-in;
+			}
+
+			:host([settings-invalid])::after,
+			:host([content-invalid])::after {
+				border-color: var(--uui-color-invalid);
 			}
 
 			:host(.ProseMirror-selectednode) {
@@ -427,6 +447,10 @@ export class UmbBlockRteEntryElement extends UmbLitElement implements UmbPropert
 				opacity: var(--umb-block-entry-actions-opacity, 0);
 				transition: opacity 120ms;
 				z-index: 1;
+			}
+
+			uui-badge {
+				z-index: 2;
 			}
 
 			:host([drag-placeholder]) {

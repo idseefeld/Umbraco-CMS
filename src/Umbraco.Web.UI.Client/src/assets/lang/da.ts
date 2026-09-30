@@ -2684,6 +2684,7 @@ export default {
 		labelInlineMode: 'Indsæt på linje med tekst',
 		notExposedLabel: 'ikke oprettet',
 		notExposedDescription: 'Denne blok er endnu ikke oprettet for denne variant',
+		notPublishedLibraryElementDescription: 'Det bibliotekselement, som denne blok bruger, er ikke udgivet',
 		unsupportedBlockName: 'Ugyldigt indhold',
 		unsupportedBlockDescription:
 			'Dette indhold er ikke længere understøttet. Hvis du mangler dette indhold bør du kontakte din administrator. Ellers bør du slette dette indhold.',
@@ -3069,8 +3070,6 @@ export default {
 		resultsCount: (count: number) => `Fandt ${count} resultat${count !== 1 ? 'er' : ''}`,
 		tableColumnName: 'Navn',
 		tableColumnEntityType: 'Type',
-		statsBoxLabel: 'Statistik',
-		searchBoxLabel: 'Søgning',
 		// Accessibility labels
 		searching: 'Søger...',
 		searchFailed: 'Søgning fejlede',
