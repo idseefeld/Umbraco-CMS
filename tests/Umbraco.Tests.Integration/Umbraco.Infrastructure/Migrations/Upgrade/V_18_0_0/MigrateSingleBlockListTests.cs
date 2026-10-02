@@ -1,4 +1,4 @@
-﻿// Copyright (c) Umbraco.
+// Copyright (c) Umbraco.
 // See LICENSE for more details.
 
 using Microsoft.Extensions.DependencyInjection;
@@ -35,6 +35,7 @@ namespace Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Migrations.Upgrad
 /// </summary>
 [TestFixture]
 [UmbracoTest(Database = UmbracoTestOptions.Database.NewSchemaPerTest)]
+[NUnit.Framework.Ignore("The migration is for v18+")]
 internal sealed class MigrateSingleBlockListTests : UmbracoIntegrationTest
 {
     private const string OuterPropertyAlias = "blocks";
