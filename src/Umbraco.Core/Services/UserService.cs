@@ -412,7 +412,17 @@ internal partial class UserService : RepositoryService, IUserService
                     throw new ArgumentOutOfRangeException(nameof(matchType));
             }
 
-            return _userRepository.GetPagedResultsByQuery(query, pageIndex, pageSize, out totalRecords, dto => dto.Email);
+            return _userRepository.GetPagedResultsByQuery(
+                query,
+                pageIndex,
+                pageSize,
+                out totalRecords,
+                dto => dto.Email,
+                Direction.Ascending,
+                includeUserGroups: null,
+                excludeUserGroups: null,
+                userState: null,
+                userKinds: null);
         }
     }
 
@@ -444,7 +454,17 @@ internal partial class UserService : RepositoryService, IUserService
                     throw new ArgumentOutOfRangeException(nameof(matchType));
             }
 
-            return _userRepository.GetPagedResultsByQuery(query, pageIndex, pageSize, out totalRecords, dto => dto.Username);
+            return _userRepository.GetPagedResultsByQuery(
+                query,
+                pageIndex,
+                pageSize,
+                out totalRecords,
+                dto => dto.Username,
+                Direction.Ascending,
+                includeUserGroups: null,
+                excludeUserGroups: null,
+                userState: null,
+                userKinds: null);
         }
     }
 
@@ -631,6 +651,13 @@ internal partial class UserService : RepositoryService, IUserService
 
         ICoreBackOfficeUserManager userManager = serviceScope.ServiceProvider.GetRequiredService<ICoreBackOfficeUserManager>();
         IBackOfficeUserStore userStore = serviceScope.ServiceProvider.GetRequiredService<IBackOfficeUserStore>();
+        IForgotPasswordUriProvider uriProvider = serviceScope.ServiceProvider.GetRequiredService<IForgotPasswordUriProvider>();
+
+        Attempt<UserOperationStatus> canCreateUriAttempt = await uriProvider.CanCreateForgotPasswordUriAsync();
+        if (canCreateUriAttempt.Success is false)
+        {
+            return Attempt.Fail(canCreateUriAttempt.Result);
+        }
 
         IUser? user = await userStore.GetByEmailAsync(userEmail);
 
@@ -639,7 +666,6 @@ internal partial class UserService : RepositoryService, IUserService
             return Attempt.Fail(UserOperationStatus.UserNotFound);
         }
 
-        IForgotPasswordUriProvider uriProvider = serviceScope.ServiceProvider.GetRequiredService<IForgotPasswordUriProvider>();
         Attempt<Uri, UserOperationStatus> uriAttempt = await uriProvider.CreateForgotPasswordUriAsync(user);
         if (uriAttempt.Success is false)
         {
@@ -1301,9 +1327,12 @@ internal partial class UserService : RepositoryService, IUserService
             pageSize,
             out long totalRecords,
             x => x.Username,
+            Direction.Ascending,
+            includeUserGroups: null,
             excludeUserGroups: excludeUserGroupAliases.ToArray(),
-            filter: query,
-            userState: baseFilter.IncludeUserStates?.ToArray());
+            userState: baseFilter.IncludeUserStates?.ToArray(),
+            userKinds: null,
+            filter: query);
 
         var pagedResult = new PagedModel<IUser> { Items = result, Total = totalRecords };
 
@@ -1407,6 +1436,7 @@ internal partial class UserService : RepositoryService, IUserService
             includedUserGroupAliases?.ToArray(),
             excludedUserGroupAliases?.ToArray(),
             includeUserStates?.ToArray(),
+            mergedFilter.IncludeUserKinds?.ToArray(),
             baseQuery);
 
         scope.Complete();
@@ -1763,7 +1793,7 @@ internal partial class UserService : RepositoryService, IUserService
                     throw new IndexOutOfRangeException("The orderBy parameter " + orderBy + " is not valid");
             }
 
-            return _userRepository.GetPagedResultsByQuery(null, pageIndex, pageSize, out totalRecords, sort, orderDirection, includeUserGroups, excludeUserGroups, userState, filter);
+            return _userRepository.GetPagedResultsByQuery(null, pageIndex, pageSize, out totalRecords, sort, orderDirection, includeUserGroups, excludeUserGroups, userState, userKinds: null, filter: filter);
         }
     }
 
@@ -1772,7 +1802,17 @@ internal partial class UserService : RepositoryService, IUserService
     {
         using (ICoreScope scope = ScopeProvider.CreateCoreScope(autoComplete: true))
         {
-            return _userRepository.GetPagedResultsByQuery(null, pageIndex, pageSize, out totalRecords, member => member.Name);
+            return _userRepository.GetPagedResultsByQuery(
+                null,
+                pageIndex,
+                pageSize,
+                out totalRecords,
+                member => member.Name,
+                Direction.Ascending,
+                includeUserGroups: null,
+                excludeUserGroups: null,
+                userState: null,
+                userKinds: null);
         }
     }
 
