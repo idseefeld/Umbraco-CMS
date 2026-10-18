@@ -1,3 +1,4 @@
+using NPoco;
 using NUnit.Framework;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Cache;
@@ -9,6 +10,8 @@ using Umbraco.Cms.Core.Scoping;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.Services.Changes;
 using Umbraco.Cms.Core.Sync;
+using Umbraco.Cms.Infrastructure.Persistence;
+using Umbraco.Cms.Infrastructure.Persistence.Dtos;
 using Umbraco.Cms.Tests.Common.Builders;
 using Umbraco.Cms.Tests.Common.Builders.Extensions;
 using Umbraco.Cms.Tests.Common.Testing;
@@ -375,9 +378,13 @@ internal sealed class DocumentUrlServiceContentTreeChangeTests : UmbracoIntegrat
         int publishedCacheRows;
         using (var scope = ScopeProvider.CreateScope(autoComplete: true))
         {
-            publishedCacheRows = scope.Database.ExecuteScalar<int>(
-                $"SELECT COUNT(*) FROM {Constants.DatabaseSchema.Tables.NodeData} WHERE nodeId = @0",
-                page.Id);
+            var db = scope.Database;
+            var syntax = db.SqlContext.SqlSyntax;
+            Sql<ISqlContext> query = db.SqlContext.Sql()
+                .SelectCount()
+                .From<ContentNuDto>()
+                .Where<ContentNuDto>(n => n.NodeId == page.Id);
+            publishedCacheRows = db.ExecuteScalar<int>(query);
         }
 
         Assert.That(
