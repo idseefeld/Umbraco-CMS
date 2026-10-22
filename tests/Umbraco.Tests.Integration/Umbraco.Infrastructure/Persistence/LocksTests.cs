@@ -291,7 +291,7 @@ internal sealed class LocksTests : UmbracoIntegrationTest
     [Test]
     public void DeadLockTest()
     {
-        if (BaseTestDatabase.IsSqlite() || BaseTestDatabase.IsPostgreSql())
+        if (BaseTestDatabase.IsSqlite())
         {
             Assert.Ignore("This test doesn't work with Microsoft.Data.Sqlite - SELECT * FROM sys.dm_tran_locks;");
             return;
@@ -716,6 +716,11 @@ internal sealed class LocksTests : UmbracoIntegrationTest
 
     private void WriteLocks(IDatabaseQuery database)
     {
+        if (BaseTestDatabase.IsSqlServer() is false)
+        {
+            return;
+        }
+
         Console.WriteLine("LOCKS:");
         var info = database.Query<dynamic>("SELECT * FROM sys.dm_tran_locks;").ToList();
         var sb = new StringBuilder("> ");
