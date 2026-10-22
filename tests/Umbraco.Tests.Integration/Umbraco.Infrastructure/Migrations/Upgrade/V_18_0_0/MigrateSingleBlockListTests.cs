@@ -1,4 +1,4 @@
-﻿// Copyright (c) Umbraco.
+// Copyright (c) Umbraco.
 // See LICENSE for more details.
 
 using Microsoft.Extensions.DependencyInjection;
@@ -881,9 +881,12 @@ internal sealed class MigrateSingleBlockListTests : UmbracoIntegrationTest
 
         var propertyDataId = (await scope.Database.FetchAsync<int>(selectSql)).Single();
 
-        var affected = await scope.Database.ExecuteAsync(
-            "UPDATE umbracoPropertyData SET textValue = NULL, varcharValue = NULL WHERE id = @0",
-            propertyDataId);
+        Sql<ISqlContext> updateSql = scope.Database.SqlContext.Sql()
+            .Update<PropertyDataDto>(x => x
+                .Set(y => y.TextValue, null)
+                .Set(y => y.VarcharValue, null))
+            .Where<PropertyDataDto>(x => x.Id == propertyDataId);
+        var affected = await scope.Database.ExecuteAsync(updateSql);
 
         Assert.That(affected, Is.EqualTo(1));
 
