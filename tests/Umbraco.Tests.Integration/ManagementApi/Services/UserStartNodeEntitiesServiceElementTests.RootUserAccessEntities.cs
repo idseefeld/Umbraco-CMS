@@ -47,9 +47,10 @@ public partial class UserStartNodeEntitiesServiceElementTests
         Assert.Multiple(() =>
         {
             // the three start nodes are the children of the "C1", "C3" and "C5" roots, respectively, so these are expected as roots
-            Assert.AreEqual(ItemsByName["C1"].Key, roots[0].Entity.Key);
-            Assert.AreEqual(ItemsByName["C3"].Key, roots[1].Entity.Key);
-            Assert.AreEqual(ItemsByName["C5"].Key, roots[2].Entity.Key);
+            // the order is not guaranteed, so we use LINQ to find the expected roots by name
+            Assert.AreEqual(ItemsByName["C1"].Key, roots.First(r => r.Entity.Name == "C1").Entity.Key);
+            Assert.AreEqual(ItemsByName["C3"].Key, roots.First(r => r.Entity.Name == "C3").Entity.Key);
+            Assert.AreEqual(ItemsByName["C5"].Key, roots.First(r => r.Entity.Name == "C5").Entity.Key);
 
             // all are disallowed - only the children (the actual start nodes) are allowed
             Assert.IsTrue(roots.All(r => r.HasAccess is false));
