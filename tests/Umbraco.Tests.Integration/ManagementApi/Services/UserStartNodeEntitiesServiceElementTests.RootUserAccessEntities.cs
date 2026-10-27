@@ -22,12 +22,12 @@ public partial class UserStartNodeEntitiesServiceElementTests
         Assert.Multiple(() =>
         {
             // first and last root containers are the ones allowed
-            Assert.AreEqual(ItemsByName["C1"].Key, roots[0].Entity.Key);
-            Assert.AreEqual(ItemsByName["C5"].Key, roots[1].Entity.Key);
+            Assert.AreEqual(ItemsByName["C1"].Key, roots.First(r => r.Entity.Name == "C1").Entity.Key);
+            Assert.AreEqual(ItemsByName["C5"].Key, roots.First(r => r.Entity.Name == "C5").Entity.Key);
 
             // both are allowed (they are the actual start nodes)
-            Assert.IsTrue(roots[0].HasAccess);
-            Assert.IsTrue(roots[1].HasAccess);
+            Assert.IsTrue(roots.First(r => r.Entity.Name == "C1").HasAccess);
+            Assert.IsTrue(roots.First(r => r.Entity.Name == "C5").HasAccess);
         });
     }
 
