@@ -6,8 +6,8 @@ using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.ContentPublishing;
 using Umbraco.Cms.Core.Models.PublishedContent;
+using Umbraco.Cms.Core.Preview;
 using Umbraco.Cms.Core.PublishedCache;
-using Umbraco.Cms.Core.Routing;
 using Umbraco.Cms.Core.Scoping;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.Services.Navigation;
@@ -98,7 +98,7 @@ internal sealed class DocumentHybridCacheMockTests : UmbracoIntegrationTestWithC
 
         _mockDatabaseCacheRepository.Setup(r => r.DeleteContentItemAsync(It.IsAny<int>()));
 
-        var mockedPublishedStatusService = new Mock<IPublishStatusQueryService>();
+        var mockedPublishedStatusService = new Mock<IDocumentPublishStatusQueryService>();
         mockedPublishedStatusService.Setup(x => x.IsPublishedInAnyCulture(It.IsAny<Guid>())).Returns(true);
         mockedPublishedStatusService.Setup(x => x.HasPublishedAncestorPath(It.IsAny<Guid>())).Returns(true);
 
@@ -112,22 +112,18 @@ internal sealed class DocumentHybridCacheMockTests : UmbracoIntegrationTestWithC
             GetSeedProviders(mockedPublishedStatusService.Object),
             new OptionsWrapper<CacheSettings>(new CacheSettings()),
             GetRequiredService<IPublishedModelFactory>(),
-            GetRequiredService<IPreviewService>(),
+            GetRequiredService<IPreviewSessionService>(),
             mockedPublishedStatusService.Object,
             new NullLogger<DocumentCacheService>(),
-            new ConvertedPublishedContentCacheFactory(null, new NullLogger<ConvertedPublishedContentCacheFactory>()));
+            new ConvertedPublishedContentCacheFactory(null, new NullLogger<ConvertedPublishedContentCacheFactory>()),
+            Mock.Of<IPreviewAccessEvaluator>(evaluator => evaluator.CanPreviewDocument(It.IsAny<IPublishedContent>())));
 
-        _mockedCache = new DocumentCache(
-            _documentCacheService,
-            GetRequiredService<IPublishedContentTypeCache>(),
-            GetRequiredService<IDocumentNavigationQueryService>(),
-            GetRequiredService<IDocumentUrlService>(),
-            new Lazy<IPublishedUrlProvider>(GetRequiredService<IPublishedUrlProvider>));
+        _mockedCache = new DocumentCache(_documentCacheService);
     }
 
     // We want to be able to alter the settings for the providers AFTER the test has started
     // So we'll manually create them with a magic options mock.
-    private IEnumerable<IDocumentSeedKeyProvider> GetSeedProviders(IPublishStatusQueryService publishStatusQueryService)
+    private IEnumerable<IDocumentSeedKeyProvider> GetSeedProviders(IDocumentPublishStatusQueryService publishStatusQueryService)
     {
         _cacheSettings = new CacheSettings
         {
@@ -329,8 +325,8 @@ internal sealed class DocumentHybridCacheMockTests : UmbracoIntegrationTestWithC
     {
         var ancestorCheckReturnsTrue = false;
 
-        var controllableMock = new Mock<IPublishStatusQueryService>();
-        controllableMock.Setup(x => x.IsDocumentPublishedInAnyCulture(It.IsAny<Guid>())).Returns(true);
+        var controllableMock = new Mock<IDocumentPublishStatusQueryService>();
+        controllableMock.Setup(x => x.IsPublishedInAnyCulture(It.IsAny<Guid>())).Returns(true);
         controllableMock.Setup(x => x.HasPublishedAncestorPath(It.IsAny<Guid>()))
             .Returns(() => ancestorCheckReturnsTrue);
 
@@ -344,10 +340,11 @@ internal sealed class DocumentHybridCacheMockTests : UmbracoIntegrationTestWithC
             GetSeedProviders(controllableMock.Object),
             new OptionsWrapper<CacheSettings>(new CacheSettings()),
             GetRequiredService<IPublishedModelFactory>(),
-            GetRequiredService<IPreviewService>(),
+            GetRequiredService<IPreviewSessionService>(),
             controllableMock.Object,
             new NullLogger<DocumentCacheService>(),
-            new ConvertedPublishedContentCacheFactory(null, new NullLogger<ConvertedPublishedContentCacheFactory>()));
+            new ConvertedPublishedContentCacheFactory(null, new NullLogger<ConvertedPublishedContentCacheFactory>()),
+            Mock.Of<IPreviewAccessEvaluator>(evaluator => evaluator.CanPreviewDocument(It.IsAny<IPublishedContent>())));
 
         var hybridCache = GetRequiredService<Microsoft.Extensions.Caching.Hybrid.HybridCache>();
         await hybridCache.RemoveAsync($"{Textpage.Key}");
@@ -472,8 +469,8 @@ internal sealed class DocumentHybridCacheMockTests : UmbracoIntegrationTestWithC
         // Arrange - create a new DocumentCacheService with a controllable HasPublishedAncestorPath mock.
         var ancestorCheckReturnsTrue = false;
 
-        var controllableMock = new Mock<IPublishStatusQueryService>();
-        controllableMock.Setup(x => x.IsDocumentPublishedInAnyCulture(It.IsAny<Guid>())).Returns(true);
+        var controllableMock = new Mock<IDocumentPublishStatusQueryService>();
+        controllableMock.Setup(x => x.IsPublishedInAnyCulture(It.IsAny<Guid>())).Returns(true);
         controllableMock.Setup(x => x.HasPublishedAncestorPath(It.IsAny<Guid>()))
             .Returns(() => ancestorCheckReturnsTrue);
 
@@ -487,17 +484,13 @@ internal sealed class DocumentHybridCacheMockTests : UmbracoIntegrationTestWithC
             GetSeedProviders(controllableMock.Object),
             new OptionsWrapper<CacheSettings>(new CacheSettings()),
             GetRequiredService<IPublishedModelFactory>(),
-            GetRequiredService<IPreviewService>(),
+            GetRequiredService<IPreviewSessionService>(),
             controllableMock.Object,
             new NullLogger<DocumentCacheService>(),
-            new ConvertedPublishedContentCacheFactory(null, new NullLogger<ConvertedPublishedContentCacheFactory>()));
+            new ConvertedPublishedContentCacheFactory(null, new NullLogger<ConvertedPublishedContentCacheFactory>()),
+            Mock.Of<IPreviewAccessEvaluator>(evaluator => evaluator.CanPreviewDocument(It.IsAny<IPublishedContent>())));
 
-        var controlledCache = new DocumentCache(
-            controlledCacheService,
-            GetRequiredService<IPublishedContentTypeCache>(),
-            GetRequiredService<IDocumentNavigationQueryService>(),
-            GetRequiredService<IDocumentUrlService>(),
-            new Lazy<IPublishedUrlProvider>(GetRequiredService<IPublishedUrlProvider>));
+        var controlledCache = new DocumentCache(controlledCacheService);
 
         // Clear any existing cache entry for this key.
         var hybridCache = GetRequiredService<Microsoft.Extensions.Caching.Hybrid.HybridCache>();

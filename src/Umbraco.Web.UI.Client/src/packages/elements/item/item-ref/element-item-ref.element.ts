@@ -8,10 +8,11 @@ import { UmbModalRouteRegistrationController } from '@umbraco-cms/backoffice/rou
 import { UmbDeselectedEvent, UmbSelectedEvent } from '@umbraco-cms/backoffice/event';
 import { UMB_WORKSPACE_MODAL, umbGenerateWorkspaceLink } from '@umbraco-cms/backoffice/workspace';
 import type { UUISelectableEvent } from '@umbraco-cms/backoffice/external/uui';
+import { UmbEntityItemRefFrameMixin } from '@umbraco-cms/backoffice/entity-item';
 
 @customElement('umb-element-item-ref')
-export class UmbElementItemRefElement extends UmbLitElement {
-	#item = new UmbElementItemDataResolver<UmbElementItemModel>(this);
+export class UmbElementItemRefElement extends UmbEntityItemRefFrameMixin(UmbLitElement) {
+	readonly #item = new UmbElementItemDataResolver<UmbElementItemModel>(this);
 
 	@property({ type: Object })
 	public set item(value: UmbElementItemModel | undefined) {
@@ -76,6 +77,10 @@ export class UmbElementItemRefElement extends UmbLitElement {
 		this.#item.observe(this.#item.isDraft, (isDraft) => (this._isDraft = isDraft ?? false));
 	}
 
+	protected override get isEntityFrameNavigable() {
+		return !this.readonly && !this.selectOnly && !this.disabled && !!this._unique;
+	}
+
 	#getLink() {
 		if (!this._unique) return;
 		return umbGenerateWorkspaceLink({
@@ -116,6 +121,7 @@ export class UmbElementItemRefElement extends UmbLitElement {
 				<slot name="actions" slot="actions"></slot>
 				${this.#renderIcon()}${this.#renderIsDraft()} ${this.#renderIsTrashed()}
 			</uui-ref-node>
+			${this.renderEntityFrame(this._name)}
 		`;
 	}
 

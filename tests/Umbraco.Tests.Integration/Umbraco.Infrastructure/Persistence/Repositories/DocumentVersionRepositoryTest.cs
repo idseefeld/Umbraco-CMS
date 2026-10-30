@@ -1,6 +1,6 @@
 using System.Diagnostics;
-using System.Linq;
 using NUnit.Framework;
+using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Infrastructure.Persistence.Dtos;
@@ -26,11 +26,11 @@ internal sealed class DocumentVersionRepositoryTest : UmbracoIntegrationTest
     public async Task GetContentVersionsEligibleForCleanup_Always_ExcludesActiveVersions()
     {
         var template = TemplateBuilder.CreateTextPageTemplate();
-        await TemplateService.CreateAsync(template, Cms.Core.Constants.Security.SuperUserKey);
+        await TemplateService.CreateAsync(template, Constants.Security.SuperUserKey);
 
         var contentType =
             ContentTypeBuilder.CreateSimpleContentType("umbTextpage", "Textpage", defaultTemplateId: template.Id);
-        await ContentTypeService.CreateAsync(contentType, Cms.Core.Constants.Security.SuperUserKey);
+        await ContentTypeService.CreateAsync(contentType, Constants.Security.SuperUserKey);
 
         var content = ContentBuilder.CreateSimpleContent(contentType);
         ContentService.Save(content);
@@ -58,11 +58,11 @@ internal sealed class DocumentVersionRepositoryTest : UmbracoIntegrationTest
     public async Task GetContentVersionsEligibleForCleanup_Always_ExcludesPinnedVersions()
     {
         var template = TemplateBuilder.CreateTextPageTemplate();
-        await TemplateService.CreateAsync(template, Cms.Core.Constants.Security.SuperUserKey);
+        await TemplateService.CreateAsync(template, Constants.Security.SuperUserKey);
 
         var contentType =
             ContentTypeBuilder.CreateSimpleContentType("umbTextpage", "Textpage", defaultTemplateId: template.Id);
-        await ContentTypeService.CreateAsync(contentType, Cms.Core.Constants.Security.SuperUserKey);
+        await ContentTypeService.CreateAsync(contentType, Constants.Security.SuperUserKey);
 
         var content = ContentBuilder.CreateSimpleContent(contentType);
         ContentService.Save(content);
@@ -106,11 +106,11 @@ internal sealed class DocumentVersionRepositoryTest : UmbracoIntegrationTest
     public async Task GetContentVersionsEligibleForCleanup_WithDateFilter_OnlyReturnsOlderVersions()
     {
         var template = TemplateBuilder.CreateTextPageTemplate();
-        await TemplateService.CreateAsync(template, Cms.Core.Constants.Security.SuperUserKey);
+        await TemplateService.CreateAsync(template, Constants.Security.SuperUserKey);
 
         var contentType =
             ContentTypeBuilder.CreateSimpleContentType("umbTextpage", "Textpage", defaultTemplateId: template.Id);
-        await ContentTypeService.CreateAsync(contentType, Cms.Core.Constants.Security.SuperUserKey);
+        await ContentTypeService.CreateAsync(contentType, Constants.Security.SuperUserKey);
 
         // Create 4 versions in total: 2 historic (1, 2), 1 current draft (3), 1 current published (4).
         var content = ContentBuilder.CreateSimpleContent(contentType);
@@ -146,11 +146,11 @@ internal sealed class DocumentVersionRepositoryTest : UmbracoIntegrationTest
     public async Task GetContentVersionsEligibleForCleanup_WithMaxCount_RespectsLimitAndReturnsOldestFirst()
     {
         var template = TemplateBuilder.CreateTextPageTemplate();
-        await TemplateService.CreateAsync(template, Cms.Core.Constants.Security.SuperUserKey);
+        await TemplateService.CreateAsync(template, Constants.Security.SuperUserKey);
 
         var contentType =
             ContentTypeBuilder.CreateSimpleContentType("umbTextpage", "Textpage", defaultTemplateId: template.Id);
-        await ContentTypeService.CreateAsync(contentType, Cms.Core.Constants.Security.SuperUserKey);
+        await ContentTypeService.CreateAsync(contentType, Constants.Security.SuperUserKey);
 
         // Create 5 versions in total: 3 historic (1, 2, 3), 1 current draft (4), 1 current published (5).
         var content = ContentBuilder.CreateSimpleContent(contentType);
@@ -190,11 +190,11 @@ internal sealed class DocumentVersionRepositoryTest : UmbracoIntegrationTest
     public async Task DeleteVersions_Always_DeletesSpecifiedVersions()
     {
         var template = TemplateBuilder.CreateTextPageTemplate();
-        await TemplateService.CreateAsync(template, Cms.Core.Constants.Security.SuperUserKey);
+        await TemplateService.CreateAsync(template, Constants.Security.SuperUserKey);
 
         var contentType =
             ContentTypeBuilder.CreateSimpleContentType("umbTextpage", "Textpage", defaultTemplateId: template.Id);
-        await ContentTypeService.CreateAsync(contentType, Cms.Core.Constants.Security.SuperUserKey);
+        await ContentTypeService.CreateAsync(contentType, Constants.Security.SuperUserKey);
 
         var content = ContentBuilder.CreateSimpleContent(contentType);
         ContentService.Save(content);
@@ -227,11 +227,11 @@ internal sealed class DocumentVersionRepositoryTest : UmbracoIntegrationTest
     public async Task DeleteVersions_VerifiesCascadeDeletion()
     {
         var template = TemplateBuilder.CreateTextPageTemplate();
-        await TemplateService.CreateAsync(template, Cms.Core.Constants.Security.SuperUserKey);
+        await TemplateService.CreateAsync(template, Constants.Security.SuperUserKey);
 
         var contentType =
             ContentTypeBuilder.CreateSimpleContentType("umbTextpage", "Textpage", defaultTemplateId: template.Id);
-        await ContentTypeService.CreateAsync(contentType, Cms.Core.Constants.Security.SuperUserKey);
+        await ContentTypeService.CreateAsync(contentType, Constants.Security.SuperUserKey);
 
         var content = ContentBuilder.CreateSimpleContent(contentType);
         ContentService.Save(content);
@@ -283,11 +283,11 @@ internal sealed class DocumentVersionRepositoryTest : UmbracoIntegrationTest
     public async Task GetPagedItemsByContentId_WithInvariantCultureContent_ReturnsPaginatedResults()
     {
         var template = TemplateBuilder.CreateTextPageTemplate();
-        await TemplateService.CreateAsync(template, Cms.Core.Constants.Security.SuperUserKey);
+        await TemplateService.CreateAsync(template, Constants.Security.SuperUserKey);
 
         var contentType =
             ContentTypeBuilder.CreateSimpleContentType("umbTextpage", "Textpage", defaultTemplateId: template.Id);
-        await ContentTypeService.CreateAsync(contentType, Cms.Core.Constants.Security.SuperUserKey);
+        await ContentTypeService.CreateAsync(contentType, Constants.Security.SuperUserKey);
 
         var content = ContentBuilder.CreateSimpleContent(contentType);
         ContentService.Save(content);
@@ -316,7 +316,7 @@ internal sealed class DocumentVersionRepositoryTest : UmbracoIntegrationTest
     public async Task GetPagedItemsByContentId_WithVariantCultureContent_ReturnsPaginatedResults()
     {
         var template = TemplateBuilder.CreateTextPageTemplate();
-        await TemplateService.CreateAsync(template, Cms.Core.Constants.Security.SuperUserKey);
+        await TemplateService.CreateAsync(template, Constants.Security.SuperUserKey);
 
         var contentType =
             ContentTypeBuilder.CreateSimpleContentType("umbTextpage", "Textpage", defaultTemplateId: template.Id);
@@ -326,7 +326,7 @@ internal sealed class DocumentVersionRepositoryTest : UmbracoIntegrationTest
             propertyType.Variations = ContentVariation.Culture;
         }
 
-        await ContentTypeService.UpdateAsync(contentType, Cms.Core.Constants.Security.SuperUserKey);
+        await ContentTypeService.UpdateAsync(contentType, Constants.Security.SuperUserKey);
 
         var content = ContentBuilder.CreateSimpleContent(contentType, "foo", culture: "en-US");
         content.SetCultureName("foo", "en-US");

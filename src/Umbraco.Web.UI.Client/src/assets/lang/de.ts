@@ -626,33 +626,6 @@ export default {
 		changeKeyError: "Der Wert '%0%' ist bereits vorhanden.",
 		overviewTitle: 'Wörterbuch Übersicht',
 	},
-	examineManagement: {
-		configuredSearchers: '<em>Sucher</em> einrichten ',
-		configuredSearchersDescription:
-			'\n    Zeigt die Eigenschaften und Werkzeuge für eingerichtete <em>Sucher</em> (z.B.: multi-index searcher)',
-		fieldValues: 'Feldwerte',
-		healthStatus: 'Gesundheitsstatus',
-		healthStatusDescription: 'Der Gesundheitsstatus und Lesbarkeit des Indizes.',
-		indexers: 'Indizierer',
-		indexInfo: 'Indexinformationen',
-		contentInIndex: 'Inhalt des Indexes',
-		indexInfoDescription: 'Zeigt die Eigenschaften des Indizes',
-		manageIndexes: 'Examine Index-Verwaltung',
-		manageIndexesDescription: '\n      Index Detailanzeige und Verwaltungswerkzeuge\n    ',
-		rebuildIndex: 'Index erneuern',
-		rebuildIndexWarning:
-			'\n      Dies erzeugt den Index neu.<br />\n      Abhängig von der Inhaltsmenge Ihrer <em>Website</em> kann das eingie Zeit dauern.<br />\n      Es wird davon abgeraten, einen Index einer <em>Website</em> während hoher Auslastung- oder Inhaltbearbeitungszeiten zu erneuern.\n     ',
-		searchers: 'Sucher',
-		searchDescription: 'Durchsuche den Index und betrachte die Ergebnisse',
-		tools: 'Werkzeuge',
-		toolsDescription: 'Werkzeuge zur Indexverwaltung',
-		fields: 'Felder',
-		indexCannotRead: 'Der Index kann nicht gelesen werden und wird deshalb neu erstellt.',
-		processIsTakingLonger:
-			'Der Prozess dauert länger als erwartet, checken Sie die Umbraco Logs um zu sehen ob\n      Fehler passiert sind.\n    ',
-		indexCannotRebuild: 'Der Index kann nicht rebuilded werden weil er nicht zugewissen wurde.',
-		iIndexPopulator: 'IIndexPopulator',
-	},
 	placeholders: {
 		username: 'Benutzername eingeben',
 		password: 'Kennwort eingeben',
@@ -1102,6 +1075,7 @@ export default {
 			'Hoppla! Wir konnten Sie nicht anmelden. Bitte überprüfen Sie Ihre Anmeldeinformationen und versuchen Sie es erneut.',
 		userLockedOut: 'Ihr Konto wurde gesperrt. Bitte versuchen Sie es später erneut.',
 		receivedErrorFromServer: 'Der Server hat einen Fehler gemeldet',
+		passwordResetUnavailable: 'Das Zurücksetzen des Kennworts ist derzeit leider nicht verfügbar. Bitte versuchen Sie es später erneut oder wenden Sie sich an Ihren Administrator.',
 		userInviteWelcomeMessage:
 			'Hallo und Willkommen bei Umbraco! In nur einer Minute sind Sie bereit loszulegen, Sie müssen nur ein Kennwort festlegen.',
 		userInviteExpiredMessage:
@@ -2041,7 +2015,6 @@ export default {
 		contentRedirectManager: 'URL-Weiterleitungen verwalten',
 		mediaFolderBrowser: 'Inhalt',
 		settingsWelcome: 'Begrüßung',
-		settingsExamine: 'Examine Management',
 		settingsPublishedStatus: 'Status der Veröffentlichungen',
 		settingsModelsBuilder: 'Models Builder',
 		settingsHealthCheck: 'Systemzustand prüfen',

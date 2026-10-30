@@ -190,7 +190,6 @@ public abstract class UmbracoIntegrationTest : UmbracoIntegrationTestBase
             .AddBackOfficeOpenIddictServices()
             .AddBackOfficeIdentity()
             .AddMembersIdentity()
-            .AddExamine()
             .AddUmbracoSqlServerSupport()
             .AddUmbracoSqliteSupport()
             .AddUmbracoPostgreSqlSupport()
@@ -300,49 +299,14 @@ public abstract class UmbracoIntegrationTest : UmbracoIntegrationTestBase
         }
     }
 
-    protected string QTab(string x)
+    protected void DeleteAllMediaFiles()
     {
-        return SqlContext.SqlSyntax.GetQuotedTableName(x);
-    }
+        var mediaFileManager = GetRequiredService<MediaFileManager>();
+        var directories = mediaFileManager.FileSystem.GetDirectories(string.Empty);
 
-    protected string QTab(string x, NPoco.DatabaseType databaseType)
-    {
-        return databaseType == null
-            ? QTab(x)
-            : databaseType.EscapeTableName(x);
-    }
-
-    protected string QCol(string x)
-    {
-        return SqlContext.SqlSyntax.GetQuotedColumnName(x);
-    }
-
-    protected string QCol(string x, NPoco.DatabaseType databaseType)
-    {
-        return databaseType == null
-            ? QCol(x)
-            : databaseType.EscapeSqlIdentifier(x);
-    }
-
-    protected string QName(string x)
-    {
-        return SqlContext.SqlSyntax.GetQuotedName(x);
-    }
-
-    protected string QName(string x, NPoco.DatabaseType databaseType)
-    {
-        return databaseType == null
-            ? QName(x)
-            : databaseType.EscapeSqlIdentifier(x);
-    }
-
-    protected int CountUmbracoNodesOfType(Guid objectType)
-    {
-        var db = ScopeAccessor.AmbientScope.Database;
-        var sql = db.SqlContext.Sql()
-            .SelectCount("*")
-            .From<NodeDto>()
-            .Where<NodeDto>(x => x.NodeObjectType == objectType);
-        return db.ExecuteScalar<int>(sql);
+        foreach (var directory in directories)
+        {
+            mediaFileManager.FileSystem.DeleteDirectory(directory, true);
+        }
     }
 }

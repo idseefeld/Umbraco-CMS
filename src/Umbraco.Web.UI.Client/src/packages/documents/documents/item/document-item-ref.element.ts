@@ -12,10 +12,11 @@ import { UMB_SECTION_USER_PERMISSION_CONDITION_ALIAS } from '@umbraco-cms/backof
 import { UMB_WORKSPACE_MODAL, umbGenerateWorkspaceLink } from '@umbraco-cms/backoffice/workspace';
 import type { UUISelectableEvent } from '@umbraco-cms/backoffice/external/uui';
 import { UmbDeselectedEvent, UmbSelectedEvent } from '@umbraco-cms/backoffice/event';
+import { UmbEntityItemRefFrameMixin } from '@umbraco-cms/backoffice/entity-item';
 
 @customElement('umb-document-item-ref')
-export class UmbDocumentItemRefElement extends UmbLitElement {
-	#item = new UmbDocumentItemDataResolver<UmbDocumentItemModel>(this);
+export class UmbDocumentItemRefElement extends UmbEntityItemRefFrameMixin(UmbLitElement) {
+	readonly #item = new UmbDocumentItemDataResolver<UmbDocumentItemModel>(this);
 
 	@property({ type: Object })
 	public set item(value: UmbDocumentItemModel | undefined) {
@@ -104,6 +105,10 @@ export class UmbDocumentItemRefElement extends UmbLitElement {
 		this.#item.observe(this.#item.isDraft, (isDraft) => (this._isDraft = isDraft ?? false));
 	}
 
+	protected override get isEntityFrameNavigable() {
+		return !this.readonly && !this.selectOnly && !this.disabled && this._userHasSectionAccess && !!this._unique;
+	}
+
 	#getLink() {
 		if (!this._unique) return;
 		return umbGenerateWorkspaceLink({
@@ -145,6 +150,7 @@ export class UmbDocumentItemRefElement extends UmbLitElement {
 				${this.#renderIcon()}${this.#renderIsDraft()} ${this.#renderIsTrashed()}
 				${this._ancestorPath ? html`<span slot="detail" class="ancestor-path">${this._ancestorPath}</span>` : nothing}
 			</uui-ref-node>
+			${this.renderEntityFrame(this._name)}
 		`;
 	}
 
@@ -163,7 +169,8 @@ export class UmbDocumentItemRefElement extends UmbLitElement {
 		return html`<uui-tag size="s" slot="tag" look="secondary" color="default">Draft</uui-tag>`;
 	}
 
-	static override styles = [
+	static override readonly styles = [
+		...super.styles,
 		css`
 			.ancestor-path {
 				display: block;
