@@ -3,10 +3,12 @@ import type {
 	DataTypeItemResponseModel,
 	DataTypeResponseModel,
 	DataTypeTreeItemResponseModel,
+	DatatypeConfigurationResponseModel,
 	// Dictionary
 	DictionaryItemItemResponseModel,
 	DictionaryItemResponseModel,
 	DictionaryOverviewResponseModel,
+	DomainsResponseModel,
 	NamedEntityTreeItemResponseModel,
 	// Document
 	DocumentItemResponseModel,
@@ -60,6 +62,8 @@ import type {
 	// Script
 	ScriptItemResponseModel,
 	ScriptResponseModel,
+	// Segment
+	SegmentResponseModel,
 	// Static File
 	StaticFileItemResponseModel,
 	// Stylesheet
@@ -118,11 +122,15 @@ export type UmbMockDocumentModel = DocumentResponseModel &
 	DocumentItemResponseModel & {
 		/** Mock-only: the parent before trashing, used to restore it. Not a real response field. */
 		originalParent?: { id: string } | null;
+		/** Mock-only: the culture and hostnames of the document. Not a real response field. */
+		domains?: DomainsResponseModel;
 	};
 
-export type UmbMockDocumentBlueprintModel = DocumentBlueprintResponseModel &
-	DocumentBlueprintItemResponseModel &
-	DocumentBlueprintTreeItemResponseModel;
+export type UmbMockDocumentBlueprintModel = Omit<DocumentBlueprintResponseModel, 'documentType'> &
+	Omit<DocumentBlueprintItemResponseModel, 'documentType'> &
+	Omit<DocumentBlueprintTreeItemResponseModel, 'documentType'> & {
+		documentType: DocumentTypeReferenceResponseModel | null;
+	};
 
 export type UmbMockDocumentTypeModel = DocumentTypeResponseModel &
 	DocumentTypeTreeItemResponseModel &
@@ -171,6 +179,8 @@ export type UmbMockRelationTypeModel = RelationTypeResponseModel & RelationTypeI
 export type UmbMockRelationTypeItemModel = RelationTypeItemResponseModel;
 
 export type UmbMockScriptModel = ScriptResponseModel & FileSystemTreeItemPresentationModel & ScriptItemResponseModel;
+
+export type UmbMockSegmentModel = SegmentResponseModel;
 
 export type UmbMockStaticFileModel = StaticFileItemResponseModel & FileSystemTreeItemPresentationModel;
 
@@ -222,6 +232,7 @@ export interface UmbMockLogLevelsModel {
 export interface UmbMockDataSet {
 	// Core entity data arrays (all optional, defaults to empty array)
 	dataType?: Array<UmbMockDataTypeModel>;
+	dataTypeConfiguration?: DatatypeConfigurationResponseModel;
 	dictionary?: Array<UmbMockDictionaryModel>;
 	document?: Array<UmbMockDocumentModel>;
 	documentBlueprint?: Array<UmbMockDocumentBlueprintModel>;
@@ -239,6 +250,7 @@ export interface UmbMockDataSet {
 	relation?: Array<UmbMockRelationModel>;
 	relationType?: Array<UmbMockRelationTypeModel>;
 	script?: Array<UmbMockScriptModel>;
+	segment?: Array<UmbMockSegmentModel>;
 	staticFile?: Array<UmbMockStaticFileModel>;
 	stylesheet?: Array<UmbMockStylesheetModel>;
 	template?: Array<UmbMockTemplateModel>;

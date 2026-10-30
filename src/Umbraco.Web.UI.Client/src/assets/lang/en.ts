@@ -296,6 +296,10 @@ export default {
 		otherElements: 'Properties',
 		parentNotPublished: "This document is published but is not visible because the parent '%0%' is unpublished",
 		parentCultureNotPublished: "This culture is published but is not visible because it is unpublished on parent '%0%'",
+		ancestorNotPublishedScheduleWarning:
+			"An ancestor isn't published. The scheduled publish will fail unless every ancestor is published by then.",
+		ancestorCultureNotPublishedScheduleWarning:
+			"An ancestor isn't published in this language. The scheduled publish will fail unless every ancestor is published in this language by then.",
 		parentNotPublishedAnomaly: 'This document is published but is not in the cache',
 		getUrlException: 'Could not get the URL',
 		routeError: 'This document is published but its URL would collide with content %0%',
@@ -314,6 +318,7 @@ export default {
 		unpublishDate: 'Unpublish at',
 		removeDate: 'Clear date',
 		scheduledPublishing: 'Scheduled publishing',
+		scheduleForAllLanguages: 'Schedule for all selected languages',
 		setDate: 'Set date',
 		sortDone: 'Sort order is updated',
 		sortHelp:
@@ -327,6 +332,8 @@ export default {
 		unpublish: 'Unpublish',
 		unpublished: 'Unpublished',
 		notCreated: 'Not created',
+		segmentHasContent: 'Has segmented content',
+		segmentNoContent: 'No content',
 		updateDate: 'Last edited',
 		updateDateDesc: 'Date/time this document was edited',
 		uploadClear: 'Clear file(s)',
@@ -396,6 +403,7 @@ export default {
 		shared: 'Shared',
 	},
 	blueprints: {
+		chooseDocumentType: 'Choose Document Type',
 		createBlueprintFrom: "Create a new Document Blueprint from '%0%'",
 		createBlueprintItemUnder: "Create a new item under '%0%'",
 		createBlueprintFolderUnder: "Create a new folder under '%0%'",
@@ -406,6 +414,8 @@ export default {
 		duplicateBlueprintMessage: 'Another Document Blueprint with the same name already exists',
 		blueprintDescription:
 			'A Document Blueprint is predefined content that an editor can select to use as the basis for creating new content',
+		noAccessToBlueprints:
+			'You do not have permission to manage Document Blueprints. Ask an administrator to give you access.',
 	},
 	entityDetail: {
 		notFoundTitle: (entityType: string) => {
@@ -426,6 +436,8 @@ export default {
 		},
 	},
 	media: {
+		chooseMediaTypeHeadline: 'Choose media type',
+		chooseMediaTypeMoreFiles: (count: number) => (count === 1 ? '1 more file' : `${count} more files`),
 		clickToUpload: 'Click to upload',
 		browseFilesAction: 'Browse files',
 		dropFilesOr: 'Drag and drop media here<br />or',
@@ -553,6 +565,7 @@ export default {
 			'Unpublishing will make the selected items and all their descendants publicly unavailable.',
 		confirmPublish: 'Publishing will make this content and all its published descendants publicly available.',
 		confirmUnpublish: 'Unpublishing will make this content publicly unavailable.',
+		cannotUnpublishWhenReferenced: 'This item cannot be unpublished because it is referenced by other items.',
 		doctypeChangeWarning: 'You have unsaved changes. Making changes to the Document Type will discard the changes.',
 	},
 	bulk: {
@@ -880,6 +893,7 @@ export default {
 		deleting: 'Deleting...',
 		description: 'Description',
 		design: 'Design',
+		destination: 'Destination',
 		details: 'Details',
 		dictionary: 'Dictionary',
 		dimensions: 'Dimensions',
@@ -1240,6 +1254,7 @@ export default {
 		userFailedLogin: "Oops! We couldn't log you in. Please check your credentials and try again.",
 		userLockedOut: 'Your account has been locked out. Please try again later.',
 		receivedErrorFromServer: 'Received an error from the server',
+		passwordResetUnavailable: 'Sorry, password reset is not currently available. Please try again later or contact your administrator.',
 		resetCodeExpired: 'The link you have clicked on is invalid or has expired',
 		userInviteWelcomeMessage:
 			"Hello there and welcome to Umbraco! In just 1 minute you'll be good to go, we just need you to setup a password.",
@@ -1487,6 +1502,7 @@ export default {
 		title: 'Select a property editor',
 		openPropertyEditorPicker: 'Select a property editor UI',
 		selectAction: 'Select Property Editor',
+		deprecatedLabel: 'Deprecated',
 	},
 	propertyEditorUIGroups: {
 		advanced: 'Advanced',
@@ -1537,6 +1553,7 @@ export default {
 	},
 	scripts: {
 		editscript: 'Edit script file',
+		tabCode: 'Code',
 	},
 	sections: {
 		content: 'Content',
@@ -1748,6 +1765,7 @@ export default {
 		notAllowed: 'The selected template is no longer allowed on this document type.',
 		productionMode: 'Production Mode',
 		runtimeModeProduction: 'Content is not editable when using runtime mode <code>Production</code>.',
+		tabCode: 'Code',
 		deleteByIdFailed: 'Failed to delete template with ID %0%',
 		edittemplate: 'Edit template',
 		insertSections: 'Sections',
@@ -1960,11 +1978,13 @@ export default {
 		allowVaryBySegment: 'Allow segmentation',
 		elementType: 'Element Type',
 		elementHeading: 'Is an Element Type',
-		elementDescription: 'An Element Type is meant to be used within other Document Types, and not in the Content tree.',
+		elementDescription: 'Use for Blocks or Reusable Elements in the Library section.',
 		elementCannotToggle:
 			'A Document Type cannot be changed to an Element Type once it has been used to create one or more content items.',
 		elementDoesNotSupport: 'This is not applicable for an Element Type.',
 		elementTypeOnlySupport: 'This is only applicable for an Element Type.',
+		elementTypeOnlyAllowedInLibrarySupport:
+			'This is only applicable for an Element Type that is allowed in the Library.',
 		propertyHasChanges: 'You have made changes to this property. Are you sure you want to discard them?',
 		displaySettingsHeadline: 'Appearance',
 		displaySettingsLabelOnLeft: 'Label to the left',
@@ -2197,6 +2217,8 @@ export default {
 		changePassword: 'Change your password',
 		changePhoto: 'Change photo',
 		configureMfa: 'Configure 2FA',
+		disableUserHeadline: (name: string) => `Disable ${name}`,
+		disableUserConfirmation: 'Are you sure you want to disable this user?',
 		emailRequired: 'Required - enter an email address for this user',
 		emailDescription: (usernameIsEmail: boolean) => {
 			return usernameIsEmail
@@ -2291,8 +2313,11 @@ export default {
 		searchAllChildren: 'Search all children',
 		languagesHelp: 'Limit the languages users have access to edit',
 		allowAccessToAllLanguages: 'Allow access to all languages',
+		allowAccessToInvariantForVariant: 'Allow editing shared content',
+		invariantForVariantHelp: 'Allows editing of content shared across languages. *Does not apply to culture-invariant content.*',
 		allowAccessToAllDocuments: 'Allow access to all documents',
 		allowAccessToAllElements: 'Allow access to all elements',
+		allowAccessToAllDocumentBlueprints: 'Allow access to all document blueprints',
 		allowAccessToAllMedia: 'Allow access to all media',
 		sectionsHelp: 'Add sections to give users access',
 		selectUserGroup: (multiple: boolean) => {
@@ -2350,6 +2375,7 @@ export default {
 		stateApproved: 'Approved',
 		stateInvited: 'Invited',
 		stateInactive: 'Inactive',
+		type: 'Type',
 		sortNameAscending: 'Name (A-Z)',
 		sortNameDescending: 'Name (Z-A)',
 		sortCreateDateDescending: 'Newest',
@@ -2381,6 +2407,13 @@ export default {
 		usersNotManagedFromGroup: 'not manageable from this screen.',
 		selectElementStartNode: 'Select element start node',
 		selectElementStartNodeDescription: 'Limit the element library to a specific start node',
+		enableUserHeadline: (name: string) => `Enable ${name}`,
+		enableUserConfirmation: 'Are you sure you want to enable this user?',
+		unlockUserHeadline: (name: string) => `Unlock ${name}`,
+		unlockUserConfirmation: 'Are you sure you want to unlock this user?',
+		selectDocumentBlueprintStartNode: 'Select document blueprint start node',
+		selectDocumentBlueprintStartNodeDescription:
+			'Limit the document blueprints users can manage to a specific start node',
 	},
 	userPermissions: {
 		create: 'Create',
@@ -2437,10 +2470,13 @@ export default {
 		invalidEmpty: 'Value cannot be empty',
 		invalidFalse: 'This field must be turned on',
 		invalidPattern: 'Value is invalid, it does not match the correct pattern',
+		invalidValue: 'Value is invalid',
 		customValidation: 'Custom validation',
 		entriesShort: 'Minimum %0% entries, requires <strong>%1%</strong> more.',
 		entriesExceed: 'Maximum %0% entries, you have entered <strong>%1%</strong> too many.',
 		entriesAreasMismatch: 'The content amount requirements are not met for one or more areas.',
+		minimumOnlyWhenInUse:
+			'The minimum applies once items have been added. To require a value, mark the property as mandatory.',
 		invalidMemberGroupName: 'Invalid member group name',
 		invalidUserGroupName: 'Invalid user group name',
 		invalidToken: 'Invalid token',
@@ -2679,13 +2715,18 @@ export default {
 		deleteDisabledWarning: 'This item or its descendants is being used. Therefore, deletion has been disabled.',
 		listViewDialogWarning: 'The following items you are trying to %0% are used by other content.',
 		labelUsedByItems: 'Referenced by',
-		labelDependsOnThis: 'The following items depend on this',
-		labelDependentDescendants: 'The following descending items have dependencies',
-		labelUsedByOtherContent: 'The following items are used by other content',
+		labelDescendantsWithReferences: 'Descendants with references',
+		labelDependsOnThis: 'The following items depend on this:',
+		labelDependentDescendants: 'The following descending items have dependencies:',
+		labelUsedByOtherContent: 'The following items are used by other content:',
 		labelMoreReferences: (count: number) => {
 			if (count === 1) return '...and one more item';
 			return `...and ${count} more items`;
 		},
+		labelElementsWithPendingChanges: 'The following referenced elements are not fully published:',
+		viewDependentItemsAction: 'View items that depend on this…',
+		viewDescendantsWithReferencesAction: 'View referenced descendants…',
+		viewEntitiesNeedingAttentionAction: 'View referenced elements with pending changes…',
 	},
 	logViewer: {
 		deleteSavedSearch: 'Delete Saved Search',
@@ -2979,13 +3020,33 @@ export default {
 		notExposedLabel: 'Draft',
 		notExposedDescription: 'This Block is not yet created for this variant',
 		notPublishedLibraryElementDescription: 'The Library Element used by this Block is not published',
+		publishedPendingChangesLibraryElementDescription:
+			'The Library Element used by this Block has changes that are not yet published',
+		trashedLibraryElementDescription: 'The Library Element used by this Block is in the recycle bin',
 		areaValidationEntriesNotAllowed: '<strong>%0%</strong> is not allowed in this area.',
 		rootValidationEntriesNotAllowed: '<strong>%0%</strong> is not allowed in the root of this property.',
 		unsupportedBlockName: 'Unsupported',
 		unsupportedBlockDescription:
 			'This content is no longer supported in this Editor. If you are missing this content, please contact your administrator. Otherwise delete it.',
+		deletedLibraryElementName: 'Deleted Library Element',
+		deletedLibraryElementDescription: 'The Library Element used by this Block has been deleted. Remove this Block.',
+		noAccessLibraryElementName: 'Inaccessible Library Element',
+		noAccessLibraryElementDescription: 'You do not have access to the Library Element used by this Block.',
 		tabLibrary: 'Library',
 		transferToElementLibrary: 'Transfer to Library',
+		transferredToElementLibrary: 'Transferred to Library',
+		transferredToElementLibraryAsDraft: 'Transferred to Library as draft',
+		transferToElementLibraryNotPublished: 'Transferred to Library, but not published',
+		transferToElementLibraryNotPublishedHeadline: 'Not published',
+		transferToElementLibraryNotPublishedValidation:
+			'The Element was added to the Library, but has validation errors that need fixing before it can be published.',
+		transferToElementLibraryOpenElement: 'Open Element',
+		transferToElementLibraryNotPermitted: 'Transfer not permitted',
+		transferToElementLibraryLanguagesNotPermitted:
+			'This Block has content in languages you do not have access to: <strong>%0%</strong>.',
+		transferToElementLibrarySharedNotPermitted: 'It has shared content that you do not have access to edit.',
+		transferToElementLibraryLocationNotPermitted: 'You cannot create and publish Elements here.',
+		transferToElementLibraryLocationTypeNotAllowed: 'This Element Type is not allowed here.',
 		disconnectFromElementLibrary: 'Disconnect from Library',
 		disconnectFromElementLibraryConfirm:
 			'This will create a local copy of the Element content. The Library Element will not be affected.',
@@ -2999,10 +3060,10 @@ export default {
 			'Document Blueprints are pre-defined content that can be selected when creating a new content node.',
 		createHeadline: 'How do I create a Document Blueprint?',
 		createDescription:
-			'<p>There are two ways to create a Document Blueprint:</p><ul><li>Right-click a content node and select "Create Document Blueprint" to create a new Document Blueprint.</li><li>Right-click the Document Blueprints tree in the Settings section and select the Document Type you want to create a Document Blueprint for.</li></ul><p>Once given a name, editors can start using the Document Blueprint as a foundation for their new page.</p>',
+			'<p>There are two ways to create a Document Blueprint:</p><ul><li>Right-click a content node and select "Create Document Blueprint" to create a new Document Blueprint.</li><li>Right-click the Document Blueprints tree in the Library section and select the Document Type you want to create a Document Blueprint for.</li></ul><p>Once given a name, editors can start using the Document Blueprint as a foundation for their new page.</p>',
 		manageHeadline: 'How do I manage Document Blueprints?',
 		manageDescription:
-			'You can edit and delete Document Blueprints from the "Document Blueprints" tree in the Settings section. Expand the Document Type which the Document Blueprint is based on and click it to edit or delete it.',
+			'You can edit and delete Document Blueprints from the "Document Blueprints" tree in the Library section. Expand the Document Type which the Document Blueprint is based on and click it to edit or delete it.',
 	},
 	preview: {
 		endLabel: 'Exit',
@@ -3021,6 +3082,8 @@ export default {
 		viewPublishedContentDeclineButton: 'Stay in preview mode',
 		connectionFailed: 'Could not establish a connection to the server, preview live updates will not work.',
 		connectionLost: 'Connection to the server lost, preview live updates will not work.',
+		connectionReconnecting: 'Connection to the server lost, trying to reconnect…',
+		connectionRestored: 'Connection to the server restored, preview live updates are working again.',
 	},
 	permissions: {
 		FolderCreation: 'Folder creation',

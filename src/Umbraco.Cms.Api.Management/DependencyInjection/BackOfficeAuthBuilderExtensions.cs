@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using OpenIddict.Server;
 using Umbraco.Cms.Api.Common.DependencyInjection;
 using Umbraco.Cms.Api.Management.Configuration;
 using Umbraco.Cms.Api.Management.Handlers;
@@ -20,21 +21,6 @@ namespace Umbraco.Cms.Api.Management.DependencyInjection;
 public static class BackOfficeAuthBuilderExtensions
 {
     /// <summary>
-    /// Configures and adds the necessary authentication services for the Umbraco back office to the specified builder.
-    /// </summary>
-    /// <param name="builder">The <see cref="IUmbracoBuilder"/> to which back office authentication services will be added.</param>
-    /// <returns>The same <see cref="IUmbracoBuilder"/> instance with back office authentication configured.</returns>
-    [Obsolete("Use AddBackOffice() or AddBackOfficeSignIn() instead. Scheduled for removal in Umbraco 19.")]
-    public static IUmbracoBuilder AddBackOfficeAuthentication(this IUmbracoBuilder builder)
-    {
-        builder
-            .AddBackOfficeCookieAuthentication()
-            .AddBackOfficeOpenIddictServices();
-
-        return builder;
-    }
-
-    /// <summary>
     /// Registers handlers with the back-office authentication builder to automatically revoke user authentication tokens
     /// when certain user-related events occur, such as saving, deleting, or successful login of a user.
     /// </summary>
@@ -45,6 +31,7 @@ public static class BackOfficeAuthBuilderExtensions
         builder.AddNotificationAsyncHandler<UserSavedNotification, RevokeUserAuthenticationTokensNotificationHandler>();
         builder.AddNotificationAsyncHandler<UserDeletedNotification, RevokeUserAuthenticationTokensNotificationHandler>();
         builder.AddNotificationAsyncHandler<UserLoginSuccessNotification, RevokeUserAuthenticationTokensNotificationHandler>();
+        builder.AddNotificationAsyncHandler<UserLogoutSuccessNotification, RevokeUserAuthenticationTokensNotificationHandler>();
 
         return builder;
     }
@@ -99,6 +86,23 @@ public static class BackOfficeAuthBuilderExtensions
         builder.Services.AddScoped<IBackOfficeUserClientCredentialsManager, BackOfficeUserClientCredentialsManager>();
         builder.Services.AddSingleton<BackOfficeAuthorizationInitializationMiddleware>();
         builder.Services.Configure<UmbracoPipelineOptions>(options => options.AddFilter(new BackofficePipelineFilter("Backoffice")));
+
+        builder.Services.AddSingleton<BackOfficeRedirectUriValidationHandler>();
+        builder.Services.Configure<OpenIddictServerOptions>(options =>
+        {
+            options.Handlers.Add(
+                OpenIddictServerHandlerDescriptor
+                    .CreateBuilder<OpenIddictServerEvents.ValidateAuthorizationRequestContext>()
+                    .UseSingletonHandler<BackOfficeRedirectUriValidationHandler>()
+                    .SetOrder(OpenIddictServerHandlers.Authentication.ValidateRedirectUriParameter.Descriptor.Order + 1)
+                    .Build());
+            options.Handlers.Add(
+                OpenIddictServerHandlerDescriptor
+                    .CreateBuilder<OpenIddictServerEvents.ValidateEndSessionRequestContext>()
+                    .UseSingletonHandler<BackOfficeRedirectUriValidationHandler>()
+                    .SetOrder(OpenIddictServerHandlers.Session.ValidatePostLogoutRedirectUriParameter.Descriptor.Order + 1)
+                    .Build());
+        });
 
         return builder;
     }
