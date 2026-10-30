@@ -309,4 +309,51 @@ public abstract class UmbracoIntegrationTest : UmbracoIntegrationTestBase
             mediaFileManager.FileSystem.DeleteDirectory(directory, true);
         }
     }
+
+
+    protected string QTab(string x)
+    {
+        return SqlContext.SqlSyntax.GetQuotedTableName(x);
+    }
+
+    protected string QTab(string x, NPoco.DatabaseType databaseType)
+    {
+        return databaseType == null
+            ? QTab(x)
+            : databaseType.EscapeTableName(x);
+    }
+
+    protected string QCol(string x)
+    {
+        return SqlContext.SqlSyntax.GetQuotedColumnName(x);
+    }
+
+    protected string QCol(string x, NPoco.DatabaseType databaseType)
+    {
+        return databaseType == null
+            ? QCol(x)
+            : databaseType.EscapeSqlIdentifier(x);
+    }
+
+    protected string QName(string x)
+    {
+        return SqlContext.SqlSyntax.GetQuotedName(x);
+    }
+
+    protected string QName(string x, NPoco.DatabaseType databaseType)
+    {
+        return databaseType == null
+            ? QName(x)
+            : databaseType.EscapeSqlIdentifier(x);
+    }
+
+    protected int CountUmbracoNodesOfType(Guid objectType)
+    {
+        var db = ScopeAccessor.AmbientScope.Database;
+        var sql = db.SqlContext.Sql()
+            .SelectCount("*")
+            .From<NodeDto>()
+            .Where<NodeDto>(x => x.NodeObjectType == objectType);
+        return db.ExecuteScalar<int>(sql);
+    }
 }

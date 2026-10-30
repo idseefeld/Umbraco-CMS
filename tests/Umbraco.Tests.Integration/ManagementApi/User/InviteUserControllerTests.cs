@@ -29,7 +29,7 @@ public class InviteUserControllerTests : ManagementApiUserGroupTestBase<InviteUs
 
     protected override UserGroupAssertionModel AdminUserGroupAssertionModel => new()
     {
-        ExpectedStatusCode = EmailSender.CanSendRequiredEmail()
+        ExpectedStatusCode = EmailSender.IsEmailConfigured()
             ? HttpStatusCode.Created
             : HttpStatusCode.InternalServerError,
     };

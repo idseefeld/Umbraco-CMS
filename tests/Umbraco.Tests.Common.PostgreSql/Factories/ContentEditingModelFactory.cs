@@ -100,14 +100,14 @@ public class ContentEditingModelFactory : IContentEditingModelFactory
 
                 if (!string.IsNullOrEmpty(variantName))
                 {
-                    variants.Add(new VariantModel { Culture = culture, Segment = segment, Name = variantName });
+                    variants.Add(new VariantModel { Culture = culture, Name = variantName });
                 }
             }
         }
         else
         {
             // For invariant content, add single variant
-            variants.Add(new VariantModel { Culture = null, Segment = null, Name = content.Name ?? string.Empty });
+            variants.Add(new VariantModel { Culture = null, Name = content.Name ?? string.Empty });
         }
     }
 

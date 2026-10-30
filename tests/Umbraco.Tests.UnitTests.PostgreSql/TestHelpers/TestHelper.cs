@@ -72,7 +72,7 @@ public static class TestHelper
 
     public static IMarchal Marchal => s_testHelperInternal.Marchal;
 
-    public static CoreDebugSettings CoreDebugSettings => s_testHelperInternal.CoreDebugSettings;
+    public static DebugSettings CoreDebugSettings => s_testHelperInternal.DebugSettings;
 
     public static IIOHelper IOHelper => s_testHelperInternal.IOHelper;
 

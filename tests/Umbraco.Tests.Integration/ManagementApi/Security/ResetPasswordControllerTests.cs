@@ -58,6 +58,8 @@ public class ResetPasswordControllerTests : ManagementApiUserGroupTestBase<Reset
         ExpectedStatusCode = IsSmtpConfigured ? HttpStatusCode.OK : HttpStatusCode.BadRequest
     };
 
+    public bool IsSmtpConfigured { get; private set; }
+
     protected override void CustomTestSetup(IUmbracoBuilder builder)
     {
         base.CustomTestSetup(builder);

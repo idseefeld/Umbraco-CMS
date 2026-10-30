@@ -33,7 +33,6 @@ public class ContentEditingVariantBuilder<TParent>(TParent parentBuilder)
         new()
         {
             Culture = _culture,
-            Segment = _segment,
             Name = _name
         };
 }
