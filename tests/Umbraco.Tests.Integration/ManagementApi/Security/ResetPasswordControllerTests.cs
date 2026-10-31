@@ -11,6 +11,7 @@ using Umbraco.Cms.Api.Management.ViewModels.Security;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Configuration.Models;
 using Umbraco.Cms.Core.DependencyInjection;
+using Umbraco.Cms.Core.Mail;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Security;
 using Umbraco.Cms.Core.Services;
@@ -23,6 +24,10 @@ public class ResetPasswordControllerTests : ManagementApiUserGroupTestBase<Reset
 {
     private const string RegisteredEmail = "registered@umbraco.com";
     private const string UnknownEmail = "unknown@umbraco.com";
+
+    private IEmailSender EmailSender => GetRequiredService<IEmailSender>();
+
+    private bool IsSmtpConfigured => EmailSender.IsEmailConfigured();
 
     private readonly Mock<IUserForgotPasswordSender> _senderMock = new();
 
@@ -57,8 +62,6 @@ public class ResetPasswordControllerTests : ManagementApiUserGroupTestBase<Reset
     {
         ExpectedStatusCode = IsSmtpConfigured ? HttpStatusCode.OK : HttpStatusCode.BadRequest
     };
-
-    public bool IsSmtpConfigured { get; private set; }
 
     protected override void CustomTestSetup(IUmbracoBuilder builder)
     {
