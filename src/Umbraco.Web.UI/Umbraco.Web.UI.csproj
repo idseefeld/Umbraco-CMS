@@ -43,6 +43,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" PrivateAssets="all" Version="10.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" PrivateAssets="all" Version="10.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" PrivateAssets="all" Version="10.0.12" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" PrivateAssets="all" Version="10.0.13" />
   </ItemGroup>
 
   <ItemGroup>
@@ -67,6 +68,7 @@
     -->
     <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="2.1.12" />
     <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="2.1.13" />
+    <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="2.1.14" />
   </ItemGroup>
 
   <ItemGroup>

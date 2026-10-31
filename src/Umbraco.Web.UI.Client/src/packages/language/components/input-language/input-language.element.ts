@@ -7,6 +7,7 @@ import { UmbLitElement } from '@umbraco-cms/backoffice/lit-element';
 import { UmbSorterController } from '@umbraco-cms/backoffice/sorter';
 import { UUIFormControlMixin } from '@umbraco-cms/backoffice/external/uui';
 import type { UmbRepositoryItemsStatus } from '@umbraco-cms/backoffice/repository';
+import { isAboveZeroAndBelowMinimum } from '@umbraco-cms/backoffice/validation';
 
 @customElement('umb-input-language')
 export class UmbInputLanguageElement extends UUIFormControlMixin(UmbLitElement, '') {
@@ -59,6 +60,7 @@ export class UmbInputLanguageElement extends UUIFormControlMixin(UmbLitElement, 
 	@property({ type: Number })
 	public set max(value: number) {
 		this.#pickerContext.max = value;
+		this.#updateSorterEnabled();
 	}
 	public get max(): number {
 		return this.#pickerContext.max;
@@ -106,13 +108,17 @@ export class UmbInputLanguageElement extends UUIFormControlMixin(UmbLitElement, 
 	public set readonly(value) {
 		this.#readonly = value;
 
-		if (this.#readonly) {
+		this.#updateSorterEnabled();
+	}
+	#readonly = false;
+
+	#updateSorterEnabled() {
+		if (this.readonly || this.max === 1) {
 			this.#sorter.disable();
 		} else {
 			this.#sorter.enable();
 		}
 	}
-	#readonly = false;
 
 	@state()
 	private _items: Array<UmbLanguageItemModel> = [];
@@ -128,7 +134,7 @@ export class UmbInputLanguageElement extends UUIFormControlMixin(UmbLitElement, 
 		this.addValidator(
 			'rangeUnderflow',
 			() => this.minMessage,
-			() => !!this.min && this.#pickerContext.getSelection().length < this.min,
+			() => isAboveZeroAndBelowMinimum(this.#pickerContext.getSelection().length, this.min),
 		);
 
 		this.addValidator(
