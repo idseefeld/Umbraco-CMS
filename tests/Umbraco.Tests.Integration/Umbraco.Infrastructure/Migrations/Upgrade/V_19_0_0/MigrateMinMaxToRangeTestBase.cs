@@ -78,8 +78,9 @@ internal abstract class MigrateMinMaxToRangeTestBase : UmbracoIntegrationTest
 
         // Overwrite with the exact pre-migration configuration JSON, mirroring an upgraded database.
         using IScope scope = ScopeProvider.CreateScope();
+        var sx = scope.Database.SqlContext.SqlSyntax;
         scope.Database.Execute(
-            "UPDATE umbracoDataType SET config = @0 WHERE nodeId = @1",
+            $"UPDATE {sx.GetQuotedTableName("umbracoDataType")} SET config = @0 WHERE {sx.GetQuotedColumnName("nodeId")} = @1",
             configJson,
             dataType.Id);
         scope.Complete();
@@ -90,8 +91,9 @@ internal abstract class MigrateMinMaxToRangeTestBase : UmbracoIntegrationTest
     protected Task<JsonObject> GetRawConfig(int nodeId)
     {
         using IScope scope = ScopeProvider.CreateScope();
+        var sx = scope.Database.SqlContext.SqlSyntax;
         var config = scope.Database.ExecuteScalar<string>(
-            "SELECT config FROM umbracoDataType WHERE nodeId = @0",
+            $"SELECT {sx.GetQuotedColumnName("config")} FROM {sx.GetQuotedTableName("umbracoDataType")} WHERE {sx.GetQuotedColumnName("nodeId")} = @0",
             nodeId);
         scope.Complete();
 
