@@ -127,6 +127,23 @@ public class NPocoSqlExtensionsTests : BaseUsingSqlSyntax
     }
 
     [Test]
+    public void In_Subquery_PreservesDistinctParameters()
+    {
+        Sql<ISqlContext> inSql = Sql()
+            .Select<NodeDto>(n => n.NodeId)
+            .From<NodeDto>()
+            .Where<NodeDto>(n => n.NodeId == 42);
+        Sql<ISqlContext> sql = Sql()
+            .Select("*")
+            .From<NodeDto>()
+            .Where<NodeDto>(n => n.NodeId == 1 || n.NodeId.In(inSql));
+
+        StringAssert.Contains("[umbracoNode].[id] IN (SELECT [umbracoNode].[id] AS [NodeId]", sql.SQL);
+        StringAssert.Contains("WHERE (([umbracoNode].[id] = @1))", sql.SQL);
+        CollectionAssert.AreEqual(new object[] { 1, 42 }, sql.Arguments);
+    }
+
+    [Test]
     public void WhereLike_Uses_Parameterized_Query()
     {
         var sql = new Sql<ISqlContext>(SqlContext)

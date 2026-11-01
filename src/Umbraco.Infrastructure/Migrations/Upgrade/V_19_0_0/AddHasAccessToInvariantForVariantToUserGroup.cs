@@ -1,6 +1,11 @@
-﻿using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Options;
+using NPoco;
+using NPoco.Expressions;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Configuration.Models;
+using Umbraco.Cms.Infrastructure.Persistence;
+using Umbraco.Cms.Infrastructure.Persistence.Dtos;
+using Umbraco.Extensions;
 
 namespace Umbraco.Cms.Infrastructure.Migrations.Upgrade.V_19_0_0;
 
@@ -52,35 +57,26 @@ public class AddHasAccessToInvariantForVariantToUserGroup : AsyncMigrationBase
         var wasPermissive = _contentSettings.Value.AllowEditInvariantFromNonDefault;
 #pragma warning restore CS0618 // Type or member is obsolete
 
-        var userGroupTable = SqlSyntax.GetQuotedTableName(Constants.DatabaseSchema.Tables.UserGroup);
-        var userGroup2LanguageTable = SqlSyntax.GetQuotedTableName(Constants.DatabaseSchema.Tables.UserGroup2Language);
-        var languageTable = SqlSyntax.GetQuotedTableName(Constants.DatabaseSchema.Tables.Language);
-        var columnName = SqlSyntax.GetQuotedColumnName(ColumnName);
-        var hasAccessToAllLanguagesColumn = SqlSyntax.GetQuotedColumnName("hasAccessToAllLanguages");
-        var idColumn = SqlSyntax.GetQuotedColumnName("id");
-        var userGroupIdColumn = SqlSyntax.GetQuotedColumnName("userGroupId");
-        var languageIdColumn = SqlSyntax.GetQuotedColumnName("languageId");
-        var isDefaultVariantLangColumn = SqlSyntax.GetQuotedColumnName("isDefaultVariantLang");
-
         if (wasPermissive)
         {
             // The old setting was permissive at the tenant level: every group gets the permission.
-            Database.Execute($"UPDATE {userGroupTable} SET {columnName} = 1");
+            Database.Execute(Sql()
+                .Update<UserGroupDto>(c => c.Set(n => n.HasAccessToInvariantForVariant, true)));
             return;
         }
 
         // The old setting was restrictive: only grant to groups that could already edit invariant data
         // under the old default-language coupling, plus the built-in admin group (id = 1).
-        Database.Execute(
-            $@"UPDATE {userGroupTable}
-               SET {columnName} = 1
-               WHERE {hasAccessToAllLanguagesColumn} = 1
-                 OR {idColumn} = 1
-                 OR {idColumn} IN (
-                     SELECT l.{userGroupIdColumn}
-                     FROM {userGroup2LanguageTable} l
-                     INNER JOIN {languageTable} lang ON l.{languageIdColumn} = lang.{idColumn}
-                     WHERE lang.{isDefaultVariantLangColumn} = 1
-                 )");
+        Sql<ISqlContext> inSql = Sql()
+            .Select<UserGroup2LanguageDto>(l => l.UserGroupId)
+            .From<UserGroup2LanguageDto>()
+            .InnerJoin<LanguageDto>()
+            .On<UserGroup2LanguageDto, LanguageDto>((l, lang) => l.LanguageId == lang.Id)
+            .Where<LanguageDto>(lang => lang.IsDefault);
+
+        Sql<ISqlContext> sql2 = Sql()
+            .Update<UserGroupDto>(c => c.Set(n => n.HasAccessToInvariantForVariant, true))
+            .Where<UserGroupDto>(c => c.HasAccessToAllLanguages || c.Id == 1 || c.Id.In(inSql));
+        Database.Execute(sql2);
     }
 }

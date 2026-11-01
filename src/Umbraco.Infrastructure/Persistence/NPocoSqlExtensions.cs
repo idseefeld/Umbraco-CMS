@@ -293,6 +293,16 @@ namespace Umbraco.Extensions
         }
 
         /// <summary>
+        /// Indicates whether the value is returned by the specified SQL query. This method is intended for use in SQL expressions.
+        /// </summary>
+        /// <typeparam name="T">The type of the selected value.</typeparam>
+        /// <param name="value">The value to match.</param>
+        /// <param name="valuesSql">The SQL query providing values for the IN condition.</param>
+        /// <returns>This method can only be used within a translated SQL expression.</returns>
+        public static bool In<T>(this T value, Sql<ISqlContext> valuesSql)
+            => throw new NotSupportedException("In can only be used within a SQL expression.");
+
+        /// <summary>
         /// Appends multiple OR WHERE clauses to the Sql statement.
         /// </summary>
         /// <param name="sql">The Sql statement.</param>

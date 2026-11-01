@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.ObjectModel;
 using System.Linq.Expressions;
 using System.Text;
+using System.Text.RegularExpressions;
+using SqlSubquery = NPoco.Sql<Umbraco.Cms.Infrastructure.Persistence.ISqlContext>;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.Persistence;
 using Umbraco.Cms.Infrastructure.Persistence.SqlSyntax;
@@ -695,6 +697,28 @@ internal abstract class ExpressionVisitorBase
 
                 inBuilder.Append(")");
                 return inBuilder.ToString();
+
+            case nameof(NPocoSqlExtensions.In):
+                if (m.Method.DeclaringType != typeof(NPocoSqlExtensions))
+                {
+                    goto default;
+                }
+
+                if (methodArgs.Count != 1)
+                {
+                    throw new NotSupportedException("In must contain a SQL subquery.");
+                }
+
+                var subqueryExpression = Expression.Convert(methodArgs[0], typeof(SqlSubquery));
+                var subqueryGetter = Expression.Lambda<Func<SqlSubquery>>(subqueryExpression).Compile();
+                SqlSubquery subquery = subqueryGetter();
+                var parameterOffset = SqlParameters.Count;
+                SqlParameters.AddRange(subquery.Arguments);
+                var subquerySql = Regex.Replace(
+                    subquery.SQL,
+                    @"(?<!@)@(\d+)",
+                    match => "@" + (int.Parse(match.Groups[1].Value) + parameterOffset));
+                return Visited ? string.Empty : $"{visitedMethodObject} IN ({subquerySql})";
 
             // case "Desc":
             //    return string.Format("{0} DESC", r);
