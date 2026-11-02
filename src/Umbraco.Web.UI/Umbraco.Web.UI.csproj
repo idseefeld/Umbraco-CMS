@@ -40,6 +40,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" PrivateAssets="all" Version="10.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" PrivateAssets="all" Version="10.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" PrivateAssets="all" Version="10.0.12" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" PrivateAssets="all" Version="10.0.14" />
     <!--
     Added to align Microsoft.CodeAnalysis.* transitive versions brought in by Microsoft.EntityFrameworkCore.Design,
     which otherwise pulls in Microsoft.CodeAnalysis.CSharp 5.3.0 alongside Microsoft.CodeAnalysis.CSharp.Workspaces 5.0.0
@@ -57,7 +58,7 @@
     of the vulnerable 2.0.0 that Swashbuckle / Microsoft.AspNetCore.OpenApi otherwise resolve
     (CVE-2026-49451, GHSA-v5pm-xwqc-g5wc). Keep in sync with the central pin.
     -->
-    <PackageReference Include="Microsoft.OpenApi" Version="2.12.2" />
+    <PackageReference Include="Microsoft.OpenApi" Version="2.13.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -67,7 +68,7 @@
     of the vulnerable 2.1.11 that Microsoft.Data.Sqlite / Microsoft.EntityFrameworkCore.Sqlite otherwise
     resolve (GHSA-2m69-gcr7-jv3q).
     -->
-    <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="2.1.13" />
+    <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="2.1.14" />
   </ItemGroup>
 
   <ItemGroup>
@@ -77,7 +78,7 @@
     of the vulnerable 10.0.0 that MailKit (via MimeKit) otherwise resolves (GHSA-846f-f764-76mx, GHSA-2fmv-rv2c-59x7).
     Keep in sync with the central pin.
     -->
-    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.13" />
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.14" />
   </ItemGroup>
 
   <PropertyGroup>

@@ -16682,6 +16682,14 @@
             }
           },
           {
+            "name": "dataTypeId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
             "name": "height",
             "in": "query",
             "schema": {
@@ -20177,6 +20185,14 @@
                 "type": "string",
                 "format": "uuid"
               }
+            }
+          },
+          {
+            "name": "dataTypeId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -51095,7 +51111,8 @@
           "version",
           "assemblyVersion",
           "baseUtcOffset",
-          "runtimeMode"
+          "runtimeMode",
+          "isDebugMode"
         ],
         "type": "object",
         "properties": {
@@ -51110,6 +51127,9 @@
           },
           "runtimeMode": {
             "$ref": "#/components/schemas/RuntimeModeModel"
+          },
+          "isDebugMode": {
+            "type": "boolean"
           }
         }
       },
