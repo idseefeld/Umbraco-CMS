@@ -3,21 +3,21 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Net.Sockets;
 using System.Text.Json;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using NUnit.Framework;
-using Microsoft.Extensions.Options;
 using Umbraco.Cms.Api.Management.Controllers.Security;
 using Umbraco.Cms.Api.Management.ViewModels.Security;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Configuration.Models;
 using Umbraco.Cms.Core.DependencyInjection;
+using Umbraco.Cms.Core.Mail;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Security;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.Services.OperationStatus;
 using Umbraco.Extensions;
-using Umbraco.Cms.Core.Configuration.Models;
 
 namespace Umbraco.Cms.Tests.Integration.ManagementApi.Security;
 
@@ -26,57 +26,44 @@ public class ResetPasswordControllerTests : ManagementApiUserGroupTestBase<Reset
     private const string RegisteredEmail = "registered@umbraco.com";
     private const string UnknownEmail = "unknown@umbraco.com";
 
-    private readonly Mock<IUserForgotPasswordSender> _senderMock = new();
+    private IEmailSender EmailSender => GetRequiredService<IEmailSender>();
 
-    private bool IsSmtpConfigured
-    {
-        get
-        {
-            var globalSettings = GetRequiredService<IOptions<GlobalSettings>>();
-            string? host = globalSettings.Value.Smtp?.Host;
-            return !string.IsNullOrEmpty(host);
-        }
-    }
+    private bool IsSmtpConfigured => EmailSender.IsEmailConfigured();
+
+    // Umbraco:CMS:Security:BackOffice:AllowPasswordReset (defaults to true when not set)
+    private bool IsPasswordResetAllowed => GetRequiredService<IConfiguration>()
+        .GetValue<bool?>("Umbraco:CMS:Security:BackOffice:AllowPasswordReset") ?? true;
+
+    private bool IsPasswordResetEnabled => IsSmtpConfigured && IsPasswordResetAllowed;
+
+    private HttpStatusCode ExpectedStatusCode => IsPasswordResetEnabled ? HttpStatusCode.OK : HttpStatusCode.BadRequest;
+
+    private readonly Mock<IUserForgotPasswordSender> _senderMock = new();
 
     protected override Expression<Func<ResetPasswordController, object>> MethodSelector => x => x.RequestPasswordReset(CancellationToken.None, null);
 
-    protected override UserGroupAssertionModel AdminUserGroupAssertionModel => new()
-    {
-        ExpectedStatusCode = IsSmtpConfigured ? HttpStatusCode.OK : HttpStatusCode.BadRequest
-    };
+    protected override UserGroupAssertionModel AdminUserGroupAssertionModel => new() { ExpectedStatusCode = ExpectedStatusCode };
 
-    protected override UserGroupAssertionModel EditorUserGroupAssertionModel => new()
-    {
-        ExpectedStatusCode = IsSmtpConfigured ? HttpStatusCode.OK : HttpStatusCode.BadRequest
-    };
+    protected override UserGroupAssertionModel EditorUserGroupAssertionModel => new() { ExpectedStatusCode = ExpectedStatusCode };
 
-    protected override UserGroupAssertionModel SensitiveDataUserGroupAssertionModel => new()
-    {
-        ExpectedStatusCode = IsSmtpConfigured ? HttpStatusCode.OK : HttpStatusCode.BadRequest
-    };
+    protected override UserGroupAssertionModel SensitiveDataUserGroupAssertionModel => new() { ExpectedStatusCode = ExpectedStatusCode };
 
-    protected override UserGroupAssertionModel TranslatorUserGroupAssertionModel => new()
-    {
-        ExpectedStatusCode = IsSmtpConfigured ? HttpStatusCode.OK : HttpStatusCode.BadRequest
-    };
+    protected override UserGroupAssertionModel TranslatorUserGroupAssertionModel => new() { ExpectedStatusCode = ExpectedStatusCode };
 
-    protected override UserGroupAssertionModel WriterUserGroupAssertionModel => new()
-    {
-        ExpectedStatusCode = IsSmtpConfigured ? HttpStatusCode.OK : HttpStatusCode.BadRequest
-    };
+    protected override UserGroupAssertionModel WriterUserGroupAssertionModel => new() { ExpectedStatusCode = ExpectedStatusCode };
 
-    protected override UserGroupAssertionModel UnauthorizedUserGroupAssertionModel => new()
-    {
-        ExpectedStatusCode = IsSmtpConfigured ? HttpStatusCode.OK : HttpStatusCode.BadRequest
-    };
+    protected override UserGroupAssertionModel UnauthorizedUserGroupAssertionModel => new() { ExpectedStatusCode = ExpectedStatusCode };
 
     protected override void CustomTestSetup(IUmbracoBuilder builder)
     {
         base.CustomTestSetup(builder);
 
-        // Password reset is not configured unless a test opts in, which is what the user group tests expect.
+        // Mirrors EmailUserForgotPasswordSender: configured only if SMTP is configured and AllowPasswordReset is true.
+        // The send itself is mocked, so no real SMTP server is needed.
         _senderMock.Reset();
-        _senderMock.Setup(x => x.IsPasswordResetConfigured()).Returns(false);
+        _senderMock.Setup(x => x.IsPasswordResetConfigured()).Returns(() => IsPasswordResetEnabled);
+        _senderMock.Setup(x => x.IsPasswordResetAvailableAsync(It.IsAny<CancellationToken>())).ReturnsAsync(true);
+        _senderMock.Setup(x => x.SendForgotPassword(It.IsAny<UserForgotPasswordMessage>())).Returns(Task.CompletedTask);
         builder.Services.AddUnique(_senderMock.Object);
         builder.Services.Configure<WebRoutingSettings>(x => x.UmbracoApplicationUrl = "https://localhost/");
     }
@@ -86,6 +73,23 @@ public class ResetPasswordControllerTests : ManagementApiUserGroupTestBase<Reset
         ResetPasswordRequestModel resetPasswordRequestModel = new() { Email = UserEmail };
 
         return await Client.PostAsync(Url, JsonContent.Create(resetPasswordRequestModel));
+    }
+
+    [Test]
+    public async Task Registered_Email_Sends_Reset_Email()
+    {
+        if (IsPasswordResetEnabled is false)
+        {
+            Assert.Ignore("SMTP is not configured or Umbraco:CMS:Security:BackOffice:AllowPasswordReset is false.");
+        }
+
+        await EnsureRegisteredUser();
+        _senderMock.Invocations.Clear();
+
+        HttpResponseMessage response = await RequestPasswordReset(RegisteredEmail);
+
+        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode, await response.Content.ReadAsStringAsync());
+        _senderMock.Verify(x => x.SendForgotPassword(It.IsAny<UserForgotPasswordMessage>()), Times.Once);
     }
 
     [Test]
@@ -111,6 +115,7 @@ public class ResetPasswordControllerTests : ManagementApiUserGroupTestBase<Reset
             .Setup(x => x.SendForgotPassword(It.IsAny<UserForgotPasswordMessage>()))
             .ThrowsAsync(new SocketException());
         await EnsureRegisteredUser();
+        _senderMock.Invocations.Clear();
 
         HttpResponseMessage registeredResponse = await RequestPasswordReset(RegisteredEmail);
         HttpResponseMessage unknownResponse = await RequestPasswordReset(UnknownEmail);
