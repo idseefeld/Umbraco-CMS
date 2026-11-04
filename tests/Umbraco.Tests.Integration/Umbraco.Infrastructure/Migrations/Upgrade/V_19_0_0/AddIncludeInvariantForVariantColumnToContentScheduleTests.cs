@@ -90,7 +90,7 @@ internal sealed class AddIncludeInvariantForVariantColumnToContentScheduleTests 
         var table = scope.SqlContext.SqlSyntax.GetQuotedTableName(Constants.DatabaseSchema.Tables.ContentSchedule);
         var column = scope.SqlContext.SqlSyntax.GetQuotedColumnName(ColumnName);
 
-        if (BaseTestDatabase.IsSqlite() is false)
+        if (BaseTestDatabase.IsSqlite() is false && BaseTestDatabase.IsPostgreSql() is false)
         {
             scope.Database.Execute($"ALTER TABLE {table} DROP CONSTRAINT {scope.SqlContext.SqlSyntax.GetQuotedName($"DF_{Constants.DatabaseSchema.Tables.ContentSchedule}_{ColumnName}")}");
         }
