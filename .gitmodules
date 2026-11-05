@@ -1,6 +1,6 @@
 [submodule "NPoco"]
 	path = src/NPoco
-	url = src/NPoco.git
+	url = https://github.com/idseefeld/NPoco.git
 [submodule "PostgreSqlForUmbraco"]
 	path = src/PostgreSqlForUmbraco
-	url = src/PostgreSqlForUmbraco.git
+	url = https://github.com/idseefeld/Our.Umbraco.PostgreSql
