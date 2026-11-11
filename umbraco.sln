@@ -220,6 +220,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbraco.Tests.PostgreSqlSecurity", "tests\Umbraco.Tests.PostgreSqlSecurity\Umbraco.Tests.PostgreSqlSecurity.csproj", "{6F73254C-85B3-4D30-B0D5-AAC694522821}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NPoco", "NPoco", "{C1288BB8-BAE0-47F3-9E61-D21EC00149B3}"
+	ProjectSection(SolutionItems) = preProject
+		src\NPoco\Directory.Build.props = src\NPoco\Directory.Build.props
+		src\NPoco\Directory.Packages.props = src\NPoco\Directory.Packages.props
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPoco.Abstractions", "src\NPoco\src\NPoco.Abstractions\NPoco.Abstractions.csproj", "{AB378633-AC82-A4BA-A69D-4DE7846AB521}"
 EndProject
