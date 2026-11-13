@@ -43,14 +43,16 @@
     <PackageVersion Include="Microsoft.Extensions.Caching.Hybrid" Version="11.0.0" />
     <PackageVersion Include="PdfPig" Version="0.1.16" />
     <PackageVersion Include="System.Linq.Async" Version="7.0.1" />
-    <!-- PostgreSQL packages -->
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="11.0.0-rc.3.26522.148" />
-    <PackageVersion Include="Npgsql" Version="10.0.3" />
-    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="11.0.0-rc.3" />
   </ItemGroup>
   <!-- Umbraco packages -->
   <ItemGroup>
     <PackageVersion Include="Umbraco.JsonSchema.Extensions" Version="0.5.0" />
+  </ItemGroup>
+  <!-- Our.Umbraco.PostgreSql packages -->
+  <ItemGroup>
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="11.0.0" />
+    <PackageVersion Include="Npgsql" Version="10.0.3" />
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="11.0.0" />
   </ItemGroup>
   <!-- Third-party packages -->
   <ItemGroup>
