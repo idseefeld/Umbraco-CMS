@@ -15,6 +15,7 @@ public partial class UserStartNodeEntitiesServiceElementTests
             .RootUserAccessEntities(
                 [UmbracoObjectTypes.Element, UmbracoObjectTypes.ElementContainer],
                 elementStartNodeIds)
+            .OrderBy(r => r.Entity.Name)
             .ToArray();
 
         // expected total is 2, because only two items at root ("C1" and "C5") are allowed
