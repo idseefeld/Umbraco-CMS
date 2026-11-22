@@ -285,6 +285,11 @@ internal sealed class DocumentUrlRebuildConcurrentWriteTests : UmbracoIntegratio
 
         public void Configure(ConnectionStrings umbracoConnectionString)
         {
+            if (BaseTestDatabase.IsSqlite() is false)
+            {
+                Assert.Ignore("The conflict under test is specific to SQLite's WAL snapshot isolation.");
+            }
+
             _filePath = Path.Combine(Path.GetTempPath(), $"umbraco-{Guid.NewGuid():N}.sqlite.db");
             var fileConnectionString = new SqliteConnectionStringBuilder
             {
