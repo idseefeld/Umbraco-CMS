@@ -1,6 +1,7 @@
 // Copyright (c) Umbraco.
 // See LICENSE for more details.
 
+using NPoco;
 using NUnit.Framework;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Models;
@@ -419,8 +420,9 @@ internal sealed class MemberServiceTests : UmbracoIntegrationTest
         int roleId;
         using (var scope = ScopeProvider.CreateScope())
         {
+            var syntax = ScopeAccessor.AmbientScope.Database.SqlContext.SqlSyntax;
             roleId = ScopeAccessor.AmbientScope.Database.ExecuteScalar<int>(
-                "SELECT id from umbracoNode where [text] = 'MyTestRole1'");
+                $"SELECT id from {syntax.GetQuotedTableName("umbracoNode")} where {syntax.GetQuotedColumnName("text")} = 'MyTestRole1'");
             scope.Complete();
         }
 
@@ -514,7 +516,8 @@ internal sealed class MemberServiceTests : UmbracoIntegrationTest
     [Test]
     public async Task Associate_Members_To_Roles_With_Member_Id_Casing()
     {
-        MemberService.AddRole("MyTestRole1");
+        var roleName = "MyTestRole1";
+        MemberService.AddRole(roleName);
 
         IMemberType memberType = MemberTypeBuilder.CreateSimpleMemberType();
         await MemberTypeService.CreateAsync(memberType, Constants.Security.SuperUserKey);
@@ -527,9 +530,12 @@ internal sealed class MemberServiceTests : UmbracoIntegrationTest
         Assert.IsNotNull(MemberService.GetById(member1.Id));
         Assert.IsNotNull(MemberService.GetById(member2.Id));
 
-        MemberService.AssignRoles(new[] { member1.Id, member2.Id }, new[] { "mytestrole1" });
+        var allRoles = MemberService.GetAllRoles();
+        var role = allRoles.Single(r => r.Name.Equals("mytestrole1", StringComparison.InvariantCultureIgnoreCase));// this test a case that won't appear in the backoffice but just to be sure we can find the role regardless of casing
 
-        var membersInRole = MemberService.GetMembersInRole("MyTestRole1");
+        MemberService.AssignRoles(new[] { member1.Id, member2.Id }, new[] { role.Name });
+
+        var membersInRole = MemberService.GetMembersInRole(roleName);
 
         Assert.AreEqual(2, membersInRole.Count());
     }

@@ -4,6 +4,7 @@
 using System.Diagnostics;
 using Microsoft.Extensions.Options;
 using Moq;
+using NPoco.DatabaseTypes;
 using NUnit.Framework;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Cache;
@@ -1299,7 +1300,7 @@ internal sealed partial class ContentServiceTests : UmbracoIntegrationTestWithCo
 
         Assert.Throws<ArgumentNullException>(() => ContentService.Publish(content, null!));
         Assert.Throws<ArgumentException>(() => ContentService.Publish(content, new string[] { null }));
-        Assert.Throws<ArgumentException>(() => ContentService.Publish(content, new [] { string.Empty }));
+        Assert.Throws<ArgumentException>(() => ContentService.Publish(content, new[] { string.Empty }));
         Assert.Throws<ArgumentException>(() => ContentService.Publish(content, new[] { "*", null }));
         Assert.Throws<ArgumentException>(() => ContentService.Publish(content, new[] { "en-US", "*" }));
     }
@@ -2728,7 +2729,7 @@ internal sealed partial class ContentServiceTests : UmbracoIntegrationTestWithCo
     {
         using var scope = ScopeProvider.CreateScope(autoComplete: true);
         var rows = scope.Database.Fetch<DocumentCultureVariationDto>(
-            "WHERE nodeId = @0",
+            $"WHERE {scope.Database.SqlContext.SqlSyntax.GetQuotedColumnName("nodeId")} = @0",
             nodeId);
 
         Assert.That(
@@ -2885,7 +2886,7 @@ internal sealed partial class ContentServiceTests : UmbracoIntegrationTestWithCo
         Assert.AreEqual(0, contentTags.Length);
 
         // publish
-        ContentService.Publish(content, new []{ "*" });
+        ContentService.Publish(content, ["*"]);
 
         // now tags have been set (published)
         Assert.AreEqual("[\"hello\",\"world\"]", content.GetValue(propAlias));
@@ -2901,7 +2902,7 @@ internal sealed partial class ContentServiceTests : UmbracoIntegrationTestWithCo
         Assert.AreEqual(0, copiedTags.Length);
 
         // publish
-        ContentService.Publish(copy, new []{ "*" });
+        ContentService.Publish(copy, new[] { "*" });
 
         // now tags have been set (published)
         copiedTags = TagService.GetTagsForEntity(copy.Id).ToArray();
@@ -3655,7 +3656,7 @@ internal sealed partial class ContentServiceTests : UmbracoIntegrationTestWithCo
         // becomes Published, !Edited
         // creates a new version
         // can get published property values
-        ContentService.Publish(content, new []{ "*" });
+        ContentService.Publish(content, new[] { "*" });
 
         Assert.IsTrue(content.Published);
         Assert.IsFalse(content.Edited);
@@ -4213,7 +4214,7 @@ internal sealed partial class ContentServiceTests : UmbracoIntegrationTestWithCo
         // note that content and content2 culture published dates might be slightly different due to roundtrip to database
 
         // Act
-        ContentService.Publish(content, new []{ "*" });
+        ContentService.Publish(content, new[] { "*" });
 
         // now it has publish name for invariant neutral
         content2 = ContentService.GetById(content.Id);

@@ -1,8 +1,12 @@
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using NUnit.Framework;
+using Our.Umbraco.PostgreSql.EFCore.Services;
 using Umbraco.Cms.Persistence.EFCore.Scoping;
 using Umbraco.Cms.Tests.Common.Testing;
 using Umbraco.Cms.Tests.Integration.Testing;
+using Our.Umbraco.PostgreSql.EFCore.Extensions;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace Umbraco.Cms.Tests.Integration.Umbraco.Persistence.EFCore.DbContext;
 
@@ -20,10 +24,38 @@ public class PooledDbContextConnectionTaintingTests : UmbracoIntegrationTest
     private IDbContextFactory<PooledTestDbContext> DbContextFactory =>
         GetRequiredService<IDbContextFactory<PooledTestDbContext>>();
 
-    protected override void CustomTestSetup(IUmbracoBuilder builder) =>
+    [TearDown]
+    public void TearDownNpgsqlConnections()
+    {
+        // Clear the Npgsql connection pool to prevent background NpgsqlExceptions
+        // when the test framework drops the schema. Without this, Npgsql keeps TCP
+        // connections open in its pool and they are forcibly terminated by Postgres
+        // when the schema is dropped, causing "Exception while writing to stream".
+        NpgsqlConnection.ClearAllPools();
+    }
+
+    protected override void CustomTestSetup(IUmbracoBuilder builder)
+    {
         builder.Services.AddUmbracoDbContext<PooledTestDbContext>(
-            (serviceProvider, options, connectionString, providerName) => options.UseUmbracoDatabaseProvider(serviceProvider),
+            (serviceProvider, options, connectionString, providerName) =>
+                {
+                    switch (providerName)
+                    {
+                        case Cms.Core.Constants.ProviderNames.SQLServer:
+                        case Cms.Core.Constants.ProviderNames.SQLLite:
+                        case "Microsoft.Data.SQLite":
+                            options.UseUmbracoDatabaseProvider(serviceProvider);
+                            break;
+                        case "Npgsql2":
+                        case "Npgsql":
+                            options.UsePostgreSqlDatabaseProvider(serviceProvider);
+                            break;
+                        default:
+                            throw new InvalidDataException($"The provider {providerName} is not supported. Manually add the add the UseXXX statement to the options.");
+                    }
+                },
             shareUmbracoConnection: true);
+    }
 
     /// <summary>
     /// Verifies that a pooled DbContext obtained from IDbContextFactory has a valid connection string

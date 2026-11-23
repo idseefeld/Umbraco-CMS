@@ -20,7 +20,7 @@ internal sealed class UntrustedDatabaseConstraintsCheckTests : UmbracoIntegratio
     [Test]
     public async Task FreshDatabase_ReportsSuccessOnSqlServer()
     {
-        if (BaseTestDatabase.IsSqlite())
+        if (BaseTestDatabase.IsSqlite() || BaseTestDatabase.IsPostgreSql())
         {
             Assert.Ignore("Untrusted constraints are a SQL Server concept and do not apply to SQLite.");
             return;
@@ -34,7 +34,7 @@ internal sealed class UntrustedDatabaseConstraintsCheckTests : UmbracoIntegratio
     [Test]
     public async Task UntrustedConstraint_ReportsWarningAndIncludesConstraintName()
     {
-        if (BaseTestDatabase.IsSqlite())
+        if (BaseTestDatabase.IsSqlite() || BaseTestDatabase.IsPostgreSql())
         {
             Assert.Ignore("Untrusted constraints are a SQL Server concept and do not apply to SQLite.");
             return;

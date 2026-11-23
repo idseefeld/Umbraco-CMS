@@ -5,6 +5,7 @@ using System.Text.Json.Nodes;
 using NUnit.Framework;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Infrastructure.Migrations.Upgrade.V_19_0_0;
+using Umbraco.Cms.Infrastructure.Persistence.Dtos;
 using Umbraco.Cms.Infrastructure.Scoping;
 using Umbraco.Cms.Tests.Common.Testing;
 
@@ -88,9 +89,12 @@ internal sealed class MigrateSliderMinMaxToRangeTests : MigrateMinMaxToRangeTest
         string editorAlias;
         using (IScope scope = ScopeProvider.CreateScope())
         {
-            editorAlias = scope.Database.ExecuteScalar<string>(
-                "SELECT propertyEditorAlias FROM umbracoDataType WHERE nodeId = @0",
-                id);
+            editorAlias = scope.Database.ExecuteScalar<string>(scope.Database.SqlContext
+                .Sql()
+                    .Select<DataTypeDto>(c => c.EditorAlias)
+                    .From<DataTypeDto>()
+                    .Where<DataTypeDto>(c => c.NodeId == id));
+
             scope.Complete();
         }
 

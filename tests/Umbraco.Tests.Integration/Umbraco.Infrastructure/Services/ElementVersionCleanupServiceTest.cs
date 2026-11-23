@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Tests.Common.Builders;
@@ -166,13 +166,13 @@ internal class ElementVersionCleanupServiceTest : UmbracoIntegrationTest
         using (var scope = ScopeProvider.CreateScope(autoComplete: true))
         {
             // SQL CE is fun!
+            var syntax = scope.SqlContext.SqlSyntax;
             var contentVersions =
-                ScopeAccessor.AmbientScope.Database.Single<int>(@"select count(1) from umbracoContentVersion");
+                scope.Database.Single<int>($@"select count(1) from {syntax.GetQuotedTableName("umbracoContentVersion")}");
             var elementVersions =
-                ScopeAccessor.AmbientScope.Database.Single<int>(@"select count(1) from umbracoElementVersion");
+                scope.Database.Single<int>($@"select count(1) from {syntax.GetQuotedTableName("umbracoElementVersion")}");
             var propertyData =
-                ScopeAccessor.AmbientScope.Database.Single<int>(@"select count(1) from umbracoPropertyData");
-
+                scope.Database.Single<int>($@"select count(1) from {syntax.GetQuotedTableName("umbracoPropertyData")}");
             return new Report
             {
                 ContentVersions = contentVersions,

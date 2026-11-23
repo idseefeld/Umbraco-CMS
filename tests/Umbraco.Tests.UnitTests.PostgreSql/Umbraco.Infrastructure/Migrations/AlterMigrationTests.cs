@@ -1,0 +1,121 @@
+// Copyright (c) Umbraco.
+// See LICENSE for more details.
+
+using System.Diagnostics;
+using System.Linq;
+using Microsoft.Extensions.Logging;
+using Moq;
+using NUnit.Framework;
+using Umbraco.Cms.Infrastructure.Migrations;
+using Umbraco.Cms.Tests.Common.PostgreSql.TestHelpers;
+using Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Migrations.Stubs;
+
+namespace Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Migrations;
+
+[TestFixture]
+public class AlterMigrationTests
+{
+    private readonly ILogger<MigrationContext> _logger = Mock.Of<ILogger<MigrationContext>>();
+
+    private class TestPlan : MigrationPlan
+    {
+        public TestPlan()
+            : base("Test")
+        {
+        }
+    }
+
+    private MigrationContext GetMigrationContext(out TestDatabase db)
+    {
+        db = new TestDatabase();
+        return new MigrationContext(new TestPlan(), db, _logger);
+    }
+
+    [Test]
+    public async Task Drop_Foreign_Key()
+    {
+        // Arrange
+        var context = GetMigrationContext(out var database);
+        var stub = new DropForeignKeyMigrationStub(context);
+
+        // Act
+        await stub.RunAsync().ConfigureAwait(false);
+
+        foreach (var op in database.Operations)
+        {
+            Console.WriteLine("{0}\r\n\t{1}", op.Text, op.Sql);
+        }
+
+        // Assert
+        Assert.That(database.Operations.Count, Is.EqualTo(1));
+        Assert.That(database.Operations[0].Sql, Is.EqualTo("ALTER TABLE \"umbracoUser2app\" DROP CONSTRAINT \"FK_umbracoUser2app_umbracoUser_id\" CASCADE"));
+    }
+
+    [Test]
+    public async Task CreateColumn()
+    {
+        var context = GetMigrationContext(out var database);
+        var migration = new CreateColumnMigration(context);
+
+        await migration.RunAsync().ConfigureAwait(false);
+
+        foreach (var op in database.Operations)
+        {
+            Console.WriteLine("{0}\r\n\t{1}", op.Text, op.Sql);
+        }
+
+        Assert.That(database.Operations.Count, Is.EqualTo(1));
+        Assert.That(
+            database.Operations[0].Sql,
+            Is.EqualTo("ALTER TABLE \"bar\" ADD COLUMN \"foo\" UUID NOT NULL"));
+    }
+
+    public class CreateColumnMigration : AsyncMigrationBase
+    {
+        public CreateColumnMigration(IMigrationContext context)
+            : base(context)
+        {
+        }
+
+        protected override Task MigrateAsync()
+        {
+            Alter.Table("bar").AddColumn("foo").AsGuid().NotNullable().Do();
+            // stop here, don't Do it
+            return Task.CompletedTask;
+        }
+    }
+
+    [Test]
+    public async Task AlterColumn()
+    {
+        var context = GetMigrationContext(out var database);
+        var migration = new AlterColumnMigration(context);
+
+        await migration.RunAsync().ConfigureAwait(false);
+
+        foreach (var op in database.Operations)
+        {
+            Console.WriteLine("{0}\r\n\t{1}", op.Text, op.Sql);
+        }
+
+        var sql = database.Operations[0].Sql;
+        var expectedSql = "ALTER TABLE \"bar\" ALTER COLUMN \"foo\" UUID NOT NULL";
+
+        Assert.That(database.Operations.Count, Is.EqualTo(1));
+        Assert.That(sql, Is.EqualTo(expectedSql));
+    }
+
+    public class AlterColumnMigration : AsyncMigrationBase
+    {
+        public AlterColumnMigration(IMigrationContext context)
+            : base(context)
+        {
+        }
+
+        protected override Task MigrateAsync()
+        {
+            Alter.Table("bar").AlterColumn("foo").AsGuid().NotNullable().Do();
+            return Task.CompletedTask;
+        }
+    }
+}

@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using NUnit.Framework;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Models;
@@ -69,7 +69,10 @@ internal sealed class ElementVersionRepositoryTest : UmbracoIntegrationTest
 
         using (var scope = ScopeProvider.CreateScope())
         {
-            ScopeAccessor.AmbientScope.Database.Update<ContentVersionDto>("set preventCleanup = 1 where id in (1,3)");
+            var db = scope.Database;
+            var syntax = scope.SqlContext.SqlSyntax;
+            var trueValue = scope.Database.DatabaseType is Our.Umbraco.PostgreSql.Services.UmbracoPostgreSQLDatabaseType ? "true" : "1";
+            db.Update<ContentVersionDto>($"set {syntax.GetQuotedColumnName("preventCleanup")} = {trueValue} where id in (1,3)");
 
             var sut = new ElementVersionRepository(ScopeAccessor);
             var results = sut.GetContentVersionsEligibleForCleanup(DateTime.UtcNow.AddDays(1), null);

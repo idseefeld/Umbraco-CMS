@@ -8,6 +8,7 @@ using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Serialization;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Infrastructure.Persistence.Repositories.Implement;
+using Umbraco.Cms.Infrastructure.Persistence.SqlSyntax;
 using Umbraco.Cms.Tests.Common.Builders;
 using Umbraco.Cms.Tests.Common.Builders.Extensions;
 using Umbraco.Cms.Tests.Common.Testing;
@@ -98,9 +99,9 @@ internal sealed class ContentServiceTagsTests : UmbracoIntegrationTest
     [Test]
     public async Task TagsCanBeVariant()
     {
-       var language = new LanguageBuilder()
-            .WithCultureInfo("fr-FR")
-            .Build();
+        var language = new LanguageBuilder()
+             .WithCultureInfo("fr-FR")
+             .Build();
         await LanguageService.CreateAsync(language, Constants.Security.SuperUserKey); // en-US is already there
 
         var template = TemplateBuilder.CreateTextPageTemplate();
@@ -874,18 +875,27 @@ internal sealed class ContentServiceTagsTests : UmbracoIntegrationTest
         using (var scope = ScopeProvider.CreateScope())
         {
             Assert.AreEqual(4, ScopeAccessor.AmbientScope.Database.ExecuteScalar<int>(
-                "SELECT COUNT(*) FROM cmsTagRelationship WHERE nodeId=@nodeId AND propertyTypeId=@propTypeId",
+                CountSql,
                 new { nodeId = content.Id, propTypeId = propertyTypeId }));
 
             Assert.AreEqual(3, ScopeAccessor.AmbientScope.Database.ExecuteScalar<int>(
-                "SELECT COUNT(*) FROM cmsTagRelationship WHERE nodeId=@nodeId AND propertyTypeId=@propTypeId",
+                CountSql,
                 new { nodeId = child1.Id, propTypeId = propertyTypeId }));
 
             Assert.AreEqual(2, ScopeAccessor.AmbientScope.Database.ExecuteScalar<int>(
-                "SELECT COUNT(*) FROM cmsTagRelationship WHERE nodeId=@nodeId AND propertyTypeId=@propTypeId",
+                CountSql,
                 new { nodeId = child2.Id, propTypeId = propertyTypeId }));
 
             scope.Complete();
+        }
+    }
+
+    private string CountSql
+    {
+        get
+        {
+            var syntax = ScopeAccessor.AmbientScope.Database.SqlContext.SqlSyntax;
+            return $"SELECT COUNT(*) FROM {syntax.GetQuotedTableName("cmsTagRelationship")} WHERE {syntax.GetQuotedColumnName("nodeId")}=@nodeId AND {syntax.GetQuotedColumnName("propertyTypeId")}=@propTypeId";
         }
     }
 
@@ -935,7 +945,7 @@ internal sealed class ContentServiceTagsTests : UmbracoIntegrationTest
         using (var scope = ScopeProvider.CreateScope())
         {
             Assert.AreEqual(4, ScopeAccessor.AmbientScope.Database.ExecuteScalar<int>(
-                "SELECT COUNT(*) FROM cmsTagRelationship WHERE nodeId=@nodeId AND propertyTypeId=@propTypeId",
+                CountSql,
                 new { nodeId = content.Id, propTypeId = propertyTypeId }));
             scope.Complete();
         }
@@ -975,7 +985,7 @@ internal sealed class ContentServiceTagsTests : UmbracoIntegrationTest
         using (var scope = ScopeProvider.CreateScope())
         {
             Assert.AreEqual(4, ScopeAccessor.AmbientScope.Database.ExecuteScalar<int>(
-                "SELECT COUNT(*) FROM cmsTagRelationship WHERE nodeId=@nodeId AND propertyTypeId=@propTypeId",
+                CountSql,
                 new { nodeId = content.Id, propTypeId = propertyTypeId }));
 
             scope.Complete();
@@ -1025,7 +1035,7 @@ internal sealed class ContentServiceTagsTests : UmbracoIntegrationTest
         using (var scope = ScopeProvider.CreateScope())
         {
             Assert.AreEqual(5, ScopeAccessor.AmbientScope.Database.ExecuteScalar<int>(
-                "SELECT COUNT(*) FROM cmsTagRelationship WHERE nodeId=@nodeId AND propertyTypeId=@propTypeId",
+                CountSql,
                 new { nodeId = content.Id, propTypeId = propertyTypeId }));
 
             scope.Complete();
@@ -1068,7 +1078,7 @@ internal sealed class ContentServiceTagsTests : UmbracoIntegrationTest
         using (var scope = ScopeProvider.CreateScope())
         {
             Assert.AreEqual(2, ScopeAccessor.AmbientScope.Database.ExecuteScalar<int>(
-                "SELECT COUNT(*) FROM cmsTagRelationship WHERE nodeId=@nodeId AND propertyTypeId=@propTypeId",
+                CountSql,
                 new { nodeId = content.Id, propTypeId = propertyTypeId }));
 
             scope.Complete();

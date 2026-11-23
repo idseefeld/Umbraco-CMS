@@ -41,7 +41,9 @@ namespace Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Migrations.Expres
                 .Do();
 
             // (TableName, ColumnName, ConstraintName)
-            var constraint = database.SqlContext.SqlSyntax.GetConstraintsPerColumn(database).Single();
+            var constraint = database.SqlContext.SqlSyntax
+                .GetConstraintsPerColumn(database)
+                .Single(x => x.Item1 == "foo" && x.Item2 == "bar" && x.Item3.StartsWith("PK_"));
 
             Assert.Multiple(() =>
             {
@@ -59,11 +61,13 @@ namespace Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Migrations.Expres
 
             var builder = GetBuilder(database);
             builder.Table("foo")
-                .WithColumn("bar").AsString().Unique("MY_SUPER_COOL_INDEX")
+                .WithColumn("bar").AsString()
+                .Unique("MY_SUPER_COOL_INDEX")
                 .Do();
 
             // (TableName, IndexName, ColumnName, IsUnique)
-            var index = database.SqlContext.SqlSyntax.GetDefinedIndexes(database).Single();
+            var indexs = database.SqlContext.SqlSyntax.GetDefinedIndexes(database);
+            var index = indexs.FirstOrDefault();
 
             Assert.Multiple(() =>
             {

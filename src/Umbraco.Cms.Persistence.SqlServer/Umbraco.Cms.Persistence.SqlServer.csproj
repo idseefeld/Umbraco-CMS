@@ -23,6 +23,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\npoco\src\NPoco.SqlServer\NPoco.SqlServer.csproj" />
     <!--
       Not referenced from code: Microsoft.Data.SqlClient discovers this assembly at runtime and registers the
       Microsoft Entra ID authentication providers (e.g. "Active Directory Managed Identity") from it. Without it,
@@ -39,6 +40,9 @@
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
       <_Parameter1>Umbraco.Tests.Integration</_Parameter1>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>Umbraco.Tests.UnitTests.PostgreSql</_Parameter1>
     </AssemblyAttribute>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
       <_Parameter1>Umbraco.Tests.UnitTests</_Parameter1>

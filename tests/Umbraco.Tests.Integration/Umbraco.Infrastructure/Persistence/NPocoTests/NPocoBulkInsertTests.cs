@@ -107,7 +107,12 @@ internal sealed class NPocoBulkInsertTests : UmbracoIntegrationTest
         // Assert
         using (var scope = ScopeProvider.CreateScope())
         {
-            Assert.That(ScopeAccessor.AmbientScope.Database.ExecuteScalar<int>("SELECT COUNT(*) FROM umbracoServer"), Is.EqualTo(1000));
+            var db = scope.Database;
+            var sql = db.SqlContext.Sql()
+                .SelectCount()
+                .From<ServerRegistrationDto>();
+            var serverCount = db.ExecuteScalar<int>(sql);
+            Assert.That(serverCount, Is.EqualTo(1000));
         }
     }
 
@@ -141,7 +146,12 @@ internal sealed class NPocoBulkInsertTests : UmbracoIntegrationTest
         // Assert
         using (var scope = ScopeProvider.CreateScope())
         {
-            Assert.That(ScopeAccessor.AmbientScope.Database.ExecuteScalar<int>("SELECT COUNT(*) FROM umbracoServer"), Is.EqualTo(0));
+            var db = scope.Database;
+            var sql = db.SqlContext.Sql()
+                .SelectCount()
+                .From<ServerRegistrationDto>();
+            var serverCount = db.ExecuteScalar<int>(sql);
+            Assert.That(serverCount, Is.EqualTo(0));
         }
     }
 

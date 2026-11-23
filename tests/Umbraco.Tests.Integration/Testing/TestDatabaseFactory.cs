@@ -3,6 +3,7 @@
 
 using System;
 using Microsoft.Extensions.Logging;
+using Umbraco.Cms.Core.Events;
 using Umbraco.Cms.Persistence.SqlServer;
 
 namespace Umbraco.Cms.Tests.Integration.Testing;
@@ -34,6 +35,7 @@ public static class TestDatabaseFactory
             TestDatabaseSettings.TestDatabaseType.Sqlite => new SqliteTestDatabase(settings, dbFactory, loggerFactory),
             TestDatabaseSettings.TestDatabaseType.SqlServer => CreateSqlServer(settings, loggerFactory, dbFactory),
             TestDatabaseSettings.TestDatabaseType.LocalDb => CreateLocalDb(settings, loggerFactory, dbFactory),
+            TestDatabaseSettings.TestDatabaseType.PostgreSql => new PostgreSqlTestDatabase(settings, dbFactory, loggerFactory),
             _ => throw new ApplicationException("Unsupported test database provider")
         };
 

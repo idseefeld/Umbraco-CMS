@@ -43,7 +43,6 @@
     <PackageReference Include="Microsoft.Extensions.Identity.Stores" />
     <PackageReference Include="MiniProfiler.Shared" />
     <PackageReference Include="ncrontab" />
-    <PackageReference Include="NPoco" />
     <PackageReference Include="OpenIddict.Abstractions" />
     <PackageReference Include="Serilog" />
     <PackageReference Include="Serilog.Enrichers.Process" />
@@ -62,6 +61,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\npoco\src\NPoco\NPoco.csproj" />
     <ProjectReference Include="..\Umbraco.Core\Umbraco.Core.csproj" />
   </ItemGroup>
 
@@ -77,6 +77,12 @@
     </AssemblyAttribute>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
       <_Parameter1>Umbraco.Tests.Integration</_Parameter1>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>Umbraco.Tests.Common.PostgreSql</_Parameter1>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>Umbraco.Tests.UnitTests.PostgreSql</_Parameter1>
     </AssemblyAttribute>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
       <_Parameter1>Umbraco.Tests.Common</_Parameter1>

@@ -26,6 +26,7 @@ public abstract class BaseTestDatabase
     public BaseTestDatabase() => Instance = this;
     public static BaseTestDatabase Instance { get; private set; }
     public static bool IsSqlite() => Instance is SqliteTestDatabase;
+    public static bool IsPostgreSql() => Instance is PostgreSqlTestDatabase;
     public static bool IsSqlServer() => Instance is SqlServerBaseTestDatabase;
 
     protected abstract void Initialize();

@@ -96,7 +96,7 @@ public class ElementRecycleBinControllerBase : RecycleBinControllerBase<ElementR
                 after,
                 out totalBefore,
                 out totalAfter,
-                ordering: Ordering.By(nameof(Infrastructure.Persistence.Dtos.NodeDto.Text)))
+                ordering: Ordering.By(Infrastructure.Persistence.Dtos.NodeDto.TextColumnName))
             .ToArray();
 
     protected IActionResult OperationStatusResult(EntityContainerOperationStatus status)

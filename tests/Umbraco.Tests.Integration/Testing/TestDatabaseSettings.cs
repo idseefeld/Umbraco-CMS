@@ -7,7 +7,8 @@ public class TestDatabaseSettings
         Unknown,
         Sqlite,
         SqlServer,
-        LocalDb
+        LocalDb,
+        PostgreSql
     }
 
     public TestDatabaseType DatabaseType { get; set; }

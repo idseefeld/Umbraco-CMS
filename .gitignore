@@ -130,3 +130,4 @@ trace.zip
 
 # Playwright local cache
 .playwright-mcp/
+*.playlist

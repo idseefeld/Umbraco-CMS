@@ -283,9 +283,10 @@ public class ElementRepositoryTest : UmbracoIntegrationTest
             Assert.AreEqual(versions[^1], repository.Get(element1.Id)!.VersionId);
 
             // misc checks
-            Assert.AreEqual(true, ScopeAccessor.AmbientScope.Database.ExecuteScalar<bool>(
-                    $"SELECT published FROM {Constants.DatabaseSchema.Tables.Element} WHERE nodeId=@id",
-                    new { id = element1.Id }));
+            var db = scope.Database;
+            var syntax = scope.SqlContext.SqlSyntax;
+            var publishedSql = $"SELECT published FROM {syntax.GetQuotedTableName(Constants.DatabaseSchema.Tables.Element)} WHERE {syntax.GetQuotedColumnName("nodeId")}=@id";
+            Assert.AreEqual(true, db.ExecuteScalar<bool>(publishedSql, new { id = element1.Id }));
 
             // change something
             // save = update the current (draft) version
@@ -303,8 +304,8 @@ public class ElementRepositoryTest : UmbracoIntegrationTest
             // misc checks
             Assert.AreEqual(
                 true,
-                ScopeAccessor.AmbientScope.Database.ExecuteScalar<bool>(
-                    $"SELECT published FROM {Constants.DatabaseSchema.Tables.Element} WHERE nodeId=@id",
+                db.ExecuteScalar<bool>(
+                    publishedSql,
                     new { id = element1.Id }));
 
             // unpublish = no impact on versions
@@ -322,8 +323,8 @@ public class ElementRepositoryTest : UmbracoIntegrationTest
             // misc checks
             Assert.AreEqual(
                 false,
-                ScopeAccessor.AmbientScope.Database.ExecuteScalar<bool>(
-                    $"SELECT published FROM {Constants.DatabaseSchema.Tables.Element} WHERE nodeId=@id",
+                db.ExecuteScalar<bool>(
+                    publishedSql,
                     new { id = element1.Id }));
 
             // change something
@@ -341,8 +342,8 @@ public class ElementRepositoryTest : UmbracoIntegrationTest
             // misc checks
             Assert.AreEqual(
                 false,
-                ScopeAccessor.AmbientScope.Database.ExecuteScalar<bool>(
-                    $"SELECT published FROM {Constants.DatabaseSchema.Tables.Element} WHERE nodeId=@id",
+                db.ExecuteScalar<bool>(
+                    publishedSql,
                     new { id = element1.Id }));
 
             // publish = version
@@ -361,8 +362,8 @@ public class ElementRepositoryTest : UmbracoIntegrationTest
             // misc checks
             Assert.AreEqual(
                 true,
-                ScopeAccessor.AmbientScope.Database.ExecuteScalar<bool>(
-                    $"SELECT published FROM {Constants.DatabaseSchema.Tables.Element} WHERE nodeId=@id",
+                db.ExecuteScalar<bool>(
+                    publishedSql,
                     new { id = element1.Id }));
 
             // change something
@@ -383,8 +384,8 @@ public class ElementRepositoryTest : UmbracoIntegrationTest
             // misc checks
             Assert.AreEqual(
                 true,
-                ScopeAccessor.AmbientScope.Database.ExecuteScalar<bool>(
-                    $"SELECT published FROM {Constants.DatabaseSchema.Tables.Element} WHERE nodeId=@id",
+                db.ExecuteScalar<bool>(
+                    publishedSql,
                     new { id = element1.Id }));
 
             // publish = new version
@@ -405,8 +406,8 @@ public class ElementRepositoryTest : UmbracoIntegrationTest
             // misc checks
             Assert.AreEqual(
                 true,
-                ScopeAccessor.AmbientScope.Database.ExecuteScalar<bool>(
-                    $"SELECT published FROM {Constants.DatabaseSchema.Tables.Element} WHERE nodeId=@id",
+                db.ExecuteScalar<bool>(
+                    publishedSql,
                     new { id = element1.Id }));
 
             // all versions

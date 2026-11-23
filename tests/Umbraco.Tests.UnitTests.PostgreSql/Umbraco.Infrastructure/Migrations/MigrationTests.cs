@@ -1,0 +1,149 @@
+// Copyright (c) Umbraco.
+// See LICENSE for more details.
+
+using System.Data;
+using Microsoft.Extensions.Logging;
+using Moq;
+using NUnit.Framework;
+using Umbraco.Cms.Core.Events;
+using Umbraco.Cms.Core.Persistence.Querying;
+using Umbraco.Cms.Core.Scoping;
+using Umbraco.Cms.Infrastructure.Migrations;
+using Umbraco.Cms.Infrastructure.Persistence;
+using Umbraco.Cms.Infrastructure.Scoping;
+using IScope = Umbraco.Cms.Infrastructure.Scoping.IScope;
+using IScopeProvider = Umbraco.Cms.Infrastructure.Scoping.IScopeProvider;
+#if DEBUG_SCOPES
+using System.Collections.Generic;
+#endif
+
+namespace Umbraco.Cms.Tests.UnitTests.PostgreSql.Umbraco.Infrastructure.Migrations;
+
+[TestFixture]
+public class MigrationTests
+{
+    public class TestScopeProvider : IScopeProvider, IScopeAccessor
+    {
+        public TestScopeProvider(IScope scope) => AmbientScope = scope;
+
+        public IScope CreateScope(
+            IsolationLevel isolationLevel = IsolationLevel.Unspecified,
+            RepositoryCacheMode repositoryCacheMode = RepositoryCacheMode.Unspecified,
+            IEventDispatcher eventDispatcher = null,
+            IScopedNotificationPublisher notificationPublisher = null,
+            bool? scopeFileSystems = null,
+            bool callContext = false,
+            bool autoComplete = false) => AmbientScope;
+
+        public IScope CreateDetachedScope(
+            IsolationLevel isolationLevel = IsolationLevel.Unspecified,
+            RepositoryCacheMode repositoryCacheMode = RepositoryCacheMode.Unspecified,
+            IEventDispatcher eventDispatcher = null,
+            IScopedNotificationPublisher notificationPublisher = null,
+            bool? scopeFileSystems = null) => throw new NotImplementedException();
+
+        public void AttachScope(IScope scope, bool callContext = false) => throw new NotImplementedException();
+
+        public IScope DetachScope() => throw new NotImplementedException();
+
+        public IScopeContext Context { get; set; }
+
+        public IQuery<T> CreateQuery<T>() => SqlContext.Query<T>();
+
+        public ISqlContext SqlContext { get; set; }
+
+        public IScope AmbientScope { get; }
+
+#if DEBUG_SCOPES
+        public IEnumerable<ScopeInfo> ScopeInfos => throw new NotImplementedException();
+
+        public ScopeInfo GetScopeInfo(IScope scope) => throw new NotImplementedException();
+#endif
+
+    }
+
+    private class TestPlan : MigrationPlan
+    {
+        public TestPlan()
+            : base("Test")
+        {
+        }
+    }
+
+    private MigrationContext GetMigrationContext() =>
+        new(
+            new TestPlan(),
+            Mock.Of<IUmbracoDatabase>(),
+            Mock.Of<ILogger<MigrationContext>>());
+
+    [Test]
+    public async Task RunGoodMigration()
+    {
+        var migrationContext = GetMigrationContext();
+        AsyncMigrationBase migration = new GoodMigration(migrationContext);
+        await migration.RunAsync();
+    }
+
+    [Test]
+    public void DetectBadMigration1()
+    {
+        var migrationContext = GetMigrationContext();
+        AsyncMigrationBase migration = new BadMigration1(migrationContext);
+        Assert.ThrowsAsync<IncompleteMigrationExpressionException>(migration.RunAsync);
+    }
+
+    [Test]
+    public void DetectBadMigration2()
+    {
+        var migrationContext = GetMigrationContext();
+        AsyncMigrationBase migration = new BadMigration2(migrationContext);
+        Assert.ThrowsAsync<IncompleteMigrationExpressionException>(migration.RunAsync);
+    }
+
+    public class GoodMigration : AsyncMigrationBase
+    {
+        public GoodMigration(IMigrationContext context)
+            : base(context)
+        {
+        }
+
+        protected override Task MigrateAsync()
+        {
+            Execute.Sql(string.Empty).Do();
+            return Task.CompletedTask;
+        }
+    }
+
+    public class BadMigration1 : AsyncMigrationBase
+    {
+        public BadMigration1(IMigrationContext context)
+            : base(context)
+        {
+        }
+
+        protected override Task MigrateAsync()
+        {
+            Alter.Table("foo");
+            // stop here, don't Do it
+            return Task.CompletedTask;
+        }
+    }
+
+    public class BadMigration2 : AsyncMigrationBase
+    {
+        public BadMigration2(IMigrationContext context)
+            : base(context)
+        {
+        }
+
+        protected override Task MigrateAsync()
+        {
+            Alter.Table("foo"); // stop here, don't Do it
+
+            // and try to start another one
+            Alter.Table("bar");
+
+            return Task.CompletedTask;
+        }
+    }
+}
